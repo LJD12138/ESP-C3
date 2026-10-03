@@ -1,0 +1,16 @@
+idf_component_register(
+    SRCS 
+        "bsp_qmi8658c.c"
+        "bsp_qmc5883l.c"
+        "bsp_es8311.c"
+        "bsp_gxhtc3_temp_humi.c"    
+    INCLUDE_DIRS 
+        "."
+    REQUIRES 
+        driver
+        freertos
+        Print
+        main
+        esp-idf-lib__qmi8658c 
+        esp-idf-lib__qmc5883l 
+        espressif__es8311)
