@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Bms/md_bms_queue_task.h"
@@ -13,14 +13,14 @@
 
 #define       	bmsTASK_SET_CMD_CYCLE_TIME               		50
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:ÇëÇóÉı¼¶ÈÎÎñ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    BMS_ErrState_N:
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:è¯·æ±‚å‡çº§ä»»åŠ¡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    BMS_ErrState_N:
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_bms_queue_task_req_set_cmd(Task_T *tp_task)
 {
@@ -32,7 +32,7 @@ void v_bms_queue_task_req_set_cmd(Task_T *tp_task)
 		case 0:
 		{
 			if(c_bms_cs_req_updata(u_in_param.tTaskParam.ucParam) > 0)
-				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ÏÂÒ»²½
+				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ä¸‹ä¸€æ­¥
 		}
 		break;
 		
@@ -40,7 +40,7 @@ void v_bms_queue_task_req_set_cmd(Task_T *tp_task)
 		{
 			vTaskDelay(1000);
 			if(c_bms_cs_req_updata(u_in_param.tTaskParam.ucParam) > 0)
-				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ÏÂÒ»²½
+				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ä¸‹ä¸€æ­¥
 		}
 		break;
 
@@ -49,21 +49,21 @@ void v_bms_queue_task_req_set_cmd(Task_T *tp_task)
 			bQueue_Reset(tp_task);
 			cBaiku_ResetRxBuff(tpBmsProtoRx);
 			// cUpdata_ChSelect(CT_PRINT, UWS_CHECK, PT_BAIKU);
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 		}
 		break;
 			
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
 	}
 	
 	tp_task->usTaskWaitCnt++;
-	if(tp_task->usTaskWaitCnt > (5000 / bmsTASK_SET_CMD_CYCLE_TIME))  //µÈ´ı³¬Ê±
+	if(tp_task->usTaskWaitCnt > (5000 / bmsTASK_SET_CMD_CYCLE_TIME))  //ç­‰å¾…è¶…æ—¶
 	{
-		cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+		cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 		if(uPrint.tFlag.bBmsTask || uPrint.tFlag.bImportant)
-			log_w("bBmsTask:ÉèÖÃÖ¸ÁîÈÎÎñ³¬Ê±,ÍË³öÈÎÎñ");
+			log_w("bBmsTask:è®¾ç½®æŒ‡ä»¤ä»»åŠ¡è¶…æ—¶,é€€å‡ºä»»åŠ¡");
 	}
 	
 	#if(boardUSE_OS)

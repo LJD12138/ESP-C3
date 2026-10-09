@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         Äæ±ä·¢ËÍÈÎÎñ                                                          *
+ *                                         é€†å˜å‘é€ä»»åŠ¡                                                          *
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Dcac/md_dcac_task.h"
@@ -15,25 +15,25 @@
 
 #include "app_info.h"
 
-//****************************************************ÈÎÎñ²ÎÊı³õÊ¼»¯**********************************************//
+//****************************************************ä»»åŠ¡å‚æ•°åˆå§‹åŒ–**********************************************//
 #if(boardUSE_OS)
-#define       	DCAC_TASK_PRIO                         	2        	//ÈÎÎñÓÅÏÈ¼¶ 
-#define       	DCAC_TASK_SIZE                         	4096      	//ÈÎÎñ¶ÑÕ»  Êµ¼Ê×Ö½ÚÊı *4
+#define       	DCAC_TASK_PRIO                         	2        	//ä»»åŠ¡ä¼˜å…ˆçº§ 
+#define       	DCAC_TASK_SIZE                         	4096      	//ä»»åŠ¡å †æ ˆ  å®é™…å­—èŠ‚æ•° *4
 TaskHandle_t    tDcacTaskHandler = NULL; 
 void          	vDcac_Task(void *pvParameters);
 #endif  //boardUSE_OS
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************//
-//½á¹¹Ìå
-Dcac_T          tDcac;			//ÈÎÎñ½á¹¹Ìå
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
+//ç»“æ„ä½“
+Dcac_T          tDcac;			//ä»»åŠ¡ç»“æ„ä½“
 static Task_T	*tp_task = NULL;
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    Äæ±ä²ÎÊı³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    é€†å˜å‚æ•°åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 bool b_dcac_task_param_init(void)
 {
@@ -50,34 +50,34 @@ bool b_dcac_task_param_init(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    Äæ±äÈÎÎñ³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    é€†å˜ä»»åŠ¡åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 bool bDcac_TaskInit(void)
 {
-	//Ğ­Òé³õÊ¼»¯
+	//åè®®åˆå§‹åŒ–
 	if(bDcac_SendProtInit() == false)
 		return false;
 	
-	//ÈÎÎñ¶ÓÁĞ³õÊ¼»¯
+	//ä»»åŠ¡é˜Ÿåˆ—åˆå§‹åŒ–
 	if(bDcac_QueueInit() == false)
 		return false;
 	
-	//ÈÎÎñ²ÎÊı³õÊ¼»¯
+	//ä»»åŠ¡å‚æ•°åˆå§‹åŒ–
 	if(b_dcac_task_param_init() == false)
 		return false;
 	
-	//ÈÎÎñ³õÊ¼»¯
+	//ä»»åŠ¡åˆå§‹åŒ–
 	#if(boardUSE_OS)
-    xTaskCreate((TaskFunction_t )vDcac_Task,            //ÈÎÎñº¯Êı
-                (const char* )"DcacTask",				//ÈÎÎñÃû³Æ
-                (uint16_t ) DCAC_TASK_SIZE,				//ÈÎÎñ¶ÑÕ»´óĞ¡
-                (void* )NULL,							//´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                (UBaseType_t ) DCAC_TASK_PRIO,			//ÈÎÎñÓÅÏÈ¼¶
-                (TaskHandle_t*)&tDcacTaskHandler);   	//ÈÎÎñ¾ä±ú
+    xTaskCreate((TaskFunction_t )vDcac_Task,            //ä»»åŠ¡å‡½æ•°
+                (const char* )"DcacTask",				//ä»»åŠ¡åç§°
+                (uint16_t ) DCAC_TASK_SIZE,				//ä»»åŠ¡å †æ ˆå¤§å°
+                (void* )NULL,							//ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                (UBaseType_t ) DCAC_TASK_PRIO,			//ä»»åŠ¡ä¼˜å…ˆçº§
+                (TaskHandle_t*)&tDcacTaskHandler);   	//ä»»åŠ¡å¥æŸ„
 	#endif  //boardUSE_OS
 				
 	return true;
@@ -85,11 +85,11 @@ bool bDcac_TaskInit(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    Äæ±äÈÎÎñ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    é€†å˜ä»»åŠ¡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void vDcac_Task(void *pvParameters)
 {
@@ -116,7 +116,7 @@ void vDcac_Task(void *pvParameters)
 		{
 			#if(boardUSE_OS)
 			if(lwrb_get_full(&tp_task->tQueueBuff) == 0)
-				ulTaskNotifyTake(pdTRUE, dcacTASK_CYCLE_TIME);//pdFALSE:ÈÎÎñÍ¨Öª¶àÉÙ´Î¾ÍÖ´ĞĞ¶àÉÙ´Î
+				ulTaskNotifyTake(pdTRUE, dcacTASK_CYCLE_TIME);//pdFALSE:ä»»åŠ¡é€šçŸ¥å¤šå°‘æ¬¡å°±æ‰§è¡Œå¤šå°‘æ¬¡
 			#endif  //boardUSE_OS
 			
 			if(tp_task->bp_task_manage_func != NULL)
@@ -177,16 +177,16 @@ void vDcac_Task(void *pvParameters)
 
 /************************************************************************************************************************
 *************************************************************************************************************************
-                                                  È«¾Öº¯Êı
+                                                  å…¨å±€å‡½æ•°
 *************************************************************************************************************************
 *************************************************************************************************************************/
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃAC×´Ì¬
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®ACçŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    
 
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      
 ******************************************************************************************************************/
 bool bDcac_SetAcState(OperaObject_E obj, InOutState_E state)  
 {
@@ -194,7 +194,7 @@ bool bDcac_SetAcState(OperaObject_E obj, InOutState_E state)
 	{
 		case OO_CHG:
 		{
-			//´¦ÓÚ±£»¤×´Ì¬ÏÂ,ÎŞ·¨ÉèÖÃ×´Ì¬,Ö»ÄÜ¹Ø»ú
+			//å¤„äºä¿æŠ¤çŠ¶æ€ä¸‹,æ— æ³•è®¾ç½®çŠ¶æ€,åªèƒ½å…³æœº
 			if(tDcac.eChgState == IOS_PROTE)
 				return false;
 			
@@ -219,7 +219,7 @@ bool bDcac_SetAcState(OperaObject_E obj, InOutState_E state)
 			tDcac.eDisChgState = state;
 			tDcac.eParanInState = state;
 			
-			//´¦ÓÚ±£»¤×´Ì¬ÏÂ,ÎŞ·¨ÉèÖÃ×´Ì¬,Ö»ÄÜ¹Ø»ú
+			//å¤„äºä¿æŠ¤çŠ¶æ€ä¸‹,æ— æ³•è®¾ç½®çŠ¶æ€,åªèƒ½å…³æœº
 			if(tDcac.eChgState == IOS_PROTE)
 				return false;
 			
@@ -229,7 +229,7 @@ bool bDcac_SetAcState(OperaObject_E obj, InOutState_E state)
 		
 		default:
 			if(uPrint.tFlag.bDcacTask)
-				log_w("bDcacTask:ACÉèÖÃ¶ÔÏó%d´íÎó", obj);
+				log_w("bDcacTask:ACè®¾ç½®å¯¹è±¡%dé”™è¯¯", obj);
 			return false;
 	}
 	
@@ -260,26 +260,26 @@ bool bDcac_SetAcState(OperaObject_E obj, InOutState_E state)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃÉè±¸×´Ì¬
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    DST_WAIT = 0,  //Äæ±ä¹Ø±Õ
-				 DST_ERR,      //Äæ±ä´íÎó
-				 DST_LOST,     //Äæ±ä¶ªÊ§
-				 DST_WORK,       //Äæ±ä¹¤×÷ 
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:Ã»ÓĞ´íÎó  false:ÓĞ´íÎó
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®è®¾å¤‡çŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    DST_WAIT = 0,  //é€†å˜å…³é—­
+				 DST_ERR,      //é€†å˜é”™è¯¯
+				 DST_LOST,     //é€†å˜ä¸¢å¤±
+				 DST_WORK,       //é€†å˜å·¥ä½œ 
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ²¡æœ‰é”™è¯¯  false:æœ‰é”™è¯¯
 ************************************************************************************************************************/
 bool bDcac_SetDevState(DevState_E state)
 {
-	if(tDcac.eDevState != state)  //×´Ì¬·¢Éú±ä»¯
+	if(tDcac.eDevState != state)  //çŠ¶æ€å‘ç”Ÿå˜åŒ–
 	{
-		if(state != DS_LOST) //Á¬ÉÏ
+		if(state != DS_LOST) //è¿ä¸Š
 		{
 			#if(boardSYS_DATA_UPADATA)
 			STAT_SET(tSysInfo.Mod_Exist,OL_DCAC );
 			#endif
 		}
-		else                  //¶ªÊ§
+		else                  //ä¸¢å¤±
 		{
 			#if(boardSYS_DATA_UPADATA)
 			STAT_CLR(tSysInfo.Mod_Exist,OL_DCAC );
@@ -293,27 +293,27 @@ bool bDcac_SetDevState(DevState_E state)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃÉè±¸´íÎó´úÂë
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    ERR_CODE
-                 true:ÉèÖÃ´íÎó    false:Çå³ı´íÎó
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:Ìí¼ÓÁËÈÎÎñ  false:Ã»ÓĞÌí¼ÓÈÎÎñ
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®è®¾å¤‡é”™è¯¯ä»£ç 
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    ERR_CODE
+                 true:è®¾ç½®é”™è¯¯    false:æ¸…é™¤é”™è¯¯
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ·»åŠ äº†ä»»åŠ¡  false:æ²¡æœ‰æ·»åŠ ä»»åŠ¡
 ************************************************************************************************************************/
 bool bDcac_SetErrCode(DCAC_ErrCode_E code, bool set)
 {
 	static DCAC_ErrCode_E e_next_code;
 	static bool b_next_set;
 	
-	//Ã»³õÊ¼»¯Íê³É²»±ê¼Ç´íÎó
+	//æ²¡åˆå§‹åŒ–å®Œæˆä¸æ ‡è®°é”™è¯¯
 	if(tSysInfo.uInit.tFinish.bIF_DcacTask == 0 && set == true)
     {
         if(uPrint.tFlag.bDcacTask)
-			log_w("bDcacTask:DCACÄ£¿éÎ´³õÊ¼»¯Íê³É£¬²»ÔÊĞí±ê¼Ç´íÎó%d",code);
+			log_w("bDcacTask:DCACæ¨¡å—æœªåˆå§‹åŒ–å®Œæˆï¼Œä¸å…è®¸æ ‡è®°é”™è¯¯%d",code);
         return false;
     }
 	
-	//µÚÒ»´ÎÁ¬½Ó
+	//ç¬¬ä¸€æ¬¡è¿æ¥
 	if(code == DEC_SYS_DEV_LOST)
 	{
 		if(set == false && tDcac.uErrCode.tCode.bSysDevLost == 0)
@@ -323,45 +323,45 @@ bool bDcac_SetErrCode(DCAC_ErrCode_E code, bool set)
 		}
 	}
 	
-	//±ê¼Ç´íÎó×´Ì¬
+	//æ ‡è®°é”™è¯¯çŠ¶æ€
 	if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
 	{
 		if(e_next_code != code || b_next_set != set)
 		{
-			log_e("bDcacTask:ÈÎÎñ´íÎó ´úÂë%d ÀàĞÍ%d",code, set);
+			log_e("bDcacTask:ä»»åŠ¡é”™è¯¯ ä»£ç %d ç±»å‹%d",code, set);
 			e_next_code = code;
 			b_next_set = set;
 		}
 	}	
 	
-	//ÓĞ´íÎó
+	//æœ‰é”™è¯¯
 	if(code > DEC_CLEAR_ALL)
 	{
-		//ÏµÍ³´íÎó:¶ªÊ§
+		//ç³»ç»Ÿé”™è¯¯:ä¸¢å¤±
 		if(code == DEC_SYS_DEV_LOST)
 		{
 			tDcac.uErrCode.ulCode = 0;
 			memset(&tDcacRx, 0, sizeof(tDcacRx));
 
-			//¶ªÊ§
+			//ä¸¢å¤±
 			if(set)
 			{
 				b_dcac_task_param_init();
 				
 				ERR_SET(tDcac.uErrCode.ulCode, (code - 1));
 				if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-					log_e("bDcacTask:DCACÄ£¿é¶ªÊ§");
+					log_e("bDcacTask:DCACæ¨¡å—ä¸¢å¤±");
 				
 				bDcac_SetPerm(DPO_ALL, false);
 			}
-			//ÖØÁ¬
+			//é‡è¿
 			else 
 			{
 				if(tpDcacTask->ucID != DTI_INIT)
-					cQueue_AddQueueTask(tpDcacTask, DTI_INIT, 0, true);   //³õÊ¼»¯tDcac
+					cQueue_AddQueueTask(tpDcacTask, DTI_INIT, 0, true);   //åˆå§‹åŒ–tDcac
 			}
 		}
-		//ÆäËûÏµÍ³´íÎó
+		//å…¶ä»–ç³»ç»Ÿé”™è¯¯
 		else 
 		{
 			if(set)
@@ -371,10 +371,10 @@ bool bDcac_SetErrCode(DCAC_ErrCode_E code, bool set)
 		}
 		
 	}
-	//Çå³ıËùÓĞ´íÎó
+	//æ¸…é™¤æ‰€æœ‰é”™è¯¯
 	else
 	{
-		//Ö®Ç°×´Ì¬ÎªÒì³£,¾Í½øÈë¹Ø±Õ
+		//ä¹‹å‰çŠ¶æ€ä¸ºå¼‚å¸¸,å°±è¿›å…¥å…³é—­
 		tDcac.uErrCode.ulCode = 0;
 		memset(&tDcacRx.uErrCode.tCode, 0, sizeof(tDcacRx.uErrCode.tCode));
 	}
@@ -382,9 +382,9 @@ bool bDcac_SetErrCode(DCAC_ErrCode_E code, bool set)
 	if(tDcac.uErrCode.ulCode)
 	{
 		// bBuz_Tweet(LONG_3);
-		cQueue_AddQueueTask(tp_task, DTI_ERR_PROC, code,false);//¹Ø±ÕÄæ±ä
+		cQueue_AddQueueTask(tp_task, DTI_ERR_PROC, code,false);//å…³é—­é€†å˜
 		if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-				log_e("bDcacTask:Ìí¼Ó´íÎó´¦ÀíÈÎÎñ ´úÂë0x%x",tDcac.uErrCode.ulCode);
+				log_e("bDcacTask:æ·»åŠ é”™è¯¯å¤„ç†ä»»åŠ¡ ä»£ç 0x%x",tDcac.uErrCode.ulCode);
 	}
 	else
 	{
@@ -392,14 +392,14 @@ bool bDcac_SetErrCode(DCAC_ErrCode_E code, bool set)
 		{
 			bDcac_SetAcState(OO_CHG, IOS_SHUT_DOWN);
 			if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-				log_i("bDcacTask:´íÎóÇå¿Õ,Çå³ıÊäÈë±£»¤");
+				log_i("bDcacTask:é”™è¯¯æ¸…ç©º,æ¸…é™¤è¾“å…¥ä¿æŠ¤");
 		}
 		
 		if(tDcac.eDisChgState == IOS_ERR)
 		{
 			bDcac_SetAcState(OO_DISCHG, IOS_SHUT_DOWN);
 			if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-				log_i("bDcacTask:´íÎóÇå¿Õ,Çå³ıÊä³ö±£»¤");
+				log_i("bDcacTask:é”™è¯¯æ¸…ç©º,æ¸…é™¤è¾“å‡ºä¿æŠ¤");
 		}
 	}
 	return false;
@@ -408,23 +408,23 @@ bool bDcac_SetErrCode(DCAC_ErrCode_E code, bool set)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´¦Àí½ÓÊÕµ½µÄÊı¾İ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı
-        typeÀàĞÍ:DSO_AC_OUT=0,  //¿ªÆôÊä³ö
-				 DSO_AC_IN,    //¿ªÆô³äµç
-				 DSO_OFF_ALL,     //¹Ø±ÕËùÓĞ
-          swÀàĞÍ:ST_NULL=0, //½øĞĞÈ¡·´
+-----å‡½æ•°åŠŸèƒ½    å¤„ç†æ¥æ”¶åˆ°çš„æ•°æ®
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°
+        typeç±»å‹:DSO_AC_OUT=0,  //å¼€å¯è¾“å‡º
+				 DSO_AC_IN,    //å¼€å¯å……ç”µ
+				 DSO_OFF_ALL,     //å…³é—­æ‰€æœ‰
+          swç±»å‹:ST_NULL=0, //è¿›è¡Œå–å
 				 ST_ON,
 				 ST_OFF,
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      Ğ¡ÓÚ0:ÓĞ´íÎó   µÈÓÚ0:Ã»²Ù×÷    ´óÓÚ0:²Ù×÷³É¹¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      å°äº0:æœ‰é”™è¯¯   ç­‰äº0:æ²¡æ“ä½œ    å¤§äº0:æ“ä½œæˆåŠŸ
 ************************************************************************************************************************/
 s8 cDCAC_Switch(DACD_SwitchObject_E obj, SwitchType_E sw,bool buz_en)
 {
 	TaskInParam_U u_param;
 
-	//ÒªÇó´ò¿ªÊ±ºò,Éè±¸´¦ÓÚ¶ªÊ§
+	//è¦æ±‚æ‰“å¼€æ—¶å€™,è®¾å¤‡å¤„äºä¸¢å¤±
     if(tDcac.eDevState == DS_LOST)                            
     {    
         // bBuz_Tweet(LONG_2);
@@ -435,23 +435,23 @@ s8 cDCAC_Switch(DACD_SwitchObject_E obj, SwitchType_E sw,bool buz_en)
 		#endif
 		
 		if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-			log_w("bDcacTask:¿ª¹ØÊ§°Ü,DCACÄ£¿é¶ªÊ§");
+			log_w("bDcacTask:å¼€å…³å¤±è´¥,DCACæ¨¡å—ä¸¢å¤±");
 		
         return -1;
     }
 	
-	//¹Ø±ÕËùÓĞ
+	//å…³é—­æ‰€æœ‰
 	if(obj == DSO_OFF_ALL)
 	{
 		// bBuz_Tweet(LONG_1);
-		cQueue_AddQueueTask(tpDcacTask, DTI_CTRL_SW, ST_OFF,false);//¹Ø±ÕÊä³ö
+		cQueue_AddQueueTask(tpDcacTask, DTI_CTRL_SW, ST_OFF,false);//å…³é—­è¾“å‡º
 		
 		if(uPrint.tFlag.bDcacTask)
-			sMyPrint("bDcacTask:Ìí¼Ó¹Ø±ÕËùÓĞÈÎÎñr\n");
+			sMyPrint("bDcacTask:æ·»åŠ å…³é—­æ‰€æœ‰ä»»åŠ¡r\n");
 		return 1;
 	}	
 	
-	//µ¥¶À¿ØÖÆ
+	//å•ç‹¬æ§åˆ¶
 	switch(sw)
 	{
 		case ST_ON:
@@ -475,18 +475,18 @@ s8 cDCAC_Switch(DACD_SwitchObject_E obj, SwitchType_E sw,bool buz_en)
 		{	
 			if(obj == DSO_AC_OUT)
 			{
-				//´íÎó,Æô¶¯ÖĞ,¹¤×÷×´Ì¬ÏÂ,ÔòÖ´ĞĞ¹Ø±Õ
+				//é”™è¯¯,å¯åŠ¨ä¸­,å·¥ä½œçŠ¶æ€ä¸‹,åˆ™æ‰§è¡Œå…³é—­
 				if(tDcac.eDisChgState >= IOS_ERR) 
 				{
 					Loop2:
 					// bBuz_Tweet(LONG_1);
-					bSys_SetAutoOffTime(tAppMemParam.tSYS.usAutoOffTime);   //ÉèÖÃÏµÍ³¹Ø±ÕÊ±¼ä
+					bSys_SetAutoOffTime(tAppMemParam.tSYS.usAutoOffTime);   //è®¾ç½®ç³»ç»Ÿå…³é—­æ—¶é—´
 					u_param.tTaskParam.ucParam = ST_OFF;
 					
 					if(uPrint.tFlag.bDcacTask)
-						sMyPrint("bDcacTask:----Ìí¼Ó¹Ø±ÕÄæ±äÈÎÎñ----\r\n");
+						sMyPrint("bDcacTask:----æ·»åŠ å…³é—­é€†å˜ä»»åŠ¡----\r\n");
 				}
-				//Ö´ĞĞ¿ªÆô
+				//æ‰§è¡Œå¼€å¯
 				else
 				{
 					Loop1:
@@ -494,7 +494,7 @@ s8 cDCAC_Switch(DACD_SwitchObject_E obj, SwitchType_E sw,bool buz_en)
 					{
 						// bBuz_Tweet(SHORT_2);
 						if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-							log_w("bDcacTask:²»ÔÊĞí¿ªÆô·Åµç");
+							log_w("bDcacTask:ä¸å…è®¸å¼€å¯æ”¾ç”µ");
 						return -2;
 					}
 					
@@ -503,11 +503,11 @@ s8 cDCAC_Switch(DACD_SwitchObject_E obj, SwitchType_E sw,bool buz_en)
 					u_param.tTaskParam.ucParam = ST_ON;
 					
 					if(uPrint.tFlag.bDcacTask)
-						sMyPrint("bDcacTask:----Ìí¼Ó¿ªÆôÄæ±äÈÎÎñ----\r\n");
+						sMyPrint("bDcacTask:----æ·»åŠ å¼€å¯é€†å˜ä»»åŠ¡----\r\n");
 				}
 
 				u_param.tTaskParam.ucObj = 3;
-				cQueue_AddQueueTask(tpDcacTask, DTI_CTRL_SW, u_param.usTaskInParam, false);//¿ª¹ØÄæ±ä
+				cQueue_AddQueueTask(tpDcacTask, DTI_CTRL_SW, u_param.usTaskInParam, false);//å¼€å…³é€†å˜
 			}
 			break;
 		}
@@ -525,27 +525,27 @@ s8 cDCAC_Switch(DACD_SwitchObject_E obj, SwitchType_E sw,bool buz_en)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÎŞÊä³öÊ±,×Ô¶¯¹Ø±Õµ¹¼ÆÊ± 
------ËµÃ÷(±¸×¢)  ·ÅÔÚ¶¨Ê±Æ÷ÖĞ
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æ— è¾“å‡ºæ—¶,è‡ªåŠ¨å…³é—­å€’è®¡æ—¶ 
+-----è¯´æ˜(å¤‡æ³¨)  æ”¾åœ¨å®šæ—¶å™¨ä¸­
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vDcac_TickTimer(void)
 {
-	//·Ç¹¤×÷×´Ì¬ÏÂÍË³ö
+	//éå·¥ä½œçŠ¶æ€ä¸‹é€€å‡º
 	if(bSys_IsWorkState() ==false) 
 		return;
 	
-	//Äæ±ä·Ç¹¤×÷×´Ì¬ÏÂÍË³ö
+	//é€†å˜éå·¥ä½œçŠ¶æ€ä¸‹é€€å‡º
 	if(tDcac.eDisChgState <= IOS_STARTING)
 		return;
 	
-	//³äµç×´Ì¬ÏÂÍË³ö
+	//å……ç”µçŠ¶æ€ä¸‹é€€å‡º
 	if(tDcac.eChgState >= IOS_STARTING)
 		return;
 	
-	//----×Ô¶¯¹Ø±ÕÄæ±äÆ÷Êä³ö---------------------------------------
+	//----è‡ªåŠ¨å…³é—­é€†å˜å™¨è¾“å‡º---------------------------------------
 	if(tDcac.usAutoOffTime)
 	{
 		if(tDcac.usAutoOffCnt) 
@@ -555,10 +555,10 @@ void vDcac_TickTimer(void)
 			if(tDcac.usAutoOffCnt == 0)
 			{
 				// bBuz_Tweet(LONG_1);
-				cDCAC_Switch(DSO_AC_OUT, ST_OFF, true);  //¹Ø±ÕÄæ±äÊä³ö
+				cDCAC_Switch(DSO_AC_OUT, ST_OFF, true);  //å…³é—­é€†å˜è¾“å‡º
 				cSys_Switch(SO_DCAC, ST_OFF, false);
 				if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-					sMyPrint("Dcac_Task:====µ¹¼ÆÊ±½áÊø,½øÈë¹Ø»ú  Ê±¼ä=%dS====\r\n",tDcac.usAutoOffTime);
+					sMyPrint("Dcac_Task:====å€’è®¡æ—¶ç»“æŸ,è¿›å…¥å…³æœº  æ—¶é—´=%dS====\r\n",tDcac.usAutoOffTime);
 			}
 		}
 	}   
@@ -566,32 +566,32 @@ void vDcac_TickTimer(void)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    Ë¢ĞÂÄæ±äÆ÷¹Ø±Õµ¹Êı¼ÆÊ±
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    åˆ·æ–°é€†å˜å™¨å…³é—­å€’æ•°è®¡æ—¶
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vDcac_RefreshOffTime(void)
 {
 	if(tDcac.usAutoOffTime)
 	{
-		tDcac.usAutoOffCnt = tDcac.usAutoOffTime;  //¸üĞÂÊ±¼ä
+		tDcac.usAutoOffCnt = tDcac.usAutoOffTime;  //æ›´æ–°æ—¶é—´
 	}
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÊäÈë±£»¤¹¦ÄÜ¿ª¹Ø
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:²Ù×÷³É¹¦  false:²Ù×÷²»³É¹¦
+-----å‡½æ•°åŠŸèƒ½    è¾“å…¥ä¿æŠ¤åŠŸèƒ½å¼€å…³
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ“ä½œæˆåŠŸ  false:æ“ä½œä¸æˆåŠŸ
 ************************************************************************************************************************/
 bool bDcac_InProteFuncSwitch(bool sw)
 {
 	if(sw)
 	{
-		//¹¤×÷×´Ì¬ÏÂ,ÔÊĞí±ê¼Ç
+		//å·¥ä½œçŠ¶æ€ä¸‹,å…è®¸æ ‡è®°
 		if(tDcac.eChgState >= IOS_STARTING)
 		{
 			bDcac_SetErrCode(DEC_SYS_SET_IN_PROTE,true);
@@ -606,11 +606,11 @@ bool bDcac_InProteFuncSwitch(bool sw)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ×Ô¶¯¹Ø±Õ¹¦ÄÜ¿ª¹Ø
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:²Ù×÷³É¹¦  false:²Ù×÷²»³É¹¦
+-----å‡½æ•°åŠŸèƒ½    è‡ªåŠ¨å…³é—­åŠŸèƒ½å¼€å…³
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ“ä½œæˆåŠŸ  false:æ“ä½œä¸æˆåŠŸ
 ************************************************************************************************************************/
 bool bDcac_SetAutoOffTime(u16 time)
 {
@@ -621,11 +621,11 @@ bool bDcac_SetAutoOffTime(u16 time)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    »ñÈ¡¹ıÔØ×´Ì¬
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:¹ıÔØ  false:²»¹ıÔØ
+-----å‡½æ•°åŠŸèƒ½    è·å–è¿‡è½½çŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:è¿‡è½½  false:ä¸è¿‡è½½
 ************************************************************************************************************************/
 bool bDcac_GetOverLoadState(void)
 {
@@ -641,11 +641,11 @@ bool bDcac_GetOverLoadState(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃ³ä·ÅµçĞí¿É
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:ÉèÖÃ³É¹¦  ·´Ö®Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®å……æ”¾ç”µè®¸å¯
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:è®¾ç½®æˆåŠŸ  åä¹‹å¤±è´¥
 ******************************************************************************************************************/
 bool bDcac_SetPerm(DcacPermObject_E obj, bool en)
 {
@@ -653,11 +653,11 @@ bool bDcac_SetPerm(DcacPermObject_E obj, bool en)
 	{
 		case DPO_CHG:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tDcac.uPerm.tPerm.bChgPerm)
 			{
 				if(uPrint.tFlag.bDcacTask)
-					sMyPrint("bDcacTask:ÉèÖÃ³äµçĞí¿É: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tDcac.uPerm.tPerm.bChgPerm);
+					sMyPrint("bDcacTask:è®¾ç½®å……ç”µè®¸å¯: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tDcac.uPerm.tPerm.bChgPerm);
 				
 				tDcac.uPerm.tPerm.bChgPerm = en;
 			}
@@ -666,19 +666,19 @@ bool bDcac_SetPerm(DcacPermObject_E obj, bool en)
 		
 		case DPO_DISCHG:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tDcac.uPerm.tPerm.bDisChgPerm)
 			{
-				//²»ÔÊĞí³äµç
+				//ä¸å…è®¸å……ç”µ
 				if(en == false)
 				{
-					//AC³äµçÎ´¹Ø±Õ
+					//ACå……ç”µæœªå…³é—­
 					if(tDcac.eDisChgState >= IOS_STARTING)
 						cDCAC_Switch(DSO_AC_OUT,ST_OFF, true);
 				}
 				
 				if(uPrint.tFlag.bDcacTask)
-					sMyPrint("bDcacTask:ÉèÖÃ·ÅµçĞí¿É: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tDcac.uPerm.tPerm.bDisChgPerm);
+					sMyPrint("bDcacTask:è®¾ç½®æ”¾ç”µè®¸å¯: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tDcac.uPerm.tPerm.bDisChgPerm);
 				
 				tDcac.uPerm.tPerm.bDisChgPerm = en;
 			}
@@ -687,11 +687,11 @@ bool bDcac_SetPerm(DcacPermObject_E obj, bool en)
 		
 		case DPO_PARA_IN:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tDcac.uPerm.tPerm.bParaInPerm)
 			{
 				if(uPrint.tFlag.bDcacTask)
-					sMyPrint("bDcacTask:ÉèÖÃ²¢ÍøĞí¿É: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tDcac.uPerm.tPerm.bParaInPerm);
+					sMyPrint("bDcacTask:è®¾ç½®å¹¶ç½‘è®¸å¯: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tDcac.uPerm.tPerm.bParaInPerm);
 				
 				tDcac.uPerm.tPerm.bParaInPerm = en;
 			}
@@ -700,37 +700,37 @@ bool bDcac_SetPerm(DcacPermObject_E obj, bool en)
 		
 		case DPO_ALL:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tDcac.uPerm.tPerm.bChgPerm)
 			{
 				if(uPrint.tFlag.bDcacTask)
-					sMyPrint("bDcacTask:ÉèÖÃ³äµçĞí¿É: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tDcac.uPerm.tPerm.bChgPerm);
+					sMyPrint("bDcacTask:è®¾ç½®å……ç”µè®¸å¯: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tDcac.uPerm.tPerm.bChgPerm);
 				
 				tDcac.uPerm.tPerm.bChgPerm = en;
 			}
 			
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tDcac.uPerm.tPerm.bDisChgPerm)
 			{
-				//²»ÔÊĞí³äµç
+				//ä¸å…è®¸å……ç”µ
 				if(en == false)
 				{
-					//AC³äµçÎ´¹Ø±Õ
+					//ACå……ç”µæœªå…³é—­
 					if(tDcac.eDisChgState >= IOS_STARTING)
 						cDCAC_Switch(DSO_AC_OUT,ST_OFF, true);
 				}
 				
 				if(uPrint.tFlag.bDcacTask)
-					sMyPrint("bDcacTask:ÉèÖÃ·ÅµçĞí¿É: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tDcac.uPerm.tPerm.bDisChgPerm);
+					sMyPrint("bDcacTask:è®¾ç½®æ”¾ç”µè®¸å¯: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tDcac.uPerm.tPerm.bDisChgPerm);
 				
 				tDcac.uPerm.tPerm.bDisChgPerm = en;
 			}
 			
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tDcac.uPerm.tPerm.bParaInPerm)
 			{
 				if(uPrint.tFlag.bDcacTask)
-					sMyPrint("bDcacTask:ÉèÖÃ²¢ÍøĞí¿É: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tDcac.uPerm.tPerm.bParaInPerm);
+					sMyPrint("bDcacTask:è®¾ç½®å¹¶ç½‘è®¸å¯: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tDcac.uPerm.tPerm.bParaInPerm);
 				
 				tDcac.uPerm.tPerm.bParaInPerm = en;
 			}
@@ -744,11 +744,11 @@ bool bDcac_SetPerm(DcacPermObject_E obj, bool en)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ³õÊ¼»¯²ÎÊı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    p_dcac_mem : ¼ÇÒä²ÎÊı½á¹¹Ìå
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:ÉèÖÃ³É¹¦  ·´Ö®Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    åˆå§‹åŒ–å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    p_dcac_mem : è®°å¿†å‚æ•°ç»“æ„ä½“
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:è®¾ç½®æˆåŠŸ  åä¹‹å¤±è´¥
 *****************************************************************************************************************/
 bool bDcac_MemParamInit(DcacMemParam_T* p_dcac_mem)
 {
@@ -769,11 +769,11 @@ bool bDcac_MemParamInit(DcacMemParam_T* p_dcac_mem)
 }	
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃ¼ÇÒä²ÎÊı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    add:true Ôö¼Ó   false:¼õÉÙ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®è®°å¿†å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    add:true å¢åŠ    false:å‡å°‘
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 *****************************************************************************************************************/
 void vDcac_MemParamSet(u8 item, bool add)
 {
@@ -912,15 +912,15 @@ void vDcac_MemParamSet(u8 item, bool add)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¶¯Ì¬µ÷Õû³äµçµçÁ÷
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    curr:µ±Ç°µçÁ÷  0.1A
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:¿ªÊ¼µ÷Õû  ·´Ö®²»µ÷Õû
+-----å‡½æ•°åŠŸèƒ½    åŠ¨æ€è°ƒæ•´å……ç”µç”µæµ
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    curr:å½“å‰ç”µæµ  0.1A
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:å¼€å§‹è°ƒæ•´  åä¹‹ä¸è°ƒæ•´
 *****************************************************************************************************************/
 //bool bDcac_DynAdjustChgCurr(vu16 curr)
 //{
-//	//µçÁ÷¹ıÁ÷
+//	//ç”µæµè¿‡æµ
 //	static vu16  us_adjust_pwr = 0;
 
 //	if(tDcac.eChgState == IOS_WORK)
@@ -930,7 +930,7 @@ void vDcac_MemParamSet(u8 item, bool add)
 //			if(b_dcac_cs_set_chg_pwr(tSysInfo.tSetChgPwr.usDCAC) == false)
 //			{
 //				if(uPrint.tFlag.bDcacRecTask || uPrint.tFlag.bImportant)
-//					log_w("bDcacRecTask:³äµç¹¦ÂÊ¸üĞÂÊ§°Ü");
+//					log_w("bDcacRecTask:å……ç”µåŠŸç‡æ›´æ–°å¤±è´¥");
 //				return false;
 //			}
 //			us_adjust_pwr = tSysInfo.tSetChgPwr.usDCAC;

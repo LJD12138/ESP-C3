@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         PD100WÈÎÎñ                                                           *
+ *                                         PD100Wä»»åŠ¡                                                           *
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "UsbDevice/usb_task.h"
@@ -14,33 +14,33 @@
 #include "app_info.h"
 
 
-//****************************************************ÈÎÎñ³õÊ¼»¯**************************************************//
+//****************************************************ä»»åŠ¡åˆå§‹åŒ–**************************************************//
 #if(boardUSE_OS)
-#define        	USB_TASK_PRIO                 			1   	//ÈÎÎñÓÅÏÈ¼¶ 
-#define        	USB_TASK_SIZE                 			4096   	//ÈÎÎñ¶ÑÕ»  Êµ¼Ê×Ö½ÚÊı *4
+#define        	USB_TASK_PRIO                 			1   	//ä»»åŠ¡ä¼˜å…ˆçº§ 
+#define        	USB_TASK_SIZE                 			4096   	//ä»»åŠ¡å †æ ˆ  å®é™…å­—èŠ‚æ•° *4
 TaskHandle_t    tUsbTaskHandler = NULL; 
 void           	vUsb_Task(void *pvParameters);
 #endif  //boardUSE_OS
 
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************//
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
 __ALIGNED(4) Usb_T tUsb;
 static Task_T *tp_task = NULL;
 
 UsbDev_T tUsbDev; 
 
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 static bool b_task_param_init(void);
 static void v_usb_check_prote(void);
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ²ÎÊı³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    å‚æ•°åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 static bool b_task_param_init(void )
 {
@@ -58,11 +58,11 @@ static bool b_task_param_init(void )
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÏµÍ³ÈÎÎñ³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç³»ç»Ÿä»»åŠ¡åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 bool bUsb_TaskInit(void)
 {
@@ -75,12 +75,12 @@ bool bUsb_TaskInit(void)
 		return false;
 	
 	#if(boardUSE_OS)
-    xTaskCreate((TaskFunction_t )vUsb_Task,				//ÈÎÎñº¯Êı
-                (const char* )"UsbTask",				//ÈÎÎñÃû³Æ
-                (uint16_t ) USB_TASK_SIZE,				//ÈÎÎñ¶ÑÕ»´óĞ¡
-                (void* )NULL,							//´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                (UBaseType_t ) USB_TASK_PRIO,			//ÈÎÎñÓÅÏÈ¼¶
-                (TaskHandle_t*)&tUsbTaskHandler);		//ÈÎÎñ¾ä±ú
+    xTaskCreate((TaskFunction_t )vUsb_Task,				//ä»»åŠ¡å‡½æ•°
+                (const char* )"UsbTask",				//ä»»åŠ¡åç§°
+                (uint16_t ) USB_TASK_SIZE,				//ä»»åŠ¡å †æ ˆå¤§å°
+                (void* )NULL,							//ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                (UBaseType_t ) USB_TASK_PRIO,			//ä»»åŠ¡ä¼˜å…ˆçº§
+                (TaskHandle_t*)&tUsbTaskHandler);		//ä»»åŠ¡å¥æŸ„
 	#endif  //boardUSE_OS
 	return true;
 }
@@ -90,11 +90,11 @@ bool bUsb_TaskInit(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    USBÈÎÎñ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    valueµ¥Î»ÊÇW
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    USBä»»åŠ¡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    valueå•ä½æ˜¯W
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void vUsb_Task(void *pvParameters)
 {
@@ -122,7 +122,7 @@ void vUsb_Task(void *pvParameters)
 		{
 			#if(boardUSE_OS)
 			if(lwrb_get_full(&tp_task->tQueueBuff) == 0)
-				ulTaskNotifyTake(pdFALSE, usbTASK_CYCLE_TIME);//pdFALSE:ÈÎÎñÍ¨Öª¶àÉÙ´Î¾ÍÖ´ĞĞ¶àÉÙ´Î
+				ulTaskNotifyTake(pdFALSE, usbTASK_CYCLE_TIME);//pdFALSE:ä»»åŠ¡é€šçŸ¥å¤šå°‘æ¬¡å°±æ‰§è¡Œå¤šå°‘æ¬¡
 			#endif  //boardUSE_OS
 			
 			if(tp_task->bp_task_manage_func != NULL)
@@ -147,23 +147,23 @@ void vUsb_Task(void *pvParameters)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ±£»¤´¦Àí
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä¿æŠ¤å¤„ç†
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 static void v_usb_check_prote(void)
 {
 	static u8 uc_pwr_err_cnt = 0;
 	static u8 uc_over_temp_cnt = 0;
 
-	//¹Ø±ÕUSB
+	//å…³é—­USB
 	if(tSysInfo.uPerm.tPerm.bDisChgPerm == false || 
 		tSysInfo.eDevState == DS_CLOSING || 
 		tSysInfo.eDevState == DS_SHUT_DOWN)
 	{
-		//USB´¦ÓÚ¿ª»ú
+		//USBå¤„äºå¼€æœº
 		if(tUsb.eDevState >= DS_BOOTING)  
 			cUsb_Switch(ST_OFF, true);
 	}
@@ -171,7 +171,7 @@ static void v_usb_check_prote(void)
 	if(tUsb.eDevState != DS_WORK && tUsb.eDevState != DS_ERR)
 		return;
 
-	//µçÔ´´íÎó¼ì²é
+	//ç”µæºé”™è¯¯æ£€æŸ¥
 	if(cUsb_CheckInVolt() != 0)
 	{
 		if(tUsb.uErrCode.tCode.bPowerErr == 0)
@@ -180,7 +180,7 @@ static void v_usb_check_prote(void)
 			if(uc_pwr_err_cnt >= 10)
 			{
 				uc_pwr_err_cnt = 0;
-				bUsb_SetErrCode(UEC_POWER_ERR,true); //ÉèÖÃ´íÎó
+				bUsb_SetErrCode(UEC_POWER_ERR,true); //è®¾ç½®é”™è¯¯
 			}
 		}
 		else 
@@ -194,14 +194,14 @@ static void v_usb_check_prote(void)
 			if(uc_pwr_err_cnt >= 5)
 			{
 				uc_pwr_err_cnt = 0;
-				bUsb_SetErrCode(UEC_POWER_ERR,false); //Çå³ı´íÎó
+				bUsb_SetErrCode(UEC_POWER_ERR,false); //æ¸…é™¤é”™è¯¯
 			}
 		}
 		else 
 			uc_pwr_err_cnt = 0;
 	}
 	
-	//ÎÂ¶È¼ì²é
+	//æ¸©åº¦æ£€æŸ¥
 	if(tUsb.sMaxTemp > tAppMemParam.tUSB.sMaxTemp)
 	{
 		if(tUsb.uErrCode.tCode.bOT == 0)
@@ -210,7 +210,7 @@ static void v_usb_check_prote(void)
 			if(uc_over_temp_cnt >= 5)
 			{
 				uc_over_temp_cnt = 0;
-				bUsb_SetErrCode(UEC_OT,true);  //ÉèÖÃ´íÎó
+				bUsb_SetErrCode(UEC_OT,true);  //è®¾ç½®é”™è¯¯
 			}
 		}
 		else 
@@ -218,7 +218,7 @@ static void v_usb_check_prote(void)
 			uc_over_temp_cnt = 0;
 		}
 	}
-	//Ïà²î10ÉãÊÏ¶ÈÔò¿ªÊ¼ÍË³ö¸ßÎÂ±¨¾¯
+	//ç›¸å·®10æ‘„æ°åº¦åˆ™å¼€å§‹é€€å‡ºé«˜æ¸©æŠ¥è­¦
 	else  if(tUsb.sMaxTemp < (tAppMemParam.tUSB.sMaxTemp - 10))
 	{
 		if(tUsb.uErrCode.tCode.bOT == 1)
@@ -227,7 +227,7 @@ static void v_usb_check_prote(void)
 			if(uc_over_temp_cnt >= 5)
 			{
 				uc_over_temp_cnt = 0;
-				bUsb_SetErrCode(UEC_OT,false);   //Çå³ı´íÎó
+				bUsb_SetErrCode(UEC_OT,false);   //æ¸…é™¤é”™è¯¯
 			}
 		}
 		else 
@@ -238,13 +238,13 @@ static void v_usb_check_prote(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¿ì³ä¿ª¹Ø
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    UST_NULL=0,//½øĞĞÈ¡·´
+-----å‡½æ•°åŠŸèƒ½    å¿«å……å¼€å…³
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    UST_NULL=0,//è¿›è¡Œå–å
 				 ST_ON,
 				 ST_OFF,
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 s8 cUsb_Switch(SwitchType_E Tri_Type, bool fore_en)
 {
@@ -257,7 +257,7 @@ s8 cUsb_Switch(SwitchType_E Tri_Type, bool fore_en)
 				fore_en == false)
 			{
 				if(uPrint.tFlag.bUsbTask)
-					sMyPrint("bUsbTask:µ±Ç°×´Ì¬Îª¹¤×÷,²»ÔÊĞí¿ª»ú\r\n");
+					sMyPrint("bUsbTask:å½“å‰çŠ¶æ€ä¸ºå·¥ä½œ,ä¸å…è®¸å¼€æœº\r\n");
 				 
 				return 0;
 			}
@@ -272,7 +272,7 @@ s8 cUsb_Switch(SwitchType_E Tri_Type, bool fore_en)
 				fore_en == false)
 			{
 				if(uPrint.tFlag.bUsbTask)
-					sMyPrint("bUsbTask:µ±Ç°×´Ì¬Îª¹Ø±Õ,²»ÔÊĞí¹Ø»ú\r\n");
+					sMyPrint("bUsbTask:å½“å‰çŠ¶æ€ä¸ºå…³é—­,ä¸å…è®¸å…³æœº\r\n");
 				 
 				return 0;
 			}
@@ -290,17 +290,17 @@ s8 cUsb_Switch(SwitchType_E Tri_Type, bool fore_en)
 					// bBuz_Tweet(SHORT_2);
 					
 					if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-						log_w("bUsbTask:ÏµÍ³²»ÔÊĞí¿ªÆô·Åµç");
+						log_w("bUsbTask:ç³»ç»Ÿä¸å…è®¸å¼€å¯æ”¾ç”µ");
 					
 					return -1;
 				}
 
-				// if(cUsb_CheckBatVolt() <= 0)  //µç³ØµçÑ¹Òì³£
+				// if(cUsb_CheckBatVolt() <= 0)  //ç”µæ± ç”µå‹å¼‚å¸¸
 				// {
 				// 	bUsb_SetErrCode(UEC_BAT_VOLT_LOW,true);
 					
 				// 	if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-				// 		log_w("bUsbTask:µç³ØµçÑ¹¹ıµÍ %.2fV",tAdcSamp.usSysInVolt / 10.0f);
+				// 		log_w("bUsbTask:ç”µæ± ç”µå‹è¿‡ä½ %.2fV",tAdcSamp.usSysInVolt / 10.0f);
 					
 				// 	return -2;
 				// } 
@@ -311,7 +311,7 @@ s8 cUsb_Switch(SwitchType_E Tri_Type, bool fore_en)
 
 				cQueue_AddQueueTask(tpUsbTask, UTI_BOOTING, 0, fore_en);
 			}
-			else                       //ÆäËûÇé¿ö¶¼ÊÇ¹Ø±Õ
+			else                       //å…¶ä»–æƒ…å†µéƒ½æ˜¯å…³é—­
 			{
 				LoopOff:
 				// bBuz_Tweet(LONG_1);
@@ -323,7 +323,7 @@ s8 cUsb_Switch(SwitchType_E Tri_Type, bool fore_en)
 			}
 
 			#if(boardUSE_OS)
-			xTaskNotifyGive(tUsbTaskHandler); //·¢Í¨Öª
+			xTaskNotifyGive(tUsbTaskHandler); //å‘é€šçŸ¥
 			#endif  //boardUSE_OS
 		}
 		break;
@@ -337,22 +337,22 @@ s8 cUsb_Switch(SwitchType_E Tri_Type, bool fore_en)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¿ì³ä¹¤×÷×´Ì¬ÉèÖÃ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    
+-----å‡½æ•°åŠŸèƒ½    å¿«å……å·¥ä½œçŠ¶æ€è®¾ç½®
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    
 				 DS_CLOSING = 0,
 				 DS_SHUT_DOWN,
 				 DS_ERR,
 				 DS_BOOTING,
 				 DS_WORK,
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void bUsb_SetDevState(DevState_E stat)
 {
     tUsb.eDevState = stat;
 	
-	//Æô¶¯ºÍ¹Ø±Õ¶¼Çå³ıÒ»´Î´íÎó
+	//å¯åŠ¨å’Œå…³é—­éƒ½æ¸…é™¤ä¸€æ¬¡é”™è¯¯
 	if(stat == DS_BOOTING)
 		usbPOWER_EN_ON();
 	// else if(stat == DS_CLOSING)
@@ -362,16 +362,16 @@ void bUsb_SetDevState(DevState_E stat)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃ´íÎó×´Ì¬ÉèÖÃ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    code:´íÎóÎ»   set:ÉèÖÃ,·´Ö®Çå³ı
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®é”™è¯¯çŠ¶æ€è®¾ç½®
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    code:é”™è¯¯ä½   set:è®¾ç½®,åä¹‹æ¸…é™¤
 				 UEC_CLEAR_ALL = 0,
 				 UEC_POWER_ERR,
 				 UEC_OVERTEMP,
 				 UEC_OVERLOAD,
 				 UEC_SW3518_LOST,
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void bUsb_SetErrCode(UsbErrCode_E code, bool set)
 {
@@ -382,7 +382,7 @@ void bUsb_SetErrCode(UsbErrCode_E code, bool set)
 	{
 		if(e_next_code != code || b_next_set != set)
 		{
-			log_e("bUsbTask:ÈÎÎñ´íÎó ´úÂë%d ÀàĞÍ%d",code,set);
+			log_e("bUsbTask:ä»»åŠ¡é”™è¯¯ ä»£ç %d ç±»å‹%d",code,set);
 			e_next_code = code;
 			b_next_set = set;
 		}
@@ -415,23 +415,23 @@ void bUsb_SetErrCode(UsbErrCode_E code, bool set)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ×Ô¶¯¹Ø±Õ¼ÆÊ±
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è‡ªåŠ¨å…³é—­è®¡æ—¶
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vUsb_TickTimer(void) 
 {
-	//·Ç¹¤×÷×´Ì¬ÏÂÍË³ö
+	//éå·¥ä½œçŠ¶æ€ä¸‹é€€å‡º
 	if(bSys_IsWorkState() == false) 
 		return;
 	
-	//·Ç¹¤×÷Ä£Ê½²»¼ÆÊ±
+	//éå·¥ä½œæ¨¡å¼ä¸è®¡æ—¶
 	if(tUsb.eDevState != DS_WORK)
 		return;
 	
-	//-----×Ô¶¯¹Ø±Õ--------------------------------------   
+	//-----è‡ªåŠ¨å…³é—­--------------------------------------   
 	if(tUsb.usAutoOffTime)
 	{
 		if(tUsb.usAutoOffCnt)
@@ -443,7 +443,7 @@ void vUsb_TickTimer(void)
 				cUsb_Switch(ST_OFF, false);
 				
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					sMyPrint("bUsbTask:µ¹¼ÆÊ±½áÊø,¹Ø±ÕUSB  Ê±¼ä=%dS\r\n",tUsb.usAutoOffTime);
+					sMyPrint("bUsbTask:å€’è®¡æ—¶ç»“æŸ,å…³é—­USB  æ—¶é—´=%dS\r\n",tUsb.usAutoOffTime);
 			}
 		}
 	}
@@ -451,11 +451,11 @@ void vUsb_TickTimer(void)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    Ë¢ĞÂ¹Ø±ÕÊ±¼ä
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    åˆ·æ–°å…³é—­æ—¶é—´
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vUsb_RefreshOffTime(void) 
 {  
@@ -468,11 +468,11 @@ void vUsb_RefreshOffTime(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ³õÊ¼»¯²ÎÊı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    p_lcd_mem : lcd¼ÇÒä²ÎÊı½á¹¹Ìå
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:ÉèÖÃ³É¹¦  ·´Ö®Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    åˆå§‹åŒ–å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    p_lcd_mem : lcdè®°å¿†å‚æ•°ç»“æ„ä½“
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:è®¾ç½®æˆåŠŸ  åä¹‹å¤±è´¥
 *****************************************************************************************************************/
 bool bUsb_MemParamInit(UsbMemParam_T* p_usb_mem)
 {
@@ -485,11 +485,11 @@ bool bUsb_MemParamInit(UsbMemParam_T* p_usb_mem)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃ¼ÇÒä²ÎÊı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    add:true Ôö¼Ó   false:¼õÉÙ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®è®°å¿†å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    add:true å¢åŠ    false:å‡å°‘
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 *****************************************************************************************************************/
 void vUsb_MemParamSet(u8 item, bool add)
 {
@@ -555,11 +555,11 @@ void vUsb_MemParamSet(u8 item, bool add)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¼ì²éUSB¹©µç×´Ì¬
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      µçÑ¹×´Ì¬ Ğ¡ÓÚ0;Ç·Ñ¹  0:µçÑ¹Õı³£  1:¹ıÑ¹
+-----å‡½æ•°åŠŸèƒ½    æ£€æŸ¥USBä¾›ç”µçŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      ç”µå‹çŠ¶æ€ å°äº0;æ¬ å‹  0:ç”µå‹æ­£å¸¸  1:è¿‡å‹
 ************************************************************************************************************************/
 s8 cUsb_CheckInVolt(void)
 {
@@ -578,11 +578,11 @@ s8 cUsb_CheckInVolt(void)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¼ì²éUSB¹©µç×´Ì¬
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      µçÑ¹×´Ì¬ Ğ¡ÓÚ0;Ç·Ñ¹  0:µçÑ¹Õı³£  1:¹ıÑ¹
+-----å‡½æ•°åŠŸèƒ½    æ£€æŸ¥USBä¾›ç”µçŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      ç”µå‹çŠ¶æ€ å°äº0;æ¬ å‹  0:ç”µå‹æ­£å¸¸  1:è¿‡å‹
 ************************************************************************************************************************/
 s8 cUsb_CheckBatVolt(void)
 {
@@ -597,11 +597,11 @@ s8 cUsb_CheckBatVolt(void)
 
 #if(boardLOW_POWER)
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ½øÈëµÍ¹¦ºÄ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è¿›å…¥ä½åŠŸè€—
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void vUsb_EnterLowPower(void)
 {
@@ -623,21 +623,21 @@ void vUsb_EnterLowPower(void)
 	rcu_periph_clock_enable(usbIC2_SDA_RCU);
 	gpio_init(usbIC2_SDA_PORT, GPIO_MODE_AIN, GPIO_OSPEED_2MHZ,usbIC2_SDA_PIN);
 	
-	vTaskSuspend(tUsbTaskHandler); //ÔİÍ£ÈÎÎñ
+	vTaskSuspend(tUsbTaskHandler); //æš‚åœä»»åŠ¡
 }
 
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÍË³öµÍ¹¦ºÄ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    é€€å‡ºä½åŠŸè€—
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void vUsb_ExitLowPower(void)
 {
 	v_usb_gpio_init();
-	vTaskResume(tUsbTaskHandler); //»Ö¸´ÈÎÎñ
+	vTaskResume(tUsbTaskHandler); //æ¢å¤ä»»åŠ¡
 }
 #endif

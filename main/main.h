@@ -12,20 +12,20 @@
 #include "board_config.h"
 
 //#define		//4Tab									//10Tab
-#define     	mainINIT_BOOT_PARAM_FLAG     			0x0000000	//³õÊ¼»¯BOOT²ÎÊı
-#define     	mainINIT_FINISH_FLAG        			0x88888888	//ÏµÍ³³õÊ¼»¯Íê³É
-#define     	mainUPDATA_FLAG             			0xAAAAAAAA	//ÉÏÎ»»ú
-#define     	mainDISPLAY_FLAG            			0xAAAABBBB	//ÏÔÊ¾
-#define     	mainLOW_POWER_FLAG          			0xBBBBCCCC	//½øÈëµÍ¹¦ºÄ
-#define     	mainINIT_APP_PARAM_FLAG     			0xEFEFFEFE	//³õÊ¼»¯APP²ÎÊı
+#define     	mainINIT_BOOT_PARAM_FLAG     			0x0000000	//åˆå§‹åŒ–BOOTå‚æ•°
+#define     	mainINIT_FINISH_FLAG        			0x88888888	//ç³»ç»Ÿåˆå§‹åŒ–å®Œæˆ
+#define     	mainUPDATA_FLAG             			0xAAAAAAAA	//ä¸Šä½æœº
+#define     	mainDISPLAY_FLAG            			0xAAAABBBB	//æ˜¾ç¤º
+#define     	mainLOW_POWER_FLAG          			0xBBBBCCCC	//è¿›å…¥ä½åŠŸè€—
+#define     	mainINIT_APP_PARAM_FLAG     			0xEFEFFEFE	//åˆå§‹åŒ–APPå‚æ•°
 
-#define     	RANGE(val, min, max)     				((val < min) ? false : ((val > max) ? false : true))  //ÔÚ·¶Î§ÄÚÎªtrue,°üº¬minºÍmax   
-#define     	RANGE_NO(val, min, max)     			((val < min) ? true  : ((val > max) ? true  : false)) //ÔÚ·¶Î§ÍâÎªtrue
+#define     	RANGE(val, min, max)     				((val < min) ? false : ((val > max) ? false : true))  //åœ¨èŒƒå›´å†…ä¸ºtrue,åŒ…å«minå’Œmax   
+#define     	RANGE_NO(val, min, max)     			((val < min) ? true  : ((val > max) ? true  : false)) //åœ¨èŒƒå›´å¤–ä¸ºtrue
 #define     	LIMIT(X, min, MAX)          			((X) <= (min) ? (min) : ((X) >= (MAX) ? (MAX) : (X)))
 #define     	LIMIT_MAX(X, MAX)           			((X) < (MAX) ? (X) : (MAX))
 #define     	LIMIT_MIN(X, MIN)           			((X) > (MIN) ? (X) : (MIN))
 
-#define     	MSEC(TIME)                  			((TIME) / tickTime)                         //ms×ª³ÉÊµ¼ÊµÄ tickÊ±¼ä
+#define     	MSEC(TIME)                  			((TIME) / tickTime)                         //msè½¬æˆå®é™…çš„ tickæ—¶é—´
 #define     	MAX2(a, b)                  			((a > b) ? a : b)
 #define     	MAX3(a, b, c)               			(a) > (b) ? ((a) > (c) ? (a) : (c)) : ((b) > (c) ? (b) : (c))
 #define     	MIN2(a, b)                  			((a < b) ? a : b)
@@ -58,7 +58,7 @@
 
 #define         __STATIC_INLINE                        static inline
 
-//**********************************ÓĞ·ûºÅ*********************************************************************
+//**********************************æœ‰ç¬¦å·*********************************************************************
 typedef       	int64_t  								s64;
 typedef       	int32_t  								s32;
 typedef       	int16_t  								s16;
@@ -69,7 +69,7 @@ typedef volatile  	int32_t  								vs32;
 typedef volatile  	int16_t  								vs16;
 typedef volatile  	int8_t   								vs8;
 
-//**********************************ÎŞ·ûºÅ*********************************************************************
+//**********************************æ— ç¬¦å·*********************************************************************
 typedef       	uint64_t 								u64;
 typedef       	uint32_t 								u32;
 typedef       	uint16_t 								u16;
@@ -80,85 +80,85 @@ typedef volatile  	uint32_t 								vu32;
 typedef volatile  	uint16_t 								vu16;
 typedef volatile  	uint8_t  								vu8;
 
-//ÏµÍ³ÔËĞĞ×´Ì¬
+//ç³»ç»Ÿè¿è¡ŒçŠ¶æ€
 typedef enum : uint8_t
 {
-	DS_LOST = 0,		// ¶ªÊ§
-	DS_INIT,	       	// ³õÊ¼»¯
-	DS_CLOSING ,       	// ¹Ø±ÕÖĞ
-	DS_SHUT_DOWN,      	// ¹Ø»ú×´Ì¬ 3
-	DS_ERR,            	// ´íÎó×´Ì¬
-    DS_BOOTING,        	// ×°ÔØÖĞ  5
-    DS_WORK,           	// ¹¤×÷×´Ì¬
+	DS_LOST = 0,		// ä¸¢å¤±
+	DS_INIT,	       	// åˆå§‹åŒ–
+	DS_CLOSING ,       	// å…³é—­ä¸­
+	DS_SHUT_DOWN,      	// å…³æœºçŠ¶æ€ 3
+	DS_ERR,            	// é”™è¯¯çŠ¶æ€
+    DS_BOOTING,        	// è£…è½½ä¸­  5
+    DS_WORK,           	// å·¥ä½œçŠ¶æ€
 	#if(boardENG_MODE_EN)
-    DS_ENG_MODE,       // ¹¤³ÌÄ£Ê½ engineering mode
+    DS_ENG_MODE,       // å·¥ç¨‹æ¨¡å¼ engineering mode
     #endif
-	DS_UPDATA_MODE,		// Éı¼¶Ä£Ê½ 
+	DS_UPDATA_MODE,		// å‡çº§æ¨¡å¼ 
 }DevState_E;
 
 
-//¿ª¹ØÀàĞÍ
+//å¼€å…³ç±»å‹
 typedef enum : uint8_t
 {
-	ST_OFF = 0,//½øĞĞÈ¡·´
+	ST_OFF = 0,//è¿›è¡Œå–å
 	ST_ON,
 	ST_NULL,
 }SwitchType_E;
 
-//¿ª¹ØµÄ¶ÔÏó
+//å¼€å…³çš„å¯¹è±¡
 typedef enum : uint8_t
 {
-	SO_KEY=0,  		//°´¼ü
-	SO_CONSOLE,    	//Ãæ°å
-	SO_PARA,     	//²¢»ú
-	SO_DCAC,    	//Äæ±ä³äµç¼¤»î
-	SO_MPPT,    	//MPPT³äµç¼¤»î
+	SO_KEY=0,  		//æŒ‰é”®
+	SO_CONSOLE,    	//é¢æ¿
+	SO_PARA,     	//å¹¶æœº
+	SO_DCAC,    	//é€†å˜å……ç”µæ¿€æ´»
+	SO_MPPT,    	//MPPTå……ç”µæ¿€æ´»
 }SwitchObject_E;
 
-//Ğí¿É
+//è®¸å¯
 #pragma pack(1)
 typedef union
 {
 	struct 
 	{
-		u8 bChgPerm		:1;//³äµçĞí¿É
-		u8 bDisChgPerm	:1;//·ÅµçĞí¿É
-		u8 bForceClose	:1;//Ç¿ÖÆ¹Ø±Õ
+		u8 bChgPerm		:1;//å……ç”µè®¸å¯
+		u8 bDisChgPerm	:1;//æ”¾ç”µè®¸å¯
+		u8 bForceClose	:1;//å¼ºåˆ¶å…³é—­
 		u8 temp			:5;
 	}tPerm;
 	u8 ucPerm;
 }Perm_U;
 #pragma pack()
 
-//²Ù×÷µÄ¶ÔÏó
+//æ“ä½œçš„å¯¹è±¡
 typedef enum : uint8_t
 {
-	OO_CHG=0,  		//³äµç
-	OO_DISCHG,    	//·Åµç
-	OO_ALL,    		//³ä·Åµç
-	OO_PARA_IN,    	//²¢Íø
+	OO_CHG=0,  		//å……ç”µ
+	OO_DISCHG,    	//æ”¾ç”µ
+	OO_ALL,    		//å……æ”¾ç”µ
+	OO_PARA_IN,    	//å¹¶ç½‘
 }OperaObject_E;
 
-//ÊäÈëÊä³ö×´Ì¬
+//è¾“å…¥è¾“å‡ºçŠ¶æ€
 typedef enum : uint8_t
 {
-	IOS_CLOSING=0,  	//¹Ø±ÕÖĞ
-	IOS_SHUT_DOWN,  	//¹Ø±Õ
-	IOS_PROTE,      	//±£»¤  ĞèÒª¹Ø»úÇå³ı
-	IOS_ERR,        	//´íÎó  ¿ÉÒÔÒÆ³ıÊäÈëÇå³ı
-	IOS_STARTING,   	//Æô¶¯ÖĞ
-	IOS_WORK,       	//¹¤×÷
+	IOS_CLOSING=0,  	//å…³é—­ä¸­
+	IOS_SHUT_DOWN,  	//å…³é—­
+	IOS_PROTE,      	//ä¿æŠ¤  éœ€è¦å…³æœºæ¸…é™¤
+	IOS_ERR,        	//é”™è¯¯  å¯ä»¥ç§»é™¤è¾“å…¥æ¸…é™¤
+	IOS_STARTING,   	//å¯åŠ¨ä¸­
+	IOS_WORK,       	//å·¥ä½œ
 }InOutState_E;
 
-//²½Öè
+//æ­¥éª¤
 typedef enum : uint8_t
 {
-	STEP_FORWARD = (u8)0xfd,//ÉÏÒ»²½
-	STEP_NEXT = (u8)0xfe,//ÏÂÒ»²½
-	STEP_END = (u8)0xff,//½áÊø
+	STEP_FORWARD = (u8)0xfd,//ä¸Šä¸€æ­¥
+	STEP_NEXT = (u8)0xfe,//ä¸‹ä¸€æ­¥
+	STEP_END = (u8)0xff,//ç»“æŸ
 }Step_E;
 
-//Ä£¿é¶ÔÏó
+//æ¨¡å—å¯¹è±¡
 typedef enum : uint8_t
 {
 	MO_CONSOLE=0,

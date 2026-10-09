@@ -19,8 +19,8 @@ extern lwrb_t tDcacReplyBuff;
 extern TaskHandle_t tDcacRecTaskHandle;
 #endif  //boardUSE_OS
 
-//*****************************·µ»Ø²ÎÊı*************************************
-#pragma pack (1)   //Ç¿ÖÆ½øĞĞ1×Ö½Ú¶ÔÆë
+//*****************************è¿”å›å‚æ•°*************************************
+#pragma pack (1)   //å¼ºåˆ¶è¿›è¡Œ1å­—èŠ‚å¯¹é½
 typedef struct
 {
 	vu8					ucState;
@@ -29,47 +29,47 @@ typedef struct
 	vu16    			usOutVolt;			//0.1V
 	vu16    			usHighVolt;			//0.1V
 	vu16    			usOutPwr;     		//0.1W
-	vs8     			cTemp1;          	//1¡æ Äæ±äÎÂ¶È
+	vs8     			cTemp1;          	//1â„ƒ é€†å˜æ¸©åº¦
 }DCAC_Param1_t;  
-#pragma pack()   //È¡Ïû½øĞĞ1×Ö½Ú¶Ô
+#pragma pack()   //å–æ¶ˆè¿›è¡Œ1å­—èŠ‚å¯¹
 
 
-//*****************************¹¤×÷×´Ì¬*************************************
+//*****************************å·¥ä½œçŠ¶æ€*************************************
 typedef union
 {
 	struct
 	{								
-		vu16 bInit:1;			//³õÊ¼»¯ÖĞ
-		vu16 bDcMode:1;			//ÊÊÅäÆ÷Ä£Ê½
-		vu16 bPvMode:1;			//Ì«ÑôÄÜÄ£Ê½
-		vu16 bPvOff:1;			//PV¹Ø±Õ
-		vu16 bPvErr:1;			//PV´íÎó
+		vu16 bInit:1;			//åˆå§‹åŒ–ä¸­
+		vu16 bDcMode:1;			//é€‚é…å™¨æ¨¡å¼
+		vu16 bPvMode:1;			//å¤ªé˜³èƒ½æ¨¡å¼
+		vu16 bPvOff:1;			//PVå…³é—­
+		vu16 bPvErr:1;			//PVé”™è¯¯
 		vu16 :3;
 		
-		vu16 bAcDisChg:1;		//³õÊ¼»¯ÖĞ
-		vu16 bAcChg:1;			//ÊÊÅäÆ÷Ä£Ê½
-		vu16 bAcUpf:1;			//Ì«ÑôÄÜÄ£Ê½
-		vu16 bAcErr:1;			//Ì«ÑôÄÜÄ£Ê½
+		vu16 bAcDisChg:1;		//åˆå§‹åŒ–ä¸­
+		vu16 bAcChg:1;			//é€‚é…å™¨æ¨¡å¼
+		vu16 bAcUpf:1;			//å¤ªé˜³èƒ½æ¨¡å¼
+		vu16 bAcErr:1;			//å¤ªé˜³èƒ½æ¨¡å¼
 		vu16 :4;
 	}tState;
 	vu16 usState;   
 }DcacWorkState_U;
 
-//*****************************´íÎó×´Ì¬*************************************
+//*****************************é”™è¯¯çŠ¶æ€*************************************
 typedef union
 {
 	struct
 	{
 		struct
 		{
-			vu16 bIOV:1;		//¹ıÑ¹
-			vu16 bIUV:1;		//Ç·Ñ¹
-			vu16 bOOV:1;		//¹ıÑ¹
-			vu16 bOUV:1;		//Ç·Ñ¹
-			vu16 bOL:1;			//¹ıÔØ
-			vu16 bOT:1;			//¹ıÎÂ
-			vu16 bSC:1;			//¶ÌÂ·
-			vu16 bEnErr:1;		//Ê¹ÄÜ¹ÊÕÏ
+			vu16 bIOV:1;		//è¿‡å‹
+			vu16 bIUV:1;		//æ¬ å‹
+			vu16 bOOV:1;		//è¿‡å‹
+			vu16 bOUV:1;		//æ¬ å‹
+			vu16 bOL:1;			//è¿‡è½½
+			vu16 bOT:1;			//è¿‡æ¸©
+			vu16 bSC:1;			//çŸ­è·¯
+			vu16 bEnErr:1;		//ä½¿èƒ½æ•…éšœ
 			vu16 :8;
 		}tSys;
 
@@ -80,31 +80,31 @@ typedef union
 	vu16 usCode[4];   
 }DcacErrState_U;
 
-//*********************************ÈÎÎñ¶ÔÏó**********************************
+//*********************************ä»»åŠ¡å¯¹è±¡**********************************
 typedef struct
 {
-	//ÊäÈë
+	//è¾“å…¥
 	vu16				usInVolt;     		//0.1V
 	vu16    			usInCurr;			//0.1A
 	vu16    			usInPwr;			//W
 	vu16    			usInChgPwr;			//W
 	vu16    			usInFreq;     		//0.1HZ
-	//Êä³ö
+	//è¾“å‡º
 	vu16    			usOutVolt;    		//0.1V
 	vu16    			usOutCurr;    		//0.1A
 	vu16    			usOutPwr;     		//W
 	vu16    			usOutFreq;    		//0.1HZ
-	//²¢Íø
-	vu16    			usParaInMaxPwr;     //²¢Íø×î´ó¹¦ÂÊ W
-	vu16    			usParaInPwr;        //²¢Íø¹¦ÂÊ W
-	vu16    			usParaInMode;       //²¢ÍøÄ£Ê½
-	//×´Ì¬
-	vs16    			usChgPwr;     		//³äµç¹¦ÂÊ W
-	vu16    			usMaxInPwr;        	//×î´óÊäÈë¹¦ÂÊ W
-	vs16             	sMaxTemp;           //1ÉãÊÏ¶È
-	vs16             	sMinTemp;           //1ÉãÊÏ¶È
-	DcacWorkState_U    	uState;        		//×´Ì¬
-	DcacErrState_U		uErrCode;			//´íÎó´úÂë
+	//å¹¶ç½‘
+	vu16    			usParaInMaxPwr;     //å¹¶ç½‘æœ€å¤§åŠŸç‡ W
+	vu16    			usParaInPwr;        //å¹¶ç½‘åŠŸç‡ W
+	vu16    			usParaInMode;       //å¹¶ç½‘æ¨¡å¼
+	//çŠ¶æ€
+	vs16    			usChgPwr;     		//å……ç”µåŠŸç‡ W
+	vu16    			usMaxInPwr;        	//æœ€å¤§è¾“å…¥åŠŸç‡ W
+	vs16             	sMaxTemp;           //1æ‘„æ°åº¦
+	vs16             	sMinTemp;           //1æ‘„æ°åº¦
+	DcacWorkState_U    	uState;        		//çŠ¶æ€
+	DcacErrState_U		uErrCode;			//é”™è¯¯ä»£ç 
 }DcacRx_T;
 extern DcacRx_T   		tDcacRx; 
 

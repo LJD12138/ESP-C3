@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
-*                                            QMI8658C 6ÖáIMU´«¸ĞÆ÷Çı¶¯                                          *
-*                                      ·â×°²ã - »ùÓÚesp-idf-lib×é¼ş¿â                                            *
+*                                            QMI8658C 6è½´IMUä¼ æ„Ÿå™¨é©±åŠ¨                                          *
+*                                      å°è£…å±‚ - åŸºäºesp-idf-libç»„ä»¶åº“                                            *
 ******************************************************************************************************************/
 #ifndef BSP_QMI8658C_H_
 #define BSP_QMI8658C_H_
@@ -8,17 +8,17 @@
 #include "main.h"
 #include <qmi8658c.h>
 
-// QMI8658C I2CµØÖ·
+// QMI8658C I2Cåœ°å€
 #define     QMI8658C_I2C_ADDR               DEFAUL_QMI8658C_ADDR
 
-// ¼ÓËÙ¶È¼ÆÁ¿³Ì
+// åŠ é€Ÿåº¦è®¡é‡ç¨‹
 typedef qmi8658c_acc_scale_t   Qmi8658c_AccRange_E;
 #define     QMI8658C_ACC_RANGE_2G           QMI8658C_ACC_SCALE_2G
 #define     QMI8658C_ACC_RANGE_4G           QMI8658C_ACC_SCALE_4G
 #define     QMI8658C_ACC_RANGE_8G           QMI8658C_ACC_SCALE_8G
 #define     QMI8658C_ACC_RANGE_16G          QMI8658C_ACC_SCALE_16G
 
-// ÍÓÂİÒÇÁ¿³Ì
+// é™€èºä»ªé‡ç¨‹
 typedef qmi8658c_gyro_scale_t  Qmi8658c_GyrRange_E;
 #define     QMI8658C_GYR_RANGE_16DPS        QMI8658C_GYRO_SCALE_16DPS
 #define     QMI8658C_GYR_RANGE_32DPS        QMI8658C_GYRO_SCALE_32DPS
@@ -29,37 +29,37 @@ typedef qmi8658c_gyro_scale_t  Qmi8658c_GyrRange_E;
 #define     QMI8658C_GYR_RANGE_1024DPS      QMI8658C_GYRO_SCALE_1024DPS
 #define     QMI8658C_GYR_RANGE_2048DPS      QMI8658C_GYRO_SCALE_2048DPS
 
-// ¼ÓËÙ¶È¼ÆODR
+// åŠ é€Ÿåº¦è®¡ODR
 typedef qmi8658c_acc_odr_t     Qmi8658c_AccOdr_E;
 
-// ÍÓÂİÒÇODR
+// é™€èºä»ªODR
 typedef qmi8658c_gyro_odr_t    Qmi8658c_GyrOdr_E;
 
-// ¹¤×÷Ä£Ê½
+// å·¥ä½œæ¨¡å¼
 typedef qmi8658c_mode_t        Qmi8658c_Mode_E;
 #define     QMI8658C_MODE_ACC_ONLY           QMI8658C_MODE_ACC_ONLY
 #define     QMI8658C_MODE_GYRO_ONLY          QMI8658C_MODE_GYRO_ONLY
 #define     QMI8658C_MODE_DUAL               QMI8658C_MODE_DUAL
 
-// Êı¾İ½á¹¹
+// æ•°æ®ç»“æ„
 typedef qmi8658c_axes_t        Qmi8658c_Axes_T;
 typedef qmi8658c_data_t        Qmi8658c_Data_T;
 
-// ÅäÖÃ½á¹¹
+// é…ç½®ç»“æ„
 typedef qmi8658c_config_t      Qmi8658c_Config_T;
 
-// QMI8658C¶ÔÏó½á¹¹
+// QMI8658Cå¯¹è±¡ç»“æ„
 typedef struct
 {
-    i2c_dev_t              tI2cDev;         // I2CÉè±¸¶ÔÏó
-    Qmi8658c_Config_T      tConfig;         // ÅäÖÃ²ÎÊı
-    Qmi8658c_Data_T        tData;           // Êı¾İ
-    DevState_E             eDevState;       // Éè±¸×´Ì¬
+    i2c_dev_t              tI2cDev;         // I2Cè®¾å¤‡å¯¹è±¡
+    Qmi8658c_Config_T      tConfig;         // é…ç½®å‚æ•°
+    Qmi8658c_Data_T        tData;           // æ•°æ®
+    DevState_E             eDevState;       // è®¾å¤‡çŠ¶æ€
 }Qmi8658c_T;
 
 extern Qmi8658c_T   tQmi8658c;
 
-// ½Ó¿Úº¯Êı
+// æ¥å£å‡½æ•°
 void    vQmi8658c_IfaceInit(void);
 s8      cQmi8658c_Init(void);
 s8      cQmi8658c_Config(Qmi8658c_Config_T *p_config);

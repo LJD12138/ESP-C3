@@ -13,7 +13,7 @@
 
 bool bBms_QueueInit(void);
 
-//¶ÓÁÐº¯Êý
+//é˜Ÿåˆ—å‡½æ•°
 void v_bms_queue_task_init(Task_T *tp_task);
 void v_bms_queue_task_clt_switch(Task_T *tp_task);
 void v_bms_queue_task_main(Task_T *tp_task);

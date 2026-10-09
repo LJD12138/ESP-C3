@@ -1,11 +1,11 @@
 /***********************************************************************************************************************
 -----@file usb_prot_frame_ic2.c
------º¯Êı¹¦ÄÜ   SW6303 µ¥Ïò1C+1A/45W
------×÷Õß       LJD
------°æ±¾ 1.0.0
------ÈÕÆÚ       2026-01-21
------@copyright Copyright (c) 2026  ÉîÛÚÊĞ°Ù¿áĞÂÄÜÔ´ÓĞÏŞ¹«Ë¾
------@par ĞŞ¸ÄÈÕÖ¾:
+-----å‡½æ•°åŠŸèƒ½   SW6303 å•å‘1C+1A/45W
+-----ä½œè€…       LJD
+-----ç‰ˆæœ¬ 1.0.0
+-----æ—¥æœŸ       2026-01-21
+-----@copyright Copyright (c) 2026  æ·±åœ³å¸‚ç™¾é…·æ–°èƒ½æºæœ‰é™å…¬å¸
+-----@par ä¿®æ”¹æ—¥å¿—:
 ************************************************************************************************************************/
 #include "UsbDevice/usb_prot_frame.h"
 
@@ -20,21 +20,21 @@
 #include "math.h"
 #include "ntc.h"
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************//
-USB_IC_T tUsbIc2 = {0}; //USBĞ¾Æ¬
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
+USB_IC_T tUsbIc2 = {0}; //USBèŠ¯ç‰‡
 
-// I2CĞ´²Ù×÷Ê¹ÄÜ×´Ì¬¹ÜÀí
-static bool s_usb_ic2_i2c_write_enabled = false;  // I2CĞ´²Ù×÷Ê¹ÄÜ×´Ì¬
+// I2Cå†™æ“ä½œä½¿èƒ½çŠ¶æ€ç®¡ç†
+static bool s_usb_ic2_i2c_write_enabled = false;  // I2Cå†™æ“ä½œä½¿èƒ½çŠ¶æ€
 
-// Íâ²¿I2C¶ÔÏó¶¨Òå£¨ĞèÒªÔÚusb_iface.cÖĞ¶¨Òå£©
+// å¤–éƒ¨I2Cå¯¹è±¡å®šä¹‰ï¼ˆéœ€è¦åœ¨usb_iface.cä¸­å®šä¹‰ï¼‰
 extern I2cObj_T tUSB_IC2_I2C;
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    Ö¸Áî:³õÊ¼»¯IC
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      s8: 1:³É¹¦  0:´¦ÀíÖĞ  -1:Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    æŒ‡ä»¤:åˆå§‹åŒ–IC
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      s8: 1:æˆåŠŸ  0:å¤„ç†ä¸­  -1:å¤±è´¥
 ******************************************************************************************************************/
 s8 c_usb_cs_ic2_init(void)
 {
@@ -43,10 +43,10 @@ s8 c_usb_cs_ic2_init(void)
 	static u8 uc_lost_cnt = 0;
 
 	SW6303_ForceCtrl_T t_param = {
-				.usVbus = 12000,	//mV 	20V		Õâ¸ö²»ÉèÖÃ
+				.usVbus = 12000,	//mV 	20V		è¿™ä¸ªä¸è®¾ç½®
 				.usChgVolt = 14600,	//mV  	14.6V
 				.usMaxInPwr = 0,	//W		100W
-				.usChgHoldVolt = 0,	//mV 22V		Õâ¸ö²»ÉèÖÃ
+				.usChgHoldVolt = 0,	//mV 22V		è¿™ä¸ªä¸è®¾ç½®
 				.usIbat = 250,		//0.1A	10A
 				.usIbus = 500,		//0.01A	10A
 				.usMaxOutPwr = 45	//W		100W
@@ -54,10 +54,10 @@ s8 c_usb_cs_ic2_init(void)
 
 	switch(index)
 	{
-		//ÍË³öµÍ¹¦ºÄÄ£Ê½
+		//é€€å‡ºä½åŠŸè€—æ¨¡å¼
 		case 0:
 		{
-			//×Ô´ø¿ªÆôĞ´Ê¹ÄÜ
+			//è‡ªå¸¦å¼€å¯å†™ä½¿èƒ½
 			c_ret = c_usb_sw6303_set_low_power_state(&tUSB_IC2_I2C, true);
 			if(c_ret <= 0)
 			{
@@ -65,17 +65,17 @@ s8 c_usb_cs_ic2_init(void)
 					uc_lost_cnt++;
 
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2ÍË³öµÍ¹¦ºÄÊ§°Ü,´íÎó´úÂë%d", c_ret);
+					log_w("bUsbTask:IC2é€€å‡ºä½åŠŸè€—å¤±è´¥,é”™è¯¯ä»£ç %d", c_ret);
 				break;
 			}
-			//Ã»½øÈëµÍ¹¦ºÄ,´ò¿ªĞ´Ê¹ÄÜ
+			//æ²¡è¿›å…¥ä½åŠŸè€—,æ‰“å¼€å†™ä½¿èƒ½
 			// else if(c_ret == 2)
 			{
 				c_ret = c_usb_sw6303_write_enable(&tUSB_IC2_I2C, true);
 				if(c_ret <= 0)
 				{
 					if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-						log_w("bUsbTask:IC2Ã»½øÈëĞİÃß,Ğ´Ê¹ÄÜÊ§°Ü,´íÎó´úÂë%d", c_ret);
+						log_w("bUsbTask:IC2æ²¡è¿›å…¥ä¼‘çœ ,å†™ä½¿èƒ½å¤±è´¥,é”™è¯¯ä»£ç %d", c_ret);
 					break;
 				}
 			}
@@ -83,7 +83,7 @@ s8 c_usb_cs_ic2_init(void)
 			uc_lost_cnt = 0;
 			index++;
 		}
-		//Ğ£ÑéÊÇ·ñÒÑ¾­³õÊ¼»¯
+		//æ ¡éªŒæ˜¯å¦å·²ç»åˆå§‹åŒ–
 		case 1:
 		{
 			// s16 s_ret = s_usb_sw6303_get_chg_target_volt(&tUSB_IC2_I2C);
@@ -93,14 +93,14 @@ s8 c_usb_cs_ic2_init(void)
 			// 		uc_lost_cnt++;
 
 			// 	if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-			// 		log_w("bUsbTask:IC2¶ÁÈ¡Ğ£ÑéµçÑ¹´íÎó,´úÂë%d", s_ret);
+			// 		log_w("bUsbTask:IC2è¯»å–æ ¡éªŒç”µå‹é”™è¯¯,ä»£ç %d", s_ret);
 			// 	break;
 			// }
 
-			// //µçÑ¹ÏàµÈ,ÎŞĞè³õÊ¼»¯
+			// //ç”µå‹ç›¸ç­‰,æ— éœ€åˆå§‹åŒ–
 			// if(s_ret == t_param.usChgVolt)
 			// {
-			// 	//¹Ø±ÕĞ´Ê¹ÄÜ
+			// 	//å…³é—­å†™ä½¿èƒ½
 			// 	c_usb_sw6303_write_enable(&tUSB_IC2_I2C, false);
 			// 	return 2;
 			// }
@@ -108,7 +108,7 @@ s8 c_usb_cs_ic2_init(void)
 			uc_lost_cnt = 0;
 			index++;
 		}
-		//½ÇÉ«ÉèÖÃÎª·Åµç
+		//è§’è‰²è®¾ç½®ä¸ºæ”¾ç”µ
 		case 2:
 		{
 			c_ret = c_usb_sw6303_set_typec_role(&tUSB_IC2_I2C, SW6303_TYPEC_ROLE_SRC);
@@ -118,14 +118,14 @@ s8 c_usb_cs_ic2_init(void)
 					uc_lost_cnt++;
 
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2½ÇÉ«ÉèÖÃÎªË«ÏòÊ§°Ü,´íÎó´úÂë%d", c_ret);
+					log_w("bUsbTask:IC2è§’è‰²è®¾ç½®ä¸ºåŒå‘å¤±è´¥,é”™è¯¯ä»£ç %d", c_ret);
 				break;
 			}
 
 			uc_lost_cnt = 0;
 			index++;
 		}
-		//ÉèÖÃ±£»¤²ÎÊı
+		//è®¾ç½®ä¿æŠ¤å‚æ•°
 		case 3:
 		{
 			c_ret = c_usb_sw6303_set_force_ctrl_param(&tUSB_IC2_I2C, SW6303_CTRL_OBJ_ALL, &t_param);
@@ -135,45 +135,45 @@ s8 c_usb_cs_ic2_init(void)
 					uc_lost_cnt++;
 
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2ÉèÖÃ±£»¤²ÎÊıÊ§°Ü,´íÎó´úÂë%d", c_ret);
+					log_w("bUsbTask:IC2è®¾ç½®ä¿æŠ¤å‚æ•°å¤±è´¥,é”™è¯¯ä»£ç %d", c_ret);
 				break;
 			}
 
 			uc_lost_cnt = 0;
 			index++;
 		}
-		//ÉèÖÃ·ÅµçÅäÖÃ²ÎÊı
+		//è®¾ç½®æ”¾ç”µé…ç½®å‚æ•°
 		case 4:
 		{
 			SW6303_DchgCfg_T t_dchg_cfg = {
-				// REG0x100: ·ÅµçÅäÖÃ0
-				.bTempLoopEnable = false,           // Ê¹ÄÜºãÎÂ»·
-				.eTempThr = SW6303_DCHG_TEMP_THR_80C,    // 80¡ãCãĞÖµ
-				.bPwrAutoDetect = false,           // ÊÖ¶¯ÉèÖÃ¹¦ÂÊ
-				.eOutPwr = SW6303_OUT_PWR_45W,    // 45WÊä³ö¹¦ÂÊ
+				// REG0x100: æ”¾ç”µé…ç½®0
+				.bTempLoopEnable = false,           // ä½¿èƒ½æ’æ¸©ç¯
+				.eTempThr = SW6303_DCHG_TEMP_THR_80C,    // 80Â°Cé˜ˆå€¼
+				.bPwrAutoDetect = false,           // æ‰‹åŠ¨è®¾ç½®åŠŸç‡
+				.eOutPwr = SW6303_OUT_PWR_45W,    // 45Wè¾“å‡ºåŠŸç‡
 				
-				// REG0x101: ·ÅµçÅäÖÃ1
-				.eMultiPortMaxI = SW6303_MULTI_PORT_MAX_I_4_2A,  	// ¶à¿ÚÊä³ö×î´óµçÁ÷4.2A
-				.eVbusIOffset = SW6303_VBUS_I_OFFSET_300MA,        // VBUSÏŞÁ÷¹Ì¶¨Æ«ÒÆ300mA
-				.eVbusVOffset = SW6303_VBUS_V_OFFSET_100MV,        // Êä³öµçÑ¹¹Ì¶¨Æ«ÒÆ100mV
-				.eLineComp = SW6303_LINE_COMP_60MV_A,            	// Ïß²¹ÉèÖÃ60mV/A
+				// REG0x101: æ”¾ç”µé…ç½®1
+				.eMultiPortMaxI = SW6303_MULTI_PORT_MAX_I_4_2A,  	// å¤šå£è¾“å‡ºæœ€å¤§ç”µæµ4.2A
+				.eVbusIOffset = SW6303_VBUS_I_OFFSET_300MA,        // VBUSé™æµå›ºå®šåç§»300mA
+				.eVbusVOffset = SW6303_VBUS_V_OFFSET_100MV,        // è¾“å‡ºç”µå‹å›ºå®šåç§»100mV
+				.eLineComp = SW6303_LINE_COMP_60MV_A,            	// çº¿è¡¥è®¾ç½®60mV/A
 				
-				// REG0x102: ·ÅµçÅäÖÃ2
-				.bFcLineCompEnable = false,          // Ê¹ÄÜ¿ì³äÄ£Ê½Ïß²¹
-				.bVbusFastOvpEnable = false,        // ´ò¿ªVBUS¿ìËÙ¹ıÑ¹±£»¤
+				// REG0x102: æ”¾ç”µé…ç½®2
+				.bFcLineCompEnable = false,          // ä½¿èƒ½å¿«å……æ¨¡å¼çº¿è¡¥
+				.bVbusFastOvpEnable = false,        // æ‰“å¼€VBUSå¿«é€Ÿè¿‡å‹ä¿æŠ¤
 				
-				// REG0x103: ·ÅµçÅäÖÃ3
-				.eDchgIbatDef = SW6303_DCHG_IBAT_12A,    // ·ÅµçIBATÏŞÁ÷Ä¬ÈÏÖµ12A
-				.ucLipoUvloThr = 0,                  // Á×ËáÌúï®µç³ØÇ·Ñ¹ÃÅÏŞ2.75V*N
+				// REG0x103: æ”¾ç”µé…ç½®3
+				.eDchgIbatDef = SW6303_DCHG_IBAT_12A,    // æ”¾ç”µIBATé™æµé»˜è®¤å€¼12A
+				.ucLipoUvloThr = 0,                  // ç£·é…¸é“é”‚ç”µæ± æ¬ å‹é—¨é™2.75V*N
 				
-				// REG0x104: ·ÅµçÅäÖÃ4
-				.eUvloHyst = SW6303_UVLO_HYST_0_4V,        // UVLO³ÙÖÍ0.4V*N
-				.eLipoUvlo = SW6303_LIPO_UVLO_3_0V,        // ÈıÔªï®µç³ØÇ·Ñ¹ÃÅÏŞ3.0V*N
+				// REG0x104: æ”¾ç”µé…ç½®4
+				.eUvloHyst = SW6303_UVLO_HYST_0_4V,        // UVLOè¿Ÿæ»0.4V*N
+				.eLipoUvlo = SW6303_LIPO_UVLO_3_0V,        // ä¸‰å…ƒé”‚ç”µæ± æ¬ å‹é—¨é™3.0V*N
 				
-				// REG0x106: ·ÅµçÅäÖÃ5
-				.eInductor = SW6303_INDUCTOR_10UH,       // µç¸ĞÉèÖÃ10uH
-				.eNtcHighThr = SW6303_DCHG_NTC_HIGH_60C,    // ·ÅµçNTC¸ßÎÂÃÅÏŞ60¡ãC
-				.eNtcLowThr = SW6303_DCHG_NTC_LOW_M20C,     // ·ÅµçNTCµÍÎÂÃÅÏŞ-20¡ãC
+				// REG0x106: æ”¾ç”µé…ç½®5
+				.eInductor = SW6303_INDUCTOR_10UH,       // ç”µæ„Ÿè®¾ç½®10uH
+				.eNtcHighThr = SW6303_DCHG_NTC_HIGH_60C,    // æ”¾ç”µNTCé«˜æ¸©é—¨é™60Â°C
+				.eNtcLowThr = SW6303_DCHG_NTC_LOW_M20C,     // æ”¾ç”µNTCä½æ¸©é—¨é™-20Â°C
 			};
 			c_ret = c_usb_sw6303_set_dischg_cfg(&tUSB_IC2_I2C, SW6303_DCHG_CFG_OBJ_ALL, &t_dchg_cfg);
 			if(c_ret <= 0)
@@ -182,20 +182,20 @@ s8 c_usb_cs_ic2_init(void)
 					uc_lost_cnt++;
 
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2ÉèÖÃ·ÅµçÅäÖÃ²ÎÊıÊ§°Ü,´íÎó´úÂë%d", c_ret);
+					log_w("bUsbTask:IC2è®¾ç½®æ”¾ç”µé…ç½®å‚æ•°å¤±è´¥,é”™è¯¯ä»£ç %d", c_ret);
 				break;
 			}
 
 			uc_lost_cnt = 0;
 			index++;
 		}
-		//´ò¿ª³ä·Åµç
+		//æ‰“å¼€å……æ”¾ç”µ
 		case 5:
 		{
-			// Çå³ı·ÅµçÒì³£ÊÂ¼ş±êÖ¾
+			// æ¸…é™¤æ”¾ç”µå¼‚å¸¸äº‹ä»¶æ ‡å¿—
 			c_usb_sw6303_clear_abnormal_event(&tUSB_IC2_I2C, SW6303_EVENT_DCHG_ABNORMAL);
 
-			// ´¥·¢¶Ì°´¼üÊÂ¼ş»Ö¸´·Åµç (REG0x20 = 0x01)
+			// è§¦å‘çŸ­æŒ‰é”®äº‹ä»¶æ¢å¤æ”¾ç”µ (REG0x20 = 0x01)
 			u8 uc_data = 0x01;
 			c_usb_sw6303_write_bytes(&tUSB_IC2_I2C, 0x20, &uc_data, 1);
 
@@ -206,7 +206,7 @@ s8 c_usb_cs_ic2_init(void)
 					uc_lost_cnt++;
 
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2¿ªÆô³ä·ÅµçÊ§°Ü,´íÎó´úÂë%d", c_ret);
+					log_w("bUsbTask:IC2å¼€å¯å……æ”¾ç”µå¤±è´¥,é”™è¯¯ä»£ç %d", c_ret);
 				break;
 			}
 			// c_usb_cs_ic2_test();
@@ -220,7 +220,7 @@ s8 c_usb_cs_ic2_init(void)
 		break;
 	}
 
-	//¹Ø±ÕĞ´Ê¹ÄÜ
+	//å…³é—­å†™ä½¿èƒ½
 	c_ret = c_usb_sw6303_write_enable(&tUSB_IC2_I2C, false);
 	if(c_ret <= 0)
 		return -2;
@@ -232,7 +232,7 @@ s8 c_usb_cs_ic2_init(void)
 			bUsb_SetErrCode(UEC_IC2_LOST, true);
 		
 			if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-				log_e("bUsbTask:IC2¶ªÊ§");
+				log_e("bUsbTask:IC2ä¸¢å¤±");
 		}
 		
 		return -1;
@@ -247,7 +247,7 @@ s8 c_usb_cs_ic2_init(void)
 			index = 0;
 
 			if(uPrint.tFlag.bUsbTask)
-				sMyPrint("bUsbTask:IC2³õÊ¼»¯Íê³É \r\n");
+				sMyPrint("bUsbTask:IC2åˆå§‹åŒ–å®Œæˆ \r\n");
 
 			return 1;
 		}
@@ -257,11 +257,11 @@ s8 c_usb_cs_ic2_init(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    Ö¸Áî:»ñÈ¡²ÎÊı
------ËµÃ÷(±¸×¢)  Í¨¹ıREG0x30 ADCÅäÖÃ¼Ä´æÆ÷»ñÈ¡¶ÔÓ¦µÄADCÊı¾İ
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      s8: 1:³É¹¦  0:´¦ÀíÖĞ  -1:Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    æŒ‡ä»¤:è·å–å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)  é€šè¿‡REG0x30 ADCé…ç½®å¯„å­˜å™¨è·å–å¯¹åº”çš„ADCæ•°æ®
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      s8: 1:æˆåŠŸ  0:å¤„ç†ä¸­  -1:å¤±è´¥
 ******************************************************************************************************************/
 s8 c_usb_cs_get_ic2_param(void)
 {
@@ -272,7 +272,7 @@ s8 c_usb_cs_get_ic2_param(void)
 
 	switch (index)
 	{
-		//¶ÁÈ¡¶Ë¿Ú×´Ì¬
+		//è¯»å–ç«¯å£çŠ¶æ€
 		case 0:
 		{
 			adc_data = c_usb_sw6303_get_port_status(&tUSB_IC2_I2C, &t_State);
@@ -282,7 +282,7 @@ s8 c_usb_cs_get_ic2_param(void)
 					uc_lost_cnt++;
 					
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2»ñÈ¡NTCµçÑ¹Ê§°Ü,´íÎó´úÂë%d", adc_data);	
+					log_w("bUsbTask:IC2è·å–NTCç”µå‹å¤±è´¥,é”™è¯¯ä»£ç %d", adc_data);	
 				break;
 			}
 
@@ -309,7 +309,7 @@ s8 c_usb_cs_get_ic2_param(void)
 			index++;
 		}
 
-		//¿ªÆôĞ´ÈëÊ¹ÄÜ
+		//å¼€å¯å†™å…¥ä½¿èƒ½
 		case 1:
 		{
 			adc_data = c_usb_sw6303_write_enable(&tUSB_IC2_I2C, true);
@@ -319,7 +319,7 @@ s8 c_usb_cs_get_ic2_param(void)
 					uc_lost_cnt++;
 
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2ÉèÖÃ³ä·ÅµçÄ£Ê½Ê§°Ü,´íÎó´úÂë%d", adc_data);
+					log_w("bUsbTask:IC2è®¾ç½®å……æ”¾ç”µæ¨¡å¼å¤±è´¥,é”™è¯¯ä»£ç %d", adc_data);
 				break;
 			}
 
@@ -329,7 +329,7 @@ s8 c_usb_cs_get_ic2_param(void)
 
 		case 2:
 		{
-			// »ñÈ¡VBUSµçÑ¹ (8mV/step)
+			// è·å–VBUSç”µå‹ (8mV/step)
 			adc_data = s_usb_sw6303_get_adc_data(&tUSB_IC2_I2C, ADC_SEL_VBUS);
 			if(adc_data < 0)
 			{
@@ -337,16 +337,16 @@ s8 c_usb_cs_get_ic2_param(void)
 					uc_lost_cnt++;
 
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2»ñÈ¡VBUSµçÑ¹Ê§°Ü,´íÎó´úÂë%d", adc_data);	
+					log_w("bUsbTask:IC2è·å–VBUSç”µå‹å¤±è´¥,é”™è¯¯ä»£ç %d", adc_data);	
 				break;
 			}
-			// ×ª»»ÎªmV: ADCÊı¾İ * 8mV
+			// è½¬æ¢ä¸ºmV: ADCæ•°æ® * 8mV
 			tUsbIc2.usVolt = (u16)(adc_data * 8);
 			uc_lost_cnt = 0;
 			index++;
 		}
 		
-		// »ñÈ¡IBUSµçÁ÷ (4mA/step)
+		// è·å–IBUSç”µæµ (4mA/step)
 		case 3:
 		{
 			adc_data = s_usb_sw6303_get_adc_data(&tUSB_IC2_I2C, ADC_SEL_IBUS);
@@ -356,16 +356,16 @@ s8 c_usb_cs_get_ic2_param(void)
 					uc_lost_cnt++;
 
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2»ñÈ¡IBUSµçÁ÷Ê§°Ü,´íÎó´úÂë%d", adc_data);	
+					log_w("bUsbTask:IC2è·å–IBUSç”µæµå¤±è´¥,é”™è¯¯ä»£ç %d", adc_data);	
 				break;
 			}
-			// ×ª»»ÎªmA: ADCÊı¾İ * 4mA
+			// è½¬æ¢ä¸ºmA: ADCæ•°æ® * 4mA
 			tUsbIc2.usPdCurr = (u16)(adc_data * 4);
 			uc_lost_cnt = 0;
 			index++;
 		}
 		
-		// »ñÈ¡µç³ØµçÑ¹ (7mV/step)
+		// è·å–ç”µæ± ç”µå‹ (7mV/step)
 		case 4:
 		{
 			adc_data = s_usb_sw6303_get_adc_data(&tUSB_IC2_I2C, ADC_SEL_VBAT);
@@ -375,16 +375,16 @@ s8 c_usb_cs_get_ic2_param(void)
 					uc_lost_cnt++;
 					
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2»ñÈ¡µç³ØµçÑ¹Ê§°Ü,´íÎó´úÂë%d", adc_data);	
+					log_w("bUsbTask:IC2è·å–ç”µæ± ç”µå‹å¤±è´¥,é”™è¯¯ä»£ç %d", adc_data);	
 				break;
 			}
-			// ×ª»»ÎªmV: ADCÊı¾İ * 7mV
+			// è½¬æ¢ä¸ºmV: ADCæ•°æ® * 7mV
 			tUsbIc2.usQcCurr = (u16)(adc_data * 7);
 			uc_lost_cnt = 0;
 			index++;
 		}
 		
-		// »ñÈ¡IBATµçÁ÷ (5mA/step)
+		// è·å–IBATç”µæµ (5mA/step)
 		case 5:
 		{
 			adc_data = s_usb_sw6303_get_adc_data(&tUSB_IC2_I2C, ADC_SEL_IBAT);
@@ -394,16 +394,16 @@ s8 c_usb_cs_get_ic2_param(void)
 					uc_lost_cnt++;
 					
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2»ñÈ¡IBATµçÁ÷Ê§°Ü,´íÎó´úÂë%d", adc_data);	
+					log_w("bUsbTask:IC2è·å–IBATç”µæµå¤±è´¥,é”™è¯¯ä»£ç %d", adc_data);	
 				break;
 			}
-			// ×ª»»ÎªmA: ADCÊı¾İ * 5mA
+			// è½¬æ¢ä¸ºmA: ADCæ•°æ® * 5mA
 			tUsbIc2.usQcPwr = (u16)(adc_data * 5);
 			uc_lost_cnt = 0;
 			index++;
 		}
 		
-		// »ñÈ¡Ğ¾Æ¬ÎÂ¶È (1/6.82¡ãC)
+		// è·å–èŠ¯ç‰‡æ¸©åº¦ (1/6.82Â°C)
 		case 6:
 		{
 			// adc_data = s_usb_sw6303_get_adc_data(&tUSB_IC2_I2C, ADC_SEL_TEMP);
@@ -413,18 +413,18 @@ s8 c_usb_cs_get_ic2_param(void)
 			// 		uc_lost_cnt++;
 					
 			// 	if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-			// 		log_w("bUsbTask:IC2»ñÈ¡Ğ¾Æ¬ÎÂ¶ÈÊ§°Ü,´íÎó´úÂë%d", adc_data);	
+			// 		log_w("bUsbTask:IC2è·å–èŠ¯ç‰‡æ¸©åº¦å¤±è´¥,é”™è¯¯ä»£ç %d", adc_data);	
 			// 	break;
 			// }
-			// // ¼ÆËãĞ¾Æ¬ÎÂ¶È
+			// // è®¡ç®—èŠ¯ç‰‡æ¸©åº¦
 			// float f_temp = adc_data * 6.82f;
 			// // tUsbIc2.cTemp = (vs8)f_temp;
-			// sMyPrint("IC2 ICÎÂ¶ÈÊı¾İ%d \r\n", adc_data);
+			// sMyPrint("IC2 ICæ¸©åº¦æ•°æ®%d \r\n", adc_data);
 			uc_lost_cnt = 0;
 			index++;
 		}
 
-		// »ñÈ¡NTCµçÑ¹ (1.1mV)
+		// è·å–NTCç”µå‹ (1.1mV)
 		case 7:
 		{
 			adc_data = s_usb_sw6303_get_adc_data(&tUSB_IC2_I2C, ADC_SEL_NTC);
@@ -434,24 +434,24 @@ s8 c_usb_cs_get_ic2_param(void)
 					uc_lost_cnt++;
 					
 				if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-					log_w("bUsbTask:IC2»ñÈ¡NTCµçÑ¹Ê§°Ü,´íÎó´úÂë%d", adc_data);	
+					log_w("bUsbTask:IC2è·å–NTCç”µå‹å¤±è´¥,é”™è¯¯ä»£ç %d", adc_data);	
 				break;
 			}
-			// ×ª»»ÎªmV
+			// è½¬æ¢ä¸ºmV
 			float f_temp = ((adc_data * 1.1f) / 8) * 100;
-			// sMyPrint("IC2 ÎÂ¶ÈÊı¾İ%.2fR \r\n", f_temp);
+			// sMyPrint("IC2 æ¸©åº¦æ•°æ®%.2fR \r\n", f_temp);
 			tUsbIc2.cTemp = sNtc_GetTempByRes(ula10K_B3950_RES_TABLE, ntc10K_B3950_INDEX_ZERO_TEMP, ntc10K_B3950_RES_TABLE_SIZE, (u32)f_temp);
 			uc_lost_cnt = 0;
 			index++;
 		}
 
-		// ¼ÆËã¹¦ÂÊ
+		// è®¡ç®—åŠŸç‡
 		case 8:
 		{
-			//¹Ø±ÕĞ´Ê¹ÄÜ
+			//å…³é—­å†™ä½¿èƒ½
 			c_usb_sw6303_write_enable(&tUSB_IC2_I2C, false);
 
-			// ¼ÆËãVBUS¹¦ÂÊ: µçÑ¹(V) * µçÁ÷(A)
+			// è®¡ç®—VBUSåŠŸç‡: ç”µå‹(V) * ç”µæµ(A)
 			float f_voltage = tUsbIc2.usVolt / 1000.0f;
 			float f_current = tUsbIc2.usPdCurr / 1000.0f;
 			tUsbIc2.sPower = (vs16)(f_voltage * f_current);
@@ -465,7 +465,7 @@ s8 c_usb_cs_get_ic2_param(void)
 			index = 0;
 			
 			if(uPrint.tFlag.bUsbTask)
-				log_i("bUsbTask:IC2 SW6303 VBUS=%dmV IBUS=%dmA ¹¦ÂÊ=%dW ÎÂ¶È=%d¡ãC", 
+				log_i("bUsbTask:IC2 SW6303 VBUS=%dmV IBUS=%dmA åŠŸç‡=%dW æ¸©åº¦=%dÂ°C", 
 					tUsbIc2.usVolt, tUsbIc2.usPdCurr, tUsbIc2.sPower, tUsbIc2.cTemp);
 		}
 		break;
@@ -475,7 +475,7 @@ s8 c_usb_cs_get_ic2_param(void)
 			break ;
 	}
 	
-	//´¦Àí×´Ì¬
+	//å¤„ç†çŠ¶æ€
 	if(uc_lost_cnt >= 16)
 	{
 		if(tUsb.uErrCode.tCode.bIc2Lost == 0)
@@ -485,7 +485,7 @@ s8 c_usb_cs_get_ic2_param(void)
 			bUsb_SetErrCode(UEC_IC2_LOST, true);
 		
 			if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-				log_e("bUsbTask:IC2¶ªÊ§");	
+				log_e("bUsbTask:IC2ä¸¢å¤±");	
 		}
 		return -1;
 	}
@@ -501,7 +501,7 @@ s8 c_usb_cs_get_ic2_param(void)
 
 s8 c_usb_cs_ic2_test(void)
 {
-	//Ğ´µÍ¼Ä´æÆ÷
+	//å†™ä½å¯„å­˜å™¨
 	u8 data[1] = {0};
 	u16 reg_addr = 0;
 	I2cObj_T *p_i2c_obj = &tUSB_IC2_I2C;

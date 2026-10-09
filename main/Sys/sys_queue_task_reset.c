@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "Sys/sys_queue_task.h"
@@ -10,14 +10,14 @@
 #include "gpio_init.h"
 // #include "app_info.h"
 
-#define     	sysTASK_RESET_CYCLE_TIME					sysTASK_CYCLE_TIME //ÈÎÎñÊ±¼ä
+#define     	sysTASK_RESET_CYCLE_TIME					sysTASK_CYCLE_TIME //ä»»åŠ¡æ—¶é—´
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¹¤×÷
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    å·¥ä½œ
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/ 
 void v_sys_queue_task_reset(Task_T *tp_task)
 {
@@ -27,45 +27,45 @@ void v_sys_queue_task_reset(Task_T *tp_task)
     {
 		case 0:
 		{
-			// //³õÊ¼»¯APPÊı¾İ
+			// //åˆå§‹åŒ–APPæ•°æ®
 			// c_ret = cApp_MemParamInit(tAppMemParamStr);
 			// if(c_ret <= 0)
 			// {
 			// 	if(uPrint.tFlag.bAppInfo)
-			// 		sMyPrint("bAppInfo:APP²ÎÊı³õÊ¼»¯Ê§°Ü ´úÂë%d\r\n",c_ret);
+			// 		sMyPrint("bAppInfo:APPå‚æ•°åˆå§‹åŒ–å¤±è´¥ ä»£ç %d\r\n",c_ret);
 			// 	break;
 			// }
 			
-			// //¸üĞÂ²ÎÊı
+			// //æ›´æ–°å‚æ•°
 			// c_ret = cApp_UpdataMemParam(tAppMemParamStr);
 			// if(c_ret <= 0)
 			// {
 			// 	if(uPrint.tFlag.bAppInfo)
-			// 		sMyPrint("bAppInfo:APP²ÎÊı¸üĞÂÊ§°Ü ´úÂë%d\r\n",c_ret);
+			// 		sMyPrint("bAppInfo:APPå‚æ•°æ›´æ–°å¤±è´¥ ä»£ç %d\r\n",c_ret);
 			// 	break;
 			// }
 			
-			cQueue_GotoStep( tp_task, STEP_NEXT );  //ÏÂÒ»²½
+			cQueue_GotoStep( tp_task, STEP_NEXT );  //ä¸‹ä¸€æ­¥
 		}break;
 		
 		case 1:
 		{
-			// NVIC_SystemReset();//ÖØÆô
+			// NVIC_SystemReset();//é‡å¯
 		}break;
 		
         default:
-				cQueue_GotoStep( tp_task, STEP_END );  //½áÊø
+				cQueue_GotoStep( tp_task, STEP_END );  //ç»“æŸ
 			break;
     }
 	
-	//µÈ´ı5S,³¬Ê±ÍË³ö
+	//ç­‰å¾…5S,è¶…æ—¶é€€å‡º
 	tp_task->usTaskWaitCnt++;
 	if(tp_task->usTaskWaitCnt > (5000/sysTASK_RESET_CYCLE_TIME) && tp_task->ucStep != STEP_END)
 	{
 		if(uPrint.tFlag.bSysTask)
-			log_w("bSysTask:ÉèÖÃÖØÖÃÈÎÎñµÈ´ı³¬Ê±,ÍË³ö");
+			log_w("bSysTask:è®¾ç½®é‡ç½®ä»»åŠ¡ç­‰å¾…è¶…æ—¶,é€€å‡º");
 		
-		cQueue_GotoStep( tp_task, STEP_END );  //½áÊø
+		cQueue_GotoStep( tp_task, STEP_END );  //ç»“æŸ
 	}
 	
 	vTaskDelay(sysTASK_RESET_CYCLE_TIME);

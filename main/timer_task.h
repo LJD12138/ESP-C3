@@ -9,15 +9,15 @@
 #include "freertos/timers.h"
 
 #if(boardCONSOLE_485_IFACE_EN)
-extern	TimerHandle_t 	tConsoleRxEnTimer; 	//µ¥´Î¶¨Ê±Æ÷
+extern	TimerHandle_t 	tConsoleRxEnTimer; 	//å•æ¬¡å®šæ—¶å™¨
 #endif
 
 #if(boardMPPT_485_IFACE_EN)
-extern TimerHandle_t 	tMpptRxEnTimer; //µ¥´Î¶¨Ê±Æ÷
+extern TimerHandle_t 	tMpptRxEnTimer; //å•æ¬¡å®šæ—¶å™¨
 #endif
 
 #if(boardPRINT_485_IFACE_EN)
-extern TimerHandle_t 	tPrintRxEnTimer; //µ¥´Î¶¨Ê±Æ÷
+extern TimerHandle_t 	tPrintRxEnTimer; //å•æ¬¡å®šæ—¶å™¨
 #endif
 
 extern TimerHandle_t 	tWakeUpBmsTimer;
@@ -26,7 +26,7 @@ extern TimerHandle_t 	tWakeUpBmsTimer;
 extern TimerHandle_t 	tDcacRxEnTimer;
 #endif
 
-extern TimerHandle_t 	tRepetTimer;   //ÖØ¸´¶¨Ê±Æ÷  repetition
+extern TimerHandle_t 	tRepetTimer;   //é‡å¤å®šæ—¶å™¨  repetition
 
 void vTimer_TaskInit(void);
 #if(boardLOW_POWER)

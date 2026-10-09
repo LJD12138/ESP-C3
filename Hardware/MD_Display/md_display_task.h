@@ -11,52 +11,52 @@
 
 typedef enum : uint8_t
 {
-	ID_MAIN_0 = 0,	//Ñ­»·ÇĞ»»ÆÁÄ»
+	ID_MAIN_0 = 0,	//å¾ªç¯åˆ‡æ¢å±å¹•
     ID_MAIN_1 = 1,
     ID_MAIN_2 = 2,
     ID_MAIN_3 = 3,
 }ScreenId_E;
 
-// Éè±¸ÀàĞÍÃ¶¾Ù
+// è®¾å¤‡ç±»å‹æšä¸¾
 typedef enum : uint8_t
 {
-	DEV_TYPE_AC = 0,    // DCACÉè±¸
-	DEV_TYPE_PV,        // PVÉè±¸
-	DEV_TYPE_LIGHT,     // LightÉè±¸
-	DEV_TYPE_USB_A,     // USB AÉè±¸
-	DEV_TYPE_USB_C1,    // USB C1Éè±¸
-	DEV_TYPE_USB_C2,    // USB C2Éè±¸
-	DEV_TYPE_USB_DC,    // DCÉè±¸
+	DEV_TYPE_AC = 0,    // DCACè®¾å¤‡
+	DEV_TYPE_PV,        // PVè®¾å¤‡
+	DEV_TYPE_LIGHT,     // Lightè®¾å¤‡
+	DEV_TYPE_USB_A,     // USB Aè®¾å¤‡
+	DEV_TYPE_USB_C1,    // USB C1è®¾å¤‡
+	DEV_TYPE_USB_C2,    // USB C2è®¾å¤‡
+	DEV_TYPE_USB_DC,    // DCè®¾å¤‡
 	DEV_TYPE_MAX
 }DevType_E;
 
 typedef struct
 {
-    bool             bLight;            //1:´ò¿ª   0:¹Ø±Õ
-	bool             bSleepShow;       //1:´ò¿ª   0:¹Ø±Õ
-	ScreenId_E 		 eTargetScreen;     //Ä¿±êÆÁÄ»ID
-	vu16             usAutoOffTime;     //Ï¢ÆÁÊ±¼ä
-	vu16             usAutoOffCnt;      //Ï¢ÆÁµ¹¼ÆÊ±
+    bool             bLight;            //1:æ‰“å¼€   0:å…³é—­
+	bool             bSleepShow;       //1:æ‰“å¼€   0:å…³é—­
+	ScreenId_E 		 eTargetScreen;     //ç›®æ ‡å±å¹•ID
+	vu16             usAutoOffTime;     //æ¯å±æ—¶é—´
+	vu16             usAutoOffCnt;      //æ¯å±å€’è®¡æ—¶
 	
-	// Éè±¸×´Ì¬
-	bool             bDevAcState;      // DCACÉè±¸×´Ì¬(true=¿ª, false=¹Ø)
-	bool             bDevPvState;      // PVÉè±¸×´Ì¬
-	bool             bDevLightState;   // LightÉè±¸×´Ì¬
-	bool             bDevUsbAState;   // USB AÉè±¸×´Ì¬
-	bool             bDevUsbC1State;  // USB C1Éè±¸×´Ì¬
-	bool             bDevUsbC2State;  // USB C2Éè±¸×´Ì¬
-	bool             bDevDcState;     // DCÉè±¸×´Ì¬
+	// è®¾å¤‡çŠ¶æ€
+	bool             bDevAcState;      // DCACè®¾å¤‡çŠ¶æ€(true=å¼€, false=å…³)
+	bool             bDevPvState;      // PVè®¾å¤‡çŠ¶æ€
+	bool             bDevLightState;   // Lightè®¾å¤‡çŠ¶æ€
+	bool             bDevUsbAState;   // USB Aè®¾å¤‡çŠ¶æ€
+	bool             bDevUsbC1State;  // USB C1è®¾å¤‡çŠ¶æ€
+	bool             bDevUsbC2State;  // USB C2è®¾å¤‡çŠ¶æ€
+	bool             bDevDcState;     // DCè®¾å¤‡çŠ¶æ€
 }Disp_T;  
 extern Disp_T   tDisp; 
 
-#pragma pack(1) //Ç¿ÖÆÒ»¸ö×Ö½Ú¶ÔÆë
+#pragma pack(1) //å¼ºåˆ¶ä¸€ä¸ªå­—èŠ‚å¯¹é½
 typedef struct
 {
 	u8           ucHighLightValue;
 	u8           ucLowLightValue;
-	vu16         usAutoOffTime;      //´æ´¢Ï¢ÆÁµÄÊ±¼ä,´óÓÚ0´æÔÚÓĞÏ¢ÆÁ,0Îª³£ÁÁ
+	vu16         usAutoOffTime;      //å­˜å‚¨æ¯å±çš„æ—¶é—´,å¤§äº0å­˜åœ¨æœ‰æ¯å±,0ä¸ºå¸¸äº®
 }DispMenParam_T;
-#pragma pack()  //È¡ÏûÒ»¸ö×Ö½Ú¶ÔÆë
+#pragma pack()  //å–æ¶ˆä¸€ä¸ªå­—èŠ‚å¯¹é½
 
 bool bDisp_TaskInit(void);
 bool bDisp_Switch(SwitchType_E type, bool fore_en);
@@ -67,7 +67,7 @@ bool bDisp_MemParamInit(DispMenParam_T* p_lcd_mem);
 u16 usDisp_ErrCodeDisplay(void);
 bool bDisp_ChangeScreen(ScreenId_E screenId);
 
-// Í³Ò»Éè±¸×´Ì¬ÉèÖÃº¯Êı
+// ç»Ÿä¸€è®¾å¤‡çŠ¶æ€è®¾ç½®å‡½æ•°
 void vDisp_SetDevStateIcon(DevType_E devType, bool bState);
 
 #if(!boardUSE_OS)

@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Bms/md_bms_queue_task.h"
@@ -16,32 +16,32 @@
 #define       	bmsTASK_PARAM_CYCLE_TIME               		500
 
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 static s8 c_bms_proc_rec_param(void);
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:´íÎó´¦ÀíÈÎÎñ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    BMS_ErrState_N:
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:é”™è¯¯å¤„ç†ä»»åŠ¡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    BMS_ErrState_N:
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_bms_queue_task_main(Task_T *tp_task)
 {
 	s8 result = 0;
 
-	//·Ç¹¤×÷×´Ì¬ÏÂ,¼ì²éµç³Ø°üÊÇ·ñ¿ªÆôÖĞ
+	//éå·¥ä½œçŠ¶æ€ä¸‹,æ£€æŸ¥ç”µæ± åŒ…æ˜¯å¦å¼€å¯ä¸­
 	if(tSysInfo.eDevState == DS_SHUT_DOWN)
 	{
-		//´¦ÓÚ·Ç¹Ø±Õ×´Ì¬,·¢ËÍÖ¸Áî¹Ø±Õ
+		//å¤„äºéå…³é—­çŠ¶æ€,å‘é€æŒ‡ä»¤å…³é—­
 		if(tBms.eDevState >= DS_ERR)
 			cBms_Switch(SO_KEY, ST_OFF, false);
 	}
 	
-	//¶ÓÁĞÀïÃæÓĞÈÎÎñ
+	//é˜Ÿåˆ—é‡Œé¢æœ‰ä»»åŠ¡
 	if(lwrb_get_full(&tp_task->tQueueBuff))  
 	{
-		cQueue_GotoStep( tp_task, STEP_END );  //½áÊø
+		cQueue_GotoStep( tp_task, STEP_END );  //ç»“æŸ
 		return;
 	}
 	
@@ -49,9 +49,9 @@ void v_bms_queue_task_main(Task_T *tp_task)
     {
         case 0:
         {
-			//Ö÷»ú
+			//ä¸»æœº
 			result = c_bms_cs_get_param(1);
-			//·¢ËÍ³É¹¦
+			//å‘é€æˆåŠŸ
 			if(result > 0)
 				cQueue_GotoStep(tp_task, STEP_NEXT);
 			else
@@ -60,25 +60,25 @@ void v_bms_queue_task_main(Task_T *tp_task)
 		
 		case 1:
         {
-			//´¦Àí½ÓÊÜÊı¾İ
+			//å¤„ç†æ¥å—æ•°æ®
 			c_bms_proc_rec_param();
 			cBms_CheckPerm();
 
 			if(bSys_LowVoltReqChg() == true)
 				c_bms_cs_req_chg();
 			
-			cQueue_GotoStep(tp_task, 0);  //½áÊø
+			cQueue_GotoStep(tp_task, 0);  //ç»“æŸ
         }break;
 			
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
     }
 	
-	//¶ÓÁĞÀïÃæÓĞÈÎÎñ
+	//é˜Ÿåˆ—é‡Œé¢æœ‰ä»»åŠ¡
 	if(lwrb_get_full(&tp_task->tQueueBuff))  
 	{
-		cQueue_GotoStep( tp_task, STEP_END );  //½áÊø
+		cQueue_GotoStep( tp_task, STEP_END );  //ç»“æŸ
 		return;
 	}
 	
@@ -88,36 +88,36 @@ void v_bms_queue_task_main(Task_T *tp_task)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    »ñÈ¡²ÎÊı´¦Àí
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è·å–å‚æ•°å¤„ç†
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE s8 c_bms_proc_rec_param(void)
 {
 	if(tSysInfo.eDevState < DS_BOOTING)
 		return 0;
 
-	//BMS×´Ì¬²»Í¬²½
+	//BMSçŠ¶æ€ä¸åŒæ­¥
 	if(bSys_IsWorkState() == true && tBmsRx.tParam.tState.ucSysState < DS_BOOTING)
 	{
 		cBms_Switch(SO_KEY, ST_ON, false);
 
 		if(uPrint.tFlag.bBmsTask || uPrint.tFlag.bImportant)
-			log_w("bBmsTask:ÏµÍ³ºÍBMS×´Ì¬²»Ò»ÖÂ ÏµÍ³×´Ì¬%d BMS×´Ì¬%d \r\n",tSysInfo.eDevState,tBmsRx.tParam.tState.ucSysState);
+			log_w("bBmsTask:ç³»ç»Ÿå’ŒBMSçŠ¶æ€ä¸ä¸€è‡´ ç³»ç»ŸçŠ¶æ€%d BMSçŠ¶æ€%d \r\n",tSysInfo.eDevState,tBmsRx.tParam.tState.ucSysState);
 	}
 	else if(bSys_IsShutDownState() == true && tBmsRx.tParam.tState.ucSysState > DS_BOOTING)
 	{
 		cBms_Switch(SO_KEY, ST_ON, false);
 
 		if(uPrint.tFlag.bBmsTask || uPrint.tFlag.bImportant)
-			log_w("bBmsTask:ÏµÍ³ºÍBMS×´Ì¬²»Ò»ÖÂ ÏµÍ³×´Ì¬%d BMS×´Ì¬%d \r\n",tSysInfo.eDevState,tBmsRx.tParam.tState.ucSysState);
+			log_w("bBmsTask:ç³»ç»Ÿå’ŒBMSçŠ¶æ€ä¸ä¸€è‡´ ç³»ç»ŸçŠ¶æ€%d BMSçŠ¶æ€%d \r\n",tSysInfo.eDevState,tBmsRx.tParam.tState.ucSysState);
 	}
 		
 	
-	//----------------------------------¹ÊÕÏ´¦Àí--------------------------------------
-	//³äµç¹ıÎÂ¼ì²â
+	//----------------------------------æ•…éšœå¤„ç†--------------------------------------
+	//å……ç”µè¿‡æ¸©æ£€æµ‹
 	static u8 uc_chg_temp_err_cnt = 0;
 	static u8 uc_clear_err_cnt = 0;
 	if(tBms.sMaxTemp >= tAppMemParam.tBMS.cChgMaxTemp)
@@ -150,7 +150,7 @@ __STATIC_INLINE s8 c_bms_proc_rec_param(void)
 		}
 	}
 	
-	//·Åµç¹ıÎÂ¼ì²â
+	//æ”¾ç”µè¿‡æ¸©æ£€æµ‹
 	static u8 uc_dischg_temp_err_cnt = 0;
 	if(tBms.sMaxTemp >= tAppMemParam.tBMS.cDisChgMaxTemp)  
     {
@@ -182,7 +182,7 @@ __STATIC_INLINE s8 c_bms_proc_rec_param(void)
 		}
 	}
 	
-	//³äµçµÍÎÂ±¨¾¯
+	//å……ç”µä½æ¸©æŠ¥è­¦
 	static u8 uc_low_temp_err_cnt = 0;
     if(tBms.sMinTemp <= tAppMemParam.tBMS.cChgMinTemp)
 	{
@@ -212,7 +212,7 @@ __STATIC_INLINE s8 c_bms_proc_rec_param(void)
 		}
 	}
 	
-    //·ÅµçµÍÎÂ±¨¾¯
+    //æ”¾ç”µä½æ¸©æŠ¥è­¦
 	static u8 uc_dischg_low_temp_err_cnt = 0;
     if(tBms.sMinTemp <= tAppMemParam.tBMS.cDisChgMinTemp)
 	{

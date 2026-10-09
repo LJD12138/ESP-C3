@@ -6,11 +6,11 @@ I2cObj_T  		tUSB_IC2_I2C;
 I2cObj_T  		tUSB_IC3_I2C;
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    DCÏà¹ØIO³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    DCç›¸å…³IOåˆå§‹åŒ–
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 
 static void v_usb_gpio_init(void)
@@ -26,7 +26,7 @@ static void v_usb_gpio_init(void)
 	gpio_config(&io_conf);
     usbPOWER_EN_ON();
 
-	//PD100W   IIC³õÊ¼»¯
+	//PD100W   IICåˆå§‹åŒ–
     tUSB_IC1_I2C.ulGPIO_PIN_SCL  = usbIC1_SCL_PIN;
     tUSB_IC1_I2C.ulGPIO_PIN_SDA  = usbIC1_SDA_PIN;
     tUSB_IC1_I2C.Addr = 0x3C;
@@ -34,7 +34,7 @@ static void v_usb_gpio_init(void)
     tUSB_IC1_I2C.usDelay = 20;
     vI2C_ObjInit(&tUSB_IC1_I2C);
 	
-	//USB³äµç IIC³õÊ¼»¯
+	//USBå……ç”µ IICåˆå§‹åŒ–
     tUSB_IC2_I2C.ulGPIO_PIN_SCL  = usbIC2_SCL_PIN;
     tUSB_IC2_I2C.ulGPIO_PIN_SDA  = usbIC2_SDA_PIN;
     tUSB_IC2_I2C.Addr = 0x3C;
@@ -42,7 +42,7 @@ static void v_usb_gpio_init(void)
     tUSB_IC2_I2C.usDelay = 80;
     vI2C_ObjInit(&tUSB_IC2_I2C);
 
-    //USB³äµç IIC³õÊ¼»¯
+    //USBå……ç”µ IICåˆå§‹åŒ–
     tUSB_IC3_I2C.ulGPIO_PIN_SCL  = usbIC3_SCL_PIN;
     tUSB_IC3_I2C.ulGPIO_PIN_SDA  = usbIC3_SDA_PIN;
     tUSB_IC3_I2C.Addr = 0x3C;
@@ -53,11 +53,11 @@ static void v_usb_gpio_init(void)
 
 
 /***********************************************************************************************************************
------º¯Êý¹¦ÄÜ    LED³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    LEDåˆå§‹åŒ–
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ************************************************************************************************************************/
 void vUsb_IfaceInit(void)
 {

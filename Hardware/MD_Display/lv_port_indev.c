@@ -37,18 +37,18 @@ static lv_indev_t *touch_indev = NULL;
  **********************/
 
 /**
- * @brief ³õÊ¼»¯LVGLÊäÈëÉè±¸Çı¶¯£¨´¥ÃşÆÁ£©
+ * @brief åˆå§‹åŒ–LVGLè¾“å…¥è®¾å¤‡é©±åŠ¨ï¼ˆè§¦æ‘¸å±ï¼‰
  */
 void lv_port_indev_init(void)
 {
 #if ESP_LCD_TOUCH_ENABLED
-    /* ³õÊ¼»¯´¥ÃşÆÁ */
+    /* åˆå§‹åŒ–è§¦æ‘¸å± */
     if (eDisp_TouchInit() != ESP_OK) {
         ESP_LOGE(TAG, "Touch initialization failed");
         return;
     }
 
-    /* ´´½¨´¥ÃşÆÁÊäÈëÉè±¸ */
+    /* åˆ›å»ºè§¦æ‘¸å±è¾“å…¥è®¾å¤‡ */
     touch_indev = lv_indev_create();
     if (touch_indev == NULL) {
         ESP_LOGE(TAG, "Failed to create input device");
@@ -69,15 +69,15 @@ void lv_port_indev_init(void)
  **********************/
 
 /**
- * @brief ´¥ÃşÆÁ¶ÁÈ¡»Øµ÷º¯Êı
+ * @brief è§¦æ‘¸å±è¯»å–å›è°ƒå‡½æ•°
  */
 static void touchpad_read_cb(lv_indev_t * indev, lv_indev_data_t * data)
 {
 #if ESP_LCD_TOUCH_ENABLED
-    /* ±ØĞëÏÈ´Ó´¥Ãş¿ØÖÆÆ÷¶ÁÈ¡Êı¾İ */
+    /* å¿…é¡»å…ˆä»è§¦æ‘¸æ§åˆ¶å™¨è¯»å–æ•°æ® */
     esp_lcd_touch_read_data(P_touch_handle);
     
-    /* »ñÈ¡´¥Ãş×ø±ê */
+    /* è·å–è§¦æ‘¸åæ ‡ */
     esp_lcd_touch_point_data_t touch_data;
     uint8_t point_cnt = 0;
     

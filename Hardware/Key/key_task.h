@@ -6,15 +6,15 @@
 #include "driver/gpio.h"
 
 //#define		//4Tab									//13Tab
-#define			keyTASK_CYCLE_TIME						10		//°´¼üÈÎÎñ¸üĞÂÊ±¼ä
+#define			keyTASK_CYCLE_TIME						10		//æŒ‰é”®ä»»åŠ¡æ›´æ–°æ—¶é—´
 
-#define			keyNUM									3		//°´¼üµÄÊıÁ¿
-#define			keyGROUP_NUM							5		//×éºÏ°´¼üÖÖÀà   
-#define			keySHORT_PRESS_TIME						2		//¶Ì°´°´¼üµÄ×îĞ¡Ê±¼ä*10ms
-#define			keyLONG_PRESS_TIME						120		//³¤°´°´¼üµÄ×îĞ¡Ê±¼ä*10ms
-#define     	keySUPER_LONG_PRESS_TIME           		200	    //³¬³¤°´°´¼üµÄ×îĞ¡Ê±¼ä*10ms
-#define			keyNUPRESS_MAX_TIME						35		//×éºÏ°´¼ü×î´óµÄµÈ´ıÊ±¼ä*10ms
-#define			keyADD_SPACE_TIME						20		//³¤°´ÀÛ¼Ó¼ä¸ô
+#define			keyNUM									3		//æŒ‰é”®çš„æ•°é‡
+#define			keyGROUP_NUM							5		//ç»„åˆæŒ‰é”®ç§ç±»   
+#define			keySHORT_PRESS_TIME						2		//çŸ­æŒ‰æŒ‰é”®çš„æœ€å°æ—¶é—´*10ms
+#define			keyLONG_PRESS_TIME						120		//é•¿æŒ‰æŒ‰é”®çš„æœ€å°æ—¶é—´*10ms
+#define     	keySUPER_LONG_PRESS_TIME           		200	    //è¶…é•¿æŒ‰æŒ‰é”®çš„æœ€å°æ—¶é—´*10ms
+#define			keyNUPRESS_MAX_TIME						35		//ç»„åˆæŒ‰é”®æœ€å¤§çš„ç­‰å¾…æ—¶é—´*10ms
+#define			keyADD_SPACE_TIME						20		//é•¿æŒ‰ç´¯åŠ é—´éš”
 
 // #define     	keyGPIO_POWER_RCU       				RCU_GPIOC
 // #define     	keyGPIO_POWER_PORT      				GPIOC
@@ -34,7 +34,7 @@
 
 __STATIC_INLINE bool bKey_PowerIsPress(void)          
 {    
-    if(gpio_get_level(keyGPIO_POWER_PIN) == 0)//¶ÁÈ¡°´¼ü
+    if(gpio_get_level(keyGPIO_POWER_PIN) == 0)//è¯»å–æŒ‰é”®
         return true;
     else
         return false;
@@ -42,7 +42,7 @@ __STATIC_INLINE bool bKey_PowerIsPress(void)
 
 __STATIC_INLINE bool bKey_AcIsPress(void)
 {
-    // if(gpio_get_level(keyGPIO_AC_PIN) == 0)//¶ÁÈ¡°´¼ü
+    // if(gpio_get_level(keyGPIO_AC_PIN) == 0)//è¯»å–æŒ‰é”®
     //     return true;
     // else
         return false;
@@ -50,7 +50,7 @@ __STATIC_INLINE bool bKey_AcIsPress(void)
 
 __STATIC_INLINE bool bKey_LightIsPress(void)
 {
-    // if(gpio_get_level(keyGPIO_LIGHT_PIN) == 0)//¶ÁÈ¡°´¼ü
+    // if(gpio_get_level(keyGPIO_LIGHT_PIN) == 0)//è¯»å–æŒ‰é”®
     //     return true;
     // else
         return false;
@@ -58,7 +58,7 @@ __STATIC_INLINE bool bKey_LightIsPress(void)
 
 __STATIC_INLINE bool bKey_UsbIsPress(void)
 {
-    // if(gpio_get_level(keyGPIO_USB_PIN) == 0)//¶ÁÈ¡°´¼ü
+    // if(gpio_get_level(keyGPIO_USB_PIN) == 0)//è¯»å–æŒ‰é”®
     //     return true;
     // else
         return false;
@@ -66,7 +66,7 @@ __STATIC_INLINE bool bKey_UsbIsPress(void)
 
 __STATIC_INLINE bool bKey_DcIsPress(void)
 {
-    // if((GPIO_ISTAT(keyGPIO_DC_PORT)&(keyGPIO_DC_PIN)) == 0)//¶ÁÈ¡°´¼ü
+    // if((GPIO_ISTAT(keyGPIO_DC_PORT)&(keyGPIO_DC_PIN)) == 0)//è¯»å–æŒ‰é”®
     //     return true;
     // else
         return false;
@@ -91,14 +91,14 @@ typedef enum : uint8_t
 	KTE_DC_LONG,
 	KTE_DC_SHORT,
 	KTE_DC_SUPER_LONG,
-} KeyTriEvent_e; //´¥·¢ÊÂ¼ş
+} KeyTriEvent_e; //è§¦å‘äº‹ä»¶
 
 typedef struct
 {
     bool    			(*IsPress)(void);        
-    vs16    			sOnPressCnt;	  	//°´¼ü°´ÏÂ¼ÆÊ±  0:±íÊ¾°´¼üÃ»´¥·¢   -1:±íÊ¾°´¼ü¹¦ÄÜÒÑ¾­±»¼ÇÂ¼
-	bool        		bEnMulitFunKey;     //Ê¹ÄÜ¶à¹¦ÄÜ°´¼ü
-	bool        		bEnLongPressAdd;    //Ê¹ÄÜ³¤°´ÀÛ¼Ó      
+    vs16    			sOnPressCnt;	  	//æŒ‰é”®æŒ‰ä¸‹è®¡æ—¶  0:è¡¨ç¤ºæŒ‰é”®æ²¡è§¦å‘   -1:è¡¨ç¤ºæŒ‰é”®åŠŸèƒ½å·²ç»è¢«è®°å½•
+	bool        		bEnMulitFunKey;     //ä½¿èƒ½å¤šåŠŸèƒ½æŒ‰é”®
+	bool        		bEnLongPressAdd;    //ä½¿èƒ½é•¿æŒ‰ç´¯åŠ       
 }KeyHandler_t;
 
 

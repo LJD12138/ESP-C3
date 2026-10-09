@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ¶ÓÁĞº¯Êı                                                  			*
+ *                                         é˜Ÿåˆ—å‡½æ•°                                                  			*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Dcac/md_dcac_queue_task.h"
@@ -14,16 +14,16 @@
 
 #define       	dcacTASK_CTRL_SW_CYCLE_TIME               	50
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:¿ØÖÆ¿ª¹Ø
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:æ§åˆ¶å¼€å…³
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_dcac_queue_task_ctrl_sw(Task_T *tp_task)
 {
@@ -40,7 +40,7 @@ void v_dcac_queue_task_ctrl_sw(Task_T *tp_task)
 			if(tp_task->usStepRepeatCnt > 3)
 			{
 				if(uPrint.tFlag.bDcacTask)
-					log_w("bDcacTask:¶ÔÏó%dÊı¾İ·¢ËÍÊ§°Ü´ÎÊı¹ı¶à,ÍË³ö¿ª¹ØÈÎÎñ", u_param.tTaskParam.ucObj);
+					log_w("bDcacTask:å¯¹è±¡%dæ•°æ®å‘é€å¤±è´¥æ¬¡æ•°è¿‡å¤š,é€€å‡ºå¼€å…³ä»»åŠ¡", u_param.tTaskParam.ucObj);
 				
 				goto loop_end;
 			}
@@ -50,9 +50,9 @@ void v_dcac_queue_task_ctrl_sw(Task_T *tp_task)
 				case 3:
 				{
 					if(type == ST_ON)
-						bDcac_SetAcState(OO_DISCHG, IOS_STARTING);   //¿ªÆô
+						bDcac_SetAcState(OO_DISCHG, IOS_STARTING);   //å¼€å¯
 					else 
-						bDcac_SetAcState(OO_DISCHG, IOS_CLOSING);    //¹Ø±Õ	
+						bDcac_SetAcState(OO_DISCHG, IOS_CLOSING);    //å…³é—­	
 				}
 				break;
 				
@@ -63,19 +63,19 @@ void v_dcac_queue_task_ctrl_sw(Task_T *tp_task)
 			u_reply_param = u_param;
 			if(c_dcac_cs_switch(u_reply_param) > 0)
 			{
-				//Ğ£ÑéÊı¾İ
+				//æ ¡éªŒæ•°æ®
 				u8 len = lwrb_get_full(&tDcacReplyBuff);
 				if(len != sizeof(u_reply_param) || tDcacReplyBuff.buff == NULL)
 				{
 					if(uPrint.tFlag.bDcacTask && uPrint.tFlag.bImportant)
-						log_w("bDcacTask:·µ»ØÊı¾İ´íÎó,³¤¶È%d", len);
+						log_w("bDcacTask:è¿”å›æ•°æ®é”™è¯¯,é•¿åº¦%d", len);
 					break;
 				}
 				
-				//¶ÁÈ¡Êı¾İ
+				//è¯»å–æ•°æ®
 				lwrb_read(&tDcacReplyBuff, (u8*)&u_reply_param, sizeof(u_reply_param));
 
-				cQueue_GotoStep(tp_task, STEP_NEXT);  //ÏÂÒ»²½
+				cQueue_GotoStep(tp_task, STEP_NEXT);  //ä¸‹ä¸€æ­¥
 			}
 			else
 				break;
@@ -83,17 +83,17 @@ void v_dcac_queue_task_ctrl_sw(Task_T *tp_task)
 		
 		case 1:
 		{
-			//Ğ£ÑéÊı¾İ
+			//æ ¡éªŒæ•°æ®
 			if(u_param.tTaskParam.ucObj != u_reply_param.tTaskParam.ucObj)
 			{
 				if(uPrint.tFlag.bDcacTask && uPrint.tFlag.bImportant)
-					log_w("bDcacTask:·µ»Ø¶ÔÏó%d´íÎó,µ±Ç°²Ù×÷¶ÔÏó%d", 
+					log_w("bDcacTask:è¿”å›å¯¹è±¡%dé”™è¯¯,å½“å‰æ“ä½œå¯¹è±¡%d", 
 						u_reply_param.tTaskParam.ucObj, u_param.tTaskParam.ucObj);
 				cQueue_GotoStep(tp_task, STEP_FORWARD);
 				break;
 			}
 
-			//´¦ÀíÊı¾İ
+			//å¤„ç†æ•°æ®
 			switch(u_param.tTaskParam.ucObj)
 			{
 				case 3:
@@ -102,35 +102,35 @@ void v_dcac_queue_task_ctrl_sw(Task_T *tp_task)
 					{
 						if(u_reply_param.tTaskParam.ucParam >= IOS_STARTING)
 						{
-							bDcac_SetAcState(OO_DISCHG, IOS_WORK);   //¿ªÆô
-							cQueue_GotoStep(tp_task, STEP_NEXT);  //ÏÂÒ»²½
+							bDcac_SetAcState(OO_DISCHG, IOS_WORK);   //å¼€å¯
+							cQueue_GotoStep(tp_task, STEP_NEXT);  //ä¸‹ä¸€æ­¥
 							return;
 						}
 						else
 						{
 							if(uPrint.tFlag.bDcacTask && uPrint.tFlag.bImportant)
-								log_w("bDcacTask:¿ªÆô·µ»Ø²ÎÊı%d´íÎó", u_reply_param.tTaskParam.ucParam);
+								log_w("bDcacTask:å¼€å¯è¿”å›å‚æ•°%dé”™è¯¯", u_reply_param.tTaskParam.ucParam);
 						}
 					}
 					else 
 					{
 						if(u_reply_param.tTaskParam.ucParam <= IOS_SHUT_DOWN)
 						{
-							bDcac_SetAcState(OO_DISCHG, IOS_SHUT_DOWN);    //¹Ø±Õ
-							cQueue_GotoStep(tp_task, STEP_NEXT);  //ÏÂÒ»²½
+							bDcac_SetAcState(OO_DISCHG, IOS_SHUT_DOWN);    //å…³é—­
+							cQueue_GotoStep(tp_task, STEP_NEXT);  //ä¸‹ä¸€æ­¥
 							return;
 						}
 						else
 						{
 							if(uPrint.tFlag.bDcacTask && uPrint.tFlag.bImportant)
-								log_w("bDcacTask:¹Ø±Õ·µ»Ø²ÎÊı%d´íÎó", u_reply_param.tTaskParam.ucParam);
+								log_w("bDcacTask:å…³é—­è¿”å›å‚æ•°%dé”™è¯¯", u_reply_param.tTaskParam.ucParam);
 						}				
 					}
 				}
 
 				default:
 				if(uPrint.tFlag.bDcacTask && uPrint.tFlag.bImportant)
-					log_w("bDcacTask:µ±Ç°²Ù×÷¶ÔÏó´íÎó%d", u_param.tTaskParam.ucObj);
+					log_w("bDcacTask:å½“å‰æ“ä½œå¯¹è±¡é”™è¯¯%d", u_param.tTaskParam.ucObj);
 				break;
 			}
 
@@ -141,21 +141,21 @@ void v_dcac_queue_task_ctrl_sw(Task_T *tp_task)
 		case 2:
 		{
 			if(uPrint.tFlag.bDcacTask)
-                sMyPrint("bDcacTask:¶ÔÏó%d----¿ª¹ØÍê³É----\r\n",u_param.tTaskParam.ucObj);
+                sMyPrint("bDcacTask:å¯¹è±¡%d----å¼€å…³å®Œæˆ----\r\n",u_param.tTaskParam.ucObj);
 			
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 		}break;
 			
 		default:
-		    cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+		    cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
 	}
 	
 	tp_task->usTaskWaitCnt++;
-	if(tp_task->usTaskWaitCnt > (3000 / dcacTASK_CTRL_SW_CYCLE_TIME))  //µÈ´ı³¬Ê±
+	if(tp_task->usTaskWaitCnt > (3000 / dcacTASK_CTRL_SW_CYCLE_TIME))  //ç­‰å¾…è¶…æ—¶
 	{
 		if(uPrint.tFlag.bDcacTask)
-			log_w("bDcacTask:¿ØÖÆÄæ±äÊä³ö³¬Ê±ÍË³ö,²½Öè%d", tp_task->ucStep);
+			log_w("bDcacTask:æ§åˆ¶é€†å˜è¾“å‡ºè¶…æ—¶é€€å‡º,æ­¥éª¤%d", tp_task->ucStep);
 		
 		loop_end:
 		if(type == ST_ON)
@@ -169,7 +169,7 @@ void v_dcac_queue_task_ctrl_sw(Task_T *tp_task)
 			}
 		}
 		
-		cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+		cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 	}
 	
 	vTaskDelay(dcacTASK_CTRL_SW_CYCLE_TIME);

@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
-*                                            QMC5883L 3Öá´ÅÁ¦¼ÆÇı¶¯                                              *
-*                                      ·â×°²ã - »ùÓÚesp-idf-lib×é¼ş¿â                                            *
+*                                            QMC5883L 3è½´ç£åŠ›è®¡é©±åŠ¨                                              *
+*                                      å°è£…å±‚ - åŸºäºesp-idf-libç»„ä»¶åº“                                            *
 ******************************************************************************************************************/
 #ifndef BSP_QMC5883L_H_
 #define BSP_QMC5883L_H_
@@ -8,60 +8,60 @@
 #include "main.h"
 #include <qmc5883l.h>
 
-// QMC5883L I2CµØÖ·
+// QMC5883L I2Cåœ°å€
 #define     QMC5883L_I2C_ADDR               QMC5883L_I2C_ADDR_DEF
 
-// Êä³öÊı¾İÂÊ
+// è¾“å‡ºæ•°æ®ç‡
 typedef qmc5883l_odr_t      Qmc5883l_Odr_E;
 #define     QMC5883L_ODR_10HZ               QMC5883L_DR_10
 #define     QMC5883L_ODR_50HZ               QMC5883L_DR_50
 #define     QMC5883L_ODR_100HZ              QMC5883L_DR_100
 #define     QMC5883L_ODR_200HZ              QMC5883L_DR_200
 
-// ¹ı²ÉÑùÂÊ
+// è¿‡é‡‡æ ·ç‡
 typedef qmc5883l_osr_t      Qmc5883l_Osr_E;
 #define     QMC5883L_OSR_64                 QMC5883L_OSR_64
 #define     QMC5883L_OSR_128                QMC5883L_OSR_128
 #define     QMC5883L_OSR_256                QMC5883L_OSR_256
 #define     QMC5883L_OSR_512                QMC5883L_OSR_512
 
-// Á¿³Ì
+// é‡ç¨‹
 typedef qmc5883l_range_t    Qmc5883l_Range_E;
 #define     QMC5883L_RNG_2G                 QMC5883L_RNG_2
 #define     QMC5883L_RNG_8G                 QMC5883L_RNG_8
 
-// ¹¤×÷Ä£Ê½
+// å·¥ä½œæ¨¡å¼
 typedef qmc5883l_mode_t     Qmc5883l_Mode_E;
 #define     QMC5883L_MODE_STANDBY           QMC5883L_MODE_STANDBY
 #define     QMC5883L_MODE_CONTINUOUS        QMC5883L_MODE_CONTINUOUS
 
-// Ô­Ê¼Êı¾İ½á¹¹
+// åŸå§‹æ•°æ®ç»“æ„
 typedef qmc5883l_raw_data_t Qmc5883l_RawData_T;
 
-// ÎïÀíÊı¾İ½á¹¹(ºÁ¸ßË¹)
+// ç‰©ç†æ•°æ®ç»“æ„(æ¯«é«˜æ–¯)
 typedef qmc5883l_data_t     Qmc5883l_Data_T;
 
-// ÅäÖÃ½á¹¹
+// é…ç½®ç»“æ„
 typedef struct
 {
-    Qmc5883l_Odr_E      eOdr;           // Êä³öÊı¾İÂÊ
-    Qmc5883l_Osr_E      eOsr;           // ¹ı²ÉÑùÂÊ
-    Qmc5883l_Range_E    eRange;         // Á¿³Ì
-    Qmc5883l_Mode_E     eMode;          // ¹¤×÷Ä£Ê½
+    Qmc5883l_Odr_E      eOdr;           // è¾“å‡ºæ•°æ®ç‡
+    Qmc5883l_Osr_E      eOsr;           // è¿‡é‡‡æ ·ç‡
+    Qmc5883l_Range_E    eRange;         // é‡ç¨‹
+    Qmc5883l_Mode_E     eMode;          // å·¥ä½œæ¨¡å¼
 }Qmc5883l_Config_T;
 
-// QMC5883L¶ÔÏó½á¹¹
+// QMC5883Lå¯¹è±¡ç»“æ„
 typedef struct
 {
-    qmc5883l_t          tDev;           // Éè±¸¶ÔÏó
-    Qmc5883l_Config_T   tConfig;        // ÅäÖÃ²ÎÊı
-    Qmc5883l_Data_T     tData;          // ÎïÀíÊı¾İ
-    DevState_E          eDevState;      // Éè±¸×´Ì¬
+    qmc5883l_t          tDev;           // è®¾å¤‡å¯¹è±¡
+    Qmc5883l_Config_T   tConfig;        // é…ç½®å‚æ•°
+    Qmc5883l_Data_T     tData;          // ç‰©ç†æ•°æ®
+    DevState_E          eDevState;      // è®¾å¤‡çŠ¶æ€
 }Qmc5883l_T;
 
 extern Qmc5883l_T   tQmc5883l;
 
-// ½Ó¿Úº¯Êı
+// æ¥å£å‡½æ•°
 void    vQmc5883l_IfaceInit(void);
 s8      cQmc5883l_Init(void);
 s8      cQmc5883l_Config(Qmc5883l_Config_T *p_config);

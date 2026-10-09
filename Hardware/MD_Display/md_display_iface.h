@@ -4,12 +4,12 @@
  * File    : md_display_iface.h
  * Date    : 2026-01-23 17:23:34
  * Author  : LJD(291483914@qq.com)
- * Desc    : ÏÔÊ¾ÆÁ½Ó¿Ú²ãÍ·ÎÄ¼ş - ST7789 + FT6336 °æ±¾
+ * Desc    : æ˜¾ç¤ºå±æ¥å£å±‚å¤´æ–‡ä»¶ - ST7789 + FT6336 ç‰ˆæœ¬
  * -------------------------------------------------------
  * History :
- * 2026-02-07 Ìí¼ÓESP-LCDÃæ°å¾ä±úºÍ±³¹â¿ØÖÆAPI
- * 2026-02-24 ÓÅ»¯£ºÒÆ³ıÎ´Ê¹ÓÃµÄº¯ÊıÉùÃ÷£¬Í³Ò»ºêÃüÃû·ç¸ñ
- * 2026-03-04 ĞŞ¸Ä£ºÊÊÅäST7789 LCDÇı¶¯ºÍFT6336´¥ÃşÆÁÇı¶¯
+ * 2026-02-07 æ·»åŠ ESP-LCDé¢æ¿å¥æŸ„å’ŒèƒŒå…‰æ§åˆ¶API
+ * 2026-02-24 ä¼˜åŒ–ï¼šç§»é™¤æœªä½¿ç”¨çš„å‡½æ•°å£°æ˜ï¼Œç»Ÿä¸€å®å‘½åé£æ ¼
+ * 2026-03-04 ä¿®æ”¹ï¼šé€‚é…ST7789 LCDé©±åŠ¨å’ŒFT6336è§¦æ‘¸å±é©±åŠ¨
  * -------------------------------------------------------
  * Copyright (c) 2026 -inc
 *******************************************************************************************************************************/
@@ -23,24 +23,24 @@ extern "C" {
 /* ==========================================includes====================================*/
 #include "board_config.h"
 
-/* ==========================================GPIO¶¨Òå====================================*/
-/* SPIÒı½Å - J4½Ó¿Ú */
+/* ==========================================GPIOå®šä¹‰====================================*/
+/* SPIå¼•è„š - J4æ¥å£ */
 #define     dispSPI_GPIO_MOSI_PIN       GPIO_NUM_5      /* IO5_LCD_MOSI */
 #define     dispSPI_GPIO_CLK_PIN        GPIO_NUM_3      /* IO3_LCD_SCK */
 #define     dispSPI_GPIO_CS_PIN         GPIO_NUM_4      /* IO4_LCD_CS */
 
-/* LCD¿ØÖÆÒı½Å */
-#define     dispLCD_GPIO_RES_PIN        GPIO_NUM_NC     /* Î´Ê¹ÓÃÓ²¼ş¸´Î»£¬Ê¹ÓÃÈí¼ş¸´Î» */
+/* LCDæ§åˆ¶å¼•è„š */
+#define     dispLCD_GPIO_RES_PIN        GPIO_NUM_NC     /* æœªä½¿ç”¨ç¡¬ä»¶å¤ä½ï¼Œä½¿ç”¨è½¯ä»¶å¤ä½ */
 #define     dispLCD_GPIO_DC_PIN         GPIO_NUM_6      /* IO6_LCD_DC */
 #define     dispLCD_GPIO_BLK_PIN        GPIO_NUM_2      /* IO2_LCD_BL */
 
-/* I2CÒı½Å - ´¥ÃşÆÁ FT6336 */
+/* I2Cå¼•è„š - è§¦æ‘¸å± FT6336 */
 #define     dispTOUCH_I2C_SDA_PIN       GPIO_NUM_0      /* IO0_I2C_SDA */
 #define     dispTOUCH_I2C_SCL_PIN       GPIO_NUM_1      /* IO1_I2C_SCL */
-#define     dispTOUCH_GPIO_INT_PIN      GPIO_NUM_NC     /* ´¥ÃşÖĞ¶ÏÒı½Å£¨¿ÉÑ¡£© */
-#define     dispTOUCH_GPIO_RST_PIN      GPIO_NUM_NC     /* ´¥Ãş¸´Î»Òı½Å£¨¿ÉÑ¡£© */
+#define     dispTOUCH_GPIO_INT_PIN      GPIO_NUM_NC     /* è§¦æ‘¸ä¸­æ–­å¼•è„šï¼ˆå¯é€‰ï¼‰ */
+#define     dispTOUCH_GPIO_RST_PIN      GPIO_NUM_NC     /* è§¦æ‘¸å¤ä½å¼•è„šï¼ˆå¯é€‰ï¼‰ */
 
-/* ¶Ë¿ÚµçÆ½¿ØÖÆºê */
+/* ç«¯å£ç”µå¹³æ§åˆ¶å® */
 #define     dispSPI_CS_SET()            gpio_set_level(dispSPI_GPIO_CS_PIN, 1)
 #define     dispSPI_CS_CLR()            gpio_set_level(dispSPI_GPIO_CS_PIN, 0)
 
@@ -50,11 +50,11 @@ extern "C" {
 #define     dispLCD_BLK_SET()           gpio_set_level(dispLCD_GPIO_BLK_PIN, 0)
 #define     dispLCD_BLK_CLR()           gpio_set_level(dispLCD_GPIO_BLK_PIN, 1)
 
-/* ÏÔÊ¾Çı¶¯Ä£Ê½Ñ¡Ôñ: 1=Ê¹ÓÃESP-LCD¿ò¼Ü, 0=Ê¹ÓÃ´«Í³DMA·½Ê½(±¸ÓÃ) */
+/* æ˜¾ç¤ºé©±åŠ¨æ¨¡å¼é€‰æ‹©: 1=ä½¿ç”¨ESP-LCDæ¡†æ¶, 0=ä½¿ç”¨ä¼ ç»ŸDMAæ–¹å¼(å¤‡ç”¨) */
 #define dispUSE_ESP_LCD_FRAMEWORK   1
 
 #if (boardDISPLAY)
-/* Ìø¹ılv_conf.h£¬Ê¹ÓÃKconfigÅäÖÃ */
+/* è·³è¿‡lv_conf.hï¼Œä½¿ç”¨Kconfigé…ç½® */
 #ifndef LV_CONF_SKIP
 #define LV_CONF_SKIP 1
 #endif
@@ -63,13 +63,13 @@ extern "C" {
 #include "driver/spi_master.h"
 #include "driver/i2c.h"
 
-/* ESP-LCD Í·ÎÄ¼ş - ĞèÒª esp_lcd ×é¼ş */
+/* ESP-LCD å¤´æ–‡ä»¶ - éœ€è¦ esp_lcd ç»„ä»¶ */
 #include "esp_lcd_types.h"
 #include "esp_lcd_panel_io.h"
 #include "esp_lcd_panel_vendor.h"
 #include "esp_lcd_panel_ops.h"
 
-/* ´¥ÃşÆÁÍ·ÎÄ¼ş - Ìõ¼ş±àÒë±ÜÃâÎ´°²×°×é¼şÊ±³ö´í */
+/* è§¦æ‘¸å±å¤´æ–‡ä»¶ - æ¡ä»¶ç¼–è¯‘é¿å…æœªå®‰è£…ç»„ä»¶æ—¶å‡ºé”™ */
 #if __has_include("esp_lcd_touch.h")
 #include "esp_lcd_touch.h"
 #define ESP_LCD_TOUCH_ENABLED   1
@@ -80,31 +80,31 @@ extern "C" {
 #include "lvgl.h"
 
 /* ==========================================macros======================================*/
-/* LCD×î´ó´«Êä×Ö½ÚÊı */
+/* LCDæœ€å¤§ä¼ è¾“å­—èŠ‚æ•° */
 #define dispLCD_BUF_SIZE            4096
 
-/* SPIÊ±ÖÓÅäÖÃ */
-#define dispSPI_CLK_SPEED_HZ        (40 * 1000 * 1000)  /* ESP-LCDÄ£Ê½£º40MHz */
+/* SPIæ—¶é’Ÿé…ç½® */
+#define dispSPI_CLK_SPEED_HZ        (40 * 1000 * 1000)  /* ESP-LCDæ¨¡å¼ï¼š40MHz */
 
-/* DMA´«Êä¶ÓÁĞ´óĞ¡ */
+/* DMAä¼ è¾“é˜Ÿåˆ—å¤§å° */
 #define dispDMA_QUEUE_SIZE          10
 
-/* I2CÅäÖÃ */
+/* I2Cé…ç½® */
 #define dispTOUCH_I2C_NUM           I2C_NUM_0
 #define dispTOUCH_I2C_CLK_SPEED     400000              /* 400kHz */
 
 /* ==========================================globals=====================================*/
-/* LCDÃæ°åIO¾ä±ú */
+/* LCDé¢æ¿IOå¥æŸ„ */
 #if(dispUSE_ESP_LCD_FRAMEWORK)
 extern esp_lcd_panel_io_handle_t P_panel_io;
 #endif  //dispUSE_ESP_LCD_FRAMEWORK
 
-/* LCDÃæ°å¾ä±ú */
+/* LCDé¢æ¿å¥æŸ„ */
 #if(dispUSE_ESP_LCD_FRAMEWORK)
 extern esp_lcd_panel_handle_t P_panel_handle;
 #endif  //dispUSE_ESP_LCD_FRAMEWORK
 
-/* ´¥ÃşÆÁ¾ä±ú - Ìõ¼ş±àÒë */
+/* è§¦æ‘¸å±å¥æŸ„ - æ¡ä»¶ç¼–è¯‘ */
 #if ESP_LCD_TOUCH_ENABLED
 extern esp_lcd_touch_handle_t P_touch_handle;
 #else
@@ -112,31 +112,31 @@ typedef void* esp_lcd_touch_handle_t;
 extern esp_lcd_touch_handle_t P_touch_handle;
 #endif
 
-/* SPIÉè±¸¾ä±ú - ÓÃÓÚ´«Í³SPI´«Êä */
+/* SPIè®¾å¤‡å¥æŸ„ - ç”¨äºä¼ ç»ŸSPIä¼ è¾“ */
 extern spi_device_handle_t LCD_Handle;
 
 extern lv_display_t *display;
 
 /* ==========================================extern======================================*/
-/* ½Ó¿Ú³õÊ¼»¯ */
+/* æ¥å£åˆå§‹åŒ– */
 void vDisp_IfaceInit(void);
 
-/* ±³¹â¿ØÖÆ */
+/* èƒŒå…‰æ§åˆ¶ */
 void vDisp_SetBacklight(uint8_t uc_on);
 uint8_t ucDisp_GetBacklight(void);
 
-/* SPIµ×²ã´«Êäº¯Êı£¨ÓÃÓÚ¼æÈİÔ­ÓĞÇı¶¯API£© */
+/* SPIåº•å±‚ä¼ è¾“å‡½æ•°ï¼ˆç”¨äºå…¼å®¹åŸæœ‰é©±åŠ¨APIï¼‰ */
 void vDisp_SPI_WR_Bus(spi_device_handle_t handle, uint8_t uc_data);
 void vDisp_SPI_Write_Data(spi_device_handle_t handle, const uint8_t *puc_data, int len);
 esp_err_t eDisp_SPI_Write_Data_DMA_Batch(spi_device_handle_t handle, const uint8_t *puc_data, int total_len);
 
-/* DMAÄÚ´æĞÅÏ¢²éÑ¯ */
+/* DMAå†…å­˜ä¿¡æ¯æŸ¥è¯¢ */
 void vDisp_PrintDmaMemoryInfo(void);
 
-/* ´¥ÃşÆÁ³õÊ¼»¯ */
+/* è§¦æ‘¸å±åˆå§‹åŒ– */
 esp_err_t eDisp_TouchInit(void);
 
-/* DMA´«ÊäÍê³É»Øµ÷ÒÑÄÚÖÃÔÚESP-LCD IOÅäÖÃÖĞ£¬Ö±½ÓÊ¹ÓÃÈ«¾Ödisplay±äÁ¿Í¨ÖªLVGL */
+/* DMAä¼ è¾“å®Œæˆå›è°ƒå·²å†…ç½®åœ¨ESP-LCD IOé…ç½®ä¸­ï¼Œç›´æ¥ä½¿ç”¨å…¨å±€displayå˜é‡é€šçŸ¥LVGL */
 
 #endif  /* boardDISPLAY */
 

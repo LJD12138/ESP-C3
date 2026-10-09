@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         œµÕ≥µƒ∂”¡–∫Ø ˝                                                  		*
+ *                                         Á≥ªÁªüÁöÑÈòüÂàóÂáΩÊï∞                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Bms/md_bms_queue_task.h"
@@ -15,11 +15,11 @@
 #define       	bmsTASK_CTRL_SWITCH_CYCLE_TIME               		50
 
 /*****************************************************************************************************************
------∫Ø ˝π¶ƒ‹    »ŒŒÒ∫Ø ˝:øÿ÷∆ø™πÿ»ŒŒÒ
------Àµ√˜(±∏◊¢)  none
------¥´»Î≤Œ ˝    BMS_ErrState_N:
------ ‰≥ˆ≤Œ ˝    none
------∑µªÿ÷µ      none
+-----ÂáΩÊï∞ÂäüËÉΩ    ‰ªªÂä°ÂáΩÊï∞:ÊéßÂà∂ÂºÄÂÖ≥‰ªªÂä°
+-----ËØ¥Êòé(Â§áÊ≥®)  none
+-----‰º†ÂÖ•ÂèÇÊï∞    BMS_ErrState_N:
+-----ËæìÂá∫ÂèÇÊï∞    none
+-----ËøîÂõûÂÄº      none
 ******************************************************************************************************************/
 void v_bms_queue_task_clt_switch(Task_T *tp_task)
 {
@@ -27,44 +27,44 @@ void v_bms_queue_task_clt_switch(Task_T *tp_task)
 	TaskInParam_U u_param;
 	SwitchType_E e_sw_type;
 	
-	u_param.usTaskInParam = tp_task->usInParam;       //“™…Ë÷√BMSµƒ◊¥Ã¨
+	u_param.usTaskInParam = tp_task->usInParam;       //Ë¶ÅËÆæÁΩÆBMSÁöÑÁä∂ÊÄÅ
 
 	if(u_param.tTaskParam.ucObj == 0)
 		e_sw_type = (SwitchType_E)u_param.tTaskParam.ucParam;
 	
 	switch(tp_task->ucStep)
 	{
-		//------------------------------∑¢ÀÕ÷∏¡Ó------------------------------------//
+		//------------------------------ÂèëÈÄÅÊåá‰ª§------------------------------------//
 		case 0:
 		{
 			tp_task->usStepRepeatCnt++;
 			if(tp_task->usStepRepeatCnt > 3)
 			{
 				if(uPrint.tFlag.bBmsTask)
-					log_w("bBmsTask:∂‘œÛ%d ˝æ›∑¢ÀÕ ß∞‹¥Œ ˝π˝∂‡,ÕÀ≥ˆø™πÿ»ŒŒÒ", u_param.tTaskParam.ucObj);
+					log_w("bBmsTask:ÂØπË±°%dÊï∞ÊçÆÂèëÈÄÅÂ§±Ë¥•Ê¨°Êï∞ËøáÂ§ö,ÈÄÄÂá∫ÂºÄÂÖ≥‰ªªÂä°", u_param.tTaskParam.ucObj);
 				
 				goto loop_end;
 			}
 			
 			switch(u_param.tTaskParam.ucObj)
 			{
-				//œµÕ≥
+				//Á≥ªÁªü
 				case 0:
 				{
 					if(e_sw_type == ST_ON)
 						bBms_SetDevState(DS_BOOTING);
 					else 
 					{
-						bBms_SetErrCode(BEC_CLEAR_ALL,false);  //«Â≥˝À˘”–¥ÌŒÛ
+						bBms_SetErrCode(BEC_CLEAR_ALL,false);  //Ê∏ÖÈô§ÊâÄÊúâÈîôËØØ
 						bBms_SetDevState(DS_CLOSING);
 					}
 					c_ret = c_bms_cs_switch(u_param);
 				}
 				break;
 
-				//’’√˜
+				//ÁÖßÊòé
 				case 2:
-				//»»π‹¿Ì
+				//ÁÉ≠ÁÆ°ÁêÜ
 				case 9:
 				{
 					c_ret = c_bms_cs_switch(u_param);
@@ -73,55 +73,55 @@ void v_bms_queue_task_clt_switch(Task_T *tp_task)
 				
 				default:
 					if(uPrint.tFlag.bBmsTask && uPrint.tFlag.bImportant)
-						log_w("bBmsTask:ø™πÿ∂‘œÛ%dŒ¥∂®“Â",u_param.tTaskParam.ucObj);
-					cQueue_GotoStep(tp_task, STEP_END);  //Ω· ¯
+						log_w("bBmsTask:ÂºÄÂÖ≥ÂØπË±°%dÊú™ÂÆö‰πâ",u_param.tTaskParam.ucObj);
+					cQueue_GotoStep(tp_task, STEP_END);  //ÁªìÊùü
 				break;
 			}
 
 			if(c_ret > 0)
-				cQueue_GotoStep(tp_task, STEP_NEXT);  	//œ¬“ª≤Ω
+				cQueue_GotoStep(tp_task, STEP_NEXT);  	//‰∏ã‰∏ÄÊ≠•
 			else
 				break;
 		}
 		
-		//------------------------------¥¶¿Ì∑µªÿ ˝æ›------------------------------------//
+		//------------------------------Â§ÑÁêÜËøîÂõûÊï∞ÊçÆ------------------------------------//
 		case 1:
 		{
 			TaskInParam_U u_reply_param;
 
-			//–£—È ˝æ›
+			//Ê†°È™åÊï∞ÊçÆ
 			u8 len = lwrb_get_full(&tBmsReplyBuff);
 			if(len != sizeof(u_reply_param) || tBmsReplyBuff.buff == NULL)
 			{
 				if(uPrint.tFlag.bBmsTask && uPrint.tFlag.bImportant)
-					log_w("bBmsTask:BMS∑µªÿ ˝æ›¥ÌŒÛ,≥§∂»%d", len);
+					log_w("bBmsTask:BMSËøîÂõûÊï∞ÊçÆÈîôËØØ,ÈïøÂ∫¶%d", len);
 				cQueue_GotoStep(tp_task, STEP_FORWARD);
 				break;
 			}
 			
-			//∂¡»° ˝æ›
+			//ËØªÂèñÊï∞ÊçÆ
 			lwrb_read(&tBmsReplyBuff, (u8*)&u_reply_param, sizeof(u_reply_param));
 			
-			//–£—È ˝æ›
+			//Ê†°È™åÊï∞ÊçÆ
 			if(u_param.tTaskParam.ucObj != u_reply_param.tTaskParam.ucObj)
 			{
 				if(uPrint.tFlag.bBmsTask && uPrint.tFlag.bImportant)
-					log_w("bBmsTask:BMS∑µªÿ∂‘œÛ%d¥ÌŒÛ,µ±«∞≤Ÿ◊˜∂‘œÛ%d", 
+					log_w("bBmsTask:BMSËøîÂõûÂØπË±°%dÈîôËØØ,ÂΩìÂâçÊìç‰ΩúÂØπË±°%d", 
 						u_reply_param.tTaskParam.ucObj, u_param.tTaskParam.ucObj);
 				cQueue_GotoStep(tp_task, STEP_FORWARD);
 				break;
 			}
 
-			//¥¶¿Ì ˝æ›
+			//Â§ÑÁêÜÊï∞ÊçÆ
 			switch(u_param.tTaskParam.ucObj)
 			{
-				//œµÕ≥
+				//Á≥ªÁªü
 				case 0:
 				{
 					if(u_reply_param.tTaskParam.ucParam > DS_UPDATA_MODE)
 					{
 						if(uPrint.tFlag.bBmsTask && uPrint.tFlag.bImportant)
-							log_w("bBmsTask:BMS∑µªÿ∂‘œÛ%dµƒ≤Œ ˝%d≥¨∑∂Œß", 
+							log_w("bBmsTask:BMSËøîÂõûÂØπË±°%dÁöÑÂèÇÊï∞%dË∂ÖËåÉÂõ¥", 
 								u_reply_param.tTaskParam.ucObj, u_reply_param.tTaskParam.ucParam);
 						cQueue_GotoStep(tp_task, STEP_FORWARD);
 						break;
@@ -132,7 +132,7 @@ void v_bms_queue_task_clt_switch(Task_T *tp_task)
 						if(u_reply_param.tTaskParam.ucParam >= DS_BOOTING)
 						{
 							bBms_SetDevState(DS_WORK);
-							cQueue_GotoStep(tp_task, STEP_NEXT);  	//œ¬“ª≤Ω
+							cQueue_GotoStep(tp_task, STEP_NEXT);  	//‰∏ã‰∏ÄÊ≠•
 							break;
 						}
 					}
@@ -141,7 +141,7 @@ void v_bms_queue_task_clt_switch(Task_T *tp_task)
 						if(u_reply_param.tTaskParam.ucParam <= DS_SHUT_DOWN)
 						{
 							bBms_SetDevState(DS_SHUT_DOWN);
-							cQueue_GotoStep(tp_task, STEP_NEXT);  	//œ¬“ª≤Ω
+							cQueue_GotoStep(tp_task, STEP_NEXT);  	//‰∏ã‰∏ÄÊ≠•
 							break;
 						}	
 					}
@@ -150,16 +150,16 @@ void v_bms_queue_task_clt_switch(Task_T *tp_task)
 				}
 				break;
 
-				//’’√˜
+				//ÁÖßÊòé
 				case 2:
-				//»»π‹¿Ì
+				//ÁÉ≠ÁÆ°ÁêÜ
 				case 9:
 				{
 					if((u_reply_param.tTaskParam.ucParam > LWM_TWINKLE && u_param.tTaskParam.ucObj == 2) ||
 						(u_reply_param.tTaskParam.ucParam > FWM_GEAR_FULL && u_param.tTaskParam.ucObj == 9))
 					{
 						if(uPrint.tFlag.bBmsTask && uPrint.tFlag.bImportant)
-							log_w("bBmsTask:BMS∑µªÿ∂‘œÛ%dµƒ≤Œ ˝%d≥¨∑∂Œß", 
+							log_w("bBmsTask:BMSËøîÂõûÂØπË±°%dÁöÑÂèÇÊï∞%dË∂ÖËåÉÂõ¥", 
 								u_reply_param.tTaskParam.ucObj, u_reply_param.tTaskParam.ucParam);
 						cQueue_GotoStep(tp_task, STEP_FORWARD);
 						break;
@@ -168,19 +168,19 @@ void v_bms_queue_task_clt_switch(Task_T *tp_task)
 					if(u_param.tTaskParam.ucParam != u_reply_param.tTaskParam.ucParam)
 					{
 						if(uPrint.tFlag.bBmsTask && uPrint.tFlag.bImportant)
-							log_w("bBmsTask:BMS∑µªÿ∂‘œÛ%dµƒ≤Œ ˝%d¥ÌŒÛ", 
+							log_w("bBmsTask:BMSËøîÂõûÂØπË±°%dÁöÑÂèÇÊï∞%dÈîôËØØ", 
 								u_reply_param.tTaskParam.ucObj, u_reply_param.tTaskParam.ucParam);
 						cQueue_GotoStep(tp_task, STEP_FORWARD);
 						break;
 					}
 
-					cQueue_GotoStep(tp_task, STEP_NEXT);  	//œ¬“ª≤Ω
+					cQueue_GotoStep(tp_task, STEP_NEXT);  	//‰∏ã‰∏ÄÊ≠•
 				}
 				break;
 
 				default:
 						if(uPrint.tFlag.bBmsTask && uPrint.tFlag.bImportant)
-							log_w("bBmsTask:BMS∑µªÿ∂‘œÛ%dŒ¥∂®“Â,µ±«∞∂‘œÛ%d", 
+							log_w("bBmsTask:BMSËøîÂõûÂØπË±°%dÊú™ÂÆö‰πâ,ÂΩìÂâçÂØπË±°%d", 
 								u_reply_param.tTaskParam.ucObj, u_param.tTaskParam.ucObj);
 						cQueue_GotoStep(tp_task, STEP_FORWARD);
 						break;
@@ -188,26 +188,26 @@ void v_bms_queue_task_clt_switch(Task_T *tp_task)
 		}
 		break;
 		
-		//-------------------------------------ÕÍ≥…---------------------------------------//
+		//-------------------------------------ÂÆåÊàê---------------------------------------//
 		case 2:
 		{
 			if(uPrint.tFlag.bBmsTask)
-				sMyPrint("bBmsTask:∂‘œÛ%d----ø™πÿÕÍ≥…----\r\n",u_param.tTaskParam.ucObj);
+				sMyPrint("bBmsTask:ÂØπË±°%d----ÂºÄÂÖ≥ÂÆåÊàê----\r\n",u_param.tTaskParam.ucObj);
 			
-			cQueue_GotoStep(tp_task, STEP_END);  //Ω· ¯
+			cQueue_GotoStep(tp_task, STEP_END);  //ÁªìÊùü
 		}
         break;
 			
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //Ω· ¯
+			cQueue_GotoStep(tp_task, STEP_END);  //ÁªìÊùü
 			break;
 	}
 	
 	tp_task->usTaskWaitCnt++;
-	if(tp_task->usTaskWaitCnt>(3000/bmsTASK_CTRL_SWITCH_CYCLE_TIME))  //µ»¥˝≥¨ ±
+	if(tp_task->usTaskWaitCnt>(3000/bmsTASK_CTRL_SWITCH_CYCLE_TIME))  //Á≠âÂæÖË∂ÖÊó∂
 	{
 		if(uPrint.tFlag.bBmsTask)
-			sMyPrint("bBmsTask:∂‘œÛ%dø™πÿ»ŒŒÒµ»¥˝≥¨ ±ÕÀ≥ˆ,≤Ω÷Ë%d", tp_task->ucStep);
+			sMyPrint("bBmsTask:ÂØπË±°%dÂºÄÂÖ≥‰ªªÂä°Á≠âÂæÖË∂ÖÊó∂ÈÄÄÂá∫,Ê≠•È™§%d", tp_task->ucStep);
 		
 		loop_end:
 		if(u_param.tTaskParam.ucParam != 0)
@@ -221,7 +221,7 @@ void v_bms_queue_task_clt_switch(Task_T *tp_task)
 				tLight.eWordMode = LWM_OFF;
 		}
 		
-		cQueue_GotoStep(tp_task, STEP_END);  //Ω· ¯
+		cQueue_GotoStep(tp_task, STEP_END);  //ÁªìÊùü
 	}
 	
 	#if(boardUSE_OS)

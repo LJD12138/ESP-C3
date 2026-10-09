@@ -14,26 +14,26 @@
 
 
 #define       	mpptDEV_ADRR                          	0x02
-#define  		mpptWAIT_NOTIFY_OUTTIME              	1000     //ÈÎÎñÍ¨Öª³¬Ê±Ê±¼ä MS
+#define  		mpptWAIT_NOTIFY_OUTTIME              	1000     //ä»»åŠ¡é€šçŸ¥è¶…æ—¶æ—¶é—´ MS
 #define       	mpptTX_PROTO_BUFF_LEN                   128
 #define       	mpptRX_PROTO_BUFF_LEN                   256
 
 
-//****************************************************²ÎÊý³õÊ¼»¯**************************************************//
-__ALIGNED(4) 	BaikuProtoTx_t *tpMpptProtoTx = NULL;	//·¢ËÍÐ­Òé
-__ALIGNED(4) 	BaikuProtoRx_t *tpMpptProtoRx = NULL;	//½ÓÊÜÐ­Òé
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
+__ALIGNED(4) 	BaikuProtoTx_t *tpMpptProtoTx = NULL;	//å‘é€åè®®
+__ALIGNED(4) 	BaikuProtoRx_t *tpMpptProtoRx = NULL;	//æŽ¥å—åè®®
 
-//****************************************************º¯ÊýÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜Ž****************************************************//
 static s8 c_mppt_data_trans(u8 cmd, u8* data, u8 len);
 
 
 
 /***********************************************************************************************************************
------º¯Êý¹¦ÄÜ    Í¨Ñ¶Ð­Òé³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    é€šè®¯åè®®åˆå§‹åŒ–
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ************************************************************************************************************************/
 bool bMppt_SendProtInit(void)
 {
@@ -43,7 +43,7 @@ bool bMppt_SendProtInit(void)
 	if(c_result <= 0)
 	{
 		if(uPrint.tFlag.bMpptTask || uPrint.tFlag.bImportant)
-			log_e("bMpptTask:tpMpptProtoTxÐ­Òé¶ÔÏó³õÊ¼»¯Ê§°Ü,´úÂë%d",c_result);
+			log_e("bMpptTask:tpMpptProtoTxåè®®å¯¹è±¡åˆå§‹åŒ–å¤±è´¥,ä»£ç %d",c_result);
 		
 		return false;
 	}
@@ -53,14 +53,14 @@ bool bMppt_SendProtInit(void)
 
 bool bMppt_RecProtInit(void)
 {
-	s8 c_result = cBaiku_ProtoRecInit(&tpMpptProtoRx, 	//Ð­ÒéÖ¸Õë
-								mpptRX_PROTO_BUFF_LEN,	//Ð­Òé»º´æÆ÷´óÐ¡
-								mpptDEV_ADRR,			//Ð­ÒéÉè±¸ID
-								boardREPET_TIMER_CYCLE_TMIE);			//¼ÆÊýÆ÷²ÉÑùÊ±¼ä
+	s8 c_result = cBaiku_ProtoRecInit(&tpMpptProtoRx, 	//åè®®æŒ‡é’ˆ
+								mpptRX_PROTO_BUFF_LEN,	//åè®®ç¼“å­˜å™¨å¤§å°
+								mpptDEV_ADRR,			//åè®®è®¾å¤‡ID
+								boardREPET_TIMER_CYCLE_TMIE);			//è®¡æ•°å™¨é‡‡æ ·æ—¶é—´
 	if(c_result <= 0)
 	{
 		if(uPrint.tFlag.bMpptRecTask || uPrint.tFlag.bImportant)
-			log_e("bMpptRecTask:tpMpptProtoRxÐ­Òé¶ÔÏó³õÊ¼»¯Ê§°Ü,´úÂë%d",c_result);
+			log_e("bMpptRecTask:tpMpptProtoRxåè®®å¯¹è±¡åˆå§‹åŒ–å¤±è´¥,ä»£ç %d",c_result);
 		return false;
 	}
 	
@@ -68,11 +68,11 @@ bool bMppt_RecProtInit(void)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Ö¸Áî:¿ª¹Ø
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æŒ‡ä»¤:å¼€å…³
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 s8 c_mppt_cs_switch(TaskInParam_U u_param)
 {
@@ -80,11 +80,11 @@ s8 c_mppt_cs_switch(TaskInParam_U u_param)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Ö¸Áî:»ñÈ¡²ÎÊý
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æŒ‡ä»¤:èŽ·å–å‚æ•°
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 s8 c_mppt_cs_get_param(u8 num)
 {
@@ -92,11 +92,11 @@ s8 c_mppt_cs_get_param(u8 num)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Ö¸Áî:¿ª¹ØMPPT
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æŒ‡ä»¤:å¼€å…³MPPT
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 s8 c_mppt_cs_set_pwr(u16 pwr)
 {
@@ -109,17 +109,17 @@ s8 c_mppt_cs_set_pwr(u16 pwr)
 }
 
 /***********************************************************************************************************************
------º¯Êý¹¦ÄÜ	Êý¾Ý´«Êä
------ËµÃ÷(±¸×¢) 
------´«Èë²ÎÊý	cmd:Ö¸Áî
-				data:Ö¸ÏòÊý¾ÝÖ¸Õë
-				len:Êý¾ÝµÄ³¤¶È
------Êä³ö²ÎÊý	none
------·µ»ØÖµ		-1:Ð´ÈëµÄLen³¬³ö×î´ó³¤¶È
-				-2:µÈ»á»Ø¸´³¬Ê±
-				-3:Êý¾Ý·¢ËÍ´íÎó
-				0:ÎÞ²Ù×÷
-				1:²Ù×÷³É¹¦
+-----å‡½æ•°åŠŸèƒ½	æ•°æ®ä¼ è¾“
+-----è¯´æ˜Ž(å¤‡æ³¨) 
+-----ä¼ å…¥å‚æ•°	cmd:æŒ‡ä»¤
+				data:æŒ‡å‘æ•°æ®æŒ‡é’ˆ
+				len:æ•°æ®çš„é•¿åº¦
+-----è¾“å‡ºå‚æ•°	none
+-----è¿”å›žå€¼		-1:å†™å…¥çš„Lenè¶…å‡ºæœ€å¤§é•¿åº¦
+				-2:ç­‰ä¼šå›žå¤è¶…æ—¶
+				-3:æ•°æ®å‘é€é”™è¯¯
+				0:æ— æ“ä½œ
+				1:æ“ä½œæˆåŠŸ
 ************************************************************************************************************************/
 static s8 c_mppt_data_trans(u8 cmd, u8* data, u8 len)
 {
@@ -131,13 +131,13 @@ static s8 c_mppt_data_trans(u8 cmd, u8* data, u8 len)
 	if(tpMpptProtoTx == NULL)
 		return 0;
 	
-	//¿ªÊ¼»¥³â
+	//å¼€å§‹äº’æ–¥
 	#if(boardUSE_OS)
 	if(xSemaphoreTake(dcacSemaphoreMutex, pdMS_TO_TICKS(1000)) == pdFAIL)
 		return -99;
 	#endif  //boardUSE_OS
 	
-	//¿ªÊ¼·¢ËÍ
+	//å¼€å§‹å‘é€
 	#if(boardDCAC_IFACE)
 	result = cBaiku_ProtoCreate(tpMpptProtoTx, cmd, data, len);
 	if(result > 0)
@@ -145,12 +145,12 @@ static s8 c_mppt_data_trans(u8 cmd, u8* data, u8 len)
 		bMpptUseFlag = 1;
 		if(bDcac_DataSendStart(tpMpptProtoTx->ucaFrameData, tpMpptProtoTx->ucFrameLen) == true)
 		{
-			//µÈ´ýÈÎÎñÍ¨Öª,µÈ´ýÊ±¼äÎª1S
+			//ç­‰å¾…ä»»åŠ¡é€šçŸ¥,ç­‰å¾…æ—¶é—´ä¸º1S
 			#if(boardUSE_OS)
 			if(ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(mpptWAIT_NOTIFY_OUTTIME)) <= 0) 
 			{
 				if(uPrint.tFlag.bMpptTask)
-					log_w("bMpptTask:µÈ´ýÖ¸Áî0x%x»Ø¸´³¬Ê±", cmd);
+					log_w("bMpptTask:ç­‰å¾…æŒ‡ä»¤0x%xå›žå¤è¶…æ—¶", cmd);
 				
 				result = -2;
 			}
@@ -161,7 +161,7 @@ static s8 c_mppt_data_trans(u8 cmd, u8* data, u8 len)
 	}
 	#endif
 	
-	//ÊÍ·Å»¥³âÁ¿
+	//é‡Šæ”¾äº’æ–¥é‡
 	#if(boardUSE_OS)
 	xSemaphoreGive(dcacSemaphoreMutex);
 	#endif  //boardUSE_OS

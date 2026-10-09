@@ -4,12 +4,12 @@
 #include "main.h"
 #include "lwrb.h"
 
-//ModbusÖ¸Áî
-#define  		modbusWRITE_MULTI_REG                 	0x10      //Ğ´¶à¸ö¼Ä´æÆ÷
-#define  		modbusWRITE_SINGLE_REG                 	0x06      //Ğ´µ¥¸ö¼Ä´æÆ÷
-#define  		modbusREAD_MULTI_REG                   	0x03      //¶Á¶à¸ö¼Ä´æÆ÷
-#define  		modbusREAD_MULTI_BIT                   	0x02      //¶Á¶à¸ö×´Ì¬Î»
-#define  		modbusWRITE_SINGLE_BIT                  0x05      //¶Áµ¥¸öÊäÈë×´Ì¬
+//ModbusæŒ‡ä»¤
+#define  		modbusWRITE_MULTI_REG                 	0x10      //å†™å¤šä¸ªå¯„å­˜å™¨
+#define  		modbusWRITE_SINGLE_REG                 	0x06      //å†™å•ä¸ªå¯„å­˜å™¨
+#define  		modbusREAD_MULTI_REG                   	0x03      //è¯»å¤šä¸ªå¯„å­˜å™¨
+#define  		modbusREAD_MULTI_BIT                   	0x02      //è¯»å¤šä¸ªçŠ¶æ€ä½
+#define  		modbusWRITE_SINGLE_BIT                  0x05      //è¯»å•ä¸ªè¾“å…¥çŠ¶æ€
 
 typedef enum
 {
@@ -22,9 +22,9 @@ typedef enum
 #pragma pack(1)
 typedef struct
 {
-	//Êı¾İÖ¡¿ªÊ¼
+	//æ•°æ®å¸§å¼€å§‹
 	u8*             	ucpFrameData;
-	//Êı¾İÖ¡½áÊø
+	//æ•°æ®å¸§ç»“æŸ
 						
         
     vu8             	ucAddr;
@@ -33,8 +33,8 @@ typedef struct
 	vu16            	usRegSize;
 	vu16            	usRegAddr;
 	vu8             	ucWaitRecLen;
-	vu8             	ucValidLen;    //ÓĞĞ§Êı¾İµÄ³¤¶È
-	u8*             	ucpValidData;  //Ö¸ÏòÓĞĞ§Êı¾İµÄÊ×µØÖ·
+	vu8             	ucValidLen;    //æœ‰æ•ˆæ•°æ®çš„é•¿åº¦
+	u8*             	ucpValidData;  //æŒ‡å‘æœ‰æ•ˆæ•°æ®çš„é¦–åœ°å€
 	vu16            	usRecOverTimeCnt;
 	vu16            	usLostOverTimeCnt;
 	u16            		usTaskCycleTime;
@@ -52,8 +52,8 @@ typedef struct
 	vu16            	usRegSize;
 	vu16            	usRegAddr;
 	vu16            	usRegData;
-	vu8             	ucFrameLen;    //Êı¾İÖ¡×Ü³¤¶È
-	u8             		ucaFrameData[];  //Êı¾İÖ¡
+	vu8             	ucFrameLen;    //æ•°æ®å¸§æ€»é•¿åº¦
+	u8             		ucaFrameData[];  //æ•°æ®å¸§
 }ModbusProtoTx_t;
 #pragma pack()
 

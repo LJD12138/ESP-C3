@@ -13,19 +13,19 @@
 extern Task_T *tpUsbTask;
 extern TaskHandle_t tUsbTaskHandler;
 
-//*********************************ÈÎÎñID***********************************
+//*********************************ä»»åŠ¡ID***********************************
 typedef enum : uint8_t
 {
-	UTI_NULL = 0,       //¿ÕÈÎÎñº¯Êı
-    UTI_INIT,           //³õÊ¼»¯µç³Ø°ü
-	UTI_CLOSING,		//¹Ø±ÕÖĞ
-	UTI_SHUT_DOWN,		//¹Ø±ÕÍê³É
-	UTI_ERR,			//´íÎó
-	UTI_BOOTING,		//ÔØÈëÖĞ
-	UTI_WORK,			//¹¤×÷ÖĞ
+	UTI_NULL = 0,       //ç©ºä»»åŠ¡å‡½æ•°
+    UTI_INIT,           //åˆå§‹åŒ–ç”µæ± åŒ…
+	UTI_CLOSING,		//å…³é—­ä¸­
+	UTI_SHUT_DOWN,		//å…³é—­å®Œæˆ
+	UTI_ERR,			//é”™è¯¯
+	UTI_BOOTING,		//è½½å…¥ä¸­
+	UTI_WORK,			//å·¥ä½œä¸­
 }UsbTaskId_E;
 
-//*****************************´íÎó×´Ì¬*************************************
+//*****************************é”™è¯¯çŠ¶æ€*************************************
 typedef enum : uint8_t
 {  
 	UEC_CLEAR_ALL = 0,
@@ -35,38 +35,38 @@ typedef enum : uint8_t
 	UEC_BAT_VOLT_LOW,
 	UEC_IC1_LOST,
 	UEC_IC2_LOST,
-	UEC_COLSE_FAULT,	//¹Ø±ÕÊ§°Ü
-	UEC_BOOT_FAULT,		//¿ªÆôÊ§°Ü
+	UEC_COLSE_FAULT,	//å…³é—­å¤±è´¥
+	UEC_BOOT_FAULT,		//å¼€å¯å¤±è´¥
 }UsbErrCode_E;
 
 typedef union
 {
 	struct
 	{
-		u8 				bPowerErr:1;		//µçÔ´´íÎó
-		u8 				bOT:1;				//¹ıÎÂ
-		u8 				bOL:1;				//¹ıÔØ
-		u8 				bBatUV:1;			//µç³ØµçÑ¹µÍ
-		u8 				bIc1Lost:1;			//¶ªÊ§
-		u8 				bIc2Lost:1;			//¶ªÊ§
+		u8 				bPowerErr:1;		//ç”µæºé”™è¯¯
+		u8 				bOT:1;				//è¿‡æ¸©
+		u8 				bOL:1;				//è¿‡è½½
+		u8 				bBatUV:1;			//ç”µæ± ç”µå‹ä½
+		u8 				bIc1Lost:1;			//ä¸¢å¤±
+		u8 				bIc2Lost:1;			//ä¸¢å¤±
 		u8 				bCloseFault :1;
 		u8 				bBootFault :1;
 	}tCode;
 	u8 ucErrCode;
 }UsbErrCode_U;
 
-//*********************************ÈÎÎñ¶ÔÏó**********************************
+//*********************************ä»»åŠ¡å¯¹è±¡**********************************
 #pragma pack(1)
 typedef struct
 {
-	DevState_E 			eDevState;     		//Éè±¸×´Ì¬
-	UsbErrCode_U  		uErrCode;      		//´íÎó´úÂë
-	vu16           		usAutoOffTime; 		//×Ô¶¯¹Ø»úÊ±¼ä
-	vu16           		usAutoOffCnt;  		//×Ô¶¯¹Ø»ú¼ÆÊ±
+	DevState_E 			eDevState;     		//è®¾å¤‡çŠ¶æ€
+	UsbErrCode_U  		uErrCode;      		//é”™è¯¯ä»£ç 
+	vu16           		usAutoOffTime; 		//è‡ªåŠ¨å…³æœºæ—¶é—´
+	vu16           		usAutoOffCnt;  		//è‡ªåŠ¨å…³æœºè®¡æ—¶
 	vu16				usInVolt;     		//0.1V
 	vu16    			usInCurr;			//0.1A
 	vu16    			usOutPwr;     		//W
-	vs16             	sMaxTemp;			//1ÉãÊÏ¶È
+	vs16             	sMaxTemp;			//1æ‘„æ°åº¦
 	vu16    			usInPwr;     		//W
 }Usb_T;   
 #pragma pack()
@@ -74,28 +74,28 @@ extern Usb_T			tUsb;
 
 typedef struct
 {
-	DevState_E 			eDcDevState;     	//Éè±¸×´Ì¬
+	DevState_E 			eDcDevState;     	//è®¾å¤‡çŠ¶æ€
 	vu16    			usDcPwr;     		//W
-	DevState_E 			eC1DevState;     	//Éè±¸×´Ì¬
+	DevState_E 			eC1DevState;     	//è®¾å¤‡çŠ¶æ€
 	vu16    			usC1Pwr;     		//W
-	DevState_E 			eC2DevState;     	//Éè±¸×´Ì¬
+	DevState_E 			eC2DevState;     	//è®¾å¤‡çŠ¶æ€
 	vu16    			usC2Pwr;     		//W
-	DevState_E 			eUsbADevState;     	//Éè±¸×´Ì¬
+	DevState_E 			eUsbADevState;     	//è®¾å¤‡çŠ¶æ€
 	vu16    			usUsbAPwr;     		//W
 }UsbDev_T;   
 extern UsbDev_T			tUsbDev; 
 
-//*********************************¼ÇÒä²ÎÊı**********************************
-#pragma pack(1)//Ç¿ÖÆÒ»¸ö×Ö½Ú¶ÔÆë
+//*********************************è®°å¿†å‚æ•°**********************************
+#pragma pack(1)//å¼ºåˆ¶ä¸€ä¸ªå­—èŠ‚å¯¹é½
 typedef struct
 {
-	vu16             	usAutoOffTime;   	//×Ô¶¯¹Ø±ÕÊ±¼ä  0Îª¹Ø±Õ´Ë¹¦ÄÜ
-	vu16             	usMaxInVolt;		//×î´óÊäÈëµçÑ¹
-	vu16             	usMinInVolt;		//×îĞ¡ÊäÈëµçÑ¹
-	vu16             	usMinOpenVolt;      //×îĞ¡¿ªÆôµçÑ¹
-	s8               	sMaxTemp;      		//ÔÊĞíµÄ×î´óÎÂ¶È
+	vu16             	usAutoOffTime;   	//è‡ªåŠ¨å…³é—­æ—¶é—´  0ä¸ºå…³é—­æ­¤åŠŸèƒ½
+	vu16             	usMaxInVolt;		//æœ€å¤§è¾“å…¥ç”µå‹
+	vu16             	usMinInVolt;		//æœ€å°è¾“å…¥ç”µå‹
+	vu16             	usMinOpenVolt;      //æœ€å°å¼€å¯ç”µå‹
+	s8               	sMaxTemp;      		//å…è®¸çš„æœ€å¤§æ¸©åº¦
 }UsbMemParam_T;
-#pragma pack() //È¡ÏûÒ»¸ö×Ö½Ú¶ÔÆë
+#pragma pack() //å–æ¶ˆä¸€ä¸ªå­—èŠ‚å¯¹é½
 
 
 bool bUsb_TaskInit(void);

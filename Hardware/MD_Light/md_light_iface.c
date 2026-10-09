@@ -2,17 +2,17 @@
 #include "MD_Light/md_light_task.h"
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÕÕÃ÷GPIO³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç…§æ˜GPIOåˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 static void v_light_gpio_init(void)
 {
 	//IO config
 	// rcu_periph_clock_enable(lightPWM_GPIO_RCU);
-	// gpio_init(lightPWM_GPIO_PORT,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,lightPWM_PIN);  //ÅäÖÃÎªÍâÉèÒı½Å
+	// gpio_init(lightPWM_GPIO_PORT,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,lightPWM_PIN);  //é…ç½®ä¸ºå¤–è®¾å¼•è„š
 	
 //	rcu_periph_clock_enable(lightPWM_EN_GPIO_RCU);
 //	gpio_init(lightPWM_EN_GPIO_PORT,GPIO_MODE_OUT_PP,GPIO_OSPEED_50MHZ,lightPWM_EN_PIN);
@@ -20,11 +20,11 @@ static void v_light_gpio_init(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÕÕÃ÷¶¨Ê±Æ÷³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç…§æ˜å®šæ—¶å™¨åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 static void v_light_timer_init(uint16_t arr,uint16_t psc)
 {
@@ -76,32 +76,32 @@ static void v_light_timer_init(uint16_t arr,uint16_t psc)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÕÕÃ÷³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç…§æ˜åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void vLight_IfaceInit(void)
 {    
 	v_light_gpio_init();
 	v_light_timer_init(lightPWM_MAX_VALUE-1,lightPWM_PSC-1);//SystemCoreClock / 120 / 1000 = 1KHz
-	tLight.usLastValue=lightPWM_SEMI_VALUE; //Ä¬ÈÏµÄÁÁ¶È
+	tLight.usLastValue=lightPWM_SEMI_VALUE; //é»˜è®¤çš„äº®åº¦
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÕÕÃ÷ÈÎÎñ³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç…§æ˜ä»»åŠ¡åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 #if(boardLOW_POWER)
 void vLight_IoEnterLowPower(void)
 {
 	//IO config
 	rcu_periph_clock_enable(lightPWM_GPIO_RCU);
-	gpio_init(lightPWM_GPIO_PORT,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,lightPWM_PIN);  //ÅäÖÃÎªÍâÉèÒı½Å
+	gpio_init(lightPWM_GPIO_PORT,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,lightPWM_PIN);  //é…ç½®ä¸ºå¤–è®¾å¼•è„š
 	
 	rcu_periph_clock_enable(lightPWM_EN_GPIO_RCU);
 	gpio_init(lightPWM_EN_GPIO_PORT,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,lightPWM_EN_PIN);

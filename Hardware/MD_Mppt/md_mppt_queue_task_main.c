@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Mppt/md_mppt_queue_task.h"
@@ -18,34 +18,34 @@
 #define       	mpptTASK_GET_PARAM_CYCLE_TIME               		1000
 
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 static void v_check_chg_perm(void);
 static void v_proc_rec_param(void);
 static void v_set_total_chg_pwr(void);
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_mppt_queue_task_main(Task_T *tp_task)
 {
 	s8 result = 0;
 	
-	//*****************************************·Ç¹¤×÷×´Ì¬ÏÂ,¼ì²éµç³Ø°üÊÇ·ñ¿ªÆôÖĞ**************************************
+	//*****************************************éå·¥ä½œçŠ¶æ€ä¸‹,æ£€æŸ¥ç”µæ± åŒ…æ˜¯å¦å¼€å¯ä¸­**************************************
 	if((tSysInfo.uPerm.tPerm.bChgPerm == false || tMppt.bChgPerm == false) &&
 		tMpptRx.usInPwr != 0)
 	{
 		cMppt_SetChgPwr(0);
 	}
 	
-	//¶ÓÁĞÀïÃæÓĞÈÎÎñ
+	//é˜Ÿåˆ—é‡Œé¢æœ‰ä»»åŠ¡
 	if(lwrb_get_full(&tp_task->tQueueBuff))  
 	{
-		cQueue_GotoStep( tp_task, STEP_END );  //½áÊø
+		cQueue_GotoStep( tp_task, STEP_END );  //ç»“æŸ
 		return;
 	}
 	
@@ -53,9 +53,9 @@ void v_mppt_queue_task_main(Task_T *tp_task)
     {
         case 0:
         {
-			//Ö÷»ú
+			//ä¸»æœº
 			result = c_mppt_cs_get_param(2);
-			//·¢ËÍ³É¹¦
+			//å‘é€æˆåŠŸ
 			if(result > 0)
 				cQueue_GotoStep(tp_task, STEP_NEXT);
         }break;
@@ -68,18 +68,18 @@ void v_mppt_queue_task_main(Task_T *tp_task)
 			
 			v_set_total_chg_pwr();
 			
-			cQueue_GotoStep(tp_task, 0);  //½áÊø
+			cQueue_GotoStep(tp_task, 0);  //ç»“æŸ
         }break;
 			
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
     }
 	
-	//¶ÓÁĞÀïÃæÓĞÈÎÎñ
+	//é˜Ÿåˆ—é‡Œé¢æœ‰ä»»åŠ¡
 	if(lwrb_get_full(&tp_task->tQueueBuff))  
 	{
-		cQueue_GotoStep( tp_task, STEP_END );  //½áÊø
+		cQueue_GotoStep( tp_task, STEP_END );  //ç»“æŸ
 		return;
 	}
 	
@@ -89,15 +89,15 @@ void v_mppt_queue_task_main(Task_T *tp_task)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    »ñÈ¡²ÎÊı´¦Àí
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è·å–å‚æ•°å¤„ç†
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_proc_rec_param(void)
 {
-	// //ÊäÈë¹ıÁ÷
+	// //è¾“å…¥è¿‡æµ
 	// if(tMpptRx.uErrCode.tCode.bOC)
 	// {
 	// 	if(tMppt.uErrCode.tCode.bMpptInOC == false)
@@ -109,7 +109,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 	// 		bMppt_SetErrCode(MEC_MPPT_IN_OC, false);
 	// }
 
-	//ÊäÈë¹ıÑ¹
+	//è¾“å…¥è¿‡å‹
 	if(tMpptRx.uErrCode.tCode.bIOV)
 	{
 		if(tMppt.uErrCode.tCode.bMpptInOV == false)
@@ -121,7 +121,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			bMppt_SetErrCode(MEC_MPPT_IN_OV, false);
 	}
 
-	// //ÊäÈë´íÎó
+	// //è¾“å…¥é”™è¯¯
 	// if(tMpptRx.uErrCode.tCode.bIUV)
 	// {
 	// 	if(tMppt.uErrCode.tCode.bMpptInErr == false)
@@ -133,7 +133,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 	// 		bMppt_SetErrCode(MEC_MPPT_IN_ERR, false);
 	// }
 
-	//Êä³ö¹ıÑ¹
+	//è¾“å‡ºè¿‡å‹
 	if(tMpptRx.uErrCode.tCode.bOOV)
 	{
 		if(tMppt.uErrCode.tCode.bMpptOutOV == false)
@@ -145,7 +145,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			bMppt_SetErrCode(MEC_MPPT_OUT_OV, false);
 	}
 
-	// Êä³ö´íÎó
+	// è¾“å‡ºé”™è¯¯
 	if(tMpptRx.uErrCode.tCode.bOUV)
 	{
 		if(tMppt.uErrCode.tCode.bMpptOutErr == false)
@@ -157,7 +157,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			bMppt_SetErrCode(MEC_MPPT_OUT_ERR, false);
 	}
 
-	//¹ıÎÂ
+	//è¿‡æ¸©
 	if(tMpptRx.uErrCode.tCode.bOT)
 	{
 		if(tMppt.uErrCode.tCode.bMpptOT == false)
@@ -169,7 +169,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			bMppt_SetErrCode(MEC_MPPT_IN_OV, false);
 	}
 
-	//¹ıÔØ
+	//è¿‡è½½
 	if(tMpptRx.uErrCode.tCode.bOL)
 	{
 		if(tMppt.uErrCode.tCode.bMpptOL == false)
@@ -185,11 +185,11 @@ __STATIC_INLINE void v_proc_rec_param(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¼ì²é³ä·ÅµçĞí¿É
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æ£€æŸ¥å……æ”¾ç”µè®¸å¯
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_check_chg_perm(void)
 {
@@ -219,11 +219,11 @@ __STATIC_INLINE void v_check_chg_perm(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ³äµç¿ØÖÆ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    å……ç”µæ§åˆ¶
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_set_total_chg_pwr(void)
 {

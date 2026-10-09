@@ -21,16 +21,16 @@
 ======`-.____`-.___\_____/___.-`____.-'======
                    `=---='
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ·ğ×æ±£ÓÓ       ÓÀ²»å´»ú     ÓÀÎŞBUG
+    ä½›ç¥–ä¿ä½‘       æ°¸ä¸å®•æœº     æ°¸æ— BUG
 ***************************************************/
 #include "main.h"
 #include "board_config.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-//****************************************************ÈÎÎñ³õÊ¼»¯**************************************************//
+//****************************************************ä»»åŠ¡åˆå§‹åŒ–**************************************************//
 TaskHandle_t    StartTask_Handler; 
-#define      	START_TASK_PRIO             			1                   		//ÈÎÎñÓÅÏÈ¼¶ 
+#define      	START_TASK_PRIO             			1                   		//ä»»åŠ¡ä¼˜å…ˆçº§ 
 void vBoard_StartTask(void *pvParameters);
 
 
@@ -38,13 +38,13 @@ void app_main(void)
 {
     vBoard_SysInit();
 
-    // ´´½¨¿ªÊ¼ÈÎÎñ
-    xTaskCreate((TaskFunction_t )vBoard_StartTask,      //ÈÎÎñº¯Êı
-                (const char* )"StartTask",              //ÈÎÎñÃû³Æ
-                (uint16_t ) 4096,                       //ÈÎÎñ¶ÑÕ»´óĞ¡ (Ôö´óÖÁ4096ÒÔÖ§³ÖÈÕÖ¾Êä³ö)
-                (void* )NULL,                           //´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                (UBaseType_t ) START_TASK_PRIO,         //ÈÎÎñÓÅÏÈ¼¶
-                (TaskHandle_t*)&StartTask_Handler);     //ÈÎÎñ¾ä±ú
+    // åˆ›å»ºå¼€å§‹ä»»åŠ¡
+    xTaskCreate((TaskFunction_t )vBoard_StartTask,      //ä»»åŠ¡å‡½æ•°
+                (const char* )"StartTask",              //ä»»åŠ¡åç§°
+                (uint16_t ) 4096,                       //ä»»åŠ¡å †æ ˆå¤§å° (å¢å¤§è‡³4096ä»¥æ”¯æŒæ—¥å¿—è¾“å‡º)
+                (void* )NULL,                           //ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                (UBaseType_t ) START_TASK_PRIO,         //ä»»åŠ¡ä¼˜å…ˆçº§
+                (TaskHandle_t*)&StartTask_Handler);     //ä»»åŠ¡å¥æŸ„
     
     // vTaskStartScheduler(); 
 }

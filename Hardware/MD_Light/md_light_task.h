@@ -4,9 +4,9 @@
 #include "main.h"
 #include "board_config.h"
 
-#define   		lightSIMPLE_MODE      					1   //0:¼òµ¥Ä£Ê½   1:È«¹¦ÄÜ
+#define   		lightSIMPLE_MODE      					1   //0:ç®€å•æ¨¡å¼   1:å…¨åŠŸèƒ½
 
-//¹¤×÷Ä£Ê½
+//å·¥ä½œæ¨¡å¼
 typedef enum 
 {   
     LWM_OFF = 0,

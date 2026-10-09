@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ×Ô¶¨ÒåÊä³öº¯Êı                                                        *
+ *                                         è‡ªå®šä¹‰è¾“å‡ºå‡½æ•°                                                        *
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "Print/print_api.h"
@@ -14,16 +14,16 @@
 #include "freertos/semphr.h"
 #endif  //boardUSE_OS
 
-//****************************************************¾Ö²¿ºê¶¨Òå**************************************************//
-//¿ªÆôÊµÊ±PrintÊä³ö,ÔòÓĞ²¿·Ö´òÓ¡»á¶ªÊ§,·´Ö®»áÒòÎªµÈ´ıÊä³ö¶øÓ°ÏìÊä³öÈÎÎñµÄÊµÊ±ĞÔ.½¨Òé¿ªÆô´Ë¶¨Òå
+//****************************************************å±€éƒ¨å®å®šä¹‰**************************************************//
+//å¼€å¯å®æ—¶Printè¾“å‡º,åˆ™æœ‰éƒ¨åˆ†æ‰“å°ä¼šä¸¢å¤±,åä¹‹ä¼šå› ä¸ºç­‰å¾…è¾“å‡ºè€Œå½±å“è¾“å‡ºä»»åŠ¡çš„å®æ—¶æ€§.å»ºè®®å¼€å¯æ­¤å®šä¹‰
 #define          printREAL_TIME_OUT
 #define          printLOG_BUFF_SIZE					256
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************//
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
 static char log_buf[printLOG_BUFF_SIZE];
 
 #if(boardUSE_OS)
-/*´´½¨ĞÅºÅÁ¿¾ä±ú */
+/*åˆ›å»ºä¿¡å·é‡å¥æŸ„ */
 SemaphoreHandle_t MyPrintSemaphoreMutex = NULL;
 
 #ifdef printREAL_TIME_OUT
@@ -40,19 +40,19 @@ int (*log_i)(const char *fmt, ...) = sMyPrintTips;
 #endif
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    MyPrintº¯Êı²ÎÊı³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    MyPrintå‡½æ•°å‚æ•°åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 s8 c_print_start_check(const char* str)
 {
-	// Èç¹ûÊäÈëÎª¿Õ,·µ»Ø´íÎó
+	// å¦‚æœè¾“å…¥ä¸ºç©º,è¿”å›é”™è¯¯
     if (str == NULL || tSysInfo.uInit.tFinish.bIF_Print == 0) 
         return -1;
     
-    // Èç¹ûÃ»ÓĞ¿ªÆôÊä³ö,·µ»Ø´íÎó
+    // å¦‚æœæ²¡æœ‰å¼€å¯è¾“å‡º,è¿”å›é”™è¯¯
     if((boardPRINT_IFACE == 0) && (boardSEGGER == 0))
         return -2;
     
@@ -70,31 +70,31 @@ s8 c_print_start_check(const char* str)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    MyPrintº¯Êı²ÎÊı³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    MyPrintå‡½æ•°å‚æ•°åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vPrint_MyPrintParamInit(void)
 {
 	#if(boardUSE_OS)
-    /* ´´½¨»¥³âĞÅºÅÁ¿ */
+    /* åˆ›å»ºäº’æ–¥ä¿¡å·é‡ */
     MyPrintSemaphoreMutex = xSemaphoreCreateMutex();
 	#endif  //boardUSE_OS
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ·â×°µÄÊä³öº¯Êı
------ËµÃ÷(±¸×¢)  Ö§³Ö%d£¬%o, %x£¬%s£¬%c£¬%f£¨Ö»´òÓ¡6Î»Êı×Ö£©
-                 ¸Ãº¯ÊıÓÃµ½»¥³âÁ¿,ËùÒÔ²»ÄÜÔÚÖĞ¶ÏÖĞÊ¹ÓÃ
------´«Èë²ÎÊı    ĞèÒªÊä³öµÄÊı¾İ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      ´òÓ¡×Ö·ûµÄ¸öÊı,¸ºÊıÎª´íÎó
+-----å‡½æ•°åŠŸèƒ½    å°è£…çš„è¾“å‡ºå‡½æ•°
+-----è¯´æ˜(å¤‡æ³¨)  æ”¯æŒ%dï¼Œ%o, %xï¼Œ%sï¼Œ%cï¼Œ%fï¼ˆåªæ‰“å°6ä½æ•°å­—ï¼‰
+                 è¯¥å‡½æ•°ç”¨åˆ°äº’æ–¥é‡,æ‰€ä»¥ä¸èƒ½åœ¨ä¸­æ–­ä¸­ä½¿ç”¨
+-----ä¼ å…¥å‚æ•°    éœ€è¦è¾“å‡ºçš„æ•°æ®
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      æ‰“å°å­—ç¬¦çš„ä¸ªæ•°,è´Ÿæ•°ä¸ºé”™è¯¯
 ************************************************************************************************************************/
 int sMyPrint(const char* str, ...)
 {
-	// ³õÊ¼»¯±äÁ¿
+	// åˆå§‹åŒ–å˜é‡
     int len = 0;
 	
 	s8 c_ret = c_print_start_check(str);
@@ -102,16 +102,16 @@ int sMyPrint(const char* str, ...)
 		return c_ret;
 	
 	#if(boardUSE_OS)
-	// »ñÈ¡»¥³âÁ¿
+	// è·å–äº’æ–¥é‡
     if(xSemaphoreTake(MyPrintSemaphoreMutex, pdMS_TO_TICKS(delay_value)) == pdPASS)
 	#endif  //boardUSE_OS
     {
-		va_list args;            // ¶¨Òåva_listÀàĞÍÖ¸Õë£¬ÓÃÓÚ´æ´¢²ÎÊıµÄµØÖ·
-		va_start(args, str);     // ³õÊ¼»¯pArgs
+		va_list args;            // å®šä¹‰va_listç±»å‹æŒ‡é’ˆï¼Œç”¨äºå­˜å‚¨å‚æ•°çš„åœ°å€
+		va_start(args, str);     // åˆå§‹åŒ–pArgs
 		
-		/* ¢Ù ÏÈËãµ½µ×ĞèÒª¶àÉÙ×Ö½Ú */
-		len = vsnprintf(NULL, 0, str, args);   /* C99 Ö§³Ö */
-		if(len < 0) /* ¸ñÊ½´®±¾Éí·Ç·¨ */          			
+		/* â‘  å…ˆç®—åˆ°åº•éœ€è¦å¤šå°‘å­—èŠ‚ */
+		len = vsnprintf(NULL, 0, str, args);   /* C99 æ”¯æŒ */
+		if(len < 0) /* æ ¼å¼ä¸²æœ¬èº«éæ³• */          			
 		{ 
 			va_end(args);
 			
@@ -121,7 +121,7 @@ int sMyPrint(const char* str, ...)
 			
 			return -4; 
 		}   
-		if(len > printLOG_BUFF_SIZE) /* ¢Ú ×Ô¶¨ÒåÉÏÏŞ 512 KB */	
+		if(len > printLOG_BUFF_SIZE) /* â‘¡ è‡ªå®šä¹‰ä¸Šé™ 512 KB */	
 		{ 
 			va_end(args);
 			
@@ -132,22 +132,22 @@ int sMyPrint(const char* str, ...)
 			return -5; 
 		}  
 		
-		//×ª»»
-		va_start(args, str);            /* ±ØĞëÖØĞÂ³õÊ¼»¯ */
+		//è½¬æ¢
+		va_start(args, str);            /* å¿…é¡»é‡æ–°åˆå§‹åŒ– */
 		len = vsnprintf(log_buf, printLOG_BUFF_SIZE, str, args);
-		va_end(args);  // ½áÊøÈ¡²ÎÊı
+		va_end(args);  // ç»“æŸå–å‚æ•°
 		
-		//´æ´¢µ½»º´æÇø
+		//å­˜å‚¨åˆ°ç¼“å­˜åŒº
 		#if(boardPRINT_IFACE)
 		lwrb_write(&tPrintTxBuff, log_buf, len);
 		#endif
         
 		#if(boardUSE_OS)
-        // ÊÍ·Å»¥³âÁ¿
+        // é‡Šæ”¾äº’æ–¥é‡
         xSemaphoreGive(MyPrintSemaphoreMutex); 
 		#endif  //boardUSE_OS
         
-        // ¿ªÊ¼·¢ËÍÊı¾İ
+        // å¼€å§‹å‘é€æ•°æ®
         #if(boardPRINT_IFACE)
         bPrint_SendDataToUsart();
         #endif
@@ -157,15 +157,15 @@ int sMyPrint(const char* str, ...)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ·â×°µÄÊä³ö´íÎóº¯Êı
------ËµÃ÷(±¸×¢)  Ö§³Ö%d£¬%o, %x£¬%s£¬%c£¬%f
------´«Èë²ÎÊı    ĞèÒªÊä³öµÄÊı¾İ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      ´òÓ¡×Ö·ûµÄ¸öÊı,¸ºÊıÎª´íÎó
+-----å‡½æ•°åŠŸèƒ½    å°è£…çš„è¾“å‡ºé”™è¯¯å‡½æ•°
+-----è¯´æ˜(å¤‡æ³¨)  æ”¯æŒ%dï¼Œ%o, %xï¼Œ%sï¼Œ%cï¼Œ%f
+-----ä¼ å…¥å‚æ•°    éœ€è¦è¾“å‡ºçš„æ•°æ®
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      æ‰“å°å­—ç¬¦çš„ä¸ªæ•°,è´Ÿæ•°ä¸ºé”™è¯¯
 ************************************************************************************************************************/
 int sMyPrintErr(const char* str, ...)
 {
-	// ³õÊ¼»¯±äÁ¿
+	// åˆå§‹åŒ–å˜é‡
     int len = 0;
 	int len_str = 0;
 	
@@ -174,16 +174,16 @@ int sMyPrintErr(const char* str, ...)
 		return c_ret;
 	
 	#if(boardUSE_OS)
-	// »ñÈ¡»¥³âÁ¿
+	// è·å–äº’æ–¥é‡
     if(xSemaphoreTake(MyPrintSemaphoreMutex, pdMS_TO_TICKS(delay_value)) == pdPASS)
 	#endif  //boardUSE_OS
 	{
-		va_list args;            // ¶¨Òåva_listÀàĞÍÖ¸Õë£¬ÓÃÓÚ´æ´¢²ÎÊıµÄµØÖ·
-		va_start(args, str);     // ³õÊ¼»¯pArgs
+		va_list args;            // å®šä¹‰va_listç±»å‹æŒ‡é’ˆï¼Œç”¨äºå­˜å‚¨å‚æ•°çš„åœ°å€
+		va_start(args, str);     // åˆå§‹åŒ–pArgs
 		
-		/* ¢Ù ÏÈËãµ½µ×ĞèÒª¶àÉÙ×Ö½Ú */
-		len = vsnprintf(NULL, 0, str, args);   /* C99 Ö§³Ö */
-		if(len < 0) /* ¸ñÊ½´®±¾Éí·Ç·¨ */          			
+		/* â‘  å…ˆç®—åˆ°åº•éœ€è¦å¤šå°‘å­—èŠ‚ */
+		len = vsnprintf(NULL, 0, str, args);   /* C99 æ”¯æŒ */
+		if(len < 0) /* æ ¼å¼ä¸²æœ¬èº«éæ³• */          			
 		{ 
 			va_end(args);
 			
@@ -193,7 +193,7 @@ int sMyPrintErr(const char* str, ...)
 			
 			return -4; 
 		}   
-		if(len > printLOG_BUFF_SIZE) /* ¢Ú ×Ô¶¨ÒåÉÏÏŞ 512 KB */	
+		if(len > printLOG_BUFF_SIZE) /* â‘¡ è‡ªå®šä¹‰ä¸Šé™ 512 KB */	
 		{ 
 			va_end(args);
 			
@@ -210,10 +210,10 @@ int sMyPrintErr(const char* str, ...)
 		lwrb_write(&tPrintTxBuff, err1, len_str);
 		#endif
 		
-		//×ª»»
-		va_start(args, str);            /* ±ØĞëÖØĞÂ³õÊ¼»¯ */
+		//è½¬æ¢
+		va_start(args, str);            /* å¿…é¡»é‡æ–°åˆå§‹åŒ– */
 		len = vsnprintf(log_buf, printLOG_BUFF_SIZE, str, args);
-		va_end(args);  // ½áÊøÈ¡²ÎÊı
+		va_end(args);  // ç»“æŸå–å‚æ•°
 		#if(boardPRINT_IFACE)
 		lwrb_write(&tPrintTxBuff, log_buf, len);
 		#endif
@@ -227,30 +227,30 @@ int sMyPrintErr(const char* str, ...)
 		len += len_str;
 		
 		#if(boardUSE_OS)
-        // ÊÍ·Å»¥³âÁ¿
+        // é‡Šæ”¾äº’æ–¥é‡
         xSemaphoreGive(MyPrintSemaphoreMutex); 
 		#endif  //boardUSE_OS
 		
-		//¿ªÊ¼·¢ËÍÊı¾İ
+		//å¼€å§‹å‘é€æ•°æ®
 		#if(boardPRINT_IFACE)
 		bPrint_SendDataToUsart();
 		#endif
     }
-	//µÈ´ıĞÅºÅÁ¿ÊÍ·Å³¬Ê±
+	//ç­‰å¾…ä¿¡å·é‡é‡Šæ”¾è¶…æ—¶
     return len;
 }
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ·â×°µÄÊä³ö¾¯¸æº¯Êı
------ËµÃ÷(±¸×¢)  Ö§³Ö%d£¬%o, %x£¬%s£¬%c£¬%f
------´«Èë²ÎÊı    ĞèÒªÊä³öµÄÊı¾İ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      ´òÓ¡×Ö·ûµÄ¸öÊı,¸ºÊıÎª´íÎó
+-----å‡½æ•°åŠŸèƒ½    å°è£…çš„è¾“å‡ºè­¦å‘Šå‡½æ•°
+-----è¯´æ˜(å¤‡æ³¨)  æ”¯æŒ%dï¼Œ%o, %xï¼Œ%sï¼Œ%cï¼Œ%f
+-----ä¼ å…¥å‚æ•°    éœ€è¦è¾“å‡ºçš„æ•°æ®
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      æ‰“å°å­—ç¬¦çš„ä¸ªæ•°,è´Ÿæ•°ä¸ºé”™è¯¯
 ************************************************************************************************************************/
 int sMyPrintWarn(const char* str, ...)
 {
-	// ³õÊ¼»¯±äÁ¿
+	// åˆå§‹åŒ–å˜é‡
     int len = 0;
 	int len_str = 0;
 	
@@ -259,16 +259,16 @@ int sMyPrintWarn(const char* str, ...)
 		return c_ret;
 	
 	#if(boardUSE_OS)
-	// »ñÈ¡»¥³âÁ¿
+	// è·å–äº’æ–¥é‡
     if(xSemaphoreTake(MyPrintSemaphoreMutex, pdMS_TO_TICKS(delay_value)) == pdPASS)
 	#endif  //boardUSE_OS
 	{
-		va_list args;            // ¶¨Òåva_listÀàĞÍÖ¸Õë£¬ÓÃÓÚ´æ´¢²ÎÊıµÄµØÖ·
-		va_start(args, str);     // ³õÊ¼»¯pArgs
+		va_list args;            // å®šä¹‰va_listç±»å‹æŒ‡é’ˆï¼Œç”¨äºå­˜å‚¨å‚æ•°çš„åœ°å€
+		va_start(args, str);     // åˆå§‹åŒ–pArgs
 		
-		/* ¢Ù ÏÈËãµ½µ×ĞèÒª¶àÉÙ×Ö½Ú */
-		len = vsnprintf(NULL, 0, str, args);   /* C99 Ö§³Ö */
-		if(len < 0) /* ¸ñÊ½´®±¾Éí·Ç·¨ */          			
+		/* â‘  å…ˆç®—åˆ°åº•éœ€è¦å¤šå°‘å­—èŠ‚ */
+		len = vsnprintf(NULL, 0, str, args);   /* C99 æ”¯æŒ */
+		if(len < 0) /* æ ¼å¼ä¸²æœ¬èº«éæ³• */          			
 		{ 
 			va_end(args);
 			
@@ -278,7 +278,7 @@ int sMyPrintWarn(const char* str, ...)
 			
 			return -4; 
 		}   
-		if(len > printLOG_BUFF_SIZE) /* ¢Ú ×Ô¶¨ÒåÉÏÏŞ 512 KB */	
+		if(len > printLOG_BUFF_SIZE) /* â‘¡ è‡ªå®šä¹‰ä¸Šé™ 512 KB */	
 		{ 
 			va_end(args);
 			
@@ -295,10 +295,10 @@ int sMyPrintWarn(const char* str, ...)
 		lwrb_write(&tPrintTxBuff, err1, len_str);
 		#endif
 		
-		//×ª»»
-		va_start(args, str);            /* ±ØĞëÖØĞÂ³õÊ¼»¯ */
+		//è½¬æ¢
+		va_start(args, str);            /* å¿…é¡»é‡æ–°åˆå§‹åŒ– */
 		len = vsnprintf(log_buf, printLOG_BUFF_SIZE, str, args);
-		va_end(args);  // ½áÊøÈ¡²ÎÊı
+		va_end(args);  // ç»“æŸå–å‚æ•°
 		#if(boardPRINT_IFACE)
 		lwrb_write(&tPrintTxBuff, log_buf, len);
 		#endif
@@ -312,30 +312,30 @@ int sMyPrintWarn(const char* str, ...)
 		len += len_str;
 		
 		#if(boardUSE_OS)
-        // ÊÍ·Å»¥³âÁ¿
+        // é‡Šæ”¾äº’æ–¥é‡
         xSemaphoreGive(MyPrintSemaphoreMutex); 
 		#endif  //boardUSE_OS
 		
-		//¿ªÊ¼·¢ËÍÊı¾İ
+		//å¼€å§‹å‘é€æ•°æ®
 		#if(boardPRINT_IFACE)
 		bPrint_SendDataToUsart();
 		#endif
     }
-	//µÈ´ıĞÅºÅÁ¿ÊÍ·Å³¬Ê±
+	//ç­‰å¾…ä¿¡å·é‡é‡Šæ”¾è¶…æ—¶
     return len;
 }
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ·â×°µÄÊä³öÌáÊ¾º¯Êı
------ËµÃ÷(±¸×¢)  Ö§³Ö%d£¬%o, %x£¬%s£¬%c£¬%f
------´«Èë²ÎÊı    ĞèÒªÊä³öµÄÊı¾İ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      ´òÓ¡×Ö·ûµÄ¸öÊı,¸ºÊıÎª´íÎó
+-----å‡½æ•°åŠŸèƒ½    å°è£…çš„è¾“å‡ºæç¤ºå‡½æ•°
+-----è¯´æ˜(å¤‡æ³¨)  æ”¯æŒ%dï¼Œ%o, %xï¼Œ%sï¼Œ%cï¼Œ%f
+-----ä¼ å…¥å‚æ•°    éœ€è¦è¾“å‡ºçš„æ•°æ®
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      æ‰“å°å­—ç¬¦çš„ä¸ªæ•°,è´Ÿæ•°ä¸ºé”™è¯¯
 ************************************************************************************************************************/
 int sMyPrintTips(const char* str, ...)
 {
-	// ³õÊ¼»¯±äÁ¿
+	// åˆå§‹åŒ–å˜é‡
     int len = 0;
 	int len_str = 0;
 	
@@ -344,16 +344,16 @@ int sMyPrintTips(const char* str, ...)
 		return c_ret;
 	
 	#if(boardUSE_OS)
-	// »ñÈ¡»¥³âÁ¿
+	// è·å–äº’æ–¥é‡
     if(xSemaphoreTake(MyPrintSemaphoreMutex, pdMS_TO_TICKS(delay_value)) == pdPASS)
 	#endif  //boardUSE_OS
 	{
-		va_list args;            // ¶¨Òåva_listÀàĞÍÖ¸Õë£¬ÓÃÓÚ´æ´¢²ÎÊıµÄµØÖ·
-		va_start(args, str);     // ³õÊ¼»¯pArgs
+		va_list args;            // å®šä¹‰va_listç±»å‹æŒ‡é’ˆï¼Œç”¨äºå­˜å‚¨å‚æ•°çš„åœ°å€
+		va_start(args, str);     // åˆå§‹åŒ–pArgs
 		
-		/* ¢Ù ÏÈËãµ½µ×ĞèÒª¶àÉÙ×Ö½Ú */
-		len = vsnprintf(NULL, 0, str, args);   /* C99 Ö§³Ö */
-		if(len < 0) /* ¸ñÊ½´®±¾Éí·Ç·¨ */          			
+		/* â‘  å…ˆç®—åˆ°åº•éœ€è¦å¤šå°‘å­—èŠ‚ */
+		len = vsnprintf(NULL, 0, str, args);   /* C99 æ”¯æŒ */
+		if(len < 0) /* æ ¼å¼ä¸²æœ¬èº«éæ³• */          			
 		{ 
 			va_end(args);
 			
@@ -363,7 +363,7 @@ int sMyPrintTips(const char* str, ...)
 			
 			return -4; 
 		}   
-		if(len > printLOG_BUFF_SIZE) /* ¢Ú ×Ô¶¨ÒåÉÏÏŞ 512 KB */	
+		if(len > printLOG_BUFF_SIZE) /* â‘¡ è‡ªå®šä¹‰ä¸Šé™ 512 KB */	
 		{ 
 			va_end(args);
 			
@@ -380,10 +380,10 @@ int sMyPrintTips(const char* str, ...)
 		lwrb_write(&tPrintTxBuff, err1, len_str);
 		#endif
 		
-		//×ª»»
-		va_start(args, str);            /* ±ØĞëÖØĞÂ³õÊ¼»¯ */
+		//è½¬æ¢
+		va_start(args, str);            /* å¿…é¡»é‡æ–°åˆå§‹åŒ– */
 		len = vsnprintf(log_buf, printLOG_BUFF_SIZE, str, args);
-		va_end(args);  // ½áÊøÈ¡²ÎÊı
+		va_end(args);  // ç»“æŸå–å‚æ•°
 		#if(boardPRINT_IFACE)
 		lwrb_write(&tPrintTxBuff, log_buf, len);
 		#endif
@@ -397,16 +397,16 @@ int sMyPrintTips(const char* str, ...)
 		len += len_str;
 		
 		#if(boardUSE_OS)
-        // ÊÍ·Å»¥³âÁ¿
+        // é‡Šæ”¾äº’æ–¥é‡
         xSemaphoreGive(MyPrintSemaphoreMutex); 
 		#endif  //boardUSE_OS
 		
-		//¿ªÊ¼·¢ËÍÊı¾İ
+		//å¼€å§‹å‘é€æ•°æ®
 		#if(boardPRINT_IFACE)
 		bPrint_SendDataToUsart();
 		#endif
     }
-	//µÈ´ıĞÅºÅÁ¿ÊÍ·Å³¬Ê±
+	//ç­‰å¾…ä¿¡å·é‡é‡Šæ”¾è¶…æ—¶
     return len;
 }
 

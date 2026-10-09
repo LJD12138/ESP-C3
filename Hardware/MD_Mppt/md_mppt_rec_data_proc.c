@@ -9,18 +9,18 @@
 #include "app_info.h"
 #include "function.h"
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************// 
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************// 
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 static s8 c_relay08_param(BaikuProtoRx_t* proto);
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´¦Àí½ÓÊÕµ½µÄÊı¾İ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      0:Ã»ÓĞ´íÎó  ÆäËûÓĞ´íÎó
+-----å‡½æ•°åŠŸèƒ½    å¤„ç†æ¥æ”¶åˆ°çš„æ•°æ®
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      0:æ²¡æœ‰é”™è¯¯  å…¶ä»–æœ‰é”™è¯¯
 ************************************************************************************************************************/
 s8 c_mppt_rec_proc_data(BaikuProtoRx_t* proto)
 {
@@ -28,7 +28,7 @@ s8 c_mppt_rec_proc_data(BaikuProtoRx_t* proto)
 
 	if(uPrint.tFlag.bMpptRecTask)
 	{
-		sMyPrint("\r\n bMpptRecTask:Ö¸Áî:0x%x, Êı¾İ:",proto->ucCmd);
+		sMyPrint("\r\n bMpptRecTask:æŒ‡ä»¤:0x%x, æ•°æ®:",proto->ucCmd);
 		for(int i = 0; i < proto->ucValidLen; i++)
 			sMyPrint("%x ",proto->ucpValidData[i]);
 		sMyPrint("\r\n");
@@ -36,7 +36,7 @@ s8 c_mppt_rec_proc_data(BaikuProtoRx_t* proto)
 	
 	switch (proto->ucCmd)
 	{
-		//»Ø¸´¿ª¹Ø
+		//å›å¤å¼€å…³
         case baikuCMD_REPLY_SWITCH:
         {
 			if(proto->ucValidLen != 2 || proto->ucpValidData == NULL)
@@ -46,12 +46,12 @@ s8 c_mppt_rec_proc_data(BaikuProtoRx_t* proto)
 			lwrb_write(&tMpptReplyBuff, proto->ucpValidData, proto->ucValidLen);
 
 			#if(boardUSE_OS)
-			xTaskNotifyGive(tMpptTaskHandler);//Í¨Öª·¢ËÍÈÎÎñ
+			xTaskNotifyGive(tMpptTaskHandler);//é€šçŸ¥å‘é€ä»»åŠ¡
 			#endif  //boardUSE_OS
         }
         break;
 
-		//»Ø¸´³äµç¹¦ÂÊ
+		//å›å¤å……ç”µåŠŸç‡
 		case baikuCMD_REPLY_SET_CHG_PWR:
         {
 			if(proto->ucValidLen != 3 || proto->ucpValidData == NULL)
@@ -61,12 +61,12 @@ s8 c_mppt_rec_proc_data(BaikuProtoRx_t* proto)
 			lwrb_write(&tMpptReplyBuff, proto->ucpValidData, proto->ucValidLen);
 
 			#if(boardUSE_OS)
-			xTaskNotifyGive(tMpptTaskHandler);//Í¨Öª·¢ËÍÈÎÎñ
+			xTaskNotifyGive(tMpptTaskHandler);//é€šçŸ¥å‘é€ä»»åŠ¡
 			#endif  //boardUSE_OS
         }
         break;
 		
-		//»Ø¸´²ÎÊı
+		//å›å¤å‚æ•°
 		case baikuCMD_REPLY_PARAM:                
         {
 			c_ret = c_relay08_param(proto);
@@ -74,7 +74,7 @@ s8 c_mppt_rec_proc_data(BaikuProtoRx_t* proto)
 				return -2;
 
 			#if(boardUSE_OS)
-			xTaskNotifyGive(tMpptTaskHandler);//Í¨Öª·¢ËÍÈÎÎñ
+			xTaskNotifyGive(tMpptTaskHandler);//é€šçŸ¥å‘é€ä»»åŠ¡
 			#endif  //boardUSE_OS
         }
         break;
@@ -87,11 +87,11 @@ s8 c_mppt_rec_proc_data(BaikuProtoRx_t* proto)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    »Ø¸´²ÎÊı  0x08
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:·¢ËÍ³É¹¦   false:·¢ËÍÊ§°Ü
+-----å‡½æ•°åŠŸèƒ½    å›å¤å‚æ•°  0x08
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:å‘é€æˆåŠŸ   false:å‘é€å¤±è´¥
 ************************************************************************************************************************/
 static s8 c_relay08_param(BaikuProtoRx_t* proto)
 {

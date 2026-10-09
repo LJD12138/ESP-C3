@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         œµÕ≥µƒ∂”¡–∫Ø ˝                                                  		*
+ *                                         Á≥ªÁªüÁöÑÈòüÂàóÂáΩÊï∞                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "Sys/sys_queue_task.h"
@@ -14,15 +14,15 @@
 #endif  //boardBMS_IFACE
 
 
-#define     	sysTASK_BOOTING_CYCLE_TIME					10 //»ŒŒÒ ±º‰
+#define     	sysTASK_BOOTING_CYCLE_TIME					10 //‰ªªÂä°Êó∂Èó¥
 
 
 /***********************************************************************************************************************
------∫Ø ˝π¶ƒ‹    œµÕ≥∆Ù∂Ø÷–»ŒŒÒ
------Àµ√˜(±∏◊¢)  none
------¥´»Î≤Œ ˝    none
------ ‰≥ˆ≤Œ ˝    none
------∑µªÿ÷µ      none
+-----ÂáΩÊï∞ÂäüËÉΩ    Á≥ªÁªüÂêØÂä®‰∏≠‰ªªÂä°
+-----ËØ¥Êòé(Â§áÊ≥®)  none
+-----‰º†ÂÖ•ÂèÇÊï∞    none
+-----ËæìÂá∫ÂèÇÊï∞    none
+-----ËøîÂõûÂÄº      none
 ************************************************************************************************************************/  
 void v_sys_queue_task_booting(Task_T *tp_task)
 {
@@ -36,64 +36,64 @@ void v_sys_queue_task_booting(Task_T *tp_task)
 	
     switch (tp_task->ucStep)
     {
-		//************************************≤Ω÷Ë0:ø™∆ÙœµÕ≥**********************************************
+		//************************************Ê≠•È™§0:ÂºÄÂêØÁ≥ªÁªü**********************************************
 		case 0:
 		{
 			if(tSysInfo.eDevState < DS_BOOTING)
 				bSys_SetDevState(DS_BOOTING,false);
 
-			cQueue_GotoStep( tp_task, STEP_NEXT );  //œ¬“ª≤Ω
+			cQueue_GotoStep( tp_task, STEP_NEXT );  //‰∏ã‰∏ÄÊ≠•
 		}
 		
-		//************************************≤Ω÷Ë1:ø™∆ÙBMS**********************************************
+		//************************************Ê≠•È™§1:ÂºÄÂêØBMS**********************************************
 		case 1:
 		{	
 			#if(boardBMS_IFACE)
-			if(cBms_Switch(SO_KEY, ST_ON, true) < 0)  //≤Ÿ◊˜ ß∞‹
+			if(cBms_Switch(SO_KEY, ST_ON, true) < 0)  //Êìç‰ΩúÂ§±Ë¥•
 			{
 				if(uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) 
-					log_w("bSysTask:ø™∆ÙBMS ß∞‹");
+					log_w("bSysTask:ÂºÄÂêØBMSÂ§±Ë¥•");
 				
 				vTaskDelay(500);
 				break;
 			}
 			#endif  //boardBMS_IFACE
-			cQueue_GotoStep( tp_task, STEP_NEXT );  //œ¬“ª≤Ω
+			cQueue_GotoStep( tp_task, STEP_NEXT );  //‰∏ã‰∏ÄÊ≠•
 		}break ;
 		
-		//************************************≤Ω÷Ë2:µ»¥˝BMSø™∆Ù**********************************************
+		//************************************Ê≠•È™§2:Á≠âÂæÖBMSÂºÄÂêØ**********************************************
 		case 2:
 		{
-			//µ»¥˝≥¨ ±÷ÿ–¬¥”µ⁄“ª≤Ωø™ º
+			//Á≠âÂæÖË∂ÖÊó∂ÈáçÊñ∞‰ªéÁ¨¨‰∏ÄÊ≠•ÂºÄÂßã
 			tp_task->usStepRepeatCnt++;
 			if(tp_task->usStepRepeatCnt >= 60)
 			{
 				tp_task->usStepRepeatCnt = 0;
-				cQueue_GotoStep(tp_task, STEP_FORWARD);  //…œ“ª≤Ω
+				cQueue_GotoStep(tp_task, STEP_FORWARD);  //‰∏ä‰∏ÄÊ≠•
 				
 				if(uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) 
-					log_w("bSysTask:µ»¥˝BMSø™∆ÙÕÍ≥…≥¨ ±");
+					log_w("bSysTask:Á≠âÂæÖBMSÂºÄÂêØÂÆåÊàêË∂ÖÊó∂");
 			}
 
 			#if(boardBMS_IFACE)
 			if(tBms.eDevState == DS_WORK || 
 				tBms.eDevState == DS_ERR ||
-				bSys_LowVoltReqChg() || //µÁ≥ÿ«∑—π«Î«Û≥‰µÁ
-				G_TestMode == true) //≤‚ ‘ƒ£ Ω
-				cQueue_GotoStep(tp_task, STEP_NEXT);  //œ¬“ª≤Ω
+				bSys_LowVoltReqChg() || //ÁîµÊ±†Ê¨†ÂéãËØ∑Ê±ÇÂÖÖÁîµ
+				G_TestMode == true) //ÊµãËØïÊ®°Âºè
+				cQueue_GotoStep(tp_task, STEP_NEXT);  //‰∏ã‰∏ÄÊ≠•
 			else
 				break;
 			#else
-			cQueue_GotoStep(tp_task, STEP_NEXT);  //œ¬“ª≤Ω
+			cQueue_GotoStep(tp_task, STEP_NEXT);  //‰∏ã‰∏ÄÊ≠•
 			#endif  //#if(boardBMS_IFACE)
 		}
 		
-		//************************************≤Ω÷ËŒÂ:ø™∆ÙÕÍ≥…**********************************************
+		//************************************Ê≠•È™§‰∫î:ÂºÄÂêØÂÆåÊàê**********************************************
 		case 3:
 		{
-			bSys_SetDevState(DS_WORK, false);//Ω¯»Îπ§◊˜
+			bSys_SetDevState(DS_WORK, false);//ËøõÂÖ•Â∑•‰Ωú
 
-			cQueue_GotoStep(tp_task, STEP_END);  //Ω· ¯
+			cQueue_GotoStep(tp_task, STEP_END);  //ÁªìÊùü
 		}
 		break ;
 		
@@ -102,13 +102,13 @@ void v_sys_queue_task_booting(Task_T *tp_task)
     }
 	
 	
-	//µ»¥˝10S,≥¨ ±ÕÀ≥ˆ
+	//Á≠âÂæÖ10S,Ë∂ÖÊó∂ÈÄÄÂá∫
 	tp_task->usTaskWaitCnt++;
 	if(tp_task->usTaskWaitCnt > (10000/sysTASK_BOOTING_CYCLE_TIME) && tp_task->ucStep != STEP_END)
 	{
 		bSys_SetErrCode(SEC_BOOT_FAULT, true);
 		
-		cQueue_GotoStep( tp_task, STEP_END );  //Ω· ¯
+		cQueue_GotoStep( tp_task, STEP_END );  //ÁªìÊùü
 	}
 
 	vTaskDelay(sysTASK_BOOTING_CYCLE_TIME);

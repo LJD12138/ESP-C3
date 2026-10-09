@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "Print/print_queue_task.h"
@@ -12,15 +12,15 @@
 
 #define       	printTASK_APP_INFO_CYCLE_TIME               		50
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 
 	
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:ÈÎÎñ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:ä»»åŠ¡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_print_queue_task_reply_app_info(Task_T *tp_task)
 {
@@ -32,25 +32,25 @@ void v_print_queue_task_reply_app_info(Task_T *tp_task)
 		case 0:
 		{
 			if(b_relay_bms_app_info(u_in_param.usTaskInParam) > 0)
-				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ÏÂÒ»²½
+				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ä¸‹ä¸€æ­¥
 		}
 		break;
 		
 		case 1:
 		{
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 		}
 		break;
 
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
 	}
 	
 	tp_task->usTaskWaitCnt++;
-	if(tp_task->usTaskWaitCnt>(5000/printTASK_APP_INFO_CYCLE_TIME))  //µÈ´ı³¬Ê±
+	if(tp_task->usTaskWaitCnt>(5000/printTASK_APP_INFO_CYCLE_TIME))  //ç­‰å¾…è¶…æ—¶
 	{
-		cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+		cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 	}
 	
 	#if(boardUSE_OS)

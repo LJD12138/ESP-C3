@@ -5,11 +5,11 @@
 #include "Print/print_task.h"
 
 /***********************************************************************************************************************
------º¯Êý¹¦ÄÜ    IO¿Ú³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    IOå£åˆå§‹åŒ–
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ************************************************************************************************************************/ 
 void vGPIO_Init(void)
 {
@@ -26,32 +26,32 @@ void vGPIO_Init(void)
 }
 
 /***********************************************************************************************************************
------º¯Êý¹¦ÄÜ    Ð­ÖúBMS¿ªÆô
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      true:²Ù×÷³É¹¦    false:²Ù×÷Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    ååŠ©BMSå¼€å¯
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      true:æ“ä½œæˆåŠŸ    false:æ“ä½œå¤±è´¥
 ************************************************************************************************************************/ 
 bool vGPIO_AssistBmsOpen(bool en)
 {
 	if(en == true)
 	{
-		tSysInfo.uInit.tFinish.bIF_Gpio = 0;  //¹Ø±Õ³õÊ¼»¯,Ô¤·À°´¼üÎó´¥·¢
+		tSysInfo.uInit.tFinish.bIF_Gpio = 0;  //å…³é—­åˆå§‹åŒ–,é¢„é˜²æŒ‰é”®è¯¯è§¦å‘
 		gpioASSIST_OPEN_ON();
-		xTimerReset(tWakeUpBmsTimer,0);  //¿ªÆôÈí¼þ¶¨Ê±,2Sºó¹Ø±Õ
+		xTimerReset(tWakeUpBmsTimer,0);  //å¼€å¯è½¯ä»¶å®šæ—¶,2SåŽå…³é—­
 		
 		if(uPrint.tFlag.bSysTask)
-			sMyPrint("BMSµçÔ´¸¨Öú¿ªÆô´ò¿ª\r\n");
+			sMyPrint("BMSç”µæºè¾…åŠ©å¼€å¯æ‰“å¼€\r\n");
 		
 		return  true;
 	}
 	else 
 	{
-		tSysInfo.uInit.tFinish.bIF_Gpio = 1;  //³õÊ¼»¯Íê³É
+		tSysInfo.uInit.tFinish.bIF_Gpio = 1;  //åˆå§‹åŒ–å®Œæˆ
 		gpioASSIST_OPEN_OFF();
 		
 		if(uPrint.tFlag.bSysTask)
-			sMyPrint("¶¨Ê±2Sµ½´ï,¹Ø±ÕBMS¸¨Öú¿ªÆô\r\n");
+			sMyPrint("å®šæ—¶2Såˆ°è¾¾,å…³é—­BMSè¾…åŠ©å¼€å¯\r\n");
 		
 		return  true;
 	}
@@ -60,11 +60,11 @@ bool vGPIO_AssistBmsOpen(bool en)
 
 #if(boardLOW_POWER)
 /***********************************************************************************************************************
------º¯Êý¹¦ÄÜ    IO¿Ú½øÈëµÍ¹¦ºÄ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    IOå£è¿›å…¥ä½ŽåŠŸè€—
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ************************************************************************************************************************/ 
 void vKey_EnterLowPower(void)
 {
@@ -83,11 +83,11 @@ void vKey_EnterLowPower(void)
 	rcu_periph_clock_enable(PRINT_RX_RCU);      //D
 	rcu_periph_clock_enable(RCU_AF);
 	
-	gpio_init(KEY_0_GPIO_PORT,GPIO_MODE_IN_FLOATING,GPIO_OSPEED_2MHZ,KEY_0_GPIO_PIN);             //ÖÐ¶Ï µçÔ´°´¼ü PC13
-	gpio_init(KEY_WP_GPIO,GPIO_MODE_IN_FLOATING,GPIO_OSPEED_2MHZ,KEY_WP_PIN);                   //ÖÐ¶Ï »½ÐÑ½Å PA0
+	gpio_init(KEY_0_GPIO_PORT,GPIO_MODE_IN_FLOATING,GPIO_OSPEED_2MHZ,KEY_0_GPIO_PIN);             //ä¸­æ–­ ç”µæºæŒ‰é”® PC13
+	gpio_init(KEY_WP_GPIO,GPIO_MODE_IN_FLOATING,GPIO_OSPEED_2MHZ,KEY_WP_PIN);                   //ä¸­æ–­ å”¤é†’è„š PA0
 	gpio_init(KEY_KEY1_GPIO,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,KEY_KEY1_PIN);
-	gpio_init(attiSENSOR_INT_GPIO,GPIO_MODE_IN_FLOATING,GPIO_OSPEED_2MHZ,attiSENSOR_INT_PIN);   //ÖÐ¶Ï ×´Ì¬´«¸ÐÆ÷ PA9
-	gpio_init(PRINT_RX_GPIO,GPIO_MODE_IN_FLOATING,GPIO_OSPEED_2MHZ,PRINT_RX_PIN);               //ÖÐ¶Ï ´®¿Ú½ÓÊÕ   PD2
+	gpio_init(attiSENSOR_INT_GPIO,GPIO_MODE_IN_FLOATING,GPIO_OSPEED_2MHZ,attiSENSOR_INT_PIN);   //ä¸­æ–­ çŠ¶æ€ä¼ æ„Ÿå™¨ PA9
+	gpio_init(PRINT_RX_GPIO,GPIO_MODE_IN_FLOATING,GPIO_OSPEED_2MHZ,PRINT_RX_PIN);               //ä¸­æ–­ ä¸²å£æŽ¥æ”¶   PD2
 	
 	/* enable and set key EXTI interrupt to the lowest priority */
 	nvic_irq_enable(EXTI10_15_IRQn, 2U, 0U);
@@ -102,10 +102,10 @@ void vKey_EnterLowPower(void)
 	gpio_exti_source_select(GPIO_PORT_SOURCE_GPIOA, GPIO_PIN_SOURCE_0);  //PA0
 
 	/* configure key EXTI line */
-	exti_init(EXTI_13, EXTI_INTERRUPT, EXTI_TRIG_FALLING); //ÏÂ½µÑØ´¥·¢
-	exti_init(EXTI_9, EXTI_INTERRUPT, EXTI_TRIG_RISING);   //ÉÏÉýÑØ´¥·¢
-	exti_init(EXTI_2, EXTI_INTERRUPT, EXTI_TRIG_RISING);   //ÉÏÉýÑØ´¥·¢
-	exti_init(EXTI_0, EXTI_INTERRUPT, EXTI_TRIG_RISING);   //ÉÏÉýÑØ´¥·¢
+	exti_init(EXTI_13, EXTI_INTERRUPT, EXTI_TRIG_FALLING); //ä¸‹é™æ²¿è§¦å‘
+	exti_init(EXTI_9, EXTI_INTERRUPT, EXTI_TRIG_RISING);   //ä¸Šå‡æ²¿è§¦å‘
+	exti_init(EXTI_2, EXTI_INTERRUPT, EXTI_TRIG_RISING);   //ä¸Šå‡æ²¿è§¦å‘
+	exti_init(EXTI_0, EXTI_INTERRUPT, EXTI_TRIG_RISING);   //ä¸Šå‡æ²¿è§¦å‘
 	exti_interrupt_flag_clear(EXTI_13);
 	exti_interrupt_flag_clear(EXTI_9);
 	exti_interrupt_flag_clear(EXTI_2);
@@ -117,11 +117,11 @@ void vKey_EnterLowPower(void)
 }
 
 /***********************************************************************************************************************
------º¯Êý¹¦ÄÜ    IO¿ÚÍË³öµÍ¹¦ºÄ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    IOå£é€€å‡ºä½ŽåŠŸè€—
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ************************************************************************************************************************/ 
 void vGPIO_ExitLowPower(void)
 {
@@ -131,19 +131,19 @@ void vGPIO_ExitLowPower(void)
 
 
 /***********************************************************************************************************************
------º¯Êý¹¦ÄÜ    IO¿Ú½øÈëAPP³ÌÐò
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    IOå£è¿›å…¥APPç¨‹åº
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ************************************************************************************************************************/ 
 void vGPIO_EnterApp(void)
 {
-	gpio_init(KEY_0_GPIO_PORT,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,KEY_0_GPIO_PIN);             //ÖÐ¶Ï µçÔ´°´¼ü   PC13
-	gpio_init(KEY_WP_GPIO,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,KEY_WP_PIN);                   //ÖÐ¶Ï »½ÐÑ½Å     PA0
+	gpio_init(KEY_0_GPIO_PORT,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,KEY_0_GPIO_PIN);             //ä¸­æ–­ ç”µæºæŒ‰é”®   PC13
+	gpio_init(KEY_WP_GPIO,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,KEY_WP_PIN);                   //ä¸­æ–­ å”¤é†’è„š     PA0
 	gpio_init(KEY_KEY1_GPIO,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,KEY_KEY1_PIN);
-	gpio_init(attiSENSOR_INT_GPIO,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,attiSENSOR_INT_PIN);   //ÖÐ¶Ï ×´Ì¬´«¸ÐÆ÷ PA9
-//	gpio_init(PRINT_RX_GPIO,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,PRINT_RX_PIN);               //ÖÐ¶Ï ´®¿Ú½ÓÊÕ   PD2
+	gpio_init(attiSENSOR_INT_GPIO,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,attiSENSOR_INT_PIN);   //ä¸­æ–­ çŠ¶æ€ä¼ æ„Ÿå™¨ PA9
+//	gpio_init(PRINT_RX_GPIO,GPIO_MODE_AIN,GPIO_OSPEED_2MHZ,PRINT_RX_PIN);               //ä¸­æ–­ ä¸²å£æŽ¥æ”¶   PD2
 	
 	nvic_irq_disable(EXTI10_15_IRQn);
 	nvic_irq_disable(EXTI5_9_IRQn);

@@ -1,5 +1,5 @@
 {
-  "C_Cpp.intelliSenseEngine": "default",
+  "C_Cpp.intelliSenseEngine": "disabled",
   "idf.espIdfPathWin": "c:\\Espressif\\frameworks\\esp-idf-v5.5.2",
   "idf.pythonInstallPath": "C:\\Espressif\\tools\\idf-python\\3.11.2\\python.exe",
   "idf.openOcdConfigs": [
@@ -9,7 +9,6 @@
   "idf.customExtraVars": {
     "IDF_TARGET": "esp32c3"
   },
-  "idf.portWin": "COM5",
   "idf.flashType": "UART",
 
   //以下是配置Cline默认调用ESP-IDF的终端配置
@@ -23,5 +22,6 @@
       ]
     }
   },
-  "idf.currentSetup": "C:/Espressif/frameworks/esp-idf-v5.5.2/"
+  "idf.currentSetup": "C:/Espressif/frameworks/esp-idf-v5.5.2/",
+  "idf.port": "COM5"
 }

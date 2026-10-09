@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         °´¼ü¹¦ÄÜ                                                             *
+ *                                         æŒ‰é”®åŠŸèƒ½                                                             *
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "Key/key_func.h"
@@ -26,50 +26,50 @@
 #include "eng_mode.h"
 #endif
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************//
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////°´¼ü¹¦ÄÜÊı×éÒªÇó:²»ÂúÊ®¸ö´¥·¢ÀàĞÍµÄÒª¼ÓKTE_FUN_NULL×÷Îª½áÊø·û///////////////////////
+//////////////////////////////æŒ‰é”®åŠŸèƒ½æ•°ç»„è¦æ±‚:ä¸æ»¡åä¸ªè§¦å‘ç±»å‹çš„è¦åŠ KTE_FUN_NULLä½œä¸ºç»“æŸç¬¦///////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if(boardENG_MODE_EN)
-//¹¤³ÌÄ£Ê½°´¼ü¹¦ÄÜ
+//å·¥ç¨‹æ¨¡å¼æŒ‰é”®åŠŸèƒ½
 enum
 {			
-	EMKF_NULL = 0, 		//¿Õ°´¼ü
-	EMKF_CHARGE,   		//¸Ä±ä
-	EMKF_ADD,      		//Ôö¼Ó
-	EMKF_REDUCE,   		//¼õÉÙ
-	EMKF_NEXT_OPTION,  	//ÏÂÒ»Ïî
-	EMKF_COMFIRM,  		//È·ÈÏ
+	EMKF_NULL = 0, 		//ç©ºæŒ‰é”®
+	EMKF_CHARGE,   		//æ”¹å˜
+	EMKF_ADD,      		//å¢åŠ 
+	EMKF_REDUCE,   		//å‡å°‘
+	EMKF_NEXT_OPTION,  	//ä¸‹ä¸€é¡¹
+	EMKF_COMFIRM,  		//ç¡®è®¤
 }eEngModeKeyFunc;
-//¹¤³ÌÄ£Ê½°´¼üÀàĞÍ
-u8 const     KeyTriType_SetBuff[ 3 ]    = { KTE_AC_LONG, KTE_POWER_LONG, KTE_FUN_NULL};  //½øÈë
+//å·¥ç¨‹æ¨¡å¼æŒ‰é”®ç±»å‹
+u8 const     KeyTriType_SetBuff[ 3 ]    = { KTE_AC_LONG, KTE_POWER_LONG, KTE_FUN_NULL};  //è¿›å…¥
 u8 const     KeyTriType_Set1Buff[ 3 ]   = { KTE_POWER_LONG, KTE_AC_LONG, KTE_FUN_NULL};
-u8 const     KeyTriType_ChargeBuff[ 2 ] = { KTE_POWER_SHORT, KTE_FUN_NULL};  //µ±Ç°ÏîÑ­»·
-u8 const     KeyTriType_AddBuff[ 2 ]    = { KTE_AC_SHORT, KTE_FUN_NULL};     //Ôö¼Ó
-u8 const     KeyTriType_ReduceBuff[ 2 ] = { KTE_USB_SHORT, KTE_FUN_NULL};    //¼õÉÙ
-u8 const     KeyTriType_NextOptionBuff[ 2 ]= { KTE_DC_SHORT, KTE_FUN_NULL};  //ÏÂÒ»Ñ¡Ïî
-u8 const     KeyTriType_ComfirmBuff[ 2 ]= { KTE_DC_LONG, KTE_FUN_NULL};      //È·ÈÏ
+u8 const     KeyTriType_ChargeBuff[ 2 ] = { KTE_POWER_SHORT, KTE_FUN_NULL};  //å½“å‰é¡¹å¾ªç¯
+u8 const     KeyTriType_AddBuff[ 2 ]    = { KTE_AC_SHORT, KTE_FUN_NULL};     //å¢åŠ 
+u8 const     KeyTriType_ReduceBuff[ 2 ] = { KTE_USB_SHORT, KTE_FUN_NULL};    //å‡å°‘
+u8 const     KeyTriType_NextOptionBuff[ 2 ]= { KTE_DC_SHORT, KTE_FUN_NULL};  //ä¸‹ä¸€é€‰é¡¹
+u8 const     KeyTriType_ComfirmBuff[ 2 ]= { KTE_DC_LONG, KTE_FUN_NULL};      //ç¡®è®¤
 #endif
 
-//³¤°´        ¿ª¹Ø»ú
+//é•¿æŒ‰        å¼€å…³æœº
 u8 const     KeyTriType_SysOnOffBuff[ 2 ] = { KTE_POWER_LONG, KTE_FUN_NULL};
-//µ¥»÷        ÇĞ»»ÆÁÄ»
+//å•å‡»        åˆ‡æ¢å±å¹•
 u8 const     KeyTriType_ScreenBuff[ 2 ] = { KTE_POWER_SHORT, KTE_FUN_NULL};
-// //µ¥»÷        ¿ª¹ØUSB
+// //å•å‡»        å¼€å…³USB
 // u8 const     KeyTriType_USBOnOffBuff[ 2 ] = { KTE_USB_SHORT, KTE_FUN_NULL}; 
-// //³¤»÷        ¿ª¹ØUSB
+// //é•¿å‡»        å¼€å…³USB
 // u8 const     KeyTriType_USBOnOffBuff1[ 2 ] = { KTE_USB_LONG, KTE_FUN_NULL};
-//³¤°´        ¿ª¹ØµÆ
+//é•¿æŒ‰        å¼€å…³ç¯
 u8 const     KeyTriType_LightOnOffBuff[ 2 ] = { KTE_LIGHT_LONG, KTE_FUN_NULL};  
-//µ¥»÷        ÇĞ»»µÆ
+//å•å‡»        åˆ‡æ¢ç¯
 u8 const     KeyTriType_LightChargeBuff[ 2 ] = { KTE_LIGHT_SHORT, KTE_FUN_NULL};
-//µ¥»÷        ¿ª¹ØAC
+//å•å‡»        å¼€å…³AC
 u8 const     KeyTriType_AcOnOffBuff[ 2 ] = { KTE_AC_SHORT, KTE_FUN_NULL}; 
-//³¤»÷        ¿ª¹ØAC
+//é•¿å‡»        å¼€å…³AC
 u8 const     KeyTriType_AcOnOffBuff1[ 2 ] = { KTE_AC_LONG, KTE_FUN_NULL};
 
 
-//****************************************************º¯ÊıÉùÃ÷**************************************************//
+//****************************************************å‡½æ•°å£°æ˜**************************************************//
 #if(boardENG_MODE_EN)
     static bool eng_mode_key_deal(u8 func);
 #endif
@@ -77,62 +77,62 @@ u8 const     KeyTriType_AcOnOffBuff1[ 2 ] = { KTE_AC_LONG, KTE_FUN_NULL};
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    °´¼ü¹¦ÄÜ´¦Àíº¯Êı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æŒ‰é”®åŠŸèƒ½å¤„ç†å‡½æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vKey_ProcKeyFunc(u8* pKeyTriTypeBuff)
 {
-	//******************************************¿ª¹Ø»ú************************************************
+	//******************************************å¼€å…³æœº************************************************
 	if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_SysOnOffBuff, sizeof(KeyTriType_SysOnOffBuff)))  
 	{
         cSys_Switch(SO_KEY, ST_NULL, false);
 
         if (uPrint.tFlag.bKeyTask)
-            sMyPrint("Key_Task:¿ª¹Ø»ú");
+            sMyPrint("Key_Task:å¼€å…³æœº");
 	}
 	#if(boardENG_MODE_EN)
-	//******************************************¹¤³ÌÄ£Ê½************************************************************
+	//******************************************å·¥ç¨‹æ¨¡å¼************************************************************
 	else if(tSysInfo.eDevState == DS_ENG_MODE)
 	{
-		if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ChargeBuff, sizeof(KeyTriType_ChargeBuff)) )   //µ¥»÷µçÔ´¼ü
+		if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ChargeBuff, sizeof(KeyTriType_ChargeBuff)) )   //å•å‡»ç”µæºé”®
 		{
 			eEngModeKeyFunc = EMKF_CHARGE;
 			bBuz_Tweet(SHORT_1);
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Ñ­»·Ñ¡Ôñ\r\n");
+				sMyPrint("å¾ªç¯é€‰æ‹©\r\n");
 			
 		}
-		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_AddBuff, sizeof(KeyTriType_AddBuff)) )  //AC¼ü¶Ì°´  +
+		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_AddBuff, sizeof(KeyTriType_AddBuff)) )  //ACé”®çŸ­æŒ‰  +
 		{
 			eEngModeKeyFunc = EMKF_ADD;
 			bBuz_Tweet(SHORT_1);
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Ôö¼Ó\r\n");
+				sMyPrint("å¢åŠ \r\n");
 			
 		}
-		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ReduceBuff, sizeof(KeyTriType_ReduceBuff))) //USB¼ü¶Ì°´  -
+		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ReduceBuff, sizeof(KeyTriType_ReduceBuff))) //USBé”®çŸ­æŒ‰  -
 		{
 			eEngModeKeyFunc = EMKF_REDUCE;
 			bBuz_Tweet(SHORT_1);
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("¼õÉÙ\r\n");
+				sMyPrint("å‡å°‘\r\n");
 		}
-		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_NextOptionBuff, sizeof(KeyTriType_NextOptionBuff))) //LIGHT¼ü¶Ì°´
+		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_NextOptionBuff, sizeof(KeyTriType_NextOptionBuff))) //LIGHTé”®çŸ­æŒ‰
 		{
 			eEngModeKeyFunc = EMKF_NEXT_OPTION;
 			bBuz_Tweet(SHORT_1);
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("ÏÂÒ»Ïî\r\n");
+				sMyPrint("ä¸‹ä¸€é¡¹\r\n");
 		}
-		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ComfirmBuff, sizeof(KeyTriType_ComfirmBuff))) //LIGHT¼ü³¤°´
+		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ComfirmBuff, sizeof(KeyTriType_ComfirmBuff))) //LIGHTé”®é•¿æŒ‰
 		{
 			eEngModeKeyFunc = EMKF_COMFIRM;
 			bBuz_Tweet(SHORT_1);
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("È·ÈÏ\r\n");
+				sMyPrint("ç¡®è®¤\r\n");
 		}
 		else 
 		{
@@ -146,36 +146,36 @@ void vKey_ProcKeyFunc(u8* pKeyTriTypeBuff)
 		if(eEngModeKeyFunc != EMKF_NULL)
 			eng_mode_key_deal(eEngModeKeyFunc);
 	}
-	//*****************************************´ı»ú»ò¹Ø»ú×´Ì¬ÏÂ**********************************************************
-	else if (bSys_IsShutDownState() ==  true) //´ı»ú
+	//*****************************************å¾…æœºæˆ–å…³æœºçŠ¶æ€ä¸‹**********************************************************
+	else if (bSys_IsShutDownState() ==  true) //å¾…æœº
 	{
-		//Power&AC¼ü³¤°´  ÉèÖÃÊ±¼ä---------------------------------------------------------------------------------------
+		//Power&ACé”®é•¿æŒ‰  è®¾ç½®æ—¶é—´---------------------------------------------------------------------------------------
 		if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_SetBuff, sizeof(KeyTriType_SetBuff)) ||   
 			bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_Set1Buff, sizeof(KeyTriType_Set1Buff)))
 		{
-			bSys_SetDevState(DS_ENG_MODE, false);  //½øÈë¹¤³ÌÄ£Ê½
+			bSys_SetDevState(DS_ENG_MODE, false);  //è¿›å…¥å·¥ç¨‹æ¨¡å¼
 			
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("½øÈë¹¤³ÌÄ£Ê½\r\n");	
+				sMyPrint("è¿›å…¥å·¥ç¨‹æ¨¡å¼\r\n");	
 		}
 	}
 	#endif
-    //*****************************************************¹¤×÷×´Ì¬ÏÂ**************************************************//
+    //*****************************************************å·¥ä½œçŠ¶æ€ä¸‹**************************************************//
     else if (tSysInfo.eDevState == DS_WORK)
     {
-		if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_LightChargeBuff, sizeof(KeyTriType_LightChargeBuff)))    //µ¥»÷LIGHT°´¼ü
+		if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_LightChargeBuff, sizeof(KeyTriType_LightChargeBuff)))    //å•å‡»LIGHTæŒ‰é”®
 		{
 			vLight_CircSelectMode();
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:ÇĞ»»ÕÕÃ÷Ä£Ê½\r\n");
+				sMyPrint("Key_Task:åˆ‡æ¢ç…§æ˜æ¨¡å¼\r\n");
 		}
-		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_LightOnOffBuff, sizeof(KeyTriType_LightOnOffBuff))) //³¤°´LIGHT°´¼ü¡¡
+		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_LightOnOffBuff, sizeof(KeyTriType_LightOnOffBuff))) //é•¿æŒ‰LIGHTæŒ‰é”®ã€€
 		{
 			bLight_Switch(ST_NULL);
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:¿ª¹ØÕÕÃ÷\r\n");
+				sMyPrint("Key_Task:å¼€å…³ç…§æ˜\r\n");
 		}
-		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_AcOnOffBuff, sizeof(KeyTriType_AcOnOffBuff)))  //µ¥»÷AC°´¼ü 
+		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_AcOnOffBuff, sizeof(KeyTriType_AcOnOffBuff)))  //å•å‡»ACæŒ‰é”® 
 		{
 			#if(boardDCAC_IFACE)
 			if(cDCAC_Switch(DSO_AC_OUT, ST_NULL, true) == true)
@@ -183,9 +183,9 @@ void vKey_ProcKeyFunc(u8* pKeyTriTypeBuff)
 			#endif  //boardDCAC_IFACE
 
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:¿ª¹ØÄæ±ä\r\n");
+				sMyPrint("Key_Task:å¼€å…³é€†å˜\r\n");
 		}
-		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_AcOnOffBuff1, sizeof(KeyTriType_AcOnOffBuff1)))  //³¤°´AC°´¼ü 
+		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_AcOnOffBuff1, sizeof(KeyTriType_AcOnOffBuff1)))  //é•¿æŒ‰ACæŒ‰é”® 
 		{
 			#if(boardDCAC_IFACE)
 			if(cDCAC_Switch(DSO_AC_OUT, ST_NULL, true) == true)
@@ -193,7 +193,7 @@ void vKey_ProcKeyFunc(u8* pKeyTriTypeBuff)
 			#endif  //boardDCAC_IFACE
 
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:¿ª¹ØÄæ±ä1\r\n");
+				sMyPrint("Key_Task:å¼€å…³é€†å˜1\r\n");
 		}
 		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ScreenBuff, sizeof(KeyTriType_ScreenBuff)))
 		{
@@ -202,7 +202,7 @@ void vKey_ProcKeyFunc(u8* pKeyTriTypeBuff)
 			#endif  //boardDISPLAY
 
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:ÇĞ»»ÆÁÄ»\r\n");
+				sMyPrint("Key_Task:åˆ‡æ¢å±å¹•\r\n");
 		}
     }
 
@@ -212,21 +212,21 @@ void vKey_ProcKeyFunc(u8* pKeyTriTypeBuff)
 
 #if(boardENG_MODE_EN)
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¹¤³ÌÄ£Ê½°´¼ü¹¦ÄÜ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    °´¼ü¹¦ÄÜ
-				 EMKF_NULL = 0, //¿Õ°´¼ü
-				 EMKF_CHARGE,   //¸Ä±ä
-				 EMKF_ADD,      //Ôö¼Ó
-				 EMKF_REDUCE,   //¼õÉÙ
-				 EMKF_COMFIRM,  //È·ÈÏ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:ÔÊĞí  false:²»ÔÊĞí
+-----å‡½æ•°åŠŸèƒ½    å·¥ç¨‹æ¨¡å¼æŒ‰é”®åŠŸèƒ½
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    æŒ‰é”®åŠŸèƒ½
+				 EMKF_NULL = 0, //ç©ºæŒ‰é”®
+				 EMKF_CHARGE,   //æ”¹å˜
+				 EMKF_ADD,      //å¢åŠ 
+				 EMKF_REDUCE,   //å‡å°‘
+				 EMKF_COMFIRM,  //ç¡®è®¤
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:å…è®¸  false:ä¸å…è®¸
 ************************************************************************************************************************/
 static bool eng_mode_key_deal(u8 func)
 {
 	EngModeStep_E step = (EngModeStep_E)tSysInfo.ucRunStep;
-	//ÀÛ¼ÓÉèÖÃ
+	//ç´¯åŠ è®¾ç½®
 //	if(step ==EMS_TIME)
 //	{
 //		tKeyAC.bEnLongPressAdd = true;
@@ -254,7 +254,7 @@ static bool eng_mode_key_deal(u8 func)
 			{
 				bEng_SetEngStep(EMS_SYS);
 				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------¹¤³ÌÄ£Ê½_ÏµÍ³ÉèÖÃ-------\r\n");
+					sMyPrint("Key_Task:-------å·¥ç¨‹æ¨¡å¼_ç³»ç»Ÿè®¾ç½®-------\r\n");
 			}
 			else if(func == EMKF_COMFIRM)
 			{
@@ -274,7 +274,7 @@ static bool eng_mode_key_deal(u8 func)
 			{
 				bEng_SetEngStep(EMS_BAT);
 				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------¹¤³ÌÄ£Ê½_µç³ØÉèÖÃ-------\r\n");
+					sMyPrint("Key_Task:-------å·¥ç¨‹æ¨¡å¼_ç”µæ± è®¾ç½®-------\r\n");
 			}
 			else if(func == EMKF_COMFIRM)
 			{
@@ -294,7 +294,7 @@ static bool eng_mode_key_deal(u8 func)
 			{
 				bEng_SetEngStep(EMS_ADC);
 				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------¹¤³ÌÄ£Ê½_ADC²ÉÑù-------\r\n");
+					sMyPrint("Key_Task:-------å·¥ç¨‹æ¨¡å¼_ADCé‡‡æ ·-------\r\n");
 			}
 			else if(func == EMKF_COMFIRM)
 			{
@@ -315,7 +315,7 @@ static bool eng_mode_key_deal(u8 func)
 			{
 				bEng_SetEngStep(EMS_USB);
 				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------¹¤³ÌÄ£Ê½_USB-------\r\n");
+					sMyPrint("Key_Task:-------å·¥ç¨‹æ¨¡å¼_USB-------\r\n");
 			}
 			else if(func == EMKF_COMFIRM)
 			{
@@ -335,7 +335,7 @@ static bool eng_mode_key_deal(u8 func)
 			{
 				bEng_SetEngStep(EMS_DC);
 				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------¹¤³ÌÄ£Ê½_AD-------\r\n");
+					sMyPrint("Key_Task:-------å·¥ç¨‹æ¨¡å¼_AD-------\r\n");
 			}
 			else if(func == EMKF_COMFIRM)
 			{
@@ -355,7 +355,7 @@ static bool eng_mode_key_deal(u8 func)
 			{
 				bEng_SetEngStep(EMS_LIGHT);
 				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------¹¤³ÌÄ£Ê½_ÕÕÃ÷-------\r\n");
+					sMyPrint("Key_Task:-------å·¥ç¨‹æ¨¡å¼_ç…§æ˜-------\r\n");
 			}
 			else if(func == EMKF_COMFIRM)
 			{
@@ -375,7 +375,7 @@ static bool eng_mode_key_deal(u8 func)
 			{
 				bEng_SetEngStep(EMS_UPDATA);
 				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------¹¤³ÌÄ£Ê½_Éı¼¶-------\r\n");
+					sMyPrint("Key_Task:-------å·¥ç¨‹æ¨¡å¼_å‡çº§-------\r\n");
 			}
 			else if(func == EMKF_COMFIRM)
 			{
@@ -395,7 +395,7 @@ static bool eng_mode_key_deal(u8 func)
 			{
 				bEng_SetEngStep(EMS_RESET);
 				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------¹¤³ÌÄ£Ê½_ÖØÖÃ-------\r\n");
+					sMyPrint("Key_Task:-------å·¥ç¨‹æ¨¡å¼_é‡ç½®-------\r\n");
 			}
 			else if(func == EMKF_COMFIRM)
 			{
@@ -405,15 +405,15 @@ static bool eng_mode_key_deal(u8 func)
 		
 		case EMS_RESET:
 		{
-			if(func == EMKF_COMFIRM)   //È·ÈÏ
+			if(func == EMKF_COMFIRM)   //ç¡®è®¤
 			{
 				bApp_SysInfoInit(true);
 			}
-			else if(func == EMKF_NEXT_OPTION)  //ÏÂÒ»Ïî
+			else if(func == EMKF_NEXT_OPTION)  //ä¸‹ä¸€é¡¹
 			{
 				bEng_SetEngStep(EMS_FINISH);
 				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------¹¤³ÌÄ£Ê½_Íê³É-------\r\n");
+					sMyPrint("Key_Task:-------å·¥ç¨‹æ¨¡å¼_å®Œæˆ-------\r\n");
 			}
 			
 		}break;
@@ -421,16 +421,16 @@ static bool eng_mode_key_deal(u8 func)
 		default:
 		case EMS_FINISH:
 		{
-			if(func == EMKF_NEXT_OPTION)  //ÏÂÒ»Ïî
+			if(func == EMKF_NEXT_OPTION)  //ä¸‹ä¸€é¡¹
 			{
 				bEng_SetEngStep(EMS_LCD);
 			}
-			else if(func == EMKF_COMFIRM)   //È·ÈÏ
+			else if(func == EMKF_COMFIRM)   //ç¡®è®¤
 			{
-				cSys_Switch(SST_ON);      //¿ª»ú
+				cSys_Switch(SST_ON);      //å¼€æœº
 			}
 			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:-------¹¤³ÌÄ£Ê½_ÏÔÊ¾ÆÁÉèÖÃ-------\r\n");
+				sMyPrint("Key_Task:-------å·¥ç¨‹æ¨¡å¼_æ˜¾ç¤ºå±è®¾ç½®-------\r\n");
 		}break;
 	}
 	

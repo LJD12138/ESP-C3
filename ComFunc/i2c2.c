@@ -1,7 +1,7 @@
 /*****************************************************************************************************************
-*                                            IIC½Ó¿Ú                                                             *
+*                                            IICæŽ¥å£                                                             *
  *                                                                                                              *
-*±¸×¢:²»ÒªÔÚ½Ó¿ÚÀïÃæÊ¹ÓÃÐÅºÅÁ¿,±ÜÃâ³öÏÖÐÅºÅÁ¿Ç¶Ì×µ¼ÖÂËøËÀ                                                           *
+*å¤‡æ³¨:ä¸è¦åœ¨æŽ¥å£é‡Œé¢ä½¿ç”¨ä¿¡å·é‡,é¿å…å‡ºçŽ°ä¿¡å·é‡åµŒå¥—å¯¼è‡´é”æ­»                                                           *
 ******************************************************************************************************************/
 #include "i2c2.h"
 #include "check.h"
@@ -30,13 +30,13 @@ static GPIO_InitTypeDef 		gpio_init_struct;
 #endif
 
 
-static void v_delay(vu16 X)      //ÑÓÊ±£¬¿ÉÒÔ½µµÍ IICµÄËÙ¶È
+static void v_delay(vu16 X)      //å»¶æ—¶ï¼Œå¯ä»¥é™ä½Ž IICçš„é€Ÿåº¦
 { 
 	while(X--);
 }
 
 
-static void v_delay_low(vu16 X)      //°ëÑÓÊ±
+static void v_delay_low(vu16 X)      //åŠå»¶æ—¶
 { 
 	X = X >> 1;
 	while(X)
@@ -44,24 +44,24 @@ static void v_delay_low(vu16 X)      //°ëÑÓÊ±
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ÉèÖÃsclÎªÊä³ö
------ËµÃ÷(±¸×¢)  Êý¾Ý½ÓÊÕÓÃµÄ
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®sclä¸ºè¾“å‡º
+-----è¯´æ˜Ž(å¤‡æ³¨)  æ•°æ®æŽ¥æ”¶ç”¨çš„
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_i2c_set_scl_gpio_output(const I2cObj_T *p_i2c_obj)
 { 
 	#if(boardIC_TYPE == boardIC_GD32F30X)
 	gpio_init(p_i2c_obj->ulGPIO_PORT_SCL, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, p_i2c_obj->ulGPIO_PIN_SCL);
 	#elif(boardIC_TYPE == boardIC_STM32H7XX)
-	gpio_init_struct.Pin = p_i2c_obj->ulGPIO_PIN_SCL;               /* PIN¿Ú */
-	gpio_init_struct.Mode = GPIO_MODE_OUTPUT_PP;             /* ÍÆÍêÊä³ö */
-	gpio_init_struct.Pull = GPIO_NOPULL;                     /* ²»ÉÏÏÂÀ­ */
-	gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH;           /* µÍËÙ */
+	gpio_init_struct.Pin = p_i2c_obj->ulGPIO_PIN_SCL;               /* PINå£ */
+	gpio_init_struct.Mode = GPIO_MODE_OUTPUT_PP;             /* æŽ¨å®Œè¾“å‡º */
+	gpio_init_struct.Pull = GPIO_NOPULL;                     /* ä¸ä¸Šä¸‹æ‹‰ */
+	gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH;           /* ä½Žé€Ÿ */
 	HAL_GPIO_Init(p_i2c_obj->ulGPIO_PORT_SCL, &gpio_init_struct);
 	#elif(boardIC_TYPE == boardIC_STM32G4XX)
-	#Error(Î´¶¨Òå)
+	#Error(æœªå®šä¹‰)
 	#elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C61)
 	gpio_config_t io_conf = {
 		.intr_type = GPIO_INTR_DISABLE, //falling edge interrupt
@@ -76,24 +76,24 @@ __STATIC_INLINE void v_i2c_set_scl_gpio_output(const I2cObj_T *p_i2c_obj)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ÉèÖÃsdaÎªÊä³ö
------ËµÃ÷(±¸×¢)  Êý¾Ý½ÓÊÕÓÃµÄ
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®sdaä¸ºè¾“å‡º
+-----è¯´æ˜Ž(å¤‡æ³¨)  æ•°æ®æŽ¥æ”¶ç”¨çš„
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_i2c_set_sda_gpio_output(const I2cObj_T *p_i2c_obj)
 {  
 	#if(boardIC_TYPE == boardIC_GD32F30X)
 	gpio_init(p_i2c_obj->ulGPIO_PORT_SDA, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, p_i2c_obj->ulGPIO_PIN_SDA);
 	#elif(boardIC_TYPE == boardIC_STM32H7XX)
-	gpio_init_struct.Pin = p_i2c_obj->ulGPIO_PIN_SDA;               /* PIN¿Ú */
-	gpio_init_struct.Mode = GPIO_MODE_OUTPUT_PP;             /* ÍÆÍêÊä³ö */
-	gpio_init_struct.Pull = GPIO_NOPULL;                     /* ²»ÉÏÏÂÀ­ */
-	gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH;           /* µÍËÙ */
+	gpio_init_struct.Pin = p_i2c_obj->ulGPIO_PIN_SDA;               /* PINå£ */
+	gpio_init_struct.Mode = GPIO_MODE_OUTPUT_PP;             /* æŽ¨å®Œè¾“å‡º */
+	gpio_init_struct.Pull = GPIO_NOPULL;                     /* ä¸ä¸Šä¸‹æ‹‰ */
+	gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH;           /* ä½Žé€Ÿ */
 	HAL_GPIO_Init(p_i2c_obj->ulGPIO_PORT_SDA, &gpio_init_struct);
 	#elif(boardIC_TYPE == boardIC_STM32G4XX)
-	#Error(Î´¶¨Òå)
+	#Error(æœªå®šä¹‰)
 	#elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C61)
 	gpio_config_t io_conf = {
 		.intr_type = GPIO_INTR_DISABLE, //falling edge interrupt
@@ -108,11 +108,11 @@ __STATIC_INLINE void v_i2c_set_sda_gpio_output(const I2cObj_T *p_i2c_obj)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ÉèÖÃsdaÎªÊäÈë
------ËµÃ÷(±¸×¢)  Êý¾Ý½ÓÊÕÓÃµÄ
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®sdaä¸ºè¾“å…¥
+-----è¯´æ˜Ž(å¤‡æ³¨)  æ•°æ®æŽ¥æ”¶ç”¨çš„
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_i2c_set_sda_gpio_input(const I2cObj_T *p_i2c_obj)
 {
@@ -124,7 +124,7 @@ __STATIC_INLINE void v_i2c_set_sda_gpio_input(const I2cObj_T *p_i2c_obj)
     gpio_init_struct.Pull = GPIO_PULLDOWN;
     HAL_GPIO_Init(p_i2c_obj->ulGPIO_PORT_SDA, &gpio_init_struct);
 	#elif(boardIC_TYPE == boardIC_STM32G4XX)
-	#Error(Î´¶¨Òå)
+	#Error(æœªå®šä¹‰)
 	#elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C61)
 	gpio_config_t io_conf = {
 		.intr_type = GPIO_INTR_DISABLE, //falling edge interrupt
@@ -139,11 +139,11 @@ __STATIC_INLINE void v_i2c_set_sda_gpio_input(const I2cObj_T *p_i2c_obj)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ¶ÁÈ¡sdaµçÆ½ÐÅºÅ
------ËµÃ÷(±¸×¢)  Êý¾Ý½ÓÊÕÓÃµÄ
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      1 or 0
+-----å‡½æ•°åŠŸèƒ½    è¯»å–sdaç”µå¹³ä¿¡å·
+-----è¯´æ˜Ž(å¤‡æ³¨)  æ•°æ®æŽ¥æ”¶ç”¨çš„
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      1 or 0
 ******************************************************************************************************************/
 __STATIC_INLINE bool b_i2c_read_sda_gpio(const I2cObj_T *p_i2c_obj)   
 {
@@ -152,7 +152,7 @@ __STATIC_INLINE bool b_i2c_read_sda_gpio(const I2cObj_T *p_i2c_obj)
 	#elif(boardIC_TYPE == boardIC_STM32H7XX)
 	if((HAL_GPIO_ReadPin(p_i2c_obj->ulGPIO_PORT_SDA, p_i2c_obj->ulGPIO_PIN_SDA)) != GPIO_PIN_RESET)
 	#elif(boardIC_TYPE == boardIC_STM32G4XX)
-	#Error(Î´¶¨Òå)
+	#Error(æœªå®šä¹‰)
 	#elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C61)
 	if(gpio_get_level(p_i2c_obj->ulGPIO_PIN_SDA) == 1)
 	#endif
@@ -163,36 +163,36 @@ __STATIC_INLINE bool b_i2c_read_sda_gpio(const I2cObj_T *p_i2c_obj)
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ·¢ËÍ¿ªÊ¼ÐÅºÅ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    å‘é€å¼€å§‹ä¿¡å·
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_i2c_set_start(const I2cObj_T *p_i2c_obj)
 {
-	v_i2c_set_sda_gpio_output(p_i2c_obj);	// SDAÏßÊä³ö£¬Íê³Éºó»á±ä¸ß
+	v_i2c_set_sda_gpio_output(p_i2c_obj);	// SDAçº¿è¾“å‡ºï¼Œå®ŒæˆåŽä¼šå˜é«˜
 	
 	I2C_HIGH    (p_i2c_obj->ulGPIO_PORT_SDA, p_i2c_obj->ulGPIO_PIN_SDA); 
 	I2C_HIGH    (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);
 	v_delay       (p_i2c_obj->usDelay);
  	I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SDA, p_i2c_obj->ulGPIO_PIN_SDA); 		//START:when CLK is high,DATA change form high to low 
 	v_delay       (p_i2c_obj->usDelay);
-	I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);		//Ç¯×¡I2C×ÜÏß£¬×¼±¸·¢ËÍ»ò½ÓÊÕÊý¾Ý
+	I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);		//é’³ä½I2Cæ€»çº¿ï¼Œå‡†å¤‡å‘é€æˆ–æŽ¥æ”¶æ•°æ®
 }	
 
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ·¢ËÍÍ£Ö¹ÐÅºÅ
------ËµÃ÷(±¸×¢)  ********ÖØµãBUG*********
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    å‘é€åœæ­¢ä¿¡å·
+-----è¯´æ˜Ž(å¤‡æ³¨)  ********é‡ç‚¹BUG*********
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_i2c_set_stop(const I2cObj_T *p_i2c_obj)
 {
-	v_i2c_set_sda_gpio_output(p_i2c_obj);	// SDAÏßÊä³ö£¬Íê³Éºó»á±ä¸ß
+	v_i2c_set_sda_gpio_output(p_i2c_obj);	// SDAçº¿è¾“å‡ºï¼Œå®ŒæˆåŽä¼šå˜é«˜
 	
 	I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SDA, p_i2c_obj->ulGPIO_PIN_SDA);
 	I2C_HIGH    (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);
@@ -205,59 +205,59 @@ __STATIC_INLINE void v_i2c_set_stop(const I2cObj_T *p_i2c_obj)
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    MasterÉèÖÃSlave²úÉúÓ¦´ðÐÅºÅ(²úÉú ACK ÐÅºÅ)
------ËµÃ÷(±¸×¢)  ´ËÊ±SDA´¦ÓÚ ½ÓÊÕ×´Ì¬
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    Masterè®¾ç½®Slaveäº§ç”Ÿåº”ç­”ä¿¡å·(äº§ç”Ÿ ACK ä¿¡å·)
+-----è¯´æ˜Ž(å¤‡æ³¨)  æ­¤æ—¶SDAå¤„äºŽ æŽ¥æ”¶çŠ¶æ€
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_i2c_set_ack(const I2cObj_T *p_i2c_obj)
 {
 	v_i2c_set_sda_gpio_output  (p_i2c_obj);
 	
 	I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);    
-	I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SDA, p_i2c_obj->ulGPIO_PIN_SDA); 		// SDA = 0----ÉÏÒ»¾äÎÞÑÓÊ± ÇÒ ×îºóÒ»¸öÎ»ÊÕµ½0£¬Ö÷»úÓ¦´ðÕâÀï»áÓÐÒ»¸ö³å»÷£¨ÂýËÙÊ±ºò£©
+	I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SDA, p_i2c_obj->ulGPIO_PIN_SDA); 		// SDA = 0----ä¸Šä¸€å¥æ— å»¶æ—¶ ä¸” æœ€åŽä¸€ä¸ªä½æ”¶åˆ°0ï¼Œä¸»æœºåº”ç­”è¿™é‡Œä¼šæœ‰ä¸€ä¸ªå†²å‡»ï¼ˆæ…¢é€Ÿæ—¶å€™ï¼‰
 	v_delay_low (p_i2c_obj->usDelay); 
-	I2C_HIGH    (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);		//È»ºó SCLÀ´¸öÉÏÉýÑØ
+	I2C_HIGH    (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);		//ç„¶åŽ SCLæ¥ä¸ªä¸Šå‡æ²¿
 	v_delay_low (p_i2c_obj->usDelay); 
-	I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);	    //´Ë¾äºóÎÞÑÓÊ± ÇÒ ÊÕÏÂÒ»×Ö½ÚÊ×Î»Îª0£¬»áÓÐÒ»¸ö³å»÷
+	I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);	    //æ­¤å¥åŽæ— å»¶æ—¶ ä¸” æ”¶ä¸‹ä¸€å­—èŠ‚é¦–ä½ä¸º0ï¼Œä¼šæœ‰ä¸€ä¸ªå†²å‡»
 }
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    MasterÉèÖÃSlave²»²úÉúÓ¦´ðÐÅºÅ(²úÉú NACK ÐÅºÅ)
------ËµÃ÷(±¸×¢)  ´ËÊ±SDA´¦ÓÚ ½ÓÊÕ×´Ì¬
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    Masterè®¾ç½®Slaveä¸äº§ç”Ÿåº”ç­”ä¿¡å·(äº§ç”Ÿ NACK ä¿¡å·)
+-----è¯´æ˜Ž(å¤‡æ³¨)  æ­¤æ—¶SDAå¤„äºŽ æŽ¥æ”¶çŠ¶æ€
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_i2c_set_no_ack(const I2cObj_T *p_i2c_obj)
 {
-	v_i2c_set_sda_gpio_output(p_i2c_obj);	                                // SDAÏßÊä³ö£¬Íê³Éºó»á±ä¸ß
+	v_i2c_set_sda_gpio_output(p_i2c_obj);	                                // SDAçº¿è¾“å‡ºï¼Œå®ŒæˆåŽä¼šå˜é«˜
 	
 	I2C_LOW(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);
-    I2C_HIGH(p_i2c_obj->ulGPIO_PORT_SDA, p_i2c_obj->ulGPIO_PIN_SDA);		// 20180828 ºÍºóÒ»¾äµ÷»»Î»ÖÃ
+    I2C_HIGH(p_i2c_obj->ulGPIO_PORT_SDA, p_i2c_obj->ulGPIO_PIN_SDA);		// 20180828 å’ŒåŽä¸€å¥è°ƒæ¢ä½ç½®
 	v_delay_low(p_i2c_obj->usDelay); 
-	I2C_HIGH(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);		//È»ºó SCLÀ´¸öÉÏÉýÑØ
+	I2C_HIGH(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);		//ç„¶åŽ SCLæ¥ä¸ªä¸Šå‡æ²¿
 	v_delay_low(p_i2c_obj->usDelay); 
 	I2C_LOW(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);
 }
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    µÈ´ý»Ø¸´Ó¦´ðÐÅºÅ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      0:Ã»´íÎó   Ð¡ÓÚ0:´íÎó
+-----å‡½æ•°åŠŸèƒ½    ç­‰å¾…å›žå¤åº”ç­”ä¿¡å·
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      0:æ²¡é”™è¯¯   å°äºŽ0:é”™è¯¯
 ******************************************************************************************************************/  
 __STATIC_INLINE s8 c_i2c_wait_ack(const I2cObj_T *p_i2c_obj)
 {
 	vu32 ucErrTime = 0;
 	
-	v_i2c_set_sda_gpio_input(p_i2c_obj);  // SDAÎªÊäÈë
+	v_i2c_set_sda_gpio_input(p_i2c_obj);  // SDAä¸ºè¾“å…¥
 	
-	I2C_LOW(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  //·¢ËÍ 1 Byte ½áÊøºóÒÑ¾­°ÑSDAÖÃ 1 ÕâÀï¿ÉÒÔ
+	I2C_LOW(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  //å‘é€ 1 Byte ç»“æŸåŽå·²ç»æŠŠSDAç½® 1 è¿™é‡Œå¯ä»¥
 	v_delay_low(p_i2c_obj->usDelay);      	  
 	I2C_HIGH(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);
 	v_delay_low(p_i2c_obj->usDelay); 
@@ -272,21 +272,21 @@ __STATIC_INLINE s8 c_i2c_wait_ack(const I2cObj_T *p_i2c_obj)
 		}
 	}
 	
-	I2C_LOW(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  //Ê±ÖÓÊä³ö0
+	I2C_LOW(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  //æ—¶é’Ÿè¾“å‡º0
 	v_delay_low(p_i2c_obj->usDelay); 	
 	
 	return 1; 
 } 					 	
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Ð´Ò»¸ö×Ö½Ú
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 txd:Êý¾Ý
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      0:Ã»´íÎó   Ð¡ÓÚ0:´íÎó
+-----å‡½æ•°åŠŸèƒ½    å†™ä¸€ä¸ªå­—èŠ‚
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 txd:æ•°æ®
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      0:æ²¡é”™è¯¯   å°äºŽ0:é”™è¯¯
 ******************************************************************************************************************/  
-__STATIC_INLINE void v_i2c_write_byte(const I2cObj_T *p_i2c_obj, u8 txd)   //·¢ËÍÒ»¸ö×Ö½Úºó£¬Ó¦¸ÃµÈµ½´Ó»úÓ¦´ð£¬
+__STATIC_INLINE void v_i2c_write_byte(const I2cObj_T *p_i2c_obj, u8 txd)   //å‘é€ä¸€ä¸ªå­—èŠ‚åŽï¼Œåº”è¯¥ç­‰åˆ°ä»Žæœºåº”ç­”ï¼Œ
 {                        
     u8 t; 
 	
@@ -294,21 +294,21 @@ __STATIC_INLINE void v_i2c_write_byte(const I2cObj_T *p_i2c_obj, u8 txd)   //·¢Ë
     // taskENTER_CRITICAL();
 	#endif
 	{
-		v_i2c_set_sda_gpio_output(p_i2c_obj);  // SDAÏßÊä³ö£¬Íê³Éºó»á±ä¸ß  
+		v_i2c_set_sda_gpio_output(p_i2c_obj);  // SDAçº¿è¾“å‡ºï¼Œå®ŒæˆåŽä¼šå˜é«˜  
 		
-		I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  //À­µÍÊ±ÖÓ¿ªÊ¼Êý¾Ý´«Êä
+		I2C_LOW     (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  //æ‹‰ä½Žæ—¶é’Ÿå¼€å§‹æ•°æ®ä¼ è¾“
 		v_delay_low (p_i2c_obj->usDelay);
 		for(t = 0; t < 8; t++)
 		{                      
-			if((txd & 0x80) == 0x80)	//´Ó¸ßÎ»¿ªÊ¼£¬°ÑÊý¾Ý·ÅÔÚ SDAÉÏ
+			if((txd & 0x80) == 0x80)	//ä»Žé«˜ä½å¼€å§‹ï¼ŒæŠŠæ•°æ®æ”¾åœ¨ SDAä¸Š
 				I2C_HIGH(p_i2c_obj->ulGPIO_PORT_SDA, p_i2c_obj->ulGPIO_PIN_SDA);
 			else
 				I2C_LOW(p_i2c_obj->ulGPIO_PORT_SDA, p_i2c_obj->ulGPIO_PIN_SDA);
 			txd <<= 1; 	  
 			v_delay_low(p_i2c_obj->usDelay);
-			I2C_HIGH(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  //SCL±ä¸ßÉÏÉýÑØ£¬ÌáÐÑ´Ó»ú£¬SDAÊý¾ÝÓÐÐ§
-			v_delay_low(p_i2c_obj->usDelay);  //ÑÓÊ±£¬¸ø´Ó»úÊ±¼ä¶ÁÈ¡Êý¾Ý
-			I2C_LOW (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  //SCL±äµÍ£¬ÔÙ´Î¿ÉÒÔ¸Ä±äSDAÊý¾Ý      
+			I2C_HIGH(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  //SCLå˜é«˜ä¸Šå‡æ²¿ï¼Œæé†’ä»Žæœºï¼ŒSDAæ•°æ®æœ‰æ•ˆ
+			v_delay_low(p_i2c_obj->usDelay);  //å»¶æ—¶ï¼Œç»™ä»Žæœºæ—¶é—´è¯»å–æ•°æ®
+			I2C_LOW (p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  //SCLå˜ä½Žï¼Œå†æ¬¡å¯ä»¥æ”¹å˜SDAæ•°æ®      
 		}
 	}
 	#if(boardUSE_OS)
@@ -318,12 +318,12 @@ __STATIC_INLINE void v_i2c_write_byte(const I2cObj_T *p_i2c_obj, u8 txd)   //·¢Ë
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ¶ÁÈ¡Ò»¸ö×Ö½Ú
------ËµÃ÷(±¸×¢)  ¶Á1¸ö×Ö½Ú£¬ack=1Ê±£¬·¢ËÍACK£¬ack=0£¬·¢ËÍnACK
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 ack:Ó¦´ð
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      0:Ã»´íÎó   Ð¡ÓÚ0:´íÎó
+-----å‡½æ•°åŠŸèƒ½    è¯»å–ä¸€ä¸ªå­—èŠ‚
+-----è¯´æ˜Ž(å¤‡æ³¨)  è¯»1ä¸ªå­—èŠ‚ï¼Œack=1æ—¶ï¼Œå‘é€ACKï¼Œack=0ï¼Œå‘é€nACK
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 ack:åº”ç­”
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      0:æ²¡é”™è¯¯   å°äºŽ0:é”™è¯¯
 ******************************************************************************************************************/
 __STATIC_INLINE u8 uc_i2c_read_byte(const I2cObj_T *p_i2c_obj, u8 ack)
 {
@@ -333,24 +333,24 @@ __STATIC_INLINE u8 uc_i2c_read_byte(const I2cObj_T *p_i2c_obj, u8 ack)
 	// taskENTER_CRITICAL();
 	#endif
 	{
-		v_i2c_set_sda_gpio_input(p_i2c_obj);  // SDAÎªÊäÈë£¬ÅäÖÃÍêºó»á±äµÍ
+		v_i2c_set_sda_gpio_input(p_i2c_obj);  // SDAä¸ºè¾“å…¥ï¼Œé…ç½®å®ŒåŽä¼šå˜ä½Ž
 		
 		for(i = 0; i < 8; i++)
 		{
-			I2C_LOW(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  // SCL = 0 ÈÃ´Ó»ú¸Ä±ä SDAÉÏµÄÊý¾Ý
+			I2C_LOW(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  // SCL = 0 è®©ä»Žæœºæ”¹å˜ SDAä¸Šçš„æ•°æ®
 			v_delay_low(p_i2c_obj->usDelay);			
-			I2C_HIGH(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  // SCL = 1 ÌáÊ¾´Ó»ú£¬Ö÷»úÒª¶ÁÊý¾Ý£¬²»ÄÜ¸Ä±äÊý¾Ý
+			I2C_HIGH(p_i2c_obj->ulGPIO_PORT_SCL, p_i2c_obj->ulGPIO_PIN_SCL);  // SCL = 1 æç¤ºä»Žæœºï¼Œä¸»æœºè¦è¯»æ•°æ®ï¼Œä¸èƒ½æ”¹å˜æ•°æ®
 			v_delay_low(p_i2c_obj->usDelay);
-			receive <<= 1;  // ÓÒÒÆ 1 Î»
-			if(b_i2c_read_sda_gpio(p_i2c_obj))	//²»ÄÜÐ´ == 1£¬Ó¦¸Ã°´¿âº¯ÊýµÄ¹æÔòÐ´
-				receive++;  // ¾Í°Ñ×îµÍÎ» ±ä³É 1
+			receive <<= 1;  // å³ç§» 1 ä½
+			if(b_i2c_read_sda_gpio(p_i2c_obj))	//ä¸èƒ½å†™ == 1ï¼Œåº”è¯¥æŒ‰åº“å‡½æ•°çš„è§„åˆ™å†™
+				receive++;  // å°±æŠŠæœ€ä½Žä½ å˜æˆ 1
 			v_delay_low(p_i2c_obj->usDelay);
 		}			
-		//******¶ÁÈ¡ 8 bit Íê³ÉÊ±£¬SCL = 1   SDA = x	
+		//******è¯»å– 8 bit å®Œæˆæ—¶ï¼ŒSCL = 1   SDA = x	
 		if (ack == ACK)
-			v_i2c_set_ack(p_i2c_obj); //·¢ËÍACK 
+			v_i2c_set_ack(p_i2c_obj); //å‘é€ACK 
 		else
-			v_i2c_set_no_ack(p_i2c_obj);//·¢ËÍnACK
+			v_i2c_set_no_ack(p_i2c_obj);//å‘é€nACK
 	}
 	#if(boardUSE_OS)
 	// taskEXIT_CRITICAL();
@@ -360,14 +360,14 @@ __STATIC_INLINE u8 uc_i2c_read_byte(const I2cObj_T *p_i2c_obj, u8 ack)
 }
 
 
-//**************************************************************************¶ÔÍâ½Ó¿Ú***********************************
+//**************************************************************************å¯¹å¤–æŽ¥å£***********************************
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    i2c¶ÔÏó³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    i2cå¯¹è±¡åˆå§‹åŒ–
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 void vI2C_ObjInit(I2cObj_T *p_i2c_obj)
 {
@@ -386,41 +386,41 @@ void vI2C_ObjInit(I2cObj_T *p_i2c_obj)
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Á¬ÐøÐ´Êý¾Ý(Ã»ÓÐ¼Ä´æÆ÷µØÖ·)
------ËµÃ÷(±¸×¢)  ÊÊºÏTEA5767 µÈ £¬Ã»ÓÐ¼Ä´æÆ÷£¬Ö±½ÓÐ´Èë5¸ö×Ö½ÚµÄÆ÷¼þ
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 buf:Êý¾ÝµÄÖ¸Õë
-				 len:Êý¾ÝµÄ×Ö½Ú2³¤¶È
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      Ð¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ý    ´óÓÚ0:Ð´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    è¿žç»­å†™æ•°æ®(æ²¡æœ‰å¯„å­˜å™¨åœ°å€)
+-----è¯´æ˜Ž(å¤‡æ³¨)  é€‚åˆTEA5767 ç­‰ ï¼Œæ²¡æœ‰å¯„å­˜å™¨ï¼Œç›´æŽ¥å†™å…¥5ä¸ªå­—èŠ‚çš„å™¨ä»¶
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚2é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      å°äºŽ0:æ“ä½œå¤±è´¥   ç­‰äºŽ0:ç­‰å¾…    å¤§äºŽ0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 cI2C_WriteData(const I2cObj_T *p_i2c_obj, const u8 *buf, u16 len)    
 {
-	//¿ªÊ¼ÐÅºÅ
+	//å¼€å§‹ä¿¡å·
 	v_i2c_set_start(p_i2c_obj);
 	
-	//·¢ËÍÆ÷¼þµØÖ·+Ð´ÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€+å†™å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr | 0 ) );
 	
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
-		return -1;  //Ó¦´ð³¬Ê±
+		return -1;  //åº”ç­”è¶…æ—¶
 	}
 	
-	//·¢ËÍÊý¾Ý
+	//å‘é€æ•°æ®
 	for(int i = 0; i < len; i++)
 	{
 		v_i2c_write_byte(p_i2c_obj, buf[i] );  
 		
-		//µÈ´ýACK  µÈµ½Ó¦´ð³¬Ê±Ôò·ÅÆúºóÃæµÄÊý¾Ý
+		//ç­‰å¾…ACK  ç­‰åˆ°åº”ç­”è¶…æ—¶åˆ™æ”¾å¼ƒåŽé¢çš„æ•°æ®
 		if(c_i2c_wait_ack(p_i2c_obj) < 0)					
 		{
 			return -2;		 
 		}		
 	}
 	
-	//·¢ËÍÍ£Ö¹£¬ÌáÊ¾´Ó»ú£¬Êý¾Ý·¢ËÍÍê±Ï
+	//å‘é€åœæ­¢ï¼Œæç¤ºä»Žæœºï¼Œæ•°æ®å‘é€å®Œæ¯•
     v_i2c_set_stop(p_i2c_obj);	
 	
 	return 1;
@@ -428,40 +428,40 @@ s8 cI2C_WriteData(const I2cObj_T *p_i2c_obj, const u8 *buf, u16 len)
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Á¬Ðø¶ÁÊý¾Ý(Ã»ÓÐ¼Ä´æÆ÷µØÖ·)
------ËµÃ÷(±¸×¢)  ÊÊºÏTEA5767 µÈ £¬Ã»ÓÐ¼Ä´æÆ÷£¬Ö±½Ó¶ÁÈë5¸ö×Ö½ÚµÄÆ÷¼þ
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 buf:Êý¾ÝµÄÖ¸Õë
-				 len:Êý¾ÝµÄ×Ö½Ú2³¤¶È
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      Ð¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ý    ´óÓÚ0:Ð´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    è¿žç»­è¯»æ•°æ®(æ²¡æœ‰å¯„å­˜å™¨åœ°å€)
+-----è¯´æ˜Ž(å¤‡æ³¨)  é€‚åˆTEA5767 ç­‰ ï¼Œæ²¡æœ‰å¯„å­˜å™¨ï¼Œç›´æŽ¥è¯»å…¥5ä¸ªå­—èŠ‚çš„å™¨ä»¶
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚2é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      å°äºŽ0:æ“ä½œå¤±è´¥   ç­‰äºŽ0:ç­‰å¾…    å¤§äºŽ0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 cI2C_ReadData(const I2cObj_T *p_i2c_obj, u8 *buf, u16 len)  
 {
-	//¿ªÊ¼ÐÅºÅ
+	//å¼€å§‹ä¿¡å·
 	v_i2c_set_start(p_i2c_obj);
 	
-	//·¢ËÍÆ÷¼þµØÖ· + ¶ÁÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€ + è¯»å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr | 1));
 	
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
-		return -1;  //Ó¦´ð³¬Ê±
+		return -1;  //åº”ç­”è¶…æ—¶
 	}
 	
 	while(len)
 	{
 		if(len == 1)
-			*buf = uc_i2c_read_byte(p_i2c_obj, NACK);//¶ÁÊý¾Ý,·¢ËÍnACK 
+			*buf = uc_i2c_read_byte(p_i2c_obj, NACK);//è¯»æ•°æ®,å‘é€nACK 
 		else 
-			*buf = uc_i2c_read_byte(p_i2c_obj, ACK);//¶ÁÊý¾Ý,·¢ËÍACK
+			*buf = uc_i2c_read_byte(p_i2c_obj, ACK);//è¯»æ•°æ®,å‘é€ACK
 		
 		len --;
 		buf ++; 
 	}
 	
-	//·¢ËÍÍ£Ö¹£¬ÌáÊ¾´Ó»ú£¬Êý¾Ý·¢ËÍÍê±Ï
+	//å‘é€åœæ­¢ï¼Œæç¤ºä»Žæœºï¼Œæ•°æ®å‘é€å®Œæ¯•
 	v_i2c_set_stop(p_i2c_obj);
 	
 	return 1;
@@ -470,32 +470,32 @@ s8 cI2C_ReadData(const I2cObj_T *p_i2c_obj, u8 *buf, u16 len)
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Ð´Êý¾Ý(ÓÐ¼Ä´æÆ÷µØÖ·)
------ËµÃ÷(±¸×¢)  ÊÊºÏÓÐ¼Ä´æÆ÷µÄÆ÷¼þ£¬EEPROM£¬´«¸ÐÆ÷
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 reg_addr:¼Ä´æÆ÷µØÖ·
-				 buf:Êý¾ÝµÄÖ¸Õë
-				 len:Êý¾ÝµÄ×Ö½Ú2³¤¶È
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      Ð¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ý    ´óÓÚ0:Ð´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    å†™æ•°æ®(æœ‰å¯„å­˜å™¨åœ°å€)
+-----è¯´æ˜Ž(å¤‡æ³¨)  é€‚åˆæœ‰å¯„å­˜å™¨çš„å™¨ä»¶ï¼ŒEEPROMï¼Œä¼ æ„Ÿå™¨
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 reg_addr:å¯„å­˜å™¨åœ°å€
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚2é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      å°äºŽ0:æ“ä½œå¤±è´¥   ç­‰äºŽ0:ç­‰å¾…    å¤§äºŽ0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 cI2C_WriteBytes(const I2cObj_T *p_i2c_obj, u8 reg_addr, const u8 *buf, u8 len)
 {
-	//¿ªÊ¼ÐÅºÅ
+	//å¼€å§‹ä¿¡å·
 	v_i2c_set_start(p_i2c_obj);
 	
-	//·¢ËÍÆ÷¼þµØÖ·+Ð´ÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€+å†™å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr | 0));
 	
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -1;
 	}
 	
-	//Ð´¼Ä´æÆ÷µØÖ·
+	//å†™å¯„å­˜å™¨åœ°å€
 	v_i2c_write_byte(p_i2c_obj, reg_addr);	
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -2;
@@ -503,48 +503,48 @@ s8 cI2C_WriteBytes(const I2cObj_T *p_i2c_obj, u8 reg_addr, const u8 *buf, u8 len
 	
 	for(int i = 0; i < len; i++)
 	{
-		//·¢ËÍÊý¾Ý
+		//å‘é€æ•°æ®
 		v_i2c_write_byte(p_i2c_obj, buf[ i ] );	
 		
-		//µÈ´ýACK  µÈµ½Ó¦´ð³¬Ê±Ôò·ÅÆúºóÃæµÄÊý¾Ý
+		//ç­‰å¾…ACK  ç­‰åˆ°åº”ç­”è¶…æ—¶åˆ™æ”¾å¼ƒåŽé¢çš„æ•°æ®
 		if(c_i2c_wait_ack(p_i2c_obj) < 0)				
 		{
 			return -3;		 
 		}		
 	}  
 
-	//·¢ËÍÍ£Ö¹£¬ÌáÊ¾´Ó»ú£¬Êý¾Ý·¢ËÍÍê±Ï
+	//å‘é€åœæ­¢ï¼Œæç¤ºä»Žæœºï¼Œæ•°æ®å‘é€å®Œæ¯•
 	v_i2c_set_stop(p_i2c_obj);
 	
 	return 1;
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ¶ÁÊý¾Ý(ÓÐ¼Ä´æÆ÷µØÖ·)
------ËµÃ÷(±¸×¢)  ÊÊºÏÓÐ¼Ä´æÆ÷µÄÆ÷¼þ£¬EEPROM£¬´«¸ÐÆ÷
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 reg_addr:¼Ä´æÆ÷µØÖ·
-				 buf:Êý¾ÝµÄÖ¸Õë
-				 len:Êý¾ÝµÄ×Ö½Ú2³¤¶È
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      Ð¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ý    ´óÓÚ0:Ð´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    è¯»æ•°æ®(æœ‰å¯„å­˜å™¨åœ°å€)
+-----è¯´æ˜Ž(å¤‡æ³¨)  é€‚åˆæœ‰å¯„å­˜å™¨çš„å™¨ä»¶ï¼ŒEEPROMï¼Œä¼ æ„Ÿå™¨
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 reg_addr:å¯„å­˜å™¨åœ°å€
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚2é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      å°äºŽ0:æ“ä½œå¤±è´¥   ç­‰äºŽ0:ç­‰å¾…    å¤§äºŽ0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 cI2C_ReadBytes(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf, u8 len)  
 {
-	//¿ªÊ¼ÐÅºÅ
+	//å¼€å§‹ä¿¡å·
 	v_i2c_set_start(p_i2c_obj);
 	
-	//·¢ËÍÆ÷¼þµØÖ·+Ð´ÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€+å†™å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr | 0 ) );
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -1;		
 	}
 	
-	//Ð´¼Ä´æÆ÷µØÖ·
+	//å†™å¯„å­˜å™¨åœ°å€
 	v_i2c_write_byte(p_i2c_obj, reg_addr);
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -2;		
@@ -552,9 +552,9 @@ s8 cI2C_ReadBytes(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf, u8 len)
 	
 	v_i2c_set_start(p_i2c_obj);
 
-	//·¢ËÍÆ÷¼þµØÖ· + ¶ÁÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€ + è¯»å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr ) | 1 );
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -3;		
@@ -563,15 +563,15 @@ s8 cI2C_ReadBytes(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf, u8 len)
 	while(len)
 	{
 		if(len == 1)
-			*buf = uc_i2c_read_byte(p_i2c_obj, NACK);//¶ÁÊý¾Ý,·¢ËÍnACK 
+			*buf = uc_i2c_read_byte(p_i2c_obj, NACK);//è¯»æ•°æ®,å‘é€nACK 
 		else 
-			*buf = uc_i2c_read_byte(p_i2c_obj, ACK);//¶ÁÊý¾Ý,·¢ËÍACK
+			*buf = uc_i2c_read_byte(p_i2c_obj, ACK);//è¯»æ•°æ®,å‘é€ACK
 		
 		len --;
 		buf ++; 
 	}
 	
-	//·¢ËÍÍ£Ö¹£¬ÌáÊ¾´Ó»ú£¬Êý¾Ý·¢ËÍÍê±Ï
+	//å‘é€åœæ­¢ï¼Œæç¤ºä»Žæœºï¼Œæ•°æ®å‘é€å®Œæ¯•
 	v_i2c_set_stop(p_i2c_obj);
 	
 	return 1;
@@ -580,39 +580,39 @@ s8 cI2C_ReadBytes(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf, u8 len)
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Ð´Êý¾Ý(ÓÐ¼Ä´æÆ÷µØÖ·)
------ËµÃ÷(±¸×¢)  ÊÊºÏÓÐ¼Ä´æÆ÷µÄÆ÷¼þ£¬EEPROM£¬´«¸ÐÆ÷
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 reg_addr:¼Ä´æÆ÷µØÖ·
-				 buf:Êý¾ÝµÄÖ¸Õë
-				 len:Êý¾ÝµÄ×Ö½Ú2³¤¶È
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      Ð¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ý    ´óÓÚ0:Ð´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    å†™æ•°æ®(æœ‰å¯„å­˜å™¨åœ°å€)
+-----è¯´æ˜Ž(å¤‡æ³¨)  é€‚åˆæœ‰å¯„å­˜å™¨çš„å™¨ä»¶ï¼ŒEEPROMï¼Œä¼ æ„Ÿå™¨
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 reg_addr:å¯„å­˜å™¨åœ°å€
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚2é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      å°äºŽ0:æ“ä½œå¤±è´¥   ç­‰äºŽ0:ç­‰å¾…    å¤§äºŽ0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 cI2C_WriteBytes1(const I2cObj_T *p_i2c_obj, u16 reg_addr, const u8 *buf, u8 len)
 {
-	//¿ªÊ¼ÐÅºÅ
+	//å¼€å§‹ä¿¡å·
 	v_i2c_set_start(p_i2c_obj);
 	
-	//·¢ËÍÆ÷¼þµØÖ·+Ð´ÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€+å†™å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr | 0));
 	
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -1;
 	}
 	
-	//Ð´¼Ä´æÆ÷¸ßµØÖ·
+	//å†™å¯„å­˜å™¨é«˜åœ°å€
 	v_i2c_write_byte(p_i2c_obj, reg_addr>>8);	
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -2;
 	}
-	//Ð´¼Ä´æÆ÷µÍµØÖ·
+	//å†™å¯„å­˜å™¨ä½Žåœ°å€
 	v_i2c_write_byte(p_i2c_obj, reg_addr%256);	
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -2;
@@ -620,55 +620,55 @@ s8 cI2C_WriteBytes1(const I2cObj_T *p_i2c_obj, u16 reg_addr, const u8 *buf, u8 l
 	
 	for(int i = 0; i < len; i++)
 	{
-		//·¢ËÍÊý¾Ý
+		//å‘é€æ•°æ®
 		v_i2c_write_byte(p_i2c_obj, buf[ i ] );	
 		
-		//µÈ´ýACK  µÈµ½Ó¦´ð³¬Ê±Ôò·ÅÆúºóÃæµÄÊý¾Ý
+		//ç­‰å¾…ACK  ç­‰åˆ°åº”ç­”è¶…æ—¶åˆ™æ”¾å¼ƒåŽé¢çš„æ•°æ®
 		if(c_i2c_wait_ack(p_i2c_obj) < 0)				
 		{
 			return -3;		 
 		}		
 	}  
 
-	//·¢ËÍÍ£Ö¹£¬ÌáÊ¾´Ó»ú£¬Êý¾Ý·¢ËÍÍê±Ï
+	//å‘é€åœæ­¢ï¼Œæç¤ºä»Žæœºï¼Œæ•°æ®å‘é€å®Œæ¯•
 	v_i2c_set_stop(p_i2c_obj);
 	
 	return 1;
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ¶ÁÊý¾Ý(ÓÐ¼Ä´æÆ÷µØÖ·)
------ËµÃ÷(±¸×¢)  ÊÊºÏÓÐ¼Ä´æÆ÷µÄÆ÷¼þ£¬EEPROM£¬´«¸ÐÆ÷
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 reg_addr:¼Ä´æÆ÷µØÖ·
-				 buf:Êý¾ÝµÄÖ¸Õë
-				 len:Êý¾ÝµÄ×Ö½Ú2³¤¶È
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      Ð¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ý    ´óÓÚ0:Ð´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    è¯»æ•°æ®(æœ‰å¯„å­˜å™¨åœ°å€)
+-----è¯´æ˜Ž(å¤‡æ³¨)  é€‚åˆæœ‰å¯„å­˜å™¨çš„å™¨ä»¶ï¼ŒEEPROMï¼Œä¼ æ„Ÿå™¨
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 reg_addr:å¯„å­˜å™¨åœ°å€
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚2é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      å°äºŽ0:æ“ä½œå¤±è´¥   ç­‰äºŽ0:ç­‰å¾…    å¤§äºŽ0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 cI2C_ReadBytes1(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 len)  
 {
-	//¿ªÊ¼ÐÅºÅ
+	//å¼€å§‹ä¿¡å·
 	v_i2c_set_start(p_i2c_obj);
 	
-	//·¢ËÍÆ÷¼þµØÖ·+Ð´ÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€+å†™å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr | 0 ) );
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -1;		
 	}
 	
-	//Ð´¼Ä´æÆ÷¸ßµØÖ·
+	//å†™å¯„å­˜å™¨é«˜åœ°å€
 	v_i2c_write_byte(p_i2c_obj, reg_addr>>8);
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -2;		
 	}
-	//Ð´¼Ä´æÆ÷µÍµØÖ·
+	//å†™å¯„å­˜å™¨ä½Žåœ°å€
 	v_i2c_write_byte(p_i2c_obj, reg_addr%256);
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -2;		
@@ -676,9 +676,9 @@ s8 cI2C_ReadBytes1(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 len)
 	
 	v_i2c_set_start(p_i2c_obj);
 
-	//·¢ËÍÆ÷¼þµØÖ· + ¶ÁÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€ + è¯»å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr ) | 1 );
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -3;		
@@ -687,15 +687,15 @@ s8 cI2C_ReadBytes1(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 len)
 	while(len)
 	{
 		if(len == 1)
-			*buf = uc_i2c_read_byte(p_i2c_obj, NACK);//¶ÁÊý¾Ý,·¢ËÍnACK 
+			*buf = uc_i2c_read_byte(p_i2c_obj, NACK);//è¯»æ•°æ®,å‘é€nACK 
 		else 
-			*buf = uc_i2c_read_byte(p_i2c_obj, ACK);//¶ÁÊý¾Ý,·¢ËÍACK
+			*buf = uc_i2c_read_byte(p_i2c_obj, ACK);//è¯»æ•°æ®,å‘é€ACK
 		
 		len --;
 		buf ++; 
 	}
 	
-	//·¢ËÍÍ£Ö¹£¬ÌáÊ¾´Ó»ú£¬Êý¾Ý·¢ËÍÍê±Ï
+	//å‘é€åœæ­¢ï¼Œæç¤ºä»Žæœºï¼Œæ•°æ®å‘é€å®Œæ¯•
 	v_i2c_set_stop(p_i2c_obj);
 	
 	return 1;
@@ -703,139 +703,139 @@ s8 cI2C_ReadBytes1(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 len)
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Ð´Êý¾Ý(´ø¼Ä´æÆ÷µØÖ·ºÍÐ£Ñé)
------ËµÃ÷(±¸×¢)  AFE
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 reg_addr:¼Ä´æÆ÷µØÖ·
-				 buf:Êý¾ÝµÄÖ¸Õë
-				 len:Êý¾ÝµÄ×Ö½Ú2³¤¶È
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      Ð¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ý    ´óÓÚ0:Ð´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    å†™æ•°æ®(å¸¦å¯„å­˜å™¨åœ°å€å’Œæ ¡éªŒ)
+-----è¯´æ˜Ž(å¤‡æ³¨)  AFE
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 reg_addr:å¯„å­˜å™¨åœ°å€
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚2é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      å°äºŽ0:æ“ä½œå¤±è´¥   ç­‰äºŽ0:ç­‰å¾…    å¤§äºŽ0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 cI2C_WriteBytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, const u8 *buf, u8 len)
 {
 	u8 buff[p_i2c_obj->ucBuffLen];
 	vu8 uc_crc_data = 0;
 	
-	//BUFF³¤¶È²»¹»
+	//BUFFé•¿åº¦ä¸å¤Ÿ
 	if(p_i2c_obj->ucBuffLen <= 2)
 	{
 		return -1;
 	}
 	
-	//Êý¾Ý³¤¶È²»¹»
+	//æ•°æ®é•¿åº¦ä¸å¤Ÿ
 	if(p_i2c_obj->ucBuffLen < (len+2))
 	{
 		return -2;
 	}
 	
-	//×éÖ¡
+	//ç»„å¸§
 	buff[0] = p_i2c_obj->Addr;
 	buff[1] = reg_addr;
 	memcpy(&buff[2], buf, len);
 	
-	//Ð£Ñé
+	//æ ¡éªŒ
 	uc_crc_data = ucCheck_CRC8cal(buff, len+2);
 	
-	//¿ªÊ¼ÐÅºÅ
+	//å¼€å§‹ä¿¡å·
 	v_i2c_set_start(p_i2c_obj);
 	
-	//·¢ËÍÊ¶±ðID
+	//å‘é€è¯†åˆ«ID
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr | 0));
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -3;
 	}
 	
-	//Ð´¼Ä´æÆ÷µØÖ·
+	//å†™å¯„å­˜å™¨åœ°å€
 	v_i2c_write_byte(p_i2c_obj, reg_addr);	
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -4;
 	}
 	
-	//·¢ËÍÊý¾Ý
+	//å‘é€æ•°æ®
 	for(int i = 0; i < len; i++)
 	{
 		v_i2c_write_byte(p_i2c_obj, buf[i] );	
-		//µÈ´ýACK  µÈµ½Ó¦´ð³¬Ê±Ôò·ÅÆúºóÃæµÄÊý¾Ý
+		//ç­‰å¾…ACK  ç­‰åˆ°åº”ç­”è¶…æ—¶åˆ™æ”¾å¼ƒåŽé¢çš„æ•°æ®
 		if(c_i2c_wait_ack(p_i2c_obj) < 0)				
 		{
 			return -5;		 
 		}		
 	}
 
-	//·¢ËÍÐ£Ñé
+	//å‘é€æ ¡éªŒ
 	v_i2c_write_byte(p_i2c_obj, uc_crc_data);	
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -6;
 	}
 
-	//·¢ËÍÍ£Ö¹£¬ÌáÊ¾´Ó»ú£¬Êý¾Ý·¢ËÍÍê±Ï
+	//å‘é€åœæ­¢ï¼Œæç¤ºä»Žæœºï¼Œæ•°æ®å‘é€å®Œæ¯•
 	v_i2c_set_stop(p_i2c_obj);
 	
 	return 1;
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ¶ÁÊý¾Ý(´ø¼Ä´æÆ÷µØÖ·ºÍÐ£Ñé)
------ËµÃ÷(±¸×¢)  AFE
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 reg_addr:¼Ä´æÆ÷µØÖ·
-				 buf:Êý¾ÝµÄÖ¸Õë
-				 len:Êý¾ÝµÄ×Ö½Ú2³¤¶È
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      Ð¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ý    ´óÓÚ0:Ð´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    è¯»æ•°æ®(å¸¦å¯„å­˜å™¨åœ°å€å’Œæ ¡éªŒ)
+-----è¯´æ˜Ž(å¤‡æ³¨)  AFE
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 reg_addr:å¯„å­˜å™¨åœ°å€
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚2é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      å°äºŽ0:æ“ä½œå¤±è´¥   ç­‰äºŽ0:ç­‰å¾…    å¤§äºŽ0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 cI2C_ReadBytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf, u8 len)  
 {
 	u8 buff[p_i2c_obj->ucBuffLen];
 	vu8 uc_crc_data = 0;
 	
-	//BUFF³¤¶È²»¹»
+	//BUFFé•¿åº¦ä¸å¤Ÿ
 	if(p_i2c_obj->ucBuffLen <= 4)
 	{
 		return -1;
 	}
 	
-	//Êý¾Ý³¤¶È²»¹»
+	//æ•°æ®é•¿åº¦ä¸å¤Ÿ
 	if(p_i2c_obj->ucBuffLen < (len+4))
 	{
 		return -2;
 	}
 	
-	//×éÖ¡
+	//ç»„å¸§
 	buff[0] = p_i2c_obj->Addr;
 	buff[1] = reg_addr;
 	buff[2] = len;
 	buff[3] = p_i2c_obj->Addr | 0x01;
 	
-	//¿ªÊ¼ÐÅºÅ
+	//å¼€å§‹ä¿¡å·
 	v_i2c_set_start(p_i2c_obj);
 	
-	//·¢ËÍÆ÷¼þµØÖ·+Ð´ÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€+å†™å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr | 0 ) );
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -3;		
 	}
 	
-	//¶Á¼Ä´æÆ÷µØÖ·
+	//è¯»å¯„å­˜å™¨åœ°å€
 	v_i2c_write_byte(p_i2c_obj, reg_addr);	
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -4;		
 	}
 	
-	//¶Á¼Ä´æÆ÷³¤¶È
+	//è¯»å¯„å­˜å™¨é•¿åº¦
 	v_i2c_write_byte(p_i2c_obj, len);	
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -5;		
@@ -843,9 +843,9 @@ s8 cI2C_ReadBytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf, u8 len)
 	
 	v_i2c_set_start(p_i2c_obj);
 
-	//·¢ËÍÆ÷¼þµØÖ· + ¶ÁÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€ + è¯»å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr ) | 1 );
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -6;		
@@ -853,13 +853,13 @@ s8 cI2C_ReadBytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf, u8 len)
 	
 	for(int i = 0; i < len; i++)
 	{
-		buff[4+i] = uc_i2c_read_byte(p_i2c_obj, ACK);//¶ÁÊý¾Ý,·¢ËÍACK
+		buff[4+i] = uc_i2c_read_byte(p_i2c_obj, ACK);//è¯»æ•°æ®,å‘é€ACK
 	}
 	
-	//½ÓÊÕÐ£ÑéÊý¾Ý²¢·¢ËÍNACK
-	uc_crc_data = uc_i2c_read_byte(p_i2c_obj, NACK);//¶ÁÊý¾Ý,·¢ËÍnACK 
+	//æŽ¥æ”¶æ ¡éªŒæ•°æ®å¹¶å‘é€NACK
+	uc_crc_data = uc_i2c_read_byte(p_i2c_obj, NACK);//è¯»æ•°æ®,å‘é€nACK 
 	
-	//·¢ËÍÍ£Ö¹£¬ÌáÊ¾´Ó»ú£¬Êý¾Ý·¢ËÍÍê±Ï
+	//å‘é€åœæ­¢ï¼Œæç¤ºä»Žæœºï¼Œæ•°æ®å‘é€å®Œæ¯•
 	v_i2c_set_stop(p_i2c_obj);
 	
 	if(uc_crc_data == ucCheck_CRC8cal(buff, 4+len))
@@ -879,51 +879,51 @@ s8 cI2C_ReadBytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf, u8 len)
 
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ¶ÁÊý¾Ý(´ø¼Ä´æÆ÷µØÖ·ºÍÐ£Ñé)
------ËµÃ÷(±¸×¢)  ¶ÁÈ¡Á½¸ö×Ö½Ú
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 reg_addr:¼Ä´æÆ÷µØÖ·
-				 buf:Êý¾ÝµÄÖ¸Õë
-				 len:Êý¾ÝµÄ×Ö½Ú2³¤¶È
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      Ð¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ý    ´óÓÚ0:Ð´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    è¯»æ•°æ®(å¸¦å¯„å­˜å™¨åœ°å€å’Œæ ¡éªŒ)
+-----è¯´æ˜Ž(å¤‡æ³¨)  è¯»å–ä¸¤ä¸ªå­—èŠ‚
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 reg_addr:å¯„å­˜å™¨åœ°å€
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚2é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      å°äºŽ0:æ“ä½œå¤±è´¥   ç­‰äºŽ0:ç­‰å¾…    å¤§äºŽ0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 cI2C_Read2BytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf)  
 {
 	u8 buff[p_i2c_obj->ucBuffLen];
 	vu8 uc_crc_data = 0;
 	
-	//BUFF³¤¶È²»¹»
+	//BUFFé•¿åº¦ä¸å¤Ÿ
 	if(p_i2c_obj->ucBuffLen <= 4)
 	{
 		return -1;
 	}
 	
-	//Êý¾Ý³¤¶È²»¹»
+	//æ•°æ®é•¿åº¦ä¸å¤Ÿ
 	if(p_i2c_obj->ucBuffLen < (2+4))
 	{
 		return -2;
 	}
 	
-	//×éÖ¡
+	//ç»„å¸§
 	buff[0] = p_i2c_obj->Addr;
 	buff[1] = reg_addr;
 	buff[2] = p_i2c_obj->Addr | 0x01;
 	
-	//¿ªÊ¼ÐÅºÅ
+	//å¼€å§‹ä¿¡å·
 	v_i2c_set_start(p_i2c_obj);
 	
-	//·¢ËÍÆ÷¼þµØÖ·+Ð´ÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€+å†™å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr | 0 ) );
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -3;		
 	}
 	
-	//¶Á¼Ä´æÆ÷µØÖ·
+	//è¯»å¯„å­˜å™¨åœ°å€
 	v_i2c_write_byte(p_i2c_obj, reg_addr);	
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -4;		
@@ -931,9 +931,9 @@ s8 cI2C_Read2BytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf)
 	
 	v_i2c_set_start(p_i2c_obj);
 
-	//·¢ËÍÆ÷¼þµØÖ· + ¶ÁÃüÁî
+	//å‘é€å™¨ä»¶åœ°å€ + è¯»å‘½ä»¤
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr ) | 1 );
-	//µÈ´ýÓ¦´ð
+	//ç­‰å¾…åº”ç­”
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -6;		
@@ -941,13 +941,13 @@ s8 cI2C_Read2BytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf)
 	
 	for(int i = 0; i < 2; i++)
 	{
-		buff[3+i] = uc_i2c_read_byte(p_i2c_obj, ACK);//¶ÁÊý¾Ý,·¢ËÍACK
+		buff[3+i] = uc_i2c_read_byte(p_i2c_obj, ACK);//è¯»æ•°æ®,å‘é€ACK
 	}
 	
-	//½ÓÊÕÐ£ÑéÊý¾Ý²¢·¢ËÍNACK
-	uc_crc_data = uc_i2c_read_byte(p_i2c_obj, NACK);//¶ÁÊý¾Ý,·¢ËÍnACK 
+	//æŽ¥æ”¶æ ¡éªŒæ•°æ®å¹¶å‘é€NACK
+	uc_crc_data = uc_i2c_read_byte(p_i2c_obj, NACK);//è¯»æ•°æ®,å‘é€nACK 
 	
-	//·¢ËÍÍ£Ö¹£¬ÌáÊ¾´Ó»ú£¬Êý¾Ý·¢ËÍÍê±Ï
+	//å‘é€åœæ­¢ï¼Œæç¤ºä»Žæœºï¼Œæ•°æ®å‘é€å®Œæ¯•
 	v_i2c_set_stop(p_i2c_obj);
 	
 	if(uc_crc_data == ucCheck_CRC8cal(buff, 5))
@@ -966,14 +966,14 @@ s8 cI2C_Read2BytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, u8 *buf)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Ð´Êý¾Ý(´ø¼Ä´æÆ÷µØÖ·ºÍÐ£Ñé)
------ËµÃ÷(±¸×¢)  AFE
------´«Èë²ÎÊý    p_i2c_obj:·¢ËÍ¶ÔÏó
-				 reg_addr:¼Ä´æÆ÷µØÖ·
-				 buf:Êý¾ÝµÄÖ¸Õë
-				 len:Êý¾ÝµÄ×Ö½Ú2³¤¶È
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      Ð¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ý    ´óÓÚ0:Ð´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    å†™æ•°æ®(å¸¦å¯„å­˜å™¨åœ°å€å’Œæ ¡éªŒ)
+-----è¯´æ˜Ž(å¤‡æ³¨)  AFE
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:å‘é€å¯¹è±¡
+				 reg_addr:å¯„å­˜å™¨åœ°å€
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚2é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      å°äºŽ0:æ“ä½œå¤±è´¥   ç­‰äºŽ0:ç­‰å¾…    å¤§äºŽ0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 cI2C_Write1BytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, const u8 *buf)
 {
@@ -982,65 +982,65 @@ s8 cI2C_Write1BytesCrc(const I2cObj_T *p_i2c_obj, u8 reg_addr, const u8 *buf)
 	
 	const u8 len = 1;
 	
-	//BUFF³¤¶È²»¹»
+	//BUFFé•¿åº¦ä¸å¤Ÿ
 	if(p_i2c_obj->ucBuffLen <= 2)
 	{
 		return -1;
 	}
 	
-	//Êý¾Ý³¤¶È²»¹»
+	//æ•°æ®é•¿åº¦ä¸å¤Ÿ
 	if(p_i2c_obj->ucBuffLen < (len+2))
 	{
 		return -2;
 	}
 	
-	//×éÖ¡
+	//ç»„å¸§
 	buff[0] = p_i2c_obj->Addr;
 	buff[1] = reg_addr;
 	memcpy(&buff[2], buf, len);
 	
-	//Ð£Ñé
+	//æ ¡éªŒ
 	uc_crc_data = ucCheck_CRC8cal(buff, len+2);
 	
-	//¿ªÊ¼ÐÅºÅ
+	//å¼€å§‹ä¿¡å·
 	v_i2c_set_start(p_i2c_obj);
 	
-	//·¢ËÍÊ¶±ðID
+	//å‘é€è¯†åˆ«ID
 	v_i2c_write_byte(p_i2c_obj, (p_i2c_obj->Addr | 0));
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -3;
 	}
 	
-	//Ð´¼Ä´æÆ÷µØÖ·
+	//å†™å¯„å­˜å™¨åœ°å€
 	v_i2c_write_byte(p_i2c_obj, reg_addr);	
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -4;
 	}
 	
-	//·¢ËÍÊý¾Ý
+	//å‘é€æ•°æ®
 	for(int i = 0; i < len; i++)
 	{
 		v_i2c_write_byte(p_i2c_obj, buf[i] );	
-		//µÈ´ýACK  µÈµ½Ó¦´ð³¬Ê±Ôò·ÅÆúºóÃæµÄÊý¾Ý
+		//ç­‰å¾…ACK  ç­‰åˆ°åº”ç­”è¶…æ—¶åˆ™æ”¾å¼ƒåŽé¢çš„æ•°æ®
 		if(c_i2c_wait_ack(p_i2c_obj) < 0)				
 		{
 			return -5;		 
 		}		
 	}
 
-	//·¢ËÍÐ£Ñé
+	//å‘é€æ ¡éªŒ
 	v_i2c_write_byte(p_i2c_obj, uc_crc_data);	
-	//µÈ´ýÓ¦´ð,Ó¦´ð³¬Ê±£¬·ÅÆúÐ´Êý¾Ý
+	//ç­‰å¾…åº”ç­”,åº”ç­”è¶…æ—¶ï¼Œæ”¾å¼ƒå†™æ•°æ®
 	if(c_i2c_wait_ack(p_i2c_obj) < 0)	
 	{
 		return -6;
 	}
 
-	//·¢ËÍÍ£Ö¹£¬ÌáÊ¾´Ó»ú£¬Êý¾Ý·¢ËÍÍê±Ï
+	//å‘é€åœæ­¢ï¼Œæç¤ºä»Žæœºï¼Œæ•°æ®å‘é€å®Œæ¯•
 	v_i2c_set_stop(p_i2c_obj);
 	
 	return 1;

@@ -11,7 +11,7 @@
 #endif  //boardUSE_OS
 
 
-//³äµç¹¦ÂÊµÈ¼¶(×ÜµÄ,PV+AC)
+//å……ç”µåŠŸç‡ç­‰çº§(æ€»çš„,PV+AC)
 #define  		sysCHG_PWR_LEVEL1              		400
 #define  		sysCHG_PWR_LEVEL2              		900
 //0-100;1-110;2-120;3-220;4-230;5-240
@@ -20,7 +20,7 @@
 #elif(boardDCAC_VOLT_TYPE==3) //230V
 #define  		sysCHG_PWR_LEVEL3              		1800
 #else
-#error "DCACÀàĞÍ¶¨ÒåÓĞÎó"
+#error "DCACç±»å‹å®šä¹‰æœ‰è¯¯"
 #endif
 #define  		sysCHG_PWR_LEVEL4              		3000
 
@@ -31,29 +31,29 @@ extern 			bool 									G_TestMode;
 extern 			Task_T									*tpSysTask;
 extern 			TaskHandle_t  							tSysTaskHandler;
 
-//*********************************ÈÎÎñID***********************************
+//*********************************ä»»åŠ¡ID***********************************
 typedef enum : uint8_t
 {
-	STI_NULL = 0,		//¿ÕÈÎÎñº¯Êı
-    STI_INIT,			//³õÊ¼»¯µç³Ø°ü
-	STI_CLOSING,		//¹Ø±ÕÖĞ
-	STI_SHUT_DOWN,		//¹Ø±ÕÍê³É
-	STI_ERR,			//´íÎó
-	STI_RESET,			//ÖØÖÃ
-	STI_BOOTING,		//ÔØÈëÖĞ
-	STI_WORK,			//¹¤×÷ÖĞ
-	STI_ENG,			//¹¤³ÌÄ£Ê½
+	STI_NULL = 0,		//ç©ºä»»åŠ¡å‡½æ•°
+    STI_INIT,			//åˆå§‹åŒ–ç”µæ± åŒ…
+	STI_CLOSING,		//å…³é—­ä¸­
+	STI_SHUT_DOWN,		//å…³é—­å®Œæˆ
+	STI_ERR,			//é”™è¯¯
+	STI_RESET,			//é‡ç½®
+	STI_BOOTING,		//è½½å…¥ä¸­
+	STI_WORK,			//å·¥ä½œä¸­
+	STI_ENG,			//å·¥ç¨‹æ¨¡å¼
 }SysTaskId_E;
 
-//*********************************Ğí¿É*************************************
+//*********************************è®¸å¯*************************************
 #pragma pack(1)
 typedef union
 {
 	struct 
 	{
-		u8 				bChgPerm:1;//³äµçĞí¿É
-		u8 				bDisChgPerm:1;//·ÅµçĞí¿É
-		u8 				bForceClose:1;//Ç¿ÖÆ¹Ø±Õ
+		u8 				bChgPerm:1;//å……ç”µè®¸å¯
+		u8 				bDisChgPerm:1;//æ”¾ç”µè®¸å¯
+		u8 				bForceClose:1;//å¼ºåˆ¶å…³é—­
 		u8 				temp:5;
 	}tPerm;
 	u8 ucPerm;
@@ -62,13 +62,13 @@ typedef union
 
 typedef enum : uint8_t
 {
-	SPO_CHG = 0,		//³äµç
-	SPO_DISCHG,    		//·Åµç
-	SPO_FORCE_CLOSE,	//Ç¿ÖÆ¹Ø±Õ
-	SPO_ALL,			//³ä·Åµç
+	SPO_CHG = 0,		//å……ç”µ
+	SPO_DISCHG,    		//æ”¾ç”µ
+	SPO_FORCE_CLOSE,	//å¼ºåˆ¶å…³é—­
+	SPO_ALL,			//å……æ”¾ç”µ
 }SysPermObject_E;
 
-//*****************************Éè±¸³õÊ¼»¯±êÖ¾Î»********************************
+//*****************************è®¾å¤‡åˆå§‹åŒ–æ ‡å¿—ä½********************************
 #pragma pack(1)
 typedef union
 {
@@ -97,7 +97,7 @@ typedef union
 }InitFinish_U;
 #pragma pack()
 
-//*****************************ÏµÍ³¹©µçÀàĞÍ**********************************
+//*****************************ç³»ç»Ÿä¾›ç”µç±»å‹**********************************
 typedef enum : uint8_t
 {
 	SPT_5V = 0,
@@ -105,19 +105,19 @@ typedef enum : uint8_t
 	SPT_10V,
 }SysPowerType_E;
 
-//*****************************´íÎó×´Ì¬*************************************
+//*****************************é”™è¯¯çŠ¶æ€*************************************
 typedef enum : uint8_t 
 {
-    SEC_CLEAR_ALL = 0,	//ÇåËùÓĞ´íÎó
+    SEC_CLEAR_ALL = 0,	//æ¸…æ‰€æœ‰é”™è¯¯
 
-	SEC_OT,				//¹ıÎÂ
-	SEC_UT,				//µÍÎÂ
-	SEC_OV,				//¹ıÑ¹
-	SEC_UV,				//Ç·Ñ¹
-	SEC_OL,				//¹ıÔØ
+	SEC_OT,				//è¿‡æ¸©
+	SEC_UT,				//ä½æ¸©
+	SEC_OV,				//è¿‡å‹
+	SEC_UV,				//æ¬ å‹
+	SEC_OL,				//è¿‡è½½
 	SEC_0_SOC,			//0%SOC
-	SEC_COLSE_FAULT,	//¹Ø±ÕÊ§°Ü
-	SEC_BOOT_FAULT,		//¿ªÆôÊ§°Ü
+	SEC_COLSE_FAULT,	//å…³é—­å¤±è´¥
+	SEC_BOOT_FAULT,		//å¼€å¯å¤±è´¥
 }SysErrCode_E;
 
 #pragma pack(1)
@@ -138,7 +138,7 @@ typedef union
 }SysErrCode_U;
 #pragma pack()
 
-//*********************************³äµç¹¦ÂÊ**********************************
+//*********************************å……ç”µåŠŸç‡**********************************
 #pragma pack(1)
 typedef struct
 {
@@ -147,43 +147,43 @@ typedef struct
 }SysChgPwr_T;  
 #pragma pack()
 
-//*********************************ÈÎÎñ¶ÔÏó**********************************
-#pragma pack(1)//Ç¿ÖÆÒ»¸ö×Ö½Ú¶ÔÆë
+//*********************************ä»»åŠ¡å¯¹è±¡**********************************
+#pragma pack(1)//å¼ºåˆ¶ä¸€ä¸ªå­—èŠ‚å¯¹é½
 typedef struct
 {
 	//1Tab				//5Tab				//5Tab
-	DevState_E    		eDevState;          //Éè±¸×´Ì¬
-	SysErrCode_U  		uErrCode;        	//´íÎó´úÂë
-	Perm_U              uPerm;				//Ğí¿É
-	InitFinish_U     	uInit;              //³õÊ¼»¯Íê³É
-	SysPowerType_E   	ePowerType;         //ÏµÍ³¹©µçÀàĞÍ
-	SysChgPwr_T			tSetChgPwr;			//³äµç¹¦ÂÊ
-    vu16             	usAutoOffCnt;       //×Ô¶¯¹Ø±Õ¼ÆÊ±
-	vu16             	usAutoOffTime;      //×Ô¶¯¹Ø±ÕÊ±¼ä  0Îª¹Ø±Õ´Ë¹¦ÄÜ
-	vu16             	usNeedSleepCnt;     //ĞèÒªĞİÃß¼ÆÊ±
-    vs16             	sMaxTemp;           //Õû»ú×î¸ßÎÂ 1ÉãÊÏ¶È
-	vs16             	sMinTemp;           //Õû»ú×îµÍÎÂ 1ÉãÊÏ¶È
-	vs16             	sBoardTempMax;      //°åÔØ×î¸ßÎÂ (Ö÷¿Ø)
+	DevState_E    		eDevState;          //è®¾å¤‡çŠ¶æ€
+	SysErrCode_U  		uErrCode;        	//é”™è¯¯ä»£ç 
+	Perm_U              uPerm;				//è®¸å¯
+	InitFinish_U     	uInit;              //åˆå§‹åŒ–å®Œæˆ
+	SysPowerType_E   	ePowerType;         //ç³»ç»Ÿä¾›ç”µç±»å‹
+	SysChgPwr_T			tSetChgPwr;			//å……ç”µåŠŸç‡
+    vu16             	usAutoOffCnt;       //è‡ªåŠ¨å…³é—­è®¡æ—¶
+	vu16             	usAutoOffTime;      //è‡ªåŠ¨å…³é—­æ—¶é—´  0ä¸ºå…³é—­æ­¤åŠŸèƒ½
+	vu16             	usNeedSleepCnt;     //éœ€è¦ä¼‘çœ è®¡æ—¶
+    vs16             	sMaxTemp;           //æ•´æœºæœ€é«˜æ¸© 1æ‘„æ°åº¦
+	vs16             	sMinTemp;           //æ•´æœºæœ€ä½æ¸© 1æ‘„æ°åº¦
+	vs16             	sBoardTempMax;      //æ¿è½½æœ€é«˜æ¸© (ä¸»æ§)
 	vu16				usVoltMax;			//0.01V
 	vu16				usVoltMin;			//0.01V
-	vu16             	usOutPwr;        	//Êä³ö¹¦ÂÊ
-	vu16             	usInPwr;         	//ÊäÈë¹¦ÂÊ
+	vu16             	usOutPwr;        	//è¾“å‡ºåŠŸç‡
+	vu16             	usInPwr;         	//è¾“å…¥åŠŸç‡
 }SysInfo_T;         
-#pragma pack() //È¡ÏûÒ»¸ö×Ö½Ú¶ÔÆë
+#pragma pack() //å–æ¶ˆä¸€ä¸ªå­—èŠ‚å¯¹é½
 extern  SysInfo_T    	tSysInfo; 
 //		//2Tab			//4Tab
 
-//*********************************¼ÇÒä²ÎÊı**********************************
-#pragma pack(1)//Ç¿ÖÆÒ»¸ö×Ö½Ú¶ÔÆë
+//*********************************è®°å¿†å‚æ•°**********************************
+#pragma pack(1)//å¼ºåˆ¶ä¸€ä¸ªå­—èŠ‚å¯¹é½
 typedef struct
 {
-	bool 				bBuzSwitchOff;		//¹Ø±Õ·äÃùÆ÷
-	s8               	sMaxTemp;      		//ÔÊĞíµÄ×î´óÎÂ¶È
-	s8               	sMinTemp;      		//ÔÊĞíµÄ×îĞ¡ÎÂ¶È
-	vu16             	usAutoOffTime;      //×Ô¶¯¹Ø±ÕÊ±¼ä  0Îª¹Ø±Õ´Ë¹¦ÄÜ
-	vu16             	usMinOpenVolt;      //×îĞ¡¿ªÆôµçÑ¹
+	bool 				bBuzSwitchOff;		//å…³é—­èœ‚é¸£å™¨
+	s8               	sMaxTemp;      		//å…è®¸çš„æœ€å¤§æ¸©åº¦
+	s8               	sMinTemp;      		//å…è®¸çš„æœ€å°æ¸©åº¦
+	vu16             	usAutoOffTime;      //è‡ªåŠ¨å…³é—­æ—¶é—´  0ä¸ºå…³é—­æ­¤åŠŸèƒ½
+	vu16             	usMinOpenVolt;      //æœ€å°å¼€å¯ç”µå‹
 }SysMemParam_T;
-#pragma pack() //È¡ÏûÒ»¸ö×Ö½Ú¶ÔÆë
+#pragma pack() //å–æ¶ˆä¸€ä¸ªå­—èŠ‚å¯¹é½
 
 
 bool bSys_TaskInit(void);

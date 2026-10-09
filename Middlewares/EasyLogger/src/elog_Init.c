@@ -6,18 +6,18 @@ void vElog_Init(void)
 {
 /********************elog_code_begin**************************/	
  
-	/* ³õÊ¼»¯ EasyLogger */
+	/* åˆå§‹åŒ– EasyLogger */
 	elog_init();
-	/* ÉèÖÃÃ¿¸ö¼¶±ğµÄÈÕÖ¾Êä³ö¸ñÊ½ */
-	//Êä³öÈÕÖ¾¼¶±ğĞÅÏ¢ºÍÈÕÖ¾TAG
+	/* è®¾ç½®æ¯ä¸ªçº§åˆ«çš„æ—¥å¿—è¾“å‡ºæ ¼å¼ */
+	//è¾“å‡ºæ—¥å¿—çº§åˆ«ä¿¡æ¯å’Œæ—¥å¿—TAG
 	elog_set_fmt(ELOG_LVL_ERROR, ELOG_FMT_TIME);
 	elog_set_fmt(ELOG_LVL_WARN, ELOG_FMT_TIME);
 	elog_set_fmt(ELOG_LVL_INFO, ELOG_FMT_TIME);
-	//Ê¹ÓÃÑÕÉ«API¿ªÆôÊä³ö
+	//ä½¿ç”¨é¢œè‰²APIå¼€å¯è¾“å‡º
 	elog_set_text_color_enabled(true);
 	/* initialize EasyLogger Flash plugin */
 //	elog_flash_init();
-	/* Æô¶¯ EasyLogger */
+	/* å¯åŠ¨ EasyLogger */
 	elog_start();
 /*********************elog_code_end***************************/		
  

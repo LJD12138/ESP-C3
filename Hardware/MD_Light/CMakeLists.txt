@@ -1,6 +1,6 @@
-# Key组件CMakeLists.txt
-# 功能：按键任务和按键功能处理组件
-file(GLOB SRCS "*.c")
+# Key锟斤拷锟紺MakeLists.txt
+# 锟斤拷锟杰ｏ拷锟斤拷锟斤拷锟斤拷锟斤拷桶锟斤拷锟斤拷锟斤拷艽锟斤拷锟斤拷锟斤拷
+file(GLOB SRCS "md_light_iface.c" "*.c")
 set(SRCS ${SRCS})
 
 idf_component_register(

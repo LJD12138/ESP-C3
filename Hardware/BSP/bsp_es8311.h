@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
-*                                            ES8311 ÒôÆµ±à½âÂëÆ÷Çı¶¯                                              *
-*                                      ·â×°²ã - »ùÓÚespressif×é¼ş¿â                                              *
+*                                            ES8311 éŸ³é¢‘ç¼–è§£ç å™¨é©±åŠ¨                                              *
+*                                      å°è£…å±‚ - åŸºäºespressifç»„ä»¶åº“                                              *
 ******************************************************************************************************************/
 #ifndef BSP_ES8311_H_
 #define BSP_ES8311_H_
@@ -8,10 +8,10 @@
 #include "main.h"
 #include <es8311.h>
 
-// ES8311 I2CµØÖ·
+// ES8311 I2Cåœ°å€
 #define     ES8311_I2C_ADDR                  ES8311_ADDRESS_0
 
-// MICÔöÒæ
+// MICå¢ç›Š
 typedef es8311_mic_gain_t   Es8311_MicGain_E;
 #define     ES8311_MIC_GAIN_0DB              ES8311_MIC_GAIN_0DB
 #define     ES8311_MIC_GAIN_6DB              ES8311_MIC_GAIN_6DB
@@ -22,7 +22,7 @@ typedef es8311_mic_gain_t   Es8311_MicGain_E;
 #define     ES8311_MIC_GAIN_36DB             ES8311_MIC_GAIN_36DB
 #define     ES8311_MIC_GAIN_42DB             ES8311_MIC_GAIN_42DB
 
-// ·Ö±æÂÊ
+// åˆ†è¾¨ç‡
 typedef es8311_resolution_t Es8311_Resolution_E;
 #define     ES8311_RESOLUTION_16             ES8311_RESOLUTION_16
 #define     ES8311_RESOLUTION_18             ES8311_RESOLUTION_18
@@ -30,23 +30,23 @@ typedef es8311_resolution_t Es8311_Resolution_E;
 #define     ES8311_RESOLUTION_24             ES8311_RESOLUTION_24
 #define     ES8311_RESOLUTION_32             ES8311_RESOLUTION_32
 
-// Ê±ÖÓÅäÖÃ½á¹¹
+// æ—¶é’Ÿé…ç½®ç»“æ„
 typedef es8311_clock_config_t Es8311_ClockConfig_T;
 
-// ES8311¶ÔÏó½á¹¹
+// ES8311å¯¹è±¡ç»“æ„
 typedef struct
 {
-    es8311_handle_t      hDev;            // Éè±¸¾ä±ú
-    Es8311_ClockConfig_T tClkCfg;         // Ê±ÖÓÅäÖÃ
-    Es8311_Resolution_E  eResIn;          // ÊäÈë·Ö±æÂÊ
-    Es8311_Resolution_E  eResOut;         // Êä³ö·Ö±æÂÊ
-    DevState_E           eDevState;       // Éè±¸×´Ì¬
-    bool                 bMuteEn;         // ¾²ÒôÊ¹ÄÜ
+    es8311_handle_t      hDev;            // è®¾å¤‡å¥æŸ„
+    Es8311_ClockConfig_T tClkCfg;         // æ—¶é’Ÿé…ç½®
+    Es8311_Resolution_E  eResIn;          // è¾“å…¥åˆ†è¾¨ç‡
+    Es8311_Resolution_E  eResOut;         // è¾“å‡ºåˆ†è¾¨ç‡
+    DevState_E           eDevState;       // è®¾å¤‡çŠ¶æ€
+    bool                 bMuteEn;         // é™éŸ³ä½¿èƒ½
 }Es8311_T;
 
 extern Es8311_T   tEs8311;
 
-// ½Ó¿Úº¯Êı
+// æ¥å£å‡½æ•°
 void    vEs8311_IfaceInit(void);
 s8      cEs8311_Init(void);
 s8      cEs8311_Config(Es8311_ClockConfig_T *p_clk_cfg, Es8311_Resolution_E e_res_in, Es8311_Resolution_E e_res_out);

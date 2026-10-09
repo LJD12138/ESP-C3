@@ -21,43 +21,43 @@ extern     		TaskHandle_t                			tMpptTaskHandler;
 #endif  //boardUSE_OS
 
 
-//*********************************ÈÎÎñID***********************************
+//*********************************ä»»åŠ¡ID***********************************
 typedef enum : uint8_t
 {
-	MTI_NULL = 0,       //¿ÕÈÎÎñº¯Êý
-    MTI_INIT,           //³õÊ¼»¯µç³Ø°ü
-    MTI_MAIN,      		//Ñ­»·»ñÈ¡µç³Ø°üµÄÊý¾Ý
-    MTI_SET_CHG_PWR,   	//¿ØÖÆMPPT¿ªÆô
-	MTI_ERR_PROCESS,    //´íÎó´¦Àí
+	MTI_NULL = 0,       //ç©ºä»»åŠ¡å‡½æ•°
+    MTI_INIT,           //åˆå§‹åŒ–ç”µæ± åŒ…
+    MTI_MAIN,      		//å¾ªçŽ¯èŽ·å–ç”µæ± åŒ…çš„æ•°æ®
+    MTI_SET_CHG_PWR,   	//æŽ§åˆ¶MPPTå¼€å¯
+	MTI_ERR_PROCESS,    //é”™è¯¯å¤„ç†
 }MpptTaskId_E;
 
-//*********************************¹¤×÷×´Ì¬***********************************
+//*********************************å·¥ä½œçŠ¶æ€***********************************
 typedef enum : uint8_t
 { 
-	MWM_NULL = 0, 		//Çå³ýËùÓÐ
+	MWM_NULL = 0, 		//æ¸…é™¤æ‰€æœ‰
 	MWM_PV,
 	MWM_DC,
 }MpptWorkMode_E;
 
-//*****************************´íÎó×´Ì¬*************************************
+//*****************************é”™è¯¯çŠ¶æ€*************************************
 typedef enum 
 {
-    MEC_CLEAR_ALL = 0,   	//ÇåËùÓÐ´íÎó	
+    MEC_CLEAR_ALL = 0,   	//æ¸…æ‰€æœ‰é”™è¯¯	
 	
-	MEC_MPPT_IN_OC = 1,		//MPPTÉÏ±¨´íÎó
-	MEC_MPPT_IN_OV,			//MPPTÉÏ±¨´íÎó
-	MEC_MPPT_IN_ERR,		//MPPTÉÏ±¨´íÎó
-	MEC_MPPT_OUT_OC,		//MPPTÉÏ±¨´íÎó
-	MEC_MPPT_OUT_OV,		//MPPTÉÏ±¨´íÎó
-	MEC_MPPT_OUT_ERR,		//MPPTÉÏ±¨´íÎó
-	MEC_MPPT_OT,			//MPPTÉÏ±¨´íÎó
-	MEC_MPPT_OL,			//MPPTÉÏ±¨´íÎó
+	MEC_MPPT_IN_OC = 1,		//MPPTä¸ŠæŠ¥é”™è¯¯
+	MEC_MPPT_IN_OV,			//MPPTä¸ŠæŠ¥é”™è¯¯
+	MEC_MPPT_IN_ERR,		//MPPTä¸ŠæŠ¥é”™è¯¯
+	MEC_MPPT_OUT_OC,		//MPPTä¸ŠæŠ¥é”™è¯¯
+	MEC_MPPT_OUT_OV,		//MPPTä¸ŠæŠ¥é”™è¯¯
+	MEC_MPPT_OUT_ERR,		//MPPTä¸ŠæŠ¥é”™è¯¯
+	MEC_MPPT_OT,			//MPPTä¸ŠæŠ¥é”™è¯¯
+	MEC_MPPT_OL,			//MPPTä¸ŠæŠ¥é”™è¯¯
 	
-	MEC_SYS_DEV_LOST= 17,   //Éè±¸¶ªÊ§
-	MEC_SYS_OVER_TEMP,      //¹ýÎÂ
-	MEC_SYS_LOW_TEMP,       //µÍÎÂ
-	MEC_SYS_OVER_VOLT,      //¹ýÑ¹
-	MEC_SYS_OVER_LOAD,      //¹ýÔØ
+	MEC_SYS_DEV_LOST= 17,   //è®¾å¤‡ä¸¢å¤±
+	MEC_SYS_OVER_TEMP,      //è¿‡æ¸©
+	MEC_SYS_LOW_TEMP,       //ä½Žæ¸©
+	MEC_SYS_OVER_VOLT,      //è¿‡åŽ‹
+	MEC_SYS_OVER_LOAD,      //è¿‡è½½
 	
 }MpptErrCode_E;
 
@@ -65,20 +65,20 @@ typedef union
 {
 	struct
 	{
-		//MPPTÉÏ±¨´íÎó(¿ªÊ¼)
+		//MPPTä¸ŠæŠ¥é”™è¯¯(å¼€å§‹)
 		vu32 bMpptInOC:1;
 		vu32 bMpptInOV:1;
-		vu32 bMpptInErr:1;  //¶ÌÂ·
+		vu32 bMpptInErr:1;  //çŸ­è·¯
 		vu32 bMpptOutOV:1;
 		vu32 bMpptOutOC:1;
-		vu32 bMpptOutErr:1;  //¶ÌÂ·
+		vu32 bMpptOutErr:1;  //çŸ­è·¯
 		vu32 bMpptOT:1;
 		vu32 bMpptOL:1;
 		
 		vu32 temp:8;
-		//ÉÏ±¨´íÎó(½áÊø)
+		//ä¸ŠæŠ¥é”™è¯¯(ç»“æŸ)
 		
-		//ÏµÍ³ÅÐ¶ÏµÄ´íÎó
+		//ç³»ç»Ÿåˆ¤æ–­çš„é”™è¯¯
 		vu32 bSysDevLost:1;
 		vu32 bSysOT:1;
 		vu32 bSysUT:1;
@@ -89,35 +89,35 @@ typedef union
 	vu32 ulCode;  
 }MpptErrState_U;
 
-//*********************************ÈÎÎñ¶ÔÏó**********************************
+//*********************************ä»»åŠ¡å¯¹è±¡**********************************
 #pragma pack(1)
 typedef struct
 {
-	DevState_E  		eDevState;          //Éè±¸×´Ì¬
-    MpptWorkMode_E  	eWorkMode;          //¹¤×÷Ä£Ê½
-	MpptErrState_U 		uErrCode;           //tMppt´íÎó×´Ì¬
-	vu16             	usAutoOffTime;   	//¹Ø±ÕÄæ±äÆ÷µÄÊ±¼ä,0Îª²»¿ªÆô  
-    vu16             	usAutoOffCnt;    	//Ê±¼ä´Á´óÓÚÕâ¸öÖµ¾Í¹Ø±ÕÄæ±äÆ÷
-	vu16             	usInPwr;         	//ÊäÈëµÄ¹¦ÂÊ W
-	bool             	bChgPerm;         	//³äµçÐí¿É
+	DevState_E  		eDevState;          //è®¾å¤‡çŠ¶æ€
+    MpptWorkMode_E  	eWorkMode;          //å·¥ä½œæ¨¡å¼
+	MpptErrState_U 		uErrCode;           //tMppté”™è¯¯çŠ¶æ€
+	vu16             	usAutoOffTime;   	//å…³é—­é€†å˜å™¨çš„æ—¶é—´,0ä¸ºä¸å¼€å¯  
+    vu16             	usAutoOffCnt;    	//æ—¶é—´æˆ³å¤§äºŽè¿™ä¸ªå€¼å°±å…³é—­é€†å˜å™¨
+	vu16             	usInPwr;         	//è¾“å…¥çš„åŠŸçŽ‡ W
+	bool             	bChgPerm;         	//å……ç”µè®¸å¯
 	s16             	sMaxTemp;    
 }
 Mppt_T;
 #pragma pack()
 extern Mppt_T 			tMppt;
 
-//*********************************¼ÇÒä²ÎÊý**********************************
-#pragma pack(1)//Ç¿ÖÆÒ»¸ö×Ö½Ú¶ÔÆë
+//*********************************è®°å¿†å‚æ•°**********************************
+#pragma pack(1)//å¼ºåˆ¶ä¸€ä¸ªå­—èŠ‚å¯¹é½
 typedef struct
 {
-	s8               	cAllowMaxTemp;      //ÔÊÐíµÄ×î¸ßÎÂ¶È 1ÉãÊÏ¶È
-	vu16             	usAutoOffTime;   	//×Ô¶¯¹Ø±ÕÊ±¼ä  0Îª¹Ø±Õ´Ë¹¦ÄÜ
-	vu16             	usMaxInVolt;		//×î´óÊäÈëµçÑ¹ 0.1V
-	vu16             	usMinInVolt;		//×îÐ¡ÊäÈëµçÑ¹ 0.1V
-	vu16             	usMaxInCurr;		//×î´óÊäÈëµçÑ¹ 0.01A
-	vu16             	usInPwrRating;     	//×î´óÊäÈë¹¦ÂÊ 0.1W
+	s8               	cAllowMaxTemp;      //å…è®¸çš„æœ€é«˜æ¸©åº¦ 1æ‘„æ°åº¦
+	vu16             	usAutoOffTime;   	//è‡ªåŠ¨å…³é—­æ—¶é—´  0ä¸ºå…³é—­æ­¤åŠŸèƒ½
+	vu16             	usMaxInVolt;		//æœ€å¤§è¾“å…¥ç”µåŽ‹ 0.1V
+	vu16             	usMinInVolt;		//æœ€å°è¾“å…¥ç”µåŽ‹ 0.1V
+	vu16             	usMaxInCurr;		//æœ€å¤§è¾“å…¥ç”µåŽ‹ 0.01A
+	vu16             	usInPwrRating;     	//æœ€å¤§è¾“å…¥åŠŸçŽ‡ 0.1W
 }MpptMemParam_T;
-#pragma pack() //È¡ÏûÒ»¸ö×Ö½Ú¶ÔÆë
+#pragma pack() //å–æ¶ˆä¸€ä¸ªå­—èŠ‚å¯¹é½
 
 
 bool bMppt_TaskInit(void);

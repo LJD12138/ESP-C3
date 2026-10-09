@@ -14,8 +14,8 @@
 #pragma pack(1)
 typedef struct
 {
-	vs8            		cTemp;              //ÎÂ¶È
-    vs16           		sPower;             //1W ×Ü¹¦ÂÊ 
+	vs8            		cTemp;              //æ¸©åº¦
+    vs16           		sPower;             //1W æ€»åŠŸçŽ‡ 
     vu16           		usVolt;             //mV
     vu16           		usPdCurr;       	//mA
 	vu16           		usQcCurr;       	//mA
@@ -24,34 +24,34 @@ typedef struct
 }USB_IC_T; 
 #pragma pack()
 
-// TYPEC½ÇÉ«¶¨Òå
+// TYPECè§’è‰²å®šä¹‰
 typedef enum
 {
-	TYPEC_ROLE_DRP = 0,    // Ë«½ÇÉ«
-	TYPEC_ROLE_SRC = 1,    // ·Åµç
-	TYPEC_ROLE_SNK = 2,    // ³äµç
+	TYPEC_ROLE_DRP = 0,    // åŒè§’è‰²
+	TYPEC_ROLE_SRC = 1,    // æ”¾ç”µ
+	TYPEC_ROLE_SNK = 2,    // å……ç”µ
 }TYPEC_ROLE_E;
 
-//Ä£Ê½ÉèÖÃ
+//æ¨¡å¼è®¾ç½®
 typedef enum : uint8_t
 {
-	IMS_ALL = 0,  		//³ä·Åµç
-	IMS_DISCHG,  		//·Åµç
-    IMS_CHG,         	//³äµç
+	IMS_ALL = 0,  		//å……æ”¾ç”µ
+	IMS_DISCHG,  		//æ”¾ç”µ
+    IMS_CHG,         	//å……ç”µ
 }Ic2ModeSet_E;
 
-//SW6303¿ØÖÆ¶ÔÏó¶¨Òå
+//SW6303æŽ§åˆ¶å¯¹è±¡å®šä¹‰
 typedef enum : uint8_t
 {
-	IC2_CTRL_OBJ_VBUS = 0,      //Êä³öµçÑ¹
-	IC2_CTRL_OBJ_CHG_VOLT,     	//³äµçµçÑ¹
-	IC2_CTRL_OBJ_MAX_IN_PWR,    //×î´óÊäÈë¹¦ÂÊ
-	IC2_CTRL_OBJ_CHG_HOLD_VOLT, //³äµç hold ÃÅÏÞ
-	IC2_CTRL_OBJ_TEMP,			//Ô¤Áô
-	IC2_CTRL_OBJ_IBAT,     		//µç³ØÏÞÁ÷
-	IC2_CTRL_OBJ_IBUS,      	//Êä³öµçÁ÷
-	IC2_CTRL_OBJ_MAX_OUT_PWR,   //×î´óÊä³ö¹¦ÂÊ
-	IC2_CTRL_OBJ_ALL,   		//ÉèÖÃËùÓÐ
+	IC2_CTRL_OBJ_VBUS = 0,      //è¾“å‡ºç”µåŽ‹
+	IC2_CTRL_OBJ_CHG_VOLT,     	//å……ç”µç”µåŽ‹
+	IC2_CTRL_OBJ_MAX_IN_PWR,    //æœ€å¤§è¾“å…¥åŠŸçŽ‡
+	IC2_CTRL_OBJ_CHG_HOLD_VOLT, //å……ç”µ hold é—¨é™
+	IC2_CTRL_OBJ_TEMP,			//é¢„ç•™
+	IC2_CTRL_OBJ_IBAT,     		//ç”µæ± é™æµ
+	IC2_CTRL_OBJ_IBUS,      	//è¾“å‡ºç”µæµ
+	IC2_CTRL_OBJ_MAX_OUT_PWR,   //æœ€å¤§è¾“å‡ºåŠŸçŽ‡
+	IC2_CTRL_OBJ_ALL,   		//è®¾ç½®æ‰€æœ‰
 	IC2_CTRL_OBJ_MAX
 }Ic2CtrlObj_E;
 

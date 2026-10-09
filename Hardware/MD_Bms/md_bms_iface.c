@@ -26,15 +26,15 @@
 #endif  //boardCONSOLE_485_IFACE_EN
 
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************//
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
 #define    		bmsRX_DMA_BUFF_SIZE   					256
-#define    		bmsTX_DMA_BUFF_SIZE        				256      //DMAÊı×é´óĞ¡
+#define    		bmsTX_DMA_BUFF_SIZE        				256      //DMAæ•°ç»„å¤§å°
 
 static vu16  	S_DataSendSize = 0;
 static vu16  	S_DataSendCnt = 0;
 
-static __ALIGNED(4) u8   ucaBmsRxDmaBuffData[bmsRX_DMA_BUFF_SIZE];   //ÓÃÓÚ°ÑÊı¾İ×°ÔØµ½DMA·¢ËÍ 
-static __ALIGNED(4) u8   ucaBmsTxDmaBuffData[bmsTX_DMA_BUFF_SIZE];   //È¡³ö½ÓÊÕ»º´æÆ÷ÖĞµÄÊı¾İ,ÓÃÓÚDMA·¢ËÍ
+static __ALIGNED(4) u8   ucaBmsRxDmaBuffData[bmsRX_DMA_BUFF_SIZE];   //ç”¨äºæŠŠæ•°æ®è£…è½½åˆ°DMAå‘é€ 
+static __ALIGNED(4) u8   ucaBmsTxDmaBuffData[bmsTX_DMA_BUFF_SIZE];   //å–å‡ºæ¥æ”¶ç¼“å­˜å™¨ä¸­çš„æ•°æ®,ç”¨äºDMAå‘é€
 
 #if(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C61)
 typedef enum : uint8_t
@@ -43,21 +43,21 @@ typedef enum : uint8_t
     UHCI_EVT_EOF,
 } uhci_event_t;
 
-// ½ÓÊÕ»Øµ÷½á¹¹Ìå¶¨Òå£¬Èç¹ûÒªÊ¹ÓÃË«buf½ÓÊÕ£¬ÄÇÃ´ĞèÒª¶¨ÒåÁ½¸öbuf¿Õ¼ä
+// æ¥æ”¶å›è°ƒç»“æ„ä½“å®šä¹‰ï¼Œå¦‚æœè¦ä½¿ç”¨åŒbufæ¥æ”¶ï¼Œé‚£ä¹ˆéœ€è¦å®šä¹‰ä¸¤ä¸ªbufç©ºé—´
 typedef struct
 {
-    QueueHandle_t queue;     // ÓÃÓÚ½ÓÊÕDMA´«ÊäÍê³ÉÊÂ¼şµÄ¶ÓÁĞ¾ä±ú
-    uint8_t recv_buf1[1024]; // Ö¸Ïò½ÓÊÕ»º³åÇøµÄÖ¸Õë£¬ÓÃÓÚ´æ´¢DMA½ÓÊÕµ½µÄÊı¾İ
-    uint8_t recv_buf2[1024]; // Ö¸Ïò½ÓÊÕ»º³åÇøµÄÖ¸Õë£¬ÓÃÓÚ´æ´¢DMA½ÓÊÕµ½µÄÊı¾İ
-    bool use_buf;            // È·¶¨Ë«bufµÄ½ÓÊÕ
-    uint32_t data_len;       // ½ÓÊÕ»º³åÇøÖĞµ±Ç°ÒÑ½ÓÊÕµÄÊı¾İ³¤¶È
+    QueueHandle_t queue;     // ç”¨äºæ¥æ”¶DMAä¼ è¾“å®Œæˆäº‹ä»¶çš„é˜Ÿåˆ—å¥æŸ„
+    uint8_t recv_buf1[1024]; // æŒ‡å‘æ¥æ”¶ç¼“å†²åŒºçš„æŒ‡é’ˆï¼Œç”¨äºå­˜å‚¨DMAæ¥æ”¶åˆ°çš„æ•°æ®
+    uint8_t recv_buf2[1024]; // æŒ‡å‘æ¥æ”¶ç¼“å†²åŒºçš„æŒ‡é’ˆï¼Œç”¨äºå­˜å‚¨DMAæ¥æ”¶åˆ°çš„æ•°æ®
+    bool use_buf;            // ç¡®å®šåŒbufçš„æ¥æ”¶
+    uint32_t data_len;       // æ¥æ”¶ç¼“å†²åŒºä¸­å½“å‰å·²æ¥æ”¶çš„æ•°æ®é•¿åº¦
 } qyq_uhci_ctx_t;
 
 static uart_event_t tUartEvent;
 static QueueHandle_t tUartQueue;
 #endif  //boardIC_TYPE
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 #if(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C61)
 #if(boardPRINT_IFACE_DMA_EN)
 static bool uhci_tx_callback(uhci_controller_handle_t uhci_ctrl, const uhci_tx_done_event_data_t *edata, void *user_ctx);
@@ -66,13 +66,13 @@ static bool uhci_rx_callback(uhci_controller_handle_t uhci_ctrl, const uhci_rx_e
 #endif  //boardIC_TYPE
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿ÚÏà¹ØIO³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£ç›¸å…³IOåˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
-static void v_bms_io_init(void)//IOÉèÖÃ
+static void v_bms_io_init(void)//IOè®¾ç½®
 {
 	#if(boardBMS_485_IFACE_EN)
     
@@ -81,59 +81,59 @@ static void v_bms_io_init(void)//IOÉèÖÃ
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿ÚÅäÖÃ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£é…ç½®
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 static void v_bms_usart_init(void)
 {
 	const uart_config_t uart_config = {
-        .baud_rate = bmsUSART_BAUD,             // ²¨ÌØÂÊ£¨Èç 115200£©
-        .data_bits = UART_DATA_8_BITS,            // Êı¾İÎ»Îª 8 Î»
-        .parity = UART_PARITY_DISABLE,            // ½ûÓÃÆæÅ¼Ğ£Ñé
-        .stop_bits = UART_STOP_BITS_1,            // 1 ¸öÍ£Ö¹Î»
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,    // ¹Ø±ÕÓ²¼şÁ÷¿Ø
-        .source_clk = UART_SCLK_DEFAULT,          // Ê¹ÓÃÄ¬ÈÏÊ±ÖÓÔ´
+        .baud_rate = bmsUSART_BAUD,             // æ³¢ç‰¹ç‡ï¼ˆå¦‚ 115200ï¼‰
+        .data_bits = UART_DATA_8_BITS,            // æ•°æ®ä½ä¸º 8 ä½
+        .parity = UART_PARITY_DISABLE,            // ç¦ç”¨å¥‡å¶æ ¡éªŒ
+        .stop_bits = UART_STOP_BITS_1,            // 1 ä¸ªåœæ­¢ä½
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,    // å…³é—­ç¡¬ä»¶æµæ§
+        .source_clk = UART_SCLK_DEFAULT,          // ä½¿ç”¨é»˜è®¤æ—¶é’Ÿæº
     };
-    //1.´®¿ÚÅäÖÃ
+    //1.ä¸²å£é…ç½®
     uart_param_config(bmsUSART, &uart_config);
 
-    //2.°²×°´®¿ÚÇı¶¯,×¢²áÁË´®¿ÚÏûÏ¢¶ÓÁĞ
+    //2.å®‰è£…ä¸²å£é©±åŠ¨,æ³¨å†Œäº†ä¸²å£æ¶ˆæ¯é˜Ÿåˆ—
     uart_driver_install(bmsUSART, bmsRX_DMA_BUFF_SIZE * 2, 0, 20, &tUartQueue, 0);
     
-    //3.ÖĞ¶ÏÅäÖÃ
+    //3.ä¸­æ–­é…ç½®
     #if(bmsUSART_IRQ_EN)
     uart_intr_config_t intr_conf = {
         .intr_enable_mask = UART_RXFIFO_FULL_INT_ENA | 
                             UART_RXFIFO_TOUT_INT_ENA,
-        .rx_timeout_thresh = 10,                         // ³¬Ê±ãĞÖµ(µ¥Î»£º±ÈÌØÊ±¼ä)
-        .rxfifo_full_thresh = 112                       // FIFO´¥·¢ãĞÖµ(0-127)
+        .rx_timeout_thresh = 10,                         // è¶…æ—¶é˜ˆå€¼(å•ä½ï¼šæ¯”ç‰¹æ—¶é—´)
+        .rxfifo_full_thresh = 112                       // FIFOè§¦å‘é˜ˆå€¼(0-127)
     };
     uart_intr_config(bmsUSART, &intr_conf);
     uart_enable_rx_intr(bmsUSART);
 
-    //5.×¢²áÖĞ¶Ï
-    // esp_intr_alloc(ETS_UART0_INTR_SOURCE + bmsUSART,          // ÖĞ¶ÏÔ´
-    //                ESP_INTR_FLAG_IRAM | ESP_INTR_FLAG_LEVEL1,   // ÔÚIRAMÖĞÔËĞĞ
-    //                bmsUSART_IRQ_HANDLER,                      // ISRº¯Êı
-    //                (void*)bmsUSART,                           // ²ÎÊı
-    //                NULL);                                       // ·µ»Ø¾ä±ú
+    //5.æ³¨å†Œä¸­æ–­
+    // esp_intr_alloc(ETS_UART0_INTR_SOURCE + bmsUSART,          // ä¸­æ–­æº
+    //                ESP_INTR_FLAG_IRAM | ESP_INTR_FLAG_LEVEL1,   // åœ¨IRAMä¸­è¿è¡Œ
+    //                bmsUSART_IRQ_HANDLER,                      // ISRå‡½æ•°
+    //                (void*)bmsUSART,                           // å‚æ•°
+    //                NULL);                                       // è¿”å›å¥æŸ„
     #endif  //bmsUSART_IRQ_EN
 
-    //5.Òı½ÅÅäÖÃ
+    //5.å¼•è„šé…ç½®
     uart_set_pin(bmsUSART, bmsUSART_GPIO_TX_PIN, bmsUSART_GPIO_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
 }
 
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    DMA³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    DMAåˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 #if(boardBMS_IFACE_DMA_EN)
 static void v_bms_dma_init(void)
@@ -143,11 +143,11 @@ static void v_bms_dma_init(void)
 #endif
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿Ú³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void vBms_IfaceInit(void)
 {
@@ -159,11 +159,11 @@ void vBms_IfaceInit(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿ÚÖØÖÃ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£é‡ç½®
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void vBms_IfaceDeInit(void)
 {
@@ -174,11 +174,11 @@ void vBms_IfaceDeInit(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿Ú·¢Éäº¯Êı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    addr:Òª·¢ËÍÊı¾İµÄµØÖ·
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:³É¹¦    false:Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£å‘å°„å‡½æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    addr:è¦å‘é€æ•°æ®çš„åœ°å€
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æˆåŠŸ    false:å¤±è´¥
 ******************************************************************************************************************/
 bool bBms_DataSendStart(u8* data,u16 len)
 {
@@ -195,22 +195,22 @@ bool bBms_DataSendStart(u8* data,u16 len)
 	memcpy(ucaBmsTxDmaBuffData, data, len);
 	
 	#if(boardBMS_IFACE_DMA_EN)
-	//Çå³ıÈ«²¿·¢ËÍÍê³É±êÖ¾Î»
+	//æ¸…é™¤å…¨éƒ¨å‘é€å®Œæˆæ ‡å¿—ä½
 	dma_flag_clear(bmsUSART_DMA, bmsUSART_DMA_TX_CH, DMA_FLAG_FTF); 
-	//×°ÔØÊı¾İ
+	//è£…è½½æ•°æ®
 	dma_memory_address_config(bmsUSART_DMA, bmsUSART_DMA_TX_CH,(uint32_t)ucaBmsTxDmaBuffData);
-	//×°ÔØ³¤¶È
+	//è£…è½½é•¿åº¦
 	dma_transfer_number_config(bmsUSART_DMA,bmsUSART_DMA_TX_CH,len);
-	//¿ªÊ¼DMA·¢ËÍ
+	//å¼€å§‹DMAå‘é€
 	dma_channel_enable(bmsUSART_DMA, bmsUSART_DMA_TX_CH);
 	return true;
 	
 	#else
 	
-    if(S_DataSendCnt) //·¢ËÍÖĞ
+    if(S_DataSendCnt) //å‘é€ä¸­
         return false; 
     
-	// ·ÇDMA·½Ê½·¢ËÍ
+	// éDMAæ–¹å¼å‘é€
 	 S_DataSendSize = len;
 	uart_write_bytes(bmsUSART, (const char *)ucaBmsTxDmaBuffData, S_DataSendSize);
     S_DataSendCnt = 0;          
@@ -220,20 +220,20 @@ bool bBms_DataSendStart(u8* data,u16 len)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    485·¢ËÍÊ¹ÄÜ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    en true:¿ªÆô    false:¹Ø±Õ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    485å‘é€ä½¿èƒ½
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    en true:å¼€å¯    false:å…³é—­
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 #if(boardBMS_485_IFACE_EN)
 void vBms_485TransEnable(bool en)
 {
 	if(en == true)
-		bmsGPIO_485_TX_EN_ON();  //ÇĞ»»Îª·¢ËÍÄ£Ê½
+		bmsGPIO_485_TX_EN_ON();  //åˆ‡æ¢ä¸ºå‘é€æ¨¡å¼
 	else
 	{
-		bmsGPIO_485_TX_EN_OFF();  //ÇĞ»»Îª½ÓÊÕÄ£Ê½
+		bmsGPIO_485_TX_EN_OFF();  //åˆ‡æ¢ä¸ºæ¥æ”¶æ¨¡å¼
 		#if(!boardUSE_OS)
 		bSysTick_BmsSendFinish = false;
 		#endif  //boardUSE_OS
@@ -245,23 +245,23 @@ void vBms_485TransEnable(bool en)
 
 #if(boardBMS_IFACE_DMA_EN)
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    DMA·¢ËÍÍê³ÉÖĞ¶Ï
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    DMAå‘é€å®Œæˆä¸­æ–­
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void bmsUSART_DMA_TX_IRQ_HANDLER(void)
 {
     if(dma_interrupt_flag_get(bmsUSART_DMA, bmsUSART_DMA_TX_CH, DMA_INT_FLAG_FTF)) 
 	{
         dma_interrupt_flag_clear(bmsUSART_DMA, bmsUSART_DMA_TX_CH, DMA_INT_FLAG_G);
-		//¹Ø±ÕDMA·¢ËÍ
+		//å…³é—­DMAå‘é€
 	    dma_channel_disable(bmsUSART_DMA, bmsUSART_DMA_TX_CH);
-		//·¢ËÍÍê³É
+		//å‘é€å®Œæˆ
 		S_DataSendSize = 0;
 		
-		//ÑÓÊ±¹Ø±Õ
+		//å»¶æ—¶å…³é—­
 		#if(boardBMS_485_IFACE_EN)
 		#if(boardUSE_OS)
 		xTimerResetFromISR(tBmsRxEnTimer,0);
@@ -274,30 +274,30 @@ void bmsUSART_DMA_TX_IRQ_HANDLER(void)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿Ú½ÓÊÕÍê³ÉÖĞ¶Ï
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£æ¥æ”¶å®Œæˆä¸­æ–­
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 static u8 uc_read_buff_len=0;
 void bmsUSART_IRQ_HANDLER(void)
 {
     if(RESET != usart_interrupt_flag_get(bmsUSART, USART_INT_FLAG_IDLE)) 
 	{
-		//Çå³ıÖĞ¶Ï
+		//æ¸…é™¤ä¸­æ–­
         usart_interrupt_flag_clear(bmsUSART, USART_INT_FLAG_IDLE);
-		//Çå³ı¿ÕÏĞ±êÖ¾Î»
+		//æ¸…é™¤ç©ºé—²æ ‡å¿—ä½
 		usart_data_receive(bmsUSART);
-		//¹Ø±ÕDMA´«Êä
+		//å…³é—­DMAä¼ è¾“
 		dma_channel_disable(bmsUSART_DMA, bmsUSART_DMA_RX_CH); 
 		
-		//»ñÈ¡½ÓÊÕµ½µÄÊı¾İ³¤¶È£¬µ¥Î»£º×Ö½Ú
+		//è·å–æ¥æ”¶åˆ°çš„æ•°æ®é•¿åº¦ï¼Œå•ä½ï¼šå­—èŠ‚
 		uc_read_buff_len = bmsRX_DMA_BUFF_SIZE - dma_transfer_number_get(bmsUSART_DMA,bmsUSART_DMA_RX_CH);
-		//×ª´æÊı¾İµ½´ı´¦ÀíÊı¾İ»º³åÇø
+		//è½¬å­˜æ•°æ®åˆ°å¾…å¤„ç†æ•°æ®ç¼“å†²åŒº
 		if(tpBmsProtoRx != NULL)
 			lwrb_write(&tpBmsProtoRx->tRxBuff, ucaBmsRxDmaBuffData, uc_read_buff_len);
-		//Í¨Öª½ÓÊÕÈÎÎñ
+		//é€šçŸ¥æ¥æ”¶ä»»åŠ¡
 		#if(boardUSE_OS)
 		if(tUpdata.eWorkState != UWS_NULL)
 		{
@@ -309,25 +309,25 @@ void bmsUSART_IRQ_HANDLER(void)
 		}
 		#endif  //boardUSE_OS
 
-		//ÖØĞÂÉèÖÃDMA´«Êä
-		//×°ÔØ³¤¶È
+		//é‡æ–°è®¾ç½®DMAä¼ è¾“
+		//è£…è½½é•¿åº¦
 		dma_transfer_number_config(bmsUSART_DMA,bmsUSART_DMA_RX_CH,bmsRX_DMA_BUFF_SIZE);
-		//¿ªÆôDMA´«Êä
+		//å¼€å¯DMAä¼ è¾“
 		dma_channel_enable(bmsUSART_DMA, bmsUSART_DMA_RX_CH);    
     }
 }
 #else
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿Ú½ÓÊÕ£¨·ÇDMAÄ£Ê½·ÇÖĞ¶Ï£©
------ËµÃ÷(±¸×¢)  ĞèÒªÔÚÈÎÎñÖĞµ÷ÓÃ
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£æ¥æ”¶ï¼ˆéDMAæ¨¡å¼éä¸­æ–­ï¼‰
+-----è¯´æ˜(å¤‡æ³¨)  éœ€è¦åœ¨ä»»åŠ¡ä¸­è°ƒç”¨
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 static u8 uc_read_buff_len=0;
 void vBms_QyqRecData(void)
 {
-    //¼ì²é¶ÓÁĞÊÇ·ñÒÑ³õÊ¼»¯
+    //æ£€æŸ¥é˜Ÿåˆ—æ˜¯å¦å·²åˆå§‹åŒ–
     if(tUartQueue == NULL)
     {
         #if(boardUSE_OS)
@@ -336,19 +336,19 @@ void vBms_QyqRecData(void)
         return;
     }
         
-    //ÕâÀïÓÃÓÚ½ÓÊÕ´®¿ÚµÄÏûÏ¢¶ÓÁĞ
+    //è¿™é‡Œç”¨äºæ¥æ”¶ä¸²å£çš„æ¶ˆæ¯é˜Ÿåˆ—
     if (xQueueReceive(tUartQueue, (void *)&tUartEvent, (TickType_t)bmsREC_TASK_CYCLE_TIME))
     {
         switch (tUartEvent.type)
         {
-            // Êı¾İ¿É¶ÁĞ´µÄ×´Ì¬
+            // æ•°æ®å¯è¯»å†™çš„çŠ¶æ€
             case UART_DATA:
             {
-                // ÓĞÊı¾İ¿É¶Á
+                // æœ‰æ•°æ®å¯è¯»
                 uc_read_buff_len = uart_read_bytes(bmsUSART, ucaBmsRxDmaBuffData, tUartEvent.size, bmsREC_TASK_CYCLE_TIME);
                 if(uc_read_buff_len && tpBmsProtoRx != NULL)
                     lwrb_write(&tpBmsProtoRx->tRxBuff, ucaBmsRxDmaBuffData, uc_read_buff_len);
-               //Í¨Öª½ÓÊÕÈÎÎñ
+               //é€šçŸ¥æ¥æ”¶ä»»åŠ¡
                 #if(boardUSE_OS)
                 // if(tUpdata.eWorkState != UWS_NULL)
                 // {
@@ -364,7 +364,7 @@ void vBms_QyqRecData(void)
 
             case UART_FIFO_OVF:
             {
-                // Ó²¼şÊı¾İÒç³ö
+                // ç¡¬ä»¶æ•°æ®æº¢å‡º
                 uart_flush_input(bmsUSART);
                 xQueueReset(tUartQueue);
             }
@@ -372,7 +372,7 @@ void vBms_QyqRecData(void)
 
             case UART_BUFFER_FULL:
             {
-                // »·ĞÎ»º³åÇøÒÑÂú
+                // ç¯å½¢ç¼“å†²åŒºå·²æ»¡
                 uart_flush_input(bmsUSART);
                 xQueueReset(tUartQueue);
             }

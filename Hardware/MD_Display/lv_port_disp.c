@@ -13,7 +13,7 @@
 #include "sdkconfig.h"
 #include "esp_log.h"
 
-/* Ìø¹ılv_conf.h£¬Ê¹ÓÃKconfigÅäÖÃ */
+/* è·³è¿‡lv_conf.hï¼Œä½¿ç”¨Kconfigé…ç½® */
 #ifndef LV_CONF_SKIP
 #define LV_CONF_SKIP 1
 #endif
@@ -35,7 +35,7 @@
     #define MY_DISP_VER_RES    LCD_H
 #endif
 
-/* ÏÔÊ¾»º³åÇøÅäÖÃ */
+/* æ˜¾ç¤ºç¼“å†²åŒºé…ç½® */
 #define BUF_LINES           60
 #define BUF_SIZE            (MY_DISP_HOR_RES * BUF_LINES * sizeof(lv_color_t))
 
@@ -55,18 +55,18 @@ static lv_color_t *buf2 = NULL;
  **********************/
 
 /**
- * @brief ³õÊ¼»¯LVGLÏÔÊ¾Çı¶¯
+ * @brief åˆå§‹åŒ–LVGLæ˜¾ç¤ºé©±åŠ¨
  */
 void lv_port_disp_init(void)
 {
-    /* ´´½¨ÏÔÊ¾Éè±¸ */
+    /* åˆ›å»ºæ˜¾ç¤ºè®¾å¤‡ */
     display = lv_display_create(MY_DISP_HOR_RES, MY_DISP_VER_RES);
     if (display == NULL) {
         ESP_LOGE("LVGL_DISP", "Failed to create display");
         return;
     }
 
-    /* ·ÖÅäDMA»º³åÇø */
+    /* åˆ†é…DMAç¼“å†²åŒº */
     buf1 = heap_caps_malloc(BUF_SIZE, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
     if (buf1 == NULL) {
         ESP_LOGE("LVGL_DISP", "Failed to allocate display buffer 1");
@@ -81,19 +81,19 @@ void lv_port_disp_init(void)
         ESP_LOGI("LVGL_DISP", "Buffer2 allocated: %d bytes, using double buffer mode", BUF_SIZE);
     }
 
-    /* ÉèÖÃÏÔÊ¾»º³åÇø */
+    /* è®¾ç½®æ˜¾ç¤ºç¼“å†²åŒº */
     lv_display_set_buffers(display, buf1, buf2, BUF_SIZE, LV_DISPLAY_RENDER_MODE_PARTIAL);
     
-    /* ÉèÖÃË¢ĞÂ»Øµ÷º¯Êı */
+    /* è®¾ç½®åˆ·æ–°å›è°ƒå‡½æ•° */
     lv_display_set_flush_cb(display, lcd_flush_cb);
     
-    /* ÆôÓÃÈí¼şĞı×ªÖ§³Ö */
+    /* å¯ç”¨è½¯ä»¶æ—‹è½¬æ”¯æŒ */
     lv_display_set_rotation(display, LV_DISPLAY_ROTATION_0);
 
-    /* Ê¹ÓÃ±ê×¼RGB565¸ñÊ½ */
+    /* ä½¿ç”¨æ ‡å‡†RGB565æ ¼å¼ */
     lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
 
-    /* ÉèÖÃÎªÄ¬ÈÏÏÔÊ¾Æ÷ */
+    /* è®¾ç½®ä¸ºé»˜è®¤æ˜¾ç¤ºå™¨ */
     lv_display_set_default(display);
 
     ESP_LOGI("LVGL_DISP", "Display initialized: %dx%d", MY_DISP_HOR_RES, MY_DISP_VER_RES);
@@ -104,7 +104,7 @@ void lv_port_disp_init(void)
  **********************/
 
 /**
- * @brief LVGLË¢ĞÂ»Øµ÷º¯Êı
+ * @brief LVGLåˆ·æ–°å›è°ƒå‡½æ•°
  */
 static void lcd_flush_cb(lv_display_t * disp, const lv_area_t * area, uint8_t * px_map)
 {
@@ -113,33 +113,33 @@ static void lcd_flush_cb(lv_display_t * disp, const lv_area_t * area, uint8_t * 
     int16_t x2 = area->x2;
     int16_t y2 = area->y2;
 
-    /* ¼ÆËãÏñËØÊıÁ¿ */
+    /* è®¡ç®—åƒç´ æ•°é‡ */
     uint32_t pixel_count = (x2 - x1 + 1) * (y2 - y1 + 1);
 
-    /* ²ÎÊıÓĞĞ§ĞÔ¼ì²é */
+    /* å‚æ•°æœ‰æ•ˆæ€§æ£€æŸ¥ */
     if (px_map == NULL || pixel_count == 0) {
         ESP_LOGW("LVGL_DISP", "Invalid flush parameters: px_map=%p, pixel_count=%lu", px_map, pixel_count);
         lv_display_flush_ready(disp);
         return;
     }
 
-    /* ×ª»»×Ö½ÚĞò£ºLVGLĞ¡¶Ë ¡ú LCD´ó¶Ë*/
+    /* è½¬æ¢å­—èŠ‚åºï¼šLVGLå°ç«¯ â†’ LCDå¤§ç«¯*/
     lv_draw_sw_rgb565_swap(px_map, pixel_count);
 
-    /* Ö±½Ó´«Êä£¬²»½øĞĞ×Ö½Ú½»»» - °´ÕÕ¹Ù·½Àı³Ì·½Ê½ */
+    /* ç›´æ¥ä¼ è¾“ï¼Œä¸è¿›è¡Œå­—èŠ‚äº¤æ¢ - æŒ‰ç…§å®˜æ–¹ä¾‹ç¨‹æ–¹å¼ */
 #if dispUSE_ESP_LCD_FRAMEWORK
     esp_err_t e_ret = esp_lcd_panel_draw_bitmap(P_panel_handle, x1, y1, x2 + 1, y2 + 1, px_map);
     if (e_ret != ESP_OK) {
         ESP_LOGE("LVGL_DISP", "Draw bitmap failed: %d", e_ret);
-        /* ´«ÊäÊ§°ÜÊ±Á¢¼´Í¨ÖªLVGL£¬±ÜÃâ¿¨ËÀ */
+        /* ä¼ è¾“å¤±è´¥æ—¶ç«‹å³é€šçŸ¥LVGLï¼Œé¿å…å¡æ­» */
         lv_display_flush_ready(disp);
     }
-    /* ×¢Òâ£ºESP-LCDÒì²½DMA´«Êä£¬flush_readyÔÚDMAÍê³É»Øµ÷ÖĞµ÷ÓÃ */
+    /* æ³¨æ„ï¼šESP-LCDå¼‚æ­¥DMAä¼ è¾“ï¼Œflush_readyåœ¨DMAå®Œæˆå›è°ƒä¸­è°ƒç”¨ */
 #else
     uint32_t byte_count = pixel_count * 2;
     vDisp_LCD_Address_Set(x1, y1, x2, y2);
     eDisp_SPI_Write_Data_DMA_Batch(LCD_Handle, (const uint8_t *)px_map, byte_count);
-    /* ´«Í³DMA·½Ê½ÊÇÍ¬²½µÄ£¬´«ÊäÍê³ÉºóÁ¢¼´Í¨ÖªLVGL */
+    /* ä¼ ç»ŸDMAæ–¹å¼æ˜¯åŒæ­¥çš„ï¼Œä¼ è¾“å®Œæˆåç«‹å³é€šçŸ¥LVGL */
     lv_display_flush_ready(disp);
 #endif
 }

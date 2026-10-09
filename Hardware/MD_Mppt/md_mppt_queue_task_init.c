@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Mppt/md_mppt_queue_task.h"
@@ -15,11 +15,11 @@
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_mppt_queue_task_init(Task_T *tp_task)
 {
@@ -27,7 +27,7 @@ void v_mppt_queue_task_init(Task_T *tp_task)
     {
 		case 0:
         {
-			cQueue_GotoStep(tp_task, STEP_NEXT);  	//ÏÂÒ»²½
+			cQueue_GotoStep(tp_task, STEP_NEXT);  	//ä¸‹ä¸€æ­¥
         }
 		break;
 	
@@ -35,23 +35,23 @@ void v_mppt_queue_task_init(Task_T *tp_task)
 		{
 			tSysInfo.uInit.tFinish.bIF_MpptTask = true;
 			bMppt_SetDevState(DS_SHUT_DOWN);
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 		}
 		break;
 			
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
     }
 	
-	//µÈ´ı³¬Ê±
+	//ç­‰å¾…è¶…æ—¶
 	tp_task->usTaskWaitCnt++;
 	if(tp_task->usTaskWaitCnt>(3000/mpptTASK_INIT_CYCLE_TIME)) 
 	{
 		if(uPrint.tFlag.bMpptTask)
-			log_w("bMpptTask:³õÊ¼»¯ÈÎÎñµÈ´ı³¬Ê±");
+			log_w("bMpptTask:åˆå§‹åŒ–ä»»åŠ¡ç­‰å¾…è¶…æ—¶");
 		
-		cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+		cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 	}
 	
 	#if(boardUSE_OS)

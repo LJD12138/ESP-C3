@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         °´¼ü´¦ÀíÈÎÎñ                                                          *
+ *                                         æŒ‰é”®å¤„ç†ä»»åŠ¡                                                          *
 *                                                                                                                *
 ******************************************************************************************************************/
 
@@ -14,25 +14,25 @@
 #include "freertos/task.h"
 #endif  //boardUSE_OS
 
-//****************************************************ÈÎÎñ³õÊ¼»¯**************************************************//
+//****************************************************ä»»åŠ¡åˆå§‹åŒ–**************************************************//
 #if(boardUSE_OS)
-#define       	KEY_TASK_PRIO                  			2     //ÈÎÎñÓÅÏÈ¼¶ 
-#define        	KEY_TASK_STK_SIZE              			3072   //ÈÎÎñ¶ÑÕ»  Êµ¼Ê×Ö½ÚÊı *4 (increased to prevent stack overflow)
+#define       	KEY_TASK_PRIO                  			2     //ä»»åŠ¡ä¼˜å…ˆçº§ 
+#define        	KEY_TASK_STK_SIZE              			3072   //ä»»åŠ¡å †æ ˆ  å®é™…å­—èŠ‚æ•° *4 (increased to prevent stack overflow)
 TaskHandle_t    tKeyTaskHandler = NULL; 
 void          	vKey_Task(void *pvParameters);
 #endif  //boardUSE_OS
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************//
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
 //2Tab			//4Tab
 KeyHandler_t 	tKeyPower;
 KeyHandler_t 	tKeyAC;
 KeyHandler_t 	tKeyLight;
 
 bool b_key_lock = false;
-u8 Key_TriTypeBuff[ keyGROUP_NUM ] = {0};      //°´¼ü¹¦ÄÜ
+u8 Key_TriTypeBuff[ keyGROUP_NUM ] = {0};      //æŒ‰é”®åŠŸèƒ½
 vu16 Key_UnPressTim = 0 , Key_TriTypeCnt = 0;
 
-//****************************************************º¯ÊıÉùÃ÷**************************************************//
+//****************************************************å‡½æ•°å£°æ˜**************************************************//
 static void v_key_gpio_init(void);
 static void v_key_shot_press(KeyHandler_t* keyHandler);
 static void v_key_long_press(KeyHandler_t* keyHandler);
@@ -40,11 +40,11 @@ static void v_key_long_press(KeyHandler_t* keyHandler);
 static bool v_key_check_other_is_tri(void);
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    µÇ¼Ç°´¼üĞÅÏ¢
------ËµÃ÷(±¸×¢)  ´Ë×¢²áÓĞÎÊÌâ,»áµ¼ÖÂNum³¬¹ı×î´óÖµ,Êı¾İÒç³ö
------´«Èë²ÎÊı    °´¼ü½á¹¹Ìå
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç™»è®°æŒ‰é”®ä¿¡æ¯
+-----è¯´æ˜(å¤‡æ³¨)  æ­¤æ³¨å†Œæœ‰é—®é¢˜,ä¼šå¯¼è‡´Numè¶…è¿‡æœ€å¤§å€¼,æ•°æ®æº¢å‡º
+-----ä¼ å…¥å‚æ•°    æŒ‰é”®ç»“æ„ä½“
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 static KeyHandler_t* KeyHandlerList[keyNUM];
 static vu8 KeyHandlerListNum = 0;
@@ -58,33 +58,33 @@ static void v_key_register(KeyHandler_t* keyHandler)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    °´¼üÈÎÎñ³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æŒ‰é”®ä»»åŠ¡åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vKey_TaskInit(void)
 {
 	v_key_gpio_init();
 	
 	#if(boardUSE_OS)
-	xTaskCreate((TaskFunction_t )vKey_Task,				//ÈÎÎñº¯Êı
-                (const char* )"bKeyTask",				//ÈÎÎñÃû³Æ
-                (uint16_t ) KEY_TASK_STK_SIZE,          //ÈÎÎñ¶ÑÕ»´óĞ¡
-                (void* )NULL,							//´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                (UBaseType_t ) KEY_TASK_PRIO,           //ÈÎÎñÓÅÏÈ¼¶
-                (TaskHandle_t*)&tKeyTaskHandler);      	//ÈÎÎñ¾ä±ú
+	xTaskCreate((TaskFunction_t )vKey_Task,				//ä»»åŠ¡å‡½æ•°
+                (const char* )"bKeyTask",				//ä»»åŠ¡åç§°
+                (uint16_t ) KEY_TASK_STK_SIZE,          //ä»»åŠ¡å †æ ˆå¤§å°
+                (void* )NULL,							//ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                (UBaseType_t ) KEY_TASK_PRIO,           //ä»»åŠ¡ä¼˜å…ˆçº§
+                (TaskHandle_t*)&tKeyTaskHandler);      	//ä»»åŠ¡å¥æŸ„
 	#endif  //boardUSE_OS
 }
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    °´¼ü³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æŒ‰é”®åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 static void v_key_gpio_init(void)
 {
@@ -98,9 +98,9 @@ static void v_key_gpio_init(void)
 	//configure GPIO with the given settings
 	gpio_config(&io_conf);
 
-	//true:³¤°´ÀÛ¼Ó¹¦ÄÜ false:¹Ø±Õ
+	//true:é•¿æŒ‰ç´¯åŠ åŠŸèƒ½ false:å…³é—­
 	tKeyPower.bEnLongPressAdd = false;
-	//true:¶à¹¦ÄÜ°´¼ü:Ë«»÷µÈÇ°ºó´¥·¢µÄ false:¿ÉÒÔÊ¹ÓÃÒ»Ö±³¤°´¿ÉÒÔ´¥·¢³¤°´¹¦ÄÜ,Ò²¿ÉÒÔÊ¶±ğÍ¬Ê±´¥·¢µÄ
+	//true:å¤šåŠŸèƒ½æŒ‰é”®:åŒå‡»ç­‰å‰åè§¦å‘çš„ false:å¯ä»¥ä½¿ç”¨ä¸€ç›´é•¿æŒ‰å¯ä»¥è§¦å‘é•¿æŒ‰åŠŸèƒ½,ä¹Ÿå¯ä»¥è¯†åˆ«åŒæ—¶è§¦å‘çš„
     tKeyPower.bEnMulitFunKey = false;
     tKeyPower.IsPress = bKey_PowerIsPress;
     v_key_register(&tKeyPower);
@@ -118,11 +118,11 @@ static void v_key_gpio_init(void)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    °´¼üÑ­»·ÈÎÎñ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æŒ‰é”®å¾ªç¯ä»»åŠ¡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vKey_Task(void *pvParameters)
 {
@@ -132,7 +132,7 @@ void vKey_Task(void *pvParameters)
 	for(;;)
 	#endif  //boardUSE_OS
     {
-		//GPIO³õÊ¼»¯Î´Íê³É
+		//GPIOåˆå§‹åŒ–æœªå®Œæˆ
 		if(tSysInfo.uInit.tFinish.bIF_Gpio == 0)
 		{
 			b_key_lock = bKey_PowerIsPress();
@@ -145,7 +145,7 @@ void vKey_Task(void *pvParameters)
 			#endif
 		}
 		
-		//³¤°´¿ªÆô²»ËÉ¿ª
+		//é•¿æŒ‰å¼€å¯ä¸æ¾å¼€
 		if(b_key_lock == true && bKey_PowerIsPress() == true)
 		{
 			#if(boardUSE_OS)
@@ -158,7 +158,7 @@ void vKey_Task(void *pvParameters)
 		
 		b_key_lock = false;
 		
-		// //¸ü¸Ä°´¼ü´¥·¢·½Ê½
+		// //æ›´æ”¹æŒ‰é”®è§¦å‘æ–¹å¼
 		// #if(boardENG_MODE_EN)
 		// if((tSysInfo.eDevState == DS_SHUT_DOWN || 
 		// 	tSysInfo.eDevState == DS_ENG_MODE))
@@ -179,55 +179,55 @@ void vKey_Task(void *pvParameters)
 	
 		for(Currkey = 0; Currkey < KeyHandlerListNum; Currkey++)
 		{
-			//******************************************°´¼ü °´ÏÂ×´Ì¬***********************************************
+			//******************************************æŒ‰é”® æŒ‰ä¸‹çŠ¶æ€***********************************************
             if(KeyHandlerList[Currkey]->IsPress())        
             {
-				//¼ÇÂ¼°´ÏÂµÄÊ±¼ä--------------------------------------------------------------------------
+				//è®°å½•æŒ‰ä¸‹çš„æ—¶é—´--------------------------------------------------------------------------
                 if(KeyHandlerList[Currkey]->sOnPressCnt < 0xfff && 
 				    KeyHandlerList[Currkey]->sOnPressCnt >= 0 )
 					{
 						KeyHandlerList[Currkey]->sOnPressCnt++;
 					}
 				
-				//Ê¹ÄÜ³¤°´ÀÛ¼Ó°´¼ü-----------------------------------------------------------------------
+				//ä½¿èƒ½é•¿æŒ‰ç´¯åŠ æŒ‰é”®-----------------------------------------------------------------------
                 if( KeyHandlerList[Currkey]->bEnLongPressAdd == true )  
 				{
-					if( KeyHandlerList[Currkey]->sOnPressCnt >= keyLONG_PRESS_TIME) //Âú×ã³¤°´Ê±³¤
+					if( KeyHandlerList[Currkey]->sOnPressCnt >= keyLONG_PRESS_TIME) //æ»¡è¶³é•¿æŒ‰æ—¶é•¿
 					{
 						v_key_shot_press(KeyHandlerList[Currkey]);
 						
-						vKey_ProcKeyFunc(Key_TriTypeBuff); //Á¢¿Ì´¦Àí
+						vKey_ProcKeyFunc(Key_TriTypeBuff); //ç«‹åˆ»å¤„ç†
 						
 						KeyHandlerList[Currkey]->sOnPressCnt = keyLONG_PRESS_TIME - keyADD_SPACE_TIME;
 					}
 				}
-				//²»Ê¹ÄÜ×éºÏ°´¼ü--------------------------------------------------------------------------
+				//ä¸ä½¿èƒ½ç»„åˆæŒ‰é”®--------------------------------------------------------------------------
 				else if( KeyHandlerList[Currkey]->bEnMulitFunKey == false )  
 				{				
-					if( KeyHandlerList[Currkey]->sOnPressCnt >= keyLONG_PRESS_TIME)   //Âú×ã³¤°´ÊÂ¼ş,¼ÇÂ¼ 
+					if( KeyHandlerList[Currkey]->sOnPressCnt >= keyLONG_PRESS_TIME)   //æ»¡è¶³é•¿æŒ‰äº‹ä»¶,è®°å½• 
 					{
-						v_key_long_press(KeyHandlerList[Currkey]);     //Ö´ĞĞ ³¤°´ ÊÂ¼ş
+						v_key_long_press(KeyHandlerList[Currkey]);     //æ‰§è¡Œ é•¿æŒ‰ äº‹ä»¶
 
 						if(v_key_check_other_is_tri() == true)
 						{
-							continue;  //½áÊø±¾´ÎÑ­»·
+							continue;  //ç»“æŸæœ¬æ¬¡å¾ªç¯
 						}
 						
-						vKey_ProcKeyFunc(Key_TriTypeBuff);  //Á¢¿Ì´¦Àí
+						vKey_ProcKeyFunc(Key_TriTypeBuff);  //ç«‹åˆ»å¤„ç†
 					}
 				}
 				else
 				{
-					if( KeyHandlerList[Currkey]->sOnPressCnt >= keySUPER_LONG_PRESS_TIME ) //Âú×ã³¬³¤°´ÊÂ¼ş,ÌáÊ¾
+					if( KeyHandlerList[Currkey]->sOnPressCnt >= keySUPER_LONG_PRESS_TIME ) //æ»¡è¶³è¶…é•¿æŒ‰äº‹ä»¶,æç¤º
 					{
 						if(uPrint.tFlag.bKeyTask)
-							sMyPrint("Key_Task:´¥·¢³¤°´ÊÂ¼ş\r\n");
+							sMyPrint("Key_Task:è§¦å‘é•¿æŒ‰äº‹ä»¶\r\n");
 						
-//						v_key_super_long_press(KeyHandlerList[Currkey]);  //¼ÇÂ¼³¤°´ÊÂ¼ş 
+//						v_key_super_long_press(KeyHandlerList[Currkey]);  //è®°å½•é•¿æŒ‰äº‹ä»¶ 
 //						
-//						vKey_ProcKeyFunc(Key_TriTypeBuff);  //Á¢¿Ì´¦Àí
+//						vKey_ProcKeyFunc(Key_TriTypeBuff);  //ç«‹åˆ»å¤„ç†
 						
-						v_key_long_press(KeyHandlerList[Currkey]);  //¼ÇÂ¼³¤°´ÊÂ¼ş 
+						v_key_long_press(KeyHandlerList[Currkey]);  //è®°å½•é•¿æŒ‰äº‹ä»¶ 
 						
 						// bBuz_Tweet(SHORT_1);
 					}
@@ -235,28 +235,28 @@ void vKey_Task(void *pvParameters)
 				Key_UnPressTim = 0;	
 				tSysInfo.usNeedSleepCnt = 0;
             }
-			//****************************************************°´¼ü ·Å¿ª×´Ì¬*******************************************
+			//****************************************************æŒ‰é”® æ”¾å¼€çŠ¶æ€*******************************************
             else                                   
             { 
-				//°´¼üÒÑ¾­ËÉ¿ª,¼ÇÂ¼µ±Ç°°´¼üÊÂ¼ş,²¢µÈ´ıÊÇ·ñ»¹ÓĞ×éºÏ°´¼ü´¥·¢------------------------------------------------
+				//æŒ‰é”®å·²ç»æ¾å¼€,è®°å½•å½“å‰æŒ‰é”®äº‹ä»¶,å¹¶ç­‰å¾…æ˜¯å¦è¿˜æœ‰ç»„åˆæŒ‰é”®è§¦å‘------------------------------------------------
 				 if( Key_UnPressTim < keyNUPRESS_MAX_TIME && Key_UnPressTim >= 4) 
 				 {
-					 //¶Ì°´  :°´ÏÂÊ±¼äÔÚ keySHORT_PRESS_TIME ~ KeyLongPressTime Ö®¼ä
+					 //çŸ­æŒ‰  :æŒ‰ä¸‹æ—¶é—´åœ¨ keySHORT_PRESS_TIME ~ KeyLongPressTime ä¹‹é—´
 					 if(RANGE( KeyHandlerList[Currkey]->sOnPressCnt,  keySHORT_PRESS_TIME,
 						 ( keyLONG_PRESS_TIME - keyADD_SPACE_TIME -1 )))   
 					 {  
 						 v_key_shot_press(KeyHandlerList[Currkey]);
-						 if(KeyHandlerList[Currkey]->bEnMulitFunKey == false) //Ã»ÓĞÊ¹ÄÜ¶à¹¦ÄÜ°´¼ü,¾Í²»ĞèÒªµÈ´ı,Ö±½Ó´¥·¢°´¼ü
+						 if(KeyHandlerList[Currkey]->bEnMulitFunKey == false) //æ²¡æœ‰ä½¿èƒ½å¤šåŠŸèƒ½æŒ‰é”®,å°±ä¸éœ€è¦ç­‰å¾…,ç›´æ¥è§¦å‘æŒ‰é”®
 							goto KeyTri;
 					 }
-					 else if( KeyHandlerList[Currkey]->sOnPressCnt >= keyLONG_PRESS_TIME)  //³¤°´
+					 else if( KeyHandlerList[Currkey]->sOnPressCnt >= keyLONG_PRESS_TIME)  //é•¿æŒ‰
 					 {
 						 v_key_long_press(KeyHandlerList[Currkey]);	
-						 if(KeyHandlerList[Currkey]->bEnMulitFunKey == false) //Ã»ÓĞÊ¹ÄÜ¶à¹¦ÄÜ°´¼ü,¾Í²»ĞèÒªµÈ´ı,Ö±½Ó´¥·¢°´¼ü
+						 if(KeyHandlerList[Currkey]->bEnMulitFunKey == false) //æ²¡æœ‰ä½¿èƒ½å¤šåŠŸèƒ½æŒ‰é”®,å°±ä¸éœ€è¦ç­‰å¾…,ç›´æ¥è§¦å‘æŒ‰é”®
 							goto KeyTri;
 					 }
 				 }
-				 //ÒÑ¾­´¦ÀíÍê--------------------------------------------------------------------------------------------
+				 //å·²ç»å¤„ç†å®Œ--------------------------------------------------------------------------------------------
 				 else  if( Key_UnPressTim == keyNUPRESS_MAX_TIME) 
 				 {
 					 KeyTri:
@@ -264,10 +264,10 @@ void vKey_Task(void *pvParameters)
 				 }
 				 
 				 
-				 //Ã¿±éÀúÒ»´Î---------------------------------------------------------------------------------------------
+				 //æ¯éå†ä¸€æ¬¡---------------------------------------------------------------------------------------------
 				 if(Currkey == 0)  
 				 {
-					 //°´¼üËÉ¿ª¼ÆÊ±
+					 //æŒ‰é”®æ¾å¼€è®¡æ—¶
 					 if( Key_UnPressTim < 0xffff) 
 						 Key_UnPressTim ++ ; 
 				 }
@@ -283,11 +283,11 @@ void vKey_Task(void *pvParameters)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¼ì²éÆäËû°´¼üÊÇ·ñ°´ÏÂ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:»¹ÓĞÆäËû°´¼ü°´ÏÂÃ»ÓĞ´¥·¢,·´Ö®false
+-----å‡½æ•°åŠŸèƒ½    æ£€æŸ¥å…¶ä»–æŒ‰é”®æ˜¯å¦æŒ‰ä¸‹
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:è¿˜æœ‰å…¶ä»–æŒ‰é”®æŒ‰ä¸‹æ²¡æœ‰è§¦å‘,åä¹‹false
 ************************************************************************************************************************/
 static bool v_key_check_other_is_tri(void)
 {
@@ -302,20 +302,20 @@ static bool v_key_check_other_is_tri(void)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    Â¼Èë¶Ì°´°´¼üÊÂ¼ş
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    °´¼ü½á¹¹Ìå
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    å½•å…¥çŸ­æŒ‰æŒ‰é”®äº‹ä»¶
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    æŒ‰é”®ç»“æ„ä½“
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 static void v_key_shot_press(KeyHandler_t* keyHandler)
 {
-	// if(!tDisp.bLight && bSys_IsWorkState() == true)   //Ï¢ÆÁµÚÒ»¸ö¹¦ÄÜ²»Ö´ĞĞ
+	// if(!tDisp.bLight && bSys_IsWorkState() == true)   //æ¯å±ç¬¬ä¸€ä¸ªåŠŸèƒ½ä¸æ‰§è¡Œ
 	// {
 	// 	bDisp_Switch(ST_ON, false);
 	// 	keyHandler->sOnPressCnt = -1;
 	// 	if(uPrint.tFlag.bKeyTask)
-	// 		sMyPrint("Key_Task:µ±Ç°Ï¢ÆÁ,°´¼ü¹¦ÄÜÍË³ö\r\n");
+	// 		sMyPrint("Key_Task:å½“å‰æ¯å±,æŒ‰é”®åŠŸèƒ½é€€å‡º\r\n");
 	// 	return;
 	// }
 	
@@ -327,7 +327,7 @@ static void v_key_shot_press(KeyHandler_t* keyHandler)
 		keyHandler->sOnPressCnt = -1;
 		
 		if(uPrint.tFlag.bKeyTask)
-			sMyPrint("Key_Task:µçÔ´¶Ì°´\r\n");
+			sMyPrint("Key_Task:ç”µæºçŸ­æŒ‰\r\n");
 	}
 		
 	else if(keyHandler == &tKeyAC) 
@@ -338,7 +338,7 @@ static void v_key_shot_press(KeyHandler_t* keyHandler)
 		keyHandler->sOnPressCnt = -1;
 		
 		if(uPrint.tFlag.bKeyTask)
-			sMyPrint("Key_Task:AC¶Ì°´\r\n");
+			sMyPrint("Key_Task:ACçŸ­æŒ‰\r\n");
 	}
 	
 	else if(keyHandler == &tKeyLight) 
@@ -349,7 +349,7 @@ static void v_key_shot_press(KeyHandler_t* keyHandler)
 		keyHandler->sOnPressCnt = -1;
 		
 		if(uPrint.tFlag.bKeyTask)
-			sMyPrint("Key_Task:Light¶Ì°´\r\n");
+			sMyPrint("Key_Task:LightçŸ­æŒ‰\r\n");
 	}
 	
 	// else if(keyHandler == &tKeyUSB) 
@@ -360,7 +360,7 @@ static void v_key_shot_press(KeyHandler_t* keyHandler)
 	// 	keyHandler->sOnPressCnt = -1;
 		
 	// 	if(uPrint.tFlag.bKeyTask)
-	// 		sMyPrint("Key_Task:USB¶Ì°´\r\n");
+	// 		sMyPrint("Key_Task:USBçŸ­æŒ‰\r\n");
 	// }
 	
 	// else if(keyHandler == &tKeyDC) 
@@ -371,27 +371,27 @@ static void v_key_shot_press(KeyHandler_t* keyHandler)
 	// 	keyHandler->sOnPressCnt = -1;
 		
 	// 	if(uPrint.tFlag.bKeyTask)
-	// 		sMyPrint("Key_Task:DC¶Ì°´\r\n");
+	// 		sMyPrint("Key_Task:DCçŸ­æŒ‰\r\n");
 	// }
 }
 
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    Â¼Èë³¤°´°´¼üÊÂ¼ş
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    °´¼ü½á¹¹Ìå
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    å½•å…¥é•¿æŒ‰æŒ‰é”®äº‹ä»¶
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    æŒ‰é”®ç»“æ„ä½“
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 static void v_key_long_press(KeyHandler_t* keyHandler)
 {
-	// if(!tDisp.bLight && bSys_IsWorkState() == true)   //·Ç¹Ø»ú×´Ì¬ÏÂ,Ï¢ÆÁµÚÒ»¸ö¹¦ÄÜ²»Ö´ĞĞ
+	// if(!tDisp.bLight && bSys_IsWorkState() == true)   //éå…³æœºçŠ¶æ€ä¸‹,æ¯å±ç¬¬ä¸€ä¸ªåŠŸèƒ½ä¸æ‰§è¡Œ
 	// {
 	// 	bDisp_Switch(ST_ON, false);
 	// 	keyHandler->sOnPressCnt = -1;
 	// 	if(uPrint.tFlag.bKeyTask)
-	// 		sMyPrint("Key_Task:µ±Ç°Ï¢ÆÁ,°´¼ü¹¦ÄÜÍË³ö\r\n");
+	// 		sMyPrint("Key_Task:å½“å‰æ¯å±,æŒ‰é”®åŠŸèƒ½é€€å‡º\r\n");
 	// 	return;
 	// }
 	
@@ -403,7 +403,7 @@ static void v_key_long_press(KeyHandler_t* keyHandler)
 		keyHandler->sOnPressCnt = -1;
 		
 		if(uPrint.tFlag.bKeyTask)
-			sMyPrint("Key_Task:µçÔ´³¤°´\r\n");
+			sMyPrint("Key_Task:ç”µæºé•¿æŒ‰\r\n");
 		
 	}
 		
@@ -415,7 +415,7 @@ static void v_key_long_press(KeyHandler_t* keyHandler)
 		keyHandler->sOnPressCnt = -1;
 		
 		if(uPrint.tFlag.bKeyTask)
-			sMyPrint("Key_Task:AC³¤°´\r\n");
+			sMyPrint("Key_Task:ACé•¿æŒ‰\r\n");
 	}
 	
 	else if(keyHandler == &tKeyLight) 
@@ -426,7 +426,7 @@ static void v_key_long_press(KeyHandler_t* keyHandler)
 		keyHandler->sOnPressCnt = -1;
 		
 		if(uPrint.tFlag.bKeyTask)
-			sMyPrint("Key_Task:Light³¤°´\r\n");
+			sMyPrint("Key_Task:Lighté•¿æŒ‰\r\n");
 	}
 	
 	// else if(keyHandler == &tKeyUSB) 
@@ -437,7 +437,7 @@ static void v_key_long_press(KeyHandler_t* keyHandler)
 	// 	keyHandler->sOnPressCnt = -1;
 		
 	// 	if(uPrint.tFlag.bKeyTask)
-	// 		sMyPrint("Key_Task:USB³¤°´\r\n");
+	// 		sMyPrint("Key_Task:USBé•¿æŒ‰\r\n");
 	// }
 	
 	// else if(keyHandler == &tKeyDC) 
@@ -448,25 +448,25 @@ static void v_key_long_press(KeyHandler_t* keyHandler)
 	// 	keyHandler->sOnPressCnt = -1;
 		
 	// 	if(uPrint.tFlag.bKeyTask)
-	// 		sMyPrint("Key_Task:DC³¤°´\r\n");
+	// 		sMyPrint("Key_Task:DCé•¿æŒ‰\r\n");
 	// }
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    Â¼Èë³¬³¤°´°´¼üÊÂ¼ş
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    °´¼ü½á¹¹Ìå
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    å½•å…¥è¶…é•¿æŒ‰æŒ‰é”®äº‹ä»¶
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    æŒ‰é”®ç»“æ„ä½“
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 //static void v_key_super_long_press(KeyHandler_t* keyHandler)
 //{
-//	if(!tLCD.bLight && bSys_IsShutDownState() == false)   //·Ç¹Ø»ú×´Ì¬ÏÂ,Ï¢ÆÁµÚÒ»¸ö¹¦ÄÜ²»Ö´ĞĞ
+//	if(!tLCD.bLight && bSys_IsShutDownState() == false)   //éå…³æœºçŠ¶æ€ä¸‹,æ¯å±ç¬¬ä¸€ä¸ªåŠŸèƒ½ä¸æ‰§è¡Œ
 //	{
 //		vLCD_RefreshDisplayParam();
 //		keyHandler->sOnPressCnt = -1;
 //		if(uPrint.tFlag.bKeyTask)
-//			sMyPrint("Key_Task:µ±Ç°Ï¢ÆÁ,°´¼ü¹¦ÄÜÍË³ö\r\n");
+//			sMyPrint("Key_Task:å½“å‰æ¯å±,æŒ‰é”®åŠŸèƒ½é€€å‡º\r\n");
 //		return;
 //	}
 	
@@ -478,18 +478,18 @@ static void v_key_long_press(KeyHandler_t* keyHandler)
 //		keyHandler->sOnPressCnt = -1;
 //		
 //		if(uPrint.tFlag.bKeyTask)
-//			sMyPrint("Key_Task:µçÔ´³¬³¤°´\r\n");
+//			sMyPrint("Key_Task:ç”µæºè¶…é•¿æŒ‰\r\n");
 //		
 //	}
 //}
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    µçÔ´°´¼üÒÑ¾­±»´¥·¢
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç”µæºæŒ‰é”®å·²ç»è¢«è§¦å‘
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vKey_PowerIsTri(void)
 {
@@ -497,26 +497,26 @@ void vKey_PowerIsTri(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ²ÎÊı³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    å‚æ•°åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void vKey_ParamInit(void )
 {
 	Key_TriTypeCnt = 0;
-	memset (Key_TriTypeBuff, KTE_FUN_NULL, sizeof( Key_TriTypeBuff));  //°´¼üÊÂ¼şBuffÇåÁã
+	memset (Key_TriTypeBuff, KTE_FUN_NULL, sizeof( Key_TriTypeBuff));  //æŒ‰é”®äº‹ä»¶Buffæ¸…é›¶
 }
 	
 
 #if(boardLOW_POWER)
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    °´¼ü½øÈëµÍ¹¦ºÄ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æŒ‰é”®è¿›å…¥ä½åŠŸè€—
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vKey_EnterLowPower(void)
 {
@@ -538,21 +538,21 @@ void vKey_EnterLowPower(void)
 	gpio_exti_source_select(GPIO_PORT_SOURCE_GPIOA, GPIO_PIN_SOURCE_0); //PA0
 
 	/* configure key EXTI line */
-	exti_init(EXTI_13, EXTI_INTERRUPT, EXTI_TRIG_FALLING); //ÏÂ½µÑØ´¥·¢
-	exti_init(EXTI_0, EXTI_INTERRUPT, EXTI_TRIG_RISING); //ÉÏÉıÑØ´¥·¢
+	exti_init(EXTI_13, EXTI_INTERRUPT, EXTI_TRIG_FALLING); //ä¸‹é™æ²¿è§¦å‘
+	exti_init(EXTI_0, EXTI_INTERRUPT, EXTI_TRIG_RISING); //ä¸Šå‡æ²¿è§¦å‘
 	exti_interrupt_flag_clear(EXTI_13);
 	exti_interrupt_flag_clear(EXTI_0);
 	
-	vTaskSuspend(tKeyTaskHandler);  //¹ÒÆğÈÎÎñ
+	vTaskSuspend(tKeyTaskHandler);  //æŒ‚èµ·ä»»åŠ¡
 }
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    °´¼üÍË³öµÍ¹¦ºÄ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æŒ‰é”®é€€å‡ºä½åŠŸè€—
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vKey_ExitLowPower(void)
 {
@@ -564,7 +564,7 @@ void vKey_ExitLowPower(void)
 	gpio_init(keyGPIO_LIGHT_PORT,GPIO_MODE_IPU,GPIO_OSPEED_2MHZ,keyGPIO_LIGHT_PIN);
 	gpio_init(keyGPIO_USB_PORT,GPIO_MODE_IPU,GPIO_OSPEED_2MHZ,keyGPIO_USB_PIN);
 
-	vTaskResume(tKeyTaskHandler);  //»Ö¸´ÈÎÎñ
+	vTaskResume(tKeyTaskHandler);  //æ¢å¤ä»»åŠ¡
 }
 #endif
 

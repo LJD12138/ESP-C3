@@ -8,7 +8,7 @@
 #define 		fanPWM_SEMI_VALUE    					200
 #define 		fanPWM_FULL_VALUE    					550
 
-//·çÉÈ
+//é£Žæ‰‡
 #define 		fanPWM_GPIO_RCU                    		RCU_GPIOB 
 #define 		fanPWM_GPIO_PORT                   		GPIOB
 #define 		fanPWM_PIN                         		GPIO_PIN_1

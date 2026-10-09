@@ -1,11 +1,11 @@
 /***********************************************************************************************************************
 -----@file sw6303_common.c
------º¯Êı¹¦ÄÜ   SW6303 Ğ¾Æ¬Í¨ÓÃÇı¶¯
------×÷Õß       LJD
------°æ±¾ 1.0.0
------ÈÕÆÚ       2026-01-22
------@copyright Copyright (c) 2026  ÉîÛÚÊĞ°Ù¿áĞÂÄÜÔ´ÓĞÏŞ¹«Ë¾
------@par ĞŞ¸ÄÈÕÖ¾:
+-----å‡½æ•°åŠŸèƒ½   SW6303 èŠ¯ç‰‡é€šç”¨é©±åŠ¨
+-----ä½œè€…       LJD
+-----ç‰ˆæœ¬ 1.0.0
+-----æ—¥æœŸ       2026-01-22
+-----@copyright Copyright (c) 2026  æ·±åœ³å¸‚ç™¾é…·æ–°èƒ½æºæœ‰é™å…¬å¸
+-----@par ä¿®æ”¹æ—¥å¿—:
 ************************************************************************************************************************/
 #include "UsbDevice/usb_sw6303_common.h"
 #include "UsbDevice/usb_iface.h"
@@ -13,15 +13,15 @@
 #include "string.h"
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¶ÁÊı¾İ(ÓĞ¼Ä´æÆ÷µØÖ·)
------ËµÃ÷(±¸×¢)  Ä¬ÈÏÊÇ²Ù×÷µÍÎ»,Èç¹ûĞèÒª²Ù×÷¸ßÎ»,¾ÍĞèÒª´ò¿ª²Ù×÷ÍêºóÂíÉÏ¹Ø±Õ
-				 ¶ÁÈ¡¸ßÎ»¼Ä´æÆ÷Ê±ºòÒ²ÊÇĞèÒª¿ªÆôĞ´Ê¹ÄÜ
------´«Èë²ÎÊı    p_i2c_obj:IIC¶ÔÏó
-				 reg_addr:¼Ä´æÆ÷µØÖ·
-				 buf:Êı¾İµÄÖ¸Õë
-				 len:Êı¾İµÄ×Ö½Ú³¤¶È
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      Ğ¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ı    ´óÓÚ0:¶ÁÈ¡³É¹¦
+-----å‡½æ•°åŠŸèƒ½    è¯»æ•°æ®(æœ‰å¯„å­˜å™¨åœ°å€)
+-----è¯´æ˜(å¤‡æ³¨)  é»˜è®¤æ˜¯æ“ä½œä½ä½,å¦‚æœéœ€è¦æ“ä½œé«˜ä½,å°±éœ€è¦æ‰“å¼€æ“ä½œå®Œåé©¬ä¸Šå…³é—­
+				 è¯»å–é«˜ä½å¯„å­˜å™¨æ—¶å€™ä¹Ÿæ˜¯éœ€è¦å¼€å¯å†™ä½¿èƒ½
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:IICå¯¹è±¡
+				 reg_addr:å¯„å­˜å™¨åœ°å€
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      å°äº0:æ“ä½œå¤±è´¥   ç­‰äº0:ç­‰å¾…    å¤§äº0:è¯»å–æˆåŠŸ
 ******************************************************************************************************************/
 s8 c_usb_sw6303_read_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 len)
 {
@@ -34,7 +34,7 @@ s8 c_usb_sw6303_read_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 
 		len == 0)
 		return -1;
 
-	//¸ßµØÖ·Ä£Ê½
+	//é«˜åœ°å€æ¨¡å¼
 	if(reg_addr >= 0x100)
 		en = true;
 
@@ -44,7 +44,7 @@ s8 c_usb_sw6303_read_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 
 		if(c_ret <= 0)
 		{
 			if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-				log_w("SW6303:ÉèÖÃ¸ßÎ»µØÖ·Ä£Ê½Ê§°Ü,´íÎó´úÂë%d", c_ret);
+				log_w("SW6303:è®¾ç½®é«˜ä½åœ°å€æ¨¡å¼å¤±è´¥,é”™è¯¯ä»£ç %d", c_ret);
 			return -2;
 		}
 	}
@@ -53,7 +53,7 @@ s8 c_usb_sw6303_read_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 
 	if(c_ret <= 0)
 	{
 		if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-			log_w("SW6303:¶ÁÈ¡µØÖ·0x%xÊ§°Ü,´íÎó´úÂë%d ", reg_addr, c_ret);
+			log_w("SW6303:è¯»å–åœ°å€0x%xå¤±è´¥,é”™è¯¯ä»£ç %d ", reg_addr, c_ret);
 		return -3;
 	}
 
@@ -64,7 +64,7 @@ s8 c_usb_sw6303_read_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 
 		{
 			c_usb_sw6303_high_reg_addr_enable(p_i2c_obj, false);
 			if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-				log_w("SW6303:ÖØÖÃ¸ßÎ»µØÖ·Ä£Ê½Ê§°Ü,´íÎó´úÂë%d", c_ret);
+				log_w("SW6303:é‡ç½®é«˜ä½åœ°å€æ¨¡å¼å¤±è´¥,é”™è¯¯ä»£ç %d", c_ret);
 			return -4;
 		}
 	}
@@ -73,15 +73,15 @@ s8 c_usb_sw6303_read_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    Ğ´Êı¾İ(ÓĞ¼Ä´æÆ÷µØÖ·)
------ËµÃ÷(±¸×¢)  Ä¬ÈÏÊÇ²Ù×÷µÍÎ»,Èç¹ûĞèÒª²Ù×÷¸ßÎ»,¾ÍĞèÒª´ò¿ª²Ù×÷ÍêºóÂíÉÏ¹Ø±Õ
-				 ĞèÒª¸ñÍâ´ò¿ªĞ´Ê¹ÄÜ
------´«Èë²ÎÊı    p_i2c_obj:IIC¶ÔÏó
-				 reg_addr:¼Ä´æÆ÷µØÖ·
-				 buf:Êı¾İµÄÖ¸Õë
-				 len:Êı¾İµÄ×Ö½Ú³¤¶È
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      Ğ¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:µÈ´ı    ´óÓÚ0:Ğ´Èë³É¹¦
+-----å‡½æ•°åŠŸèƒ½    å†™æ•°æ®(æœ‰å¯„å­˜å™¨åœ°å€)
+-----è¯´æ˜(å¤‡æ³¨)  é»˜è®¤æ˜¯æ“ä½œä½ä½,å¦‚æœéœ€è¦æ“ä½œé«˜ä½,å°±éœ€è¦æ‰“å¼€æ“ä½œå®Œåé©¬ä¸Šå…³é—­
+				 éœ€è¦æ ¼å¤–æ‰“å¼€å†™ä½¿èƒ½
+-----ä¼ å…¥å‚æ•°    p_i2c_obj:IICå¯¹è±¡
+				 reg_addr:å¯„å­˜å™¨åœ°å€
+				 buf:æ•°æ®çš„æŒ‡é’ˆ
+				 len:æ•°æ®çš„å­—èŠ‚é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      å°äº0:æ“ä½œå¤±è´¥   ç­‰äº0:ç­‰å¾…    å¤§äº0:å†™å…¥æˆåŠŸ
 ******************************************************************************************************************/
 s8 c_usb_sw6303_write_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, const u8 *buf, u8 len)
 {
@@ -94,7 +94,7 @@ s8 c_usb_sw6303_write_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, const u8 *b
 		len == 0)
 		return -1;
 
-	//¸ßµØÖ·Ä£Ê½
+	//é«˜åœ°å€æ¨¡å¼
 	if(reg_addr >= 0x100)
 		en = true;
 
@@ -104,7 +104,7 @@ s8 c_usb_sw6303_write_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, const u8 *b
 		if(c_ret <= 0)
 		{
 			if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-				log_w("SW6303:ÉèÖÃ¸ßÎ»µØÖ·Ä£Ê½Ê§°Ü,´íÎó´úÂë%d", c_ret);
+				log_w("SW6303:è®¾ç½®é«˜ä½åœ°å€æ¨¡å¼å¤±è´¥,é”™è¯¯ä»£ç %d", c_ret);
 			return -2;
 		}
 	}
@@ -113,7 +113,7 @@ s8 c_usb_sw6303_write_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, const u8 *b
 	if(c_ret <= 0)
 	{
 		if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-			log_w("SW6303:Ğ´ÈëµØÖ·0x%xÊ§°Ü,´íÎó´úÂë%d ", reg_addr, c_ret);
+			log_w("SW6303:å†™å…¥åœ°å€0x%xå¤±è´¥,é”™è¯¯ä»£ç %d ", reg_addr, c_ret);
 		return -3;
 	}
 
@@ -124,7 +124,7 @@ s8 c_usb_sw6303_write_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, const u8 *b
 		{
 			c_usb_sw6303_high_reg_addr_enable(p_i2c_obj, false);
 			if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-				log_w("SW6303:ÖØÖÃ¸ßÎ»µØÖ·Ä£Ê½Ê§°Ü,´íÎó´úÂë%d", c_ret);
+				log_w("SW6303:é‡ç½®é«˜ä½åœ°å€æ¨¡å¼å¤±è´¥,é”™è¯¯ä»£ç %d", c_ret);
 			return -4;
 		}
 	}
@@ -133,16 +133,16 @@ s8 c_usb_sw6303_write_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, const u8 *b
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ	SW6303 I2CÊ¹ÄÜ²Ù×÷¸ßÎ»µØÖ·¼Ä´æÆ÷ reg24 reg1FF
------ËµÃ÷		bit0
-				ÈôÒª²Ù×÷ REG0x100~REG0x156 Ê±£¬ ĞèĞ´´Ë bit Îª 1 Èô´Ë bit
-				Îª 1 Ê±£¬Òª²Ù×÷µÍÓÚ REG0x100 µÄµØÖ·Ê±£¬Ïò REG0x1FF Ğ´ 0
-				¼´¿É½«´Ë bit ÇåÁã,reg24µÄÆäËûbit²»»á±ä¡£
------´«Èë²ÎÊı   p_i2c_obj: I2C¶ÔÏó
-				enable  true:²Ù×÷¸ßÎ»¼Ä´æÆ÷    false:²Ù×÷µÍÎ»¼Ä´æÆ÷
------·µ»ØÖµ     s8  1:³É¹¦    -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-01-22
+-----å‡½æ•°åŠŸèƒ½	SW6303 I2Cä½¿èƒ½æ“ä½œé«˜ä½åœ°å€å¯„å­˜å™¨ reg24 reg1FF
+-----è¯´æ˜		bit0
+				è‹¥è¦æ“ä½œ REG0x100~REG0x156 æ—¶ï¼Œ éœ€å†™æ­¤ bit ä¸º 1 è‹¥æ­¤ bit
+				ä¸º 1 æ—¶ï¼Œè¦æ“ä½œä½äº REG0x100 çš„åœ°å€æ—¶ï¼Œå‘ REG0x1FF å†™ 0
+				å³å¯å°†æ­¤ bit æ¸…é›¶,reg24çš„å…¶ä»–bitä¸ä¼šå˜ã€‚
+-----ä¼ å…¥å‚æ•°   p_i2c_obj: I2Cå¯¹è±¡
+				enable  true:æ“ä½œé«˜ä½å¯„å­˜å™¨    false:æ“ä½œä½ä½å¯„å­˜å™¨
+-----è¿”å›å€¼     s8  1:æˆåŠŸ    -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-01-22
 ************************************************************************************************************************/
 s8 c_usb_sw6303_high_reg_addr_enable(const I2cObj_T *p_i2c_obj, bool en)
 {
@@ -154,7 +154,7 @@ s8 c_usb_sw6303_high_reg_addr_enable(const I2cObj_T *p_i2c_obj, bool en)
 		if(cI2C_WriteBytes(p_i2c_obj, SW6303_REG_I2C_ENABLE, data, sizeof(data)) <= 0)
 			return -1;
 
-		//Ğ£ÑéÊÇ·ñÕıÈ·µÄ¿ªÆô¸ßÎ»Ä£Ê½
+		//æ ¡éªŒæ˜¯å¦æ­£ç¡®çš„å¼€å¯é«˜ä½æ¨¡å¼
 		if(cI2C_ReadBytes(p_i2c_obj, SW6303_REG_I2C_ENABLE, data, sizeof(data)) > 0)
 		{
 			if(data[0] != 0x81)
@@ -167,7 +167,7 @@ s8 c_usb_sw6303_high_reg_addr_enable(const I2cObj_T *p_i2c_obj, bool en)
 		if(cI2C_WriteBytes(p_i2c_obj, SW6303_REG_I2C_ENABLE_8BIT_CLR, data, sizeof(data)) <= 0)
 			return -3;
 
-		//Ğ£ÑéÊÇ·ñÕıÈ·µÄ¹Ø±Õ¸ßÎ»Ä£Ê½
+		//æ ¡éªŒæ˜¯å¦æ­£ç¡®çš„å…³é—­é«˜ä½æ¨¡å¼
 		if(cI2C_ReadBytes(p_i2c_obj, SW6303_REG_I2C_ENABLE, data, sizeof(data)) > 0)
 		{
 			if(data[0] != 0x80)
@@ -179,42 +179,42 @@ s8 c_usb_sw6303_high_reg_addr_enable(const I2cObj_T *p_i2c_obj, bool en)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ	SW6303 Ğ´²Ù×÷Ê¹ÄÜ·â×° reg24
------ËµÃ÷(±¸×¢) bit5-7
-				I2C Ğ´²Ù×÷Ê¹ÄÜ£¬Èç¹ûÒªĞ´ÆäËû¼Ä´æÆ÷£¨³ı REG0x20~0x24 Ö®
-				Íâ£©£¬ĞèÒªÏÈÖ´ĞĞÈçÏÂ²Ù×÷£º
-				1) Ğ´ REG0x24=0x20
-				2) Ğ´ REG0x24=0x40 
-				3) Ğ´ REG0x24=0x80
------´«Èë²ÎÊı   p_i2c_obj: I2C¶ÔÏó
-				en  true:¿ªÊ¼Ğ´Èë false:¹Ø±ÕĞ´Èë  
------·µ»ØÖµ     s8  1:³É¹¦    -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-01-22
+-----å‡½æ•°åŠŸèƒ½	SW6303 å†™æ“ä½œä½¿èƒ½å°è£… reg24
+-----è¯´æ˜(å¤‡æ³¨) bit5-7
+				I2C å†™æ“ä½œä½¿èƒ½ï¼Œå¦‚æœè¦å†™å…¶ä»–å¯„å­˜å™¨ï¼ˆé™¤ REG0x20~0x24 ä¹‹
+				å¤–ï¼‰ï¼Œéœ€è¦å…ˆæ‰§è¡Œå¦‚ä¸‹æ“ä½œï¼š
+				1) å†™ REG0x24=0x20
+				2) å†™ REG0x24=0x40 
+				3) å†™ REG0x24=0x80
+-----ä¼ å…¥å‚æ•°   p_i2c_obj: I2Cå¯¹è±¡
+				en  true:å¼€å§‹å†™å…¥ false:å…³é—­å†™å…¥  
+-----è¿”å›å€¼     s8  1:æˆåŠŸ    -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-01-22
 ************************************************************************************************************************/
 s8 c_usb_sw6303_write_enable(const I2cObj_T *p_i2c_obj, bool en)
 {
 	u8 data[1] = {0};
 	
-	/* Ö´ĞĞI2CĞ´²Ù×÷Ê¹ÄÜ£ºĞ´ REG0x24=0x20, 0x40, 0x80 */
+	/* æ‰§è¡ŒI2Cå†™æ“ä½œä½¿èƒ½ï¼šå†™ REG0x24=0x20, 0x40, 0x80 */
 	if(en)
 	{
-		/* Ğ´ REG0x24 = 0x20 */
+		/* å†™ REG0x24 = 0x20 */
 		data[0] = 0x20;
 		if(cI2C_WriteBytes(p_i2c_obj, SW6303_REG_I2C_ENABLE, data, sizeof(data)) <= 0)
 			return -1;
 		
-		/* Ğ´ REG0x24 = 0x40 */
+		/* å†™ REG0x24 = 0x40 */
 		data[0] = 0x40;
 		if(cI2C_WriteBytes(p_i2c_obj, SW6303_REG_I2C_ENABLE, data, sizeof(data)) <= 0)
 			return -2;
 		
-		/* Ğ´ REG0x24 = 0x80 */
+		/* å†™ REG0x24 = 0x80 */
 		data[0] = 0x80;
 		if(cI2C_WriteBytes(p_i2c_obj, SW6303_REG_I2C_ENABLE, data, sizeof(data)) <= 0)
 			return -3;
 		
-		//Ğ£ÑéÊÇ·ñÕıÈ·µÄ¿ªÆô
+		//æ ¡éªŒæ˜¯å¦æ­£ç¡®çš„å¼€å¯
 		if(cI2C_ReadBytes(p_i2c_obj, SW6303_REG_I2C_ENABLE, data, sizeof(data)) > 0)
 		{
 			if(data[0] != 0x80)
@@ -223,29 +223,29 @@ s8 c_usb_sw6303_write_enable(const I2cObj_T *p_i2c_obj, bool en)
 	}
 	else
 	{
-		/* ÍË³öI2CĞ´²Ù×÷Ê¹ÄÜ£ºĞ´REG0x1FF=0x00 */
+		/* é€€å‡ºI2Cå†™æ“ä½œä½¿èƒ½ï¼šå†™REG0x1FF=0x00 */
 		data[0] = 0x00;
 		if(cI2C_WriteBytes(p_i2c_obj, SW6303_REG_I2C_ENABLE, data, sizeof(data)) <= 0)
 			return -5;
 	}
 	
-	/* Èç¹ûÒÑ¾­Ê¹ÄÜ£¬Ö±½Ó·µ»Ø */
+	/* å¦‚æœå·²ç»ä½¿èƒ½ï¼Œç›´æ¥è¿”å› */
 	return 1;
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ	Ö¸Áî£ºÉèÖÃµÍ¹¦ºÄ×´Ì¬ reg23
------ËµÃ÷		REG0x23:
-				bit0: ¹Ø»úµÍ¹¦ºÄÊ¹ÄÜ (0:´ò¿ªµÍ¹¦ºÄ, 1:¹Ø±ÕµÍ¹¦ºÄ) - ¿ÉĞ´
-				bit1: µÍ¹¦ºÄµÄ×´Ì¬ (0:´¦ÓÚµÍ¹¦ºÄ×´Ì¬, 1:ÍË³öµÍ¹¦ºÄ×´Ì¬) - Ö»¶Á×´Ì¬Î»
-				ÒªÍË³öµÍ¹¦ºÄ£¬ĞèÒª£º
-				1) REG0x23 Ğ´ 0x01 ¹Ø±ÕµÍ¹¦ºÄ
-				2) REG0x24 Ğ´ 0x20£¬0x40£¬0x80£¬½âËø I2C Ğ´²Ù×÷
------´«Èë²ÎÊı   p_i2c_obj: I2C¶ÔÏó
-				en  true:ÍË³öµÍ¹¦ºÄ    false:½øÈëµÍ¹¦ºÄ
------·µ»ØÖµ     s8  1:³É¹¦    -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-01-22
+-----å‡½æ•°åŠŸèƒ½	æŒ‡ä»¤ï¼šè®¾ç½®ä½åŠŸè€—çŠ¶æ€ reg23
+-----è¯´æ˜		REG0x23:
+				bit0: å…³æœºä½åŠŸè€—ä½¿èƒ½ (0:æ‰“å¼€ä½åŠŸè€—, 1:å…³é—­ä½åŠŸè€—) - å¯å†™
+				bit1: ä½åŠŸè€—çš„çŠ¶æ€ (0:å¤„äºä½åŠŸè€—çŠ¶æ€, 1:é€€å‡ºä½åŠŸè€—çŠ¶æ€) - åªè¯»çŠ¶æ€ä½
+				è¦é€€å‡ºä½åŠŸè€—ï¼Œéœ€è¦ï¼š
+				1) REG0x23 å†™ 0x01 å…³é—­ä½åŠŸè€—
+				2) REG0x24 å†™ 0x20ï¼Œ0x40ï¼Œ0x80ï¼Œè§£é” I2C å†™æ“ä½œ
+-----ä¼ å…¥å‚æ•°   p_i2c_obj: I2Cå¯¹è±¡
+				en  true:é€€å‡ºä½åŠŸè€—    false:è¿›å…¥ä½åŠŸè€—
+-----è¿”å›å€¼     s8  1:æˆåŠŸ    -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-01-22
 ************************************************************************************************************************/
 s8 c_usb_sw6303_set_low_power_state(const I2cObj_T *p_i2c_obj, bool en)
 {
@@ -253,30 +253,30 @@ s8 c_usb_sw6303_set_low_power_state(const I2cObj_T *p_i2c_obj, bool en)
 	const u8 reg_state_value = 0x03;
 	const u8 reg_value = 0x01;
 
-	/* ¶ÁÈ¡µ±Ç°REG0x23¼Ä´æÆ÷Öµ */
+	/* è¯»å–å½“å‰REG0x23å¯„å­˜å™¨å€¼ */
 	if(cI2C_ReadBytes(p_i2c_obj, SW6303_REG_LOW_POWER_SET, data, sizeof(data)) <= 0)
 		return -1;
 	
-	// bit1 - Ö»¶Á×´Ì¬Î»
-	// µÍ¹¦ºÄµÄ×´Ì¬
-	// 0£º´¦ÓÚµÍ¹¦ºÄ×´Ì¬
-	// 1£ºÍË³öµÍ¹¦ºÄ×´Ì¬
+	// bit1 - åªè¯»çŠ¶æ€ä½
+	// ä½åŠŸè€—çš„çŠ¶æ€
+	// 0ï¼šå¤„äºä½åŠŸè€—çŠ¶æ€
+	// 1ï¼šé€€å‡ºä½åŠŸè€—çŠ¶æ€
 	bool low_en = ((data[0] & reg_state_value) == reg_state_value)? true : false;
 	if((en == low_en))
 		return 2;
 
-	// bit0 - ¿ØÖÆÎ»
-	// ¹Ø»úµÍ¹¦ºÄÊ¹ÄÜ
-	// 0£º´ò¿ªµÍ¹¦ºÄ
-	// 1£º¹Ø±ÕµÍ¹¦ºÄ
+	// bit0 - æ§åˆ¶ä½
+	// å…³æœºä½åŠŸè€—ä½¿èƒ½
+	// 0ï¼šæ‰“å¼€ä½åŠŸè€—
+	// 1ï¼šå…³é—­ä½åŠŸè€—
 	if(en == true)
 	{
-		/* ÍË³öµÍ¹¦ºÄ£ºbit0=1 */
+		/* é€€å‡ºä½åŠŸè€—ï¼šbit0=1 */
 		data[0] = reg_value;
 		if(cI2C_WriteBytes(p_i2c_obj, SW6303_REG_LOW_POWER_SET, data, sizeof(data)) <= 0)
 			return -3;
 
-		/* Ö´ĞĞREG0x24½âËøĞòÁĞ£¬Ê¹bit1×´Ì¬Î»ÉúĞ§ */
+		/* æ‰§è¡ŒREG0x24è§£é”åºåˆ—ï¼Œä½¿bit1çŠ¶æ€ä½ç”Ÿæ•ˆ */
 		data[0] = 0x20;
 		if(cI2C_WriteBytes(p_i2c_obj, SW6303_REG_I2C_ENABLE, data, sizeof(data)) <= 0)
 			return -4;
@@ -291,13 +291,13 @@ s8 c_usb_sw6303_set_low_power_state(const I2cObj_T *p_i2c_obj, bool en)
 	}
 	else
 	{
-		/* ½øÈëµÍ¹¦ºÄ£ºbit0=0 */
+		/* è¿›å…¥ä½åŠŸè€—ï¼šbit0=0 */
 		data[0] = 0x00;
 		if(cI2C_WriteBytes(p_i2c_obj, SW6303_REG_LOW_POWER_SET, data, sizeof(data)) <= 0)
 			return -7;
 	}
 
-	/* ¶ÁÈ¡Ğ£Ñébit1×´Ì¬Î» */
+	/* è¯»å–æ ¡éªŒbit1çŠ¶æ€ä½ */
 	if(cI2C_ReadBytes(p_i2c_obj, SW6303_REG_LOW_POWER_SET, data, sizeof(data)) <= 0)
 		return -8;
 
@@ -306,41 +306,41 @@ s8 c_usb_sw6303_set_low_power_state(const I2cObj_T *p_i2c_obj, bool en)
 		return -9;
 
 	if(uPrint.tFlag.bUsbTask)
-		sMyPrint("bUsbTask:-------ÍË³öµÍ¹¦ºÄ³É¹¦---------\r\n");
+		sMyPrint("bUsbTask:-------é€€å‡ºä½åŠŸè€—æˆåŠŸ---------\r\n");
 
 	return 1;
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ	Ö¸Áî£ºÉèÖÃTYPEC½ÇÉ«
------´«Èë²ÎÊı   p_i2c_obj: I2C¶ÔÏó
-				role  TYPEC½ÇÉ« (DRP/SRC/SNK/AUTO)
------·µ»ØÖµ     s8  1:³É¹¦    -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-01-22
+-----å‡½æ•°åŠŸèƒ½	æŒ‡ä»¤ï¼šè®¾ç½®TYPECè§’è‰²
+-----ä¼ å…¥å‚æ•°   p_i2c_obj: I2Cå¯¹è±¡
+				role  TYPECè§’è‰² (DRP/SRC/SNK/AUTO)
+-----è¿”å›å€¼     s8  1:æˆåŠŸ    -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-01-22
 ************************************************************************************************************************/
 s8 c_usb_sw6303_set_typec_role(const I2cObj_T *p_i2c_obj, SW6303_TYPEC_ROLE_E role)
 {
 	u8 data[1] = {0};
 	u8 target_value;
 	
-	/* ¶ÁÈ¡µ±Ç°REG0x132¼Ä´æÆ÷Öµ */
+	/* è¯»å–å½“å‰REG0x132å¯„å­˜å™¨å€¼ */
 	if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_TYPEC_SET1, data, sizeof(data)) <= 0)
 		return -1;
 
-	/* ¸ù¾İ½ÇÉ«²ÎÊı¼ÆËãÄ¿±êÖµ
-	 * ¼ÙÉèbit[1:0]ÓÃÓÚÉèÖÃTYPEC½ÇÉ«:
-	 * 00 = DRP (Ë«½ÇÉ«)
-	 * 01 = SRC (·Åµç)
-	 * 10 = SNK (³äµç))
+	/* æ ¹æ®è§’è‰²å‚æ•°è®¡ç®—ç›®æ ‡å€¼
+	 * å‡è®¾bit[1:0]ç”¨äºè®¾ç½®TYPECè§’è‰²:
+	 * 00 = DRP (åŒè§’è‰²)
+	 * 01 = SRC (æ”¾ç”µ)
+	 * 10 = SNK (å……ç”µ))
 	 */
 	target_value = (data[0] & 0xFC) | (u8)role;
 
-	/* ÅĞ¶Ïµ±Ç°½ÇÉ«ÊÇ·ñÒ»ÖÂ£¬Ò»ÖÂÔò²»ÉèÖÃ */
+	/* åˆ¤æ–­å½“å‰è§’è‰²æ˜¯å¦ä¸€è‡´ï¼Œä¸€è‡´åˆ™ä¸è®¾ç½® */
 	if((data[0] & 0x03) == ((u8)role & 0x03))
 		return 2;
 
-	/* ½ÇÉ«²»Ò»ÖÂ£¬ÉèÖÃĞÂÖµ */
+	/* è§’è‰²ä¸ä¸€è‡´ï¼Œè®¾ç½®æ–°å€¼ */
 	data[0] = target_value;
 	if(c_usb_sw6303_write_bytes(p_i2c_obj, SW6303_REG_TYPEC_SET1, data, sizeof(data)) <= 0)
 		return -2;
@@ -349,13 +349,13 @@ s8 c_usb_sw6303_set_typec_role(const I2cObj_T *p_i2c_obj, SW6303_TYPEC_ROLE_E ro
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ	ÉèÖÃÇ¿ÖÆ¿ØÖÆ²ÎÊı
------´«Èë²ÎÊı   p_i2c_obj: I2C¶ÔÏó
-				obj: ÉèÖÃµÄ¶ÔÏó£¨Êä³ö/ÊäÈë/³äµç/·Åµç/³äµç×î´ó¹¦ÂÊ£©
-				param: ÉèÖÃ¶ÔÏóµÄ²ÎÊı
------·µ»ØÖµ     s8  1:³É¹¦    ·Ç0:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-01-22
+-----å‡½æ•°åŠŸèƒ½	è®¾ç½®å¼ºåˆ¶æ§åˆ¶å‚æ•°
+-----ä¼ å…¥å‚æ•°   p_i2c_obj: I2Cå¯¹è±¡
+				obj: è®¾ç½®çš„å¯¹è±¡ï¼ˆè¾“å‡º/è¾“å…¥/å……ç”µ/æ”¾ç”µ/å……ç”µæœ€å¤§åŠŸç‡ï¼‰
+				param: è®¾ç½®å¯¹è±¡çš„å‚æ•°
+-----è¿”å›å€¼     s8  1:æˆåŠŸ    é0:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-01-22
 ************************************************************************************************************************/
 s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E obj, SW6303_ForceCtrl_T *param)
 {
@@ -365,13 +365,13 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 	s8 c_ret = 0;
 	vu16 us_reg_value = 0;
 
-	/* ²ÎÊıÓĞĞ§ĞÔ¼ì²é */
+	/* å‚æ•°æœ‰æ•ˆæ€§æ£€æŸ¥ */
 	if(obj >= SW6303_CTRL_OBJ_MAX)
 		return -1;
 
 	if(p_i2c_obj == (&tUSB_IC2_I2C))
 	{
-		// ÉèÖÃÊ¹ÄÜbitÎª1
+		// è®¾ç½®ä½¿èƒ½bitä¸º1
 		if(obj == SW6303_CTRL_OBJ_ALL)
 			uc_force_set_bit = 0x80;
 		else
@@ -379,7 +379,7 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 	}
 	else if(p_i2c_obj == (&tUSB_IC3_I2C))
 	{
-		// ÉèÖÃÊ¹ÄÜbitÎª1
+		// è®¾ç½®ä½¿èƒ½bitä¸º1
 		if(obj == SW6303_CTRL_OBJ_ALL)
 			uc_force_set_bit = 0x86;
 		else
@@ -389,21 +389,21 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 		return 0;
 	
 
-	/* ¶ÁÈ¡µ±Ç°REG0x132¼Ä´æÆ÷Öµ */
+	/* è¯»å–å½“å‰REG0x132å¯„å­˜å™¨å€¼ */
 	if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_CTRG_FORCECTL, &uc_read_force_set_bit, 1) <= 0)
 		return -1;
 
-	//ÒªÒ»Ö±¿ªÆô,²»¿ÉÒÔ¹Ø±Õ
+	//è¦ä¸€ç›´å¼€å¯,ä¸å¯ä»¥å…³é—­
 	data[0] = uc_read_force_set_bit | uc_force_set_bit;
 	c_ret = c_usb_sw6303_write_bytes(p_i2c_obj, SW6303_REG_CTRG_FORCECTL, data, 1);
 	if(c_ret <= 0)
 		return -2;
 
-	//ÉèÖÃ²ÎÊı
+	//è®¾ç½®å‚æ•°
 	switch(obj)
 	{
-		// Êä³öµçÑ¹ mV
-		// Êä³öµçÑ¹=dischg_vbus[11:0]*10mV
+		// è¾“å‡ºç”µå‹ mV
+		// è¾“å‡ºç”µå‹=dischg_vbus[11:0]*10mV
 		case SW6303_CTRL_OBJ_ALL:
 		case SW6303_CTRL_OBJ_VBUS:
 		{
@@ -419,8 +419,8 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 			// 	break;
 		}
 		
-		// ³äµçµçÑ¹ ÊäÈëmV
-		// ³äµçÄ¿±êµçÑ¹=charger_vol[11:0]*10mV
+		// å……ç”µç”µå‹ è¾“å…¥mV
+		// å……ç”µç›®æ ‡ç”µå‹=charger_vol[11:0]*10mV
 		case SW6303_CTRL_OBJ_CHG_VOLT:
 		{
 			// if(p_i2c_obj == (&tUSB_IC3_I2C))
@@ -439,8 +439,8 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 			
 		}
 
-		// ×î´óÊäÈë¹¦ÂÊ 1W
-		// ÊäÈë×î´ó¹¦ÂÊ=input_pow_set*1W ·¶Î§0~100W
+		// æœ€å¤§è¾“å…¥åŠŸç‡ 1W
+		// è¾“å…¥æœ€å¤§åŠŸç‡=input_pow_set*1W èŒƒå›´0~100W
 		case SW6303_CTRL_OBJ_MAX_IN_PWR:
 		{
 			if(p_i2c_obj == (&tUSB_IC3_I2C))
@@ -455,8 +455,8 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 			
 		}
 
-		// ³äµç hold ÃÅÏŞ 0.1V
-		// ¿ÉÉèÖÃÖµ 4.1V-25.6V£¬³äµçÇ·Ñ¹=charger_hold*0.1V
+		// å……ç”µ hold é—¨é™ 0.1V
+		// å¯è®¾ç½®å€¼ 4.1V-25.6Vï¼Œå……ç”µæ¬ å‹=charger_hold*0.1V
 		case SW6303_CTRL_OBJ_CHG_HOLD_VOLT:
 		{
 			// data[0] = (u8)param->usChgHoldVolt;
@@ -467,9 +467,9 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 			// 	break;
 		}
 
-		//Õâ¸öÉèÖÃ´øÔØ¾Í¶Ï¿ª
-		// µç³ØÏŞÁ÷ 0.1A
-		// ¿ÉÉèÖÃÖµ 0.1~12A£¬Êä³ö IBAT ÏŞÁ÷=dischg_ibat_limit*100mA
+		//è¿™ä¸ªè®¾ç½®å¸¦è½½å°±æ–­å¼€
+		// ç”µæ± é™æµ 0.1A
+		// å¯è®¾ç½®å€¼ 0.1~12Aï¼Œè¾“å‡º IBAT é™æµ=dischg_ibat_limit*100mA
 		case SW6303_CTRL_OBJ_IBAT:
 		{
 			// data[0] = (u8)param->usIbat;
@@ -480,16 +480,16 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 			// 	break;
 		}
 		
-		// Êä³öµçÁ÷ 0.01A
-		// ¿ÉÉèÖÃÖµ 0.2~7A£¬Êä³ö IBUS ÏŞÁ÷=dischg_ibus_limit*50mA
+		// è¾“å‡ºç”µæµ 0.01A
+		// å¯è®¾ç½®å€¼ 0.2~7Aï¼Œè¾“å‡º IBUS é™æµ=dischg_ibus_limit*50mA
 		case SW6303_CTRL_OBJ_IBUS:
 		{
-			// ·Åµç
+			// æ”¾ç”µ
 			// data[0] = (u8)(param->usIbus / 5);
 			// if(c_usb_sw6303_write_bytes(p_i2c_obj, 0x43, &data[0], 1) <= 0)
 			// 	return -10;
 
-			// ³äµç
+			// å……ç”µ
 			// data[0] = (u8)(param->usIbus / 5);
 			// if(c_usb_sw6303_write_bytes(p_i2c_obj, 0x49, &data[0], 1) <= 0)
 			// 	return -10;
@@ -498,8 +498,8 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 			// 	break;
 		}
 
-		// ×î´óÊä³ö¹¦ÂÊ 1W
-		// ¿ÉÉèÖÃÖµ 1~100W£¬Êä³ö¹¦ÂÊ= poset*1W
+		// æœ€å¤§è¾“å‡ºåŠŸç‡ 1W
+		// å¯è®¾ç½®å€¼ 1~100Wï¼Œè¾“å‡ºåŠŸç‡= poset*1W
 		case SW6303_CTRL_OBJ_MAX_OUT_PWR:
 		{
 			data[0] = (u8)param->usMaxOutPwr;
@@ -511,7 +511,7 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 
 		default:
 			if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-				log_e("SW6303:²»Ö§³ÖµÄ¶ÔÏó²ÎÊı%d", obj);
+				log_e("SW6303:ä¸æ”¯æŒçš„å¯¹è±¡å‚æ•°%d", obj);
 			return 0;
 	}
 
@@ -519,14 +519,14 @@ s8 c_usb_sw6303_set_force_ctrl_param(const I2cObj_T *p_i2c_obj, SW6303_CtrlObj_E
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ	ÉèÖÃ³äµçÅäÖÃ²ÎÊı
------ËµÃ÷(±¸×¢)	ÅäÖÃREG0x107~REG0x10F¼Ä´æÆ÷£¬ÓÃÓÚ¶ÔIC3½øĞĞ³äµçÅäÖÃ
------´«Èë²ÎÊı   p_i2c_obj: I2C¶ÔÏó
-				obj: ÉèÖÃµÄ¶ÔÏó£¨CFG0~CFG8»òALL£©
-				param: ³äµçÅäÖÃ²ÎÊı½á¹¹Ìå
------·µ»ØÖµ     s8  1:³É¹¦    ·Ç0:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-02-04
+-----å‡½æ•°åŠŸèƒ½	è®¾ç½®å……ç”µé…ç½®å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)	é…ç½®REG0x107~REG0x10Få¯„å­˜å™¨ï¼Œç”¨äºå¯¹IC3è¿›è¡Œå……ç”µé…ç½®
+-----ä¼ å…¥å‚æ•°   p_i2c_obj: I2Cå¯¹è±¡
+				obj: è®¾ç½®çš„å¯¹è±¡ï¼ˆCFG0~CFG8æˆ–ALLï¼‰
+				param: å……ç”µé…ç½®å‚æ•°ç»“æ„ä½“
+-----è¿”å›å€¼     s8  1:æˆåŠŸ    é0:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-02-04
 ************************************************************************************************************************/
 s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, SW6303_ChgCfg_T *param)
 {
@@ -534,7 +534,7 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 	s8 c_ret = 1;
 	s8 c_ret_1 = 1;
 
-	/* ²ÎÊıÓĞĞ§ĞÔ¼ì²é */
+	/* å‚æ•°æœ‰æ•ˆæ€§æ£€æŸ¥ */
 	if(p_i2c_obj == NULL || param == NULL)
 		return -1;
 	
@@ -548,10 +548,10 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 	{
 		case SW6303_CHG_CFG_OBJ_ALL:
 
-		// ÅäÖÃREG0x107: ³äµçÅäÖÃ0
+		// é…ç½®REG0x107: å……ç”µé…ç½®0
 		case SW6303_CHG_CFG_OBJ_CFG0:
 		{
-			// bit[7:5]: reserved£¬ÏÈ¶ÁÈ¡ÔÙĞ´ÈëÒÔ±£Áô±£ÁôÎ»
+			// bit[7:5]: reservedï¼Œå…ˆè¯»å–å†å†™å…¥ä»¥ä¿ç•™ä¿ç•™ä½
 			c_ret_1 = cI2C_ReadBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG0, data, 1);
 			if(c_ret_1 <= 0)
 			{
@@ -559,13 +559,13 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 			}
 			
-			// bit4: ¿ì³äÊÇ·ñ°´ÕÕ¹Ì¶¨¹¦ÂÊ³äµç (0-°´×î´óµçÁ÷, 1-°´¹Ì¶¨¹¦ÂÊ)
+			// bit4: å¿«å……æ˜¯å¦æŒ‰ç…§å›ºå®šåŠŸç‡å……ç”µ (0-æŒ‰æœ€å¤§ç”µæµ, 1-æŒ‰å›ºå®šåŠŸç‡)
 			data[0] = (data[0] & 0xEF) | (param->bFcFixPower ? 0x10 : 0x00);
 			
-			// bit3: ÊäÈë×î¸ß¹¦ÂÊÉèÖÃ·½Ê½ (0-×Ô¶¯, 1-ÊÖ¶¯ÉèÖÃ)
+			// bit3: è¾“å…¥æœ€é«˜åŠŸç‡è®¾ç½®æ–¹å¼ (0-è‡ªåŠ¨, 1-æ‰‹åŠ¨è®¾ç½®)
 			data[0] = (data[0] & 0xF7) | (param->bAutoDetectInPwr ? 0x00 : 0x08);
 			
-			// bit[2:0]: ÊäÈë×î¸ß¹¦ÂÊÉèÖÃ
+			// bit[2:0]: è¾“å…¥æœ€é«˜åŠŸç‡è®¾ç½®
 			data[0] = (data[0] & 0xF8) | ((u8)(param->eInPwr) & 0x07);
 
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG0, data, 1);
@@ -579,21 +579,21 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 		}
 
-		// ÅäÖÃREG0x108: ³äµçÅäÖÃ1
+		// é…ç½®REG0x108: å……ç”µé…ç½®1
 		case SW6303_CHG_CFG_OBJ_CFG1:
 		{
 			data[0] = 0;
 			
-			// bit7: µç³ØÀàĞÍÉèÖÃ·½Ê½ (0-×Ô¶¯, 1-ÊÖ¶¯ÉèÖÃ)
+			// bit7: ç”µæ± ç±»å‹è®¾ç½®æ–¹å¼ (0-è‡ªåŠ¨, 1-æ‰‹åŠ¨è®¾ç½®)
 			data[0] |= param->bAutoDetectBatType ? 0x00 : 0x80;
 			
-			// bit[6:4]: µç³ØÀàĞÍÉèÖÃ
+			// bit[6:4]: ç”µæ± ç±»å‹è®¾ç½®
 			data[0] |= ((u8)(param->eBatType) & 0x07) << 4;
 			
-			// bit3: µç³Ø½ÚÊıÉèÖÃ·½Ê½ (0-×Ô¶¯, 1-ÊÖ¶¯ÉèÖÃ)
+			// bit3: ç”µæ± èŠ‚æ•°è®¾ç½®æ–¹å¼ (0-è‡ªåŠ¨, 1-æ‰‹åŠ¨è®¾ç½®)
 			data[0] |= param->bAutoDetectBatCell ? 0x00 : 0x08;
 			
-			// bit[2:0]: µç³Ø½ÚÊıÉèÖÃ
+			// bit[2:0]: ç”µæ± èŠ‚æ•°è®¾ç½®
 			data[0] |= (u8)(param->eBatCell) & 0x07;
 
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG1, data, 1);
@@ -607,21 +607,21 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 		}
 
-		// ÅäÖÃREG0x109: ³äµçÅäÖÃ2
+		// é…ç½®REG0x109: å……ç”µé…ç½®2
 		case SW6303_CHG_CFG_OBJ_CFG2:
 		{
 			data[0] = 0;
 			
-			// bit7: µç³ØµçÑ¹µÍÓÚ1.5VÊ±ÊÇ·ñ³äµç (0-ÔÊĞí, 1-²»ÔÊĞí)
+			// bit7: ç”µæ± ç”µå‹ä½äº1.5Væ—¶æ˜¯å¦å……ç”µ (0-å…è®¸, 1-ä¸å…è®¸)
 			data[0] |= param->bChgAbove1_5V ? 0x80 : 0x00;
 			
-			// bit[6:4]: 5VÏŞÑ¹ÃÅÏŞÉèÖÃ
+			// bit[6:4]: 5Vé™å‹é—¨é™è®¾ç½®
 			data[0] |= ((u8)(param->e5VOvp) & 0x07) << 4;
 			
-			// bit3: ä¸Á÷³äµç³¬Ê±ÉèÖÃ (0-40·ÖÖÓ, 1-¹Ø±Õ³¬Ê±)
+			// bit3: æ¶“æµå……ç”µè¶…æ—¶è®¾ç½® (0-40åˆ†é’Ÿ, 1-å…³é—­è¶…æ—¶)
 			data[0] |= param->bTrickleTimeout ? 0x08 : 0x00;
 			
-			// bit[2:0]: 9VÏŞÑ¹ÃÅÏŞÉèÖÃ
+			// bit[2:0]: 9Vé™å‹é—¨é™è®¾ç½®
 			data[0] |= (u8)(param->e9VOvp) & 0x07;
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG2, data, 1);
@@ -635,21 +635,21 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 		}
 
-		// ÅäÖÃREG0x10A: ³äµçÅäÖÃ3
+		// é…ç½®REG0x10A: å……ç”µé…ç½®3
 		case SW6303_CHG_CFG_OBJ_CFG3:
 		{
 			data[0] = 0;
 			
-			// bit7: ÊÊÅäÆ÷À­¹ÒÊ¹ÄÜ (0-Ê¹ÄÜ, 1-½ûÖ¹)
+			// bit7: é€‚é…å™¨æ‹‰æŒ‚ä½¿èƒ½ (0-ä½¿èƒ½, 1-ç¦æ­¢)
 			data[0] |= param->bAdapterPullDisable ? 0x80 : 0x00;
 			
-			// bit[6:4]: 10VÏŞÑ¹ÃÅÏŞÉèÖÃ
+			// bit[6:4]: 10Vé™å‹é—¨é™è®¾ç½®
 			data[0] |= ((u8)(param->e10VOvp) & 0x07) << 4;
 			
-			// bit3: ±ß³ä±ß·ÅÉèÖÃ (0-ÔÊĞí5V±ß³ä±ß·Å, 1-³äµçÓÅÏÈ£¬½ûÖ¹5V±ß³ä±ß·Å)
+			// bit3: è¾¹å……è¾¹æ”¾è®¾ç½® (0-å…è®¸5Vè¾¹å……è¾¹æ”¾, 1-å……ç”µä¼˜å…ˆï¼Œç¦æ­¢5Vè¾¹å……è¾¹æ”¾)
 			data[0] |= ((u8)(param->eBypassMode) & 0x01) << 3;
 			
-			// bit[2:0]: 12VÏŞÑ¹ÃÅÏŞÉèÖÃ
+			// bit[2:0]: 12Vé™å‹é—¨é™è®¾ç½®
 			data[0] |= (u8)(param->e12VOvp) & 0x07;
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG3, data, 1);
@@ -663,10 +663,10 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 		}
 
-		// ÅäÖÃREG0x10B: ³äµçÅäÖÃ4
+		// é…ç½®REG0x10B: å……ç”µé…ç½®4
 		case SW6303_CHG_CFG_OBJ_CFG4:
 		{
-			// bit3: reserved£¬ÏÈ¶ÁÈ¡ÔÙĞ´ÈëÒÔ±£Áô±£ÁôÎ»
+			// bit3: reservedï¼Œå…ˆè¯»å–å†å†™å…¥ä»¥ä¿ç•™ä¿ç•™ä½
 			c_ret_1 = cI2C_ReadBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG4, data, 1);
 			if(c_ret_1 <= 0)
 			{
@@ -674,15 +674,15 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 			}
 			
-			// bit7: ±ß³ä±ß·ÅholdÃÅÏŞÉèÖÃ (0-Ìá¸ßÇ·Ñ¹µ½4.8V, 1-²»±ä)
+			// bit7: è¾¹å……è¾¹æ”¾holdé—¨é™è®¾ç½® (0-æé«˜æ¬ å‹åˆ°4.8V, 1-ä¸å˜)
 			data[0] = (data[0] & 0x7F) | (param->bBypassHoldChange ? 0x80 : 0x00);
 			
-			// bit[6:4]: 15VÏŞÑ¹ÃÅÏŞÉèÖÃ
+			// bit[6:4]: 15Vé™å‹é—¨é™è®¾ç½®
 			data[0] = (data[0] & 0x8F) | (((u8)(param->e15VOvp) & 0x07) << 4);
 			
-			// bit3: reserved (±£ÁôÔ­Öµ)
+			// bit3: reserved (ä¿ç•™åŸå€¼)
 			
-			// bit[2:0]: 20VÏŞÑ¹ÃÅÏŞÉèÖÃ
+			// bit[2:0]: 20Vé™å‹é—¨é™è®¾ç½®
 			data[0] = (data[0] & 0xF8) | ((u8)(param->e20VOvp) & 0x07);
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG4, data, 1);
@@ -696,10 +696,10 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 		}
 
-		// ÅäÖÃREG0x10C: ³äµçÅäÖÃ5
+		// é…ç½®REG0x10C: å……ç”µé…ç½®5
 		case SW6303_CHG_CFG_OBJ_CFG5:
 		{
-			// bit[7:4]: reserved£¬ÏÈ¶ÁÈ¡ÔÙĞ´ÈëÒÔ±£Áô±£ÁôÎ»
+			// bit[7:4]: reservedï¼Œå…ˆè¯»å–å†å†™å…¥ä»¥ä¿ç•™ä¿ç•™ä½
 			c_ret_1 = cI2C_ReadBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG5, data, 1);
 			if(c_ret_1 <= 0)
 			{
@@ -708,10 +708,10 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 			}
 			
 			
-			// bit3: ÏŞÑ¹ÃÅÏŞ×ÔÊÊÓ¦ (0-µçÁ÷>3A½µµÍÏŞÑ¹, 1-²»½µµÍ)
+			// bit3: é™å‹é—¨é™è‡ªé€‚åº” (0-ç”µæµ>3Aé™ä½é™å‹, 1-ä¸é™ä½)
 			data[0] = (data[0] & 0xF7) | (param->bLimitVoltageAdapt ? 0x08 : 0x00);
 			
-			// bit[2:0]: reserved (±£ÁôÔ­Öµ)
+			// bit[2:0]: reserved (ä¿ç•™åŸå€¼)
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG5, data, 1);
 			if(c_ret_1 <= 0)
@@ -724,21 +724,21 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 		}
 
-		// ÅäÖÃREG0x10D: ³äµçÅäÖÃ6
+		// é…ç½®REG0x10D: å……ç”µé…ç½®6
 		case SW6303_CHG_CFG_OBJ_CFG6:
 		{
 			data[0] = 0;
 			
-			// bit[7:6]: Á×ËáÌúï®µç³Øä¸Á÷³äµçÃÅÏŞ
+			// bit[7:6]: ç£·é…¸é“é”‚ç”µæ± æ¶“æµå……ç”µé—¨é™
 			data[0] |= ((u8)(param->eFeTrickle) & 0x03) << 6;
 			
-			// bit[5:4]: ä¸Á÷³äµçµçÁ÷
+			// bit[5:4]: æ¶“æµå……ç”µç”µæµ
 			data[0] |= ((u8)(param->eTrickleI) & 0x03) << 4;
 			
-			// bit[3:2]: ä¸Á÷³äµçµçÑ¹³ÙÖÍ
+			// bit[3:2]: æ¶“æµå……ç”µç”µå‹è¿Ÿæ»
 			data[0] |= ((u8)(param->eTrickleHyst) & 0x03) << 2;
 			
-			// bit[1:0]: ºãÁ÷³äµç³¬Ê±ÉèÖÃ
+			// bit[1:0]: æ’æµå……ç”µè¶…æ—¶è®¾ç½®
 			data[0] |= (u8)(param->eCcTimeout) & 0x03;
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG6, data, 1);
@@ -752,10 +752,10 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 		}
 
-		// ÅäÖÃREG0x10E: ³äµçÅäÖÃ7
+		// é…ç½®REG0x10E: å……ç”µé…ç½®7
 		case SW6303_CHG_CFG_OBJ_CFG7:
 		{
-			// bit[5:4]: reserved£¬ÏÈ¶ÁÈ¡ÔÙĞ´ÈëÒÔ±£Áô±£ÁôÎ»
+			// bit[5:4]: reservedï¼Œå…ˆè¯»å–å†å†™å…¥ä»¥ä¿ç•™ä¿ç•™ä½
 			c_ret_1 = cI2C_ReadBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG7, data, 1);
 			if(c_ret_1 <= 0)
 			{
@@ -763,12 +763,12 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 			}
 			
-			// bit[7:6]: ³äµç½ØÖÁµçÁ÷ÉèÖÃ
+			// bit[7:6]: å……ç”µæˆªè‡³ç”µæµè®¾ç½®
 			data[0] = (data[0] & 0x3F) | (((u8)(param->eChgEndI) & 0x03) << 6);
 			
-			// bit[5:4]: reserved (±£ÁôÔ­Öµ)
+			// bit[5:4]: reserved (ä¿ç•™åŸå€¼)
 			
-			// bit[3:0]: C¿Ú5V³äµçµçÁ÷ÉèÖÃ
+			// bit[3:0]: Cå£5Vå……ç”µç”µæµè®¾ç½®
 			data[0] = (data[0] & 0xF0) | ((u8)(param->eC5VI) & 0x0F);
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG7, data, 1);
@@ -782,18 +782,18 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 				break;
 		}
 
-		// ÅäÖÃREG0x10F: ³äµçÅäÖÃ8
+		// é…ç½®REG0x10F: å……ç”µé…ç½®8
 		case SW6303_CHG_CFG_OBJ_CFG8:
 		{
 			data[0] = 0;
 			
-			// bit[7:5]: B¿ÚºÍL¿Ú5V³äµçµçÁ÷ÉèÖÃ
+			// bit[7:5]: Bå£å’ŒLå£5Vå……ç”µç”µæµè®¾ç½®
 			data[0] |= ((u8)(param->eBL5VI) & 0x07) << 5;
 			
-			// bit[4:2]: ³äµçÊ±NTCµÍÎÂ±£»¤ÃÅÏŞ
+			// bit[4:2]: å……ç”µæ—¶NTCä½æ¸©ä¿æŠ¤é—¨é™
 			data[0] |= ((u8)(param->eChgNtcLow) & 0x07) << 2;
 			
-			// bit[1:0]: ³äµçÊ±NTC¸ßÎÂ±£»¤ÃÅÏŞ
+			// bit[1:0]: å……ç”µæ—¶NTCé«˜æ¸©ä¿æŠ¤é—¨é™
 			data[0] |= (u8)(param->eChgNtcHigh) & 0x03;
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_CHG_CFG8, data, 1);
@@ -808,11 +808,11 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 
 		default:
 			if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-				log_e("SW6303:²»Ö§³ÖµÄ³äµçÅäÖÃ¶ÔÏó%d", obj);
+				log_e("SW6303:ä¸æ”¯æŒçš„å……ç”µé…ç½®å¯¹è±¡%d", obj);
 			return -99;
 	}
 
-	//¹Ø±Õ¸ßÎ»
+	//å…³é—­é«˜ä½
 	c_ret_1 = c_usb_sw6303_high_reg_addr_enable(p_i2c_obj, false);
 	if(c_ret_1 <= 0)
 		return -5;
@@ -821,15 +821,15 @@ s8 c_usb_sw6303_set_chg_cfg(const I2cObj_T *p_i2c_obj, SW6303_ChgCfgObj_E obj, S
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ	ÉèÖÃ·ÅµçÅäÖÃ²ÎÊı
------ËµÃ÷(±¸×¢)	²Î¿¼c_usb_sw6303_set_force_ctrl_paramº¯ÊıÊµÏÖ
-				ÅäÖÃREG0x100~REG0x106¼Ä´æÆ÷£¬·½±ã¶ÔÁ½¸öIC½øĞĞ²îÒì»¯ÅäÖÃ
------´«Èë²ÎÊı   p_i2c_obj: I2C¶ÔÏó
-				obj: ÉèÖÃµÄ¶ÔÏó£¨CFG0~CFG5»òALL£©
-				param: ·ÅµçÅäÖÃ²ÎÊı½á¹¹Ìå
------·µ»ØÖµ     s8  1:³É¹¦    ·Ç0:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-01-22
+-----å‡½æ•°åŠŸèƒ½	è®¾ç½®æ”¾ç”µé…ç½®å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)	å‚è€ƒc_usb_sw6303_set_force_ctrl_paramå‡½æ•°å®ç°
+				é…ç½®REG0x100~REG0x106å¯„å­˜å™¨ï¼Œæ–¹ä¾¿å¯¹ä¸¤ä¸ªICè¿›è¡Œå·®å¼‚åŒ–é…ç½®
+-----ä¼ å…¥å‚æ•°   p_i2c_obj: I2Cå¯¹è±¡
+				obj: è®¾ç½®çš„å¯¹è±¡ï¼ˆCFG0~CFG5æˆ–ALLï¼‰
+				param: æ”¾ç”µé…ç½®å‚æ•°ç»“æ„ä½“
+-----è¿”å›å€¼     s8  1:æˆåŠŸ    é0:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-01-22
 ************************************************************************************************************************/
 s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E obj, SW6303_DchgCfg_T *param)
 {
@@ -837,14 +837,14 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 	s8 c_ret = 1;
 	s8 c_ret_1 = 0;
 
-	/* ²ÎÊıÓĞĞ§ĞÔ¼ì²é */
+	/* å‚æ•°æœ‰æ•ˆæ€§æ£€æŸ¥ */
 	if(p_i2c_obj == NULL || param == NULL)
 		return -1;
 	
 	if(obj >= SW6303_DCHG_CFG_OBJ_MAX)
 		return -2;
 
-	//¸ßµØÖ·Ä£Ê½
+	//é«˜åœ°å€æ¨¡å¼
 	c_ret_1 = c_usb_sw6303_high_reg_addr_enable(p_i2c_obj, true);
 	if(c_ret_1 <= 0)
 		return -3;
@@ -853,22 +853,22 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 	{
 		case SW6303_DCHG_CFG_OBJ_ALL:
 		
-		// ÅäÖÃREG0x100: ·ÅµçÅäÖÃ0
+		// é…ç½®REG0x100: æ”¾ç”µé…ç½®0
 		case SW6303_DCHG_CFG_OBJ_CFG0:
 		{
-			// ¸Ã¼Ä´æÆ÷Ã»ÓĞreservedÎ»£¬Ö±½ÓĞ´Èë
+			// è¯¥å¯„å­˜å™¨æ²¡æœ‰reservedä½ï¼Œç›´æ¥å†™å…¥
 			data[0] = 0;
 			
-			// bit7: Ğ¾Æ¬·ÅµçºãÎÂ»·Ê¹ÄÜ (0-Ê¹ÄÜ, 1-½ûÖ¹)
+			// bit7: èŠ¯ç‰‡æ”¾ç”µæ’æ¸©ç¯ä½¿èƒ½ (0-ä½¿èƒ½, 1-ç¦æ­¢)
 			data[0] |= param->bTempLoopEnable ? 0x80 : 0x00;
 			
-			// bit[6:4]: Ğ¾Æ¬·ÅµçºãÎÂ»·ãĞÖµ
+			// bit[6:4]: èŠ¯ç‰‡æ”¾ç”µæ’æ¸©ç¯é˜ˆå€¼
 			data[0] |= ((u8)(param->eTempThr) & 0x07) << 4;
 			
-			// bit3: Êä³ö×î´ó¹¦ÂÊ×Ô¶¯¼ì²â (0-×Ô¶¯, 1-ÓÉ¼Ä´æÆ÷ÉèÖÃ)
+			// bit3: è¾“å‡ºæœ€å¤§åŠŸç‡è‡ªåŠ¨æ£€æµ‹ (0-è‡ªåŠ¨, 1-ç”±å¯„å­˜å™¨è®¾ç½®)
 			data[0] |= param->bPwrAutoDetect ? 0x08 : 0x00;
 			
-			// bit[2:0]: Êä³ö¹¦ÂÊÉèÖÃ
+			// bit[2:0]: è¾“å‡ºåŠŸç‡è®¾ç½®
 			data[0] |= (u8)(param->eOutPwr) & 0x07;
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_DCHG_CFG0, data, 1);
@@ -882,22 +882,22 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 				break;
 		}
 
-		// ÅäÖÃREG0x101: ·ÅµçÅäÖÃ1
+		// é…ç½®REG0x101: æ”¾ç”µé…ç½®1
 		case SW6303_DCHG_CFG_OBJ_CFG1:
 		{
-			// ¸Ã¼Ä´æÆ÷Ã»ÓĞreservedÎ»£¬Ö±½ÓĞ´Èë
+			// è¯¥å¯„å­˜å™¨æ²¡æœ‰reservedä½ï¼Œç›´æ¥å†™å…¥
 			data[0] = 0;
 			
-			// bit[7:6]: ¶à¿ÚÊä³öÊ±×î´óÊä³öµçÁ÷ÉèÖÃ
+			// bit[7:6]: å¤šå£è¾“å‡ºæ—¶æœ€å¤§è¾“å‡ºç”µæµè®¾ç½®
 			data[0] |= ((u8)(param->eMultiPortMaxI) & 0x03) << 6;
 			
-			// bit[5:4]: VBUSÏŞÁ÷¹Ì¶¨Æ«ÒÆ
+			// bit[5:4]: VBUSé™æµå›ºå®šåç§»
 			data[0] |= ((u8)(param->eVbusIOffset) & 0x03) << 4;
 			
-			// bit[3:2]: Êä³öµçÑ¹¹Ì¶¨Æ«ÒÆ
+			// bit[3:2]: è¾“å‡ºç”µå‹å›ºå®šåç§»
 			data[0] |= ((u8)(param->eVbusVOffset) & 0x03) << 2;
 			
-			// bit[1:0]: Ïß²¹ÉèÖÃ
+			// bit[1:0]: çº¿è¡¥è®¾ç½®
 			data[0] |= (u8)(param->eLineComp) & 0x03;
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_DCHG_CFG1, data, 1);
@@ -911,10 +911,10 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 				break;
 		}
 
-		// ÅäÖÃREG0x102: ·ÅµçÅäÖÃ2
+		// é…ç½®REG0x102: æ”¾ç”µé…ç½®2
 		case SW6303_DCHG_CFG_OBJ_CFG2:
 		{
-			// bit[6:3]ºÍbit[1:0]: reserved£¬ÏÈ¶ÁÈ¡ÔÙĞ´ÈëÒÔ±£Áô±£ÁôÎ»
+			// bit[6:3]å’Œbit[1:0]: reservedï¼Œå…ˆè¯»å–å†å†™å…¥ä»¥ä¿ç•™ä¿ç•™ä½
 			c_ret_1 = cI2C_ReadBytes(p_i2c_obj, SW6303_REG_STRG_DCHG_CFG2, data, 1);
 			if(c_ret_1 <= 0)
 			{
@@ -922,15 +922,15 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 				break;
 			}
 			
-			// bit7: ¿ì³äÄ£Ê½Ïß²¹Ê¹ÄÜ (0-Ê¹ÄÜ, 1-½ûÖ¹)
+			// bit7: å¿«å……æ¨¡å¼çº¿è¡¥ä½¿èƒ½ (0-ä½¿èƒ½, 1-ç¦æ­¢)
 			data[0] = (data[0] & 0x7F) | (param->bFcLineCompEnable ? 0x80 : 0x00);
 			
-			// bit[6:3]: reserved (±£ÁôÔ­Öµ)
+			// bit[6:3]: reserved (ä¿ç•™åŸå€¼)
 			
-			// bit2: VBUS¿ìËÙ¹ıÑ¹±£»¤¿ØÖÆ (0-´ò¿ª, 1-¹Ø±Õ)
+			// bit2: VBUSå¿«é€Ÿè¿‡å‹ä¿æŠ¤æ§åˆ¶ (0-æ‰“å¼€, 1-å…³é—­)
 			data[0] = (data[0] & 0xFB) | (param->bVbusFastOvpEnable ? 0x04 : 0x00);
 			
-			// bit[1:0]: reserved (±£ÁôÔ­Öµ)
+			// bit[1:0]: reserved (ä¿ç•™åŸå€¼)
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_DCHG_CFG2, data, 1);
 			if(c_ret_1 <= 0)
@@ -943,10 +943,10 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 				break;
 		}
 
-		// ÅäÖÃREG0x103: ·ÅµçÅäÖÃ3
+		// é…ç½®REG0x103: æ”¾ç”µé…ç½®3
 		case SW6303_DCHG_CFG_OBJ_CFG3:
 		{
-			// bit[5:4]: reserved£¬ÏÈ¶ÁÈ¡ÔÙĞ´ÈëÒÔ±£Áô±£ÁôÎ»
+			// bit[5:4]: reservedï¼Œå…ˆè¯»å–å†å†™å…¥ä»¥ä¿ç•™ä¿ç•™ä½
 			c_ret_1 = cI2C_ReadBytes(p_i2c_obj, SW6303_REG_STRG_DCHG_CFG3, data, 1);
 			if(c_ret_1 <= 0)
 			{
@@ -954,12 +954,12 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 				break;
 			}
 			
-			// bit[7:6]: ·ÅµçIBATÏŞÁ÷µÄÄ¬ÈÏÖµ
+			// bit[7:6]: æ”¾ç”µIBATé™æµçš„é»˜è®¤å€¼
 			data[0] = (data[0] & 0x3F) | (((u8)(param->eDchgIbatDef) & 0x03) << 6);
 			
-			// bit[5:4]: reserved (±£ÁôÔ­Öµ)
+			// bit[5:4]: reserved (ä¿ç•™åŸå€¼)
 			
-			// bit[3:0]: Á×ËáÌúï®µç³ØÇ·Ñ¹ÃÅÏŞ (0:2.75V*N, 1~12:1.9~3.0*N,0.1V/step)
+			// bit[3:0]: ç£·é…¸é“é”‚ç”µæ± æ¬ å‹é—¨é™ (0:2.75V*N, 1~12:1.9~3.0*N,0.1V/step)
 			data[0] = (data[0] & 0xF0) | (param->ucLipoUvloThr & 0x0F);
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_DCHG_CFG3, data, 1);
@@ -973,10 +973,10 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 				break;
 		}
 
-		// ÅäÖÃREG0x104: ·ÅµçÅäÖÃ4
+		// é…ç½®REG0x104: æ”¾ç”µé…ç½®4
 		case SW6303_DCHG_CFG_OBJ_CFG4:
 		{
-			// bit7ºÍbit3: reserved£¬ÏÈ¶ÁÈ¡ÔÙĞ´ÈëÒÔ±£Áô±£ÁôÎ»
+			// bit7å’Œbit3: reservedï¼Œå…ˆè¯»å–å†å†™å…¥ä»¥ä¿ç•™ä¿ç•™ä½
 			c_ret_1 = cI2C_ReadBytes(p_i2c_obj, SW6303_REG_STRG_DCHG_CFG4, data, 1);
 			if(c_ret_1 <= 0)
 			{
@@ -984,14 +984,14 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 				break;
 			}
 			
-			// bit7: reserved (±£ÁôÔ­Öµ)
+			// bit7: reserved (ä¿ç•™åŸå€¼)
 			
-			// bit[6:4]: UVLO³ÙÖÍ£¬NÎªµç³Ø½ÚÊı
+			// bit[6:4]: UVLOè¿Ÿæ»ï¼ŒNä¸ºç”µæ± èŠ‚æ•°
 			data[0] = (data[0] & 0x8F) | (((u8)(param->eUvloHyst) & 0x07) << 4);
 			
-			// bit3: reserved (±£ÁôÔ­Öµ)
+			// bit3: reserved (ä¿ç•™åŸå€¼)
 			
-			// bit[2:0]: ÈıÔªï®µç³ØÇ·Ñ¹ÃÅÏŞ£¬NÎªµç³Ø½ÚÊı
+			// bit[2:0]: ä¸‰å…ƒé”‚ç”µæ± æ¬ å‹é—¨é™ï¼ŒNä¸ºç”µæ± èŠ‚æ•°
 			data[0] = (data[0] & 0xF8) | ((u8)(param->eLipoUvlo) & 0x07);
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_DCHG_CFG4, data, 1);
@@ -1005,10 +1005,10 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 				break;
 		}
 
-		// ÅäÖÃREG0x106: ·ÅµçÅäÖÃ5
+		// é…ç½®REG0x106: æ”¾ç”µé…ç½®5
 		case SW6303_DCHG_CFG_OBJ_CFG5:
 		{
-			// bit6ºÍbit3: reserved£¬ÏÈ¶ÁÈ¡ÔÙĞ´ÈëÒÔ±£Áô±£ÁôÎ»
+			// bit6å’Œbit3: reservedï¼Œå…ˆè¯»å–å†å†™å…¥ä»¥ä¿ç•™ä¿ç•™ä½
 			c_ret_1 = cI2C_ReadBytes(p_i2c_obj, SW6303_REG_STRG_DCHG_CFG5, data, 1);
 			if(c_ret_1 <= 0)
 			{
@@ -1016,17 +1016,17 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 				break;
 			}
 			
-			// bit7: µç¸ĞÉèÖÃ (0-4.7uH, 1-10uH)
+			// bit7: ç”µæ„Ÿè®¾ç½® (0-4.7uH, 1-10uH)
 			data[0] = (data[0] & 0x7F) | (((u8)(param->eInductor) & 0x01) << 7);
 			
-			// bit6: reserved (±£ÁôÔ­Öµ)
+			// bit6: reserved (ä¿ç•™åŸå€¼)
 			
-			// bit[5:4]: ·ÅµçNTC¸ßÎÂÃÅÏŞ
+			// bit[5:4]: æ”¾ç”µNTCé«˜æ¸©é—¨é™
 			data[0] = (data[0] & 0xCF) | (((u8)(param->eNtcHighThr) & 0x03) << 4);
 			
-			// bit3: reserved (±£ÁôÔ­Öµ)
+			// bit3: reserved (ä¿ç•™åŸå€¼)
 			
-			// bit[2:0]: ·ÅµçNTCµÍÎÂÃÅÏŞ
+			// bit[2:0]: æ”¾ç”µNTCä½æ¸©é—¨é™
 			data[0] = (data[0] & 0xF8) | ((u8)(param->eNtcLowThr) & 0x07);
 			
 			c_ret_1 = cI2C_WriteBytes(p_i2c_obj, SW6303_REG_STRG_DCHG_CFG5, data, 1);
@@ -1041,11 +1041,11 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 
 		default:
 			if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-				log_e("SW6303:²»Ö§³ÖµÄ·ÅµçÅäÖÃ¶ÔÏó%d", obj);
+				log_e("SW6303:ä¸æ”¯æŒçš„æ”¾ç”µé…ç½®å¯¹è±¡%d", obj);
 			return -9;
 	}
 	
-	//¹Ø±Õ¸ßÎ»
+	//å…³é—­é«˜ä½
 	c_ret_1 = c_usb_sw6303_high_reg_addr_enable(p_i2c_obj, false);
 	if(c_ret_1 <= 0)
 		return -4;
@@ -1054,35 +1054,35 @@ s8 c_usb_sw6303_set_dischg_cfg(const I2cObj_T *p_i2c_obj, SW6303_DchgCfgObj_E ob
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ	SW6303 ÉèÖÃ¹¤×÷Ä£Ê½ reg28
------´«Èë²ÎÊı   p_i2c_obj: I2C¶ÔÏó
-				mode: SW6303Ä£Ê½
-				en	true:¿ªÆô    false:¹Ø±Õ
------·µ»ØÖµ     s8	1:³É¹¦    -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-01-22
+-----å‡½æ•°åŠŸèƒ½	SW6303 è®¾ç½®å·¥ä½œæ¨¡å¼ reg28
+-----ä¼ å…¥å‚æ•°   p_i2c_obj: I2Cå¯¹è±¡
+				mode: SW6303æ¨¡å¼
+				en	true:å¼€å¯    false:å…³é—­
+-----è¿”å›å€¼     s8	1:æˆåŠŸ    -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-01-22
 ************************************************************************************************************************/
 s8 c_usb_sw6303_set_work_mode(const I2cObj_T *p_i2c_obj, SW6303_Mode_E mode, bool en)
 {
 	u8 data[1] = {0};
-	bool en_temp = false;  //true:¿ªÆô
+	bool en_temp = false;  //true:å¼€å¯
 
-	// ³äµçÇ¿ÖÆ¹Ø±Õ bit2
-	// 0£ºÎŞÓ°Ïì
-	// 1£ºÇ¿ÖÆ¹Ø±Õ³äµç
-	// ´Ë bit ²»»á×Ô¶¯ÇåÁã£¬ÔÚÇ¿ÖÆ¹Ø±Õ³äµçÊ±£¬Ö»¹Ø±Õ charger£¬Í¨Â·¹Ü¿ª¹Ø²»ÊÜÓ°Ïì
+	// å……ç”µå¼ºåˆ¶å…³é—­ bit2
+	// 0ï¼šæ— å½±å“
+	// 1ï¼šå¼ºåˆ¶å…³é—­å……ç”µ
+	// æ­¤ bit ä¸ä¼šè‡ªåŠ¨æ¸…é›¶ï¼Œåœ¨å¼ºåˆ¶å…³é—­å……ç”µæ—¶ï¼Œåªå…³é—­ chargerï¼Œé€šè·¯ç®¡å¼€å…³ä¸å—å½±å“
 	const u8 reg_chg_value = 0x04;
 
-	// Ç¿ÖÆ¹Ø±ÕÊä³ö bit3
-	// 0£ºÎŞÓ°Ïì
-	// 1£ºÇ¿ÖÆ¹Ø±ÕÊä³öÊ¹ÄÜ
-	// ´Ë bit ²»»á×Ô¶¯ÇåÁã£¬ÔÚÇ¿ÖÆ¹Ø±ÕÊä³öÆÚ¼ä£¬A ¿Ú²åÈë¼ì²â¹Ø±Õ£¬²»ÏìÓ¦°´¼ü´ò¿ªÊä³ö£¬Type-C ¿ÚÖ»×÷Îª sink
+	// å¼ºåˆ¶å…³é—­è¾“å‡º bit3
+	// 0ï¼šæ— å½±å“
+	// 1ï¼šå¼ºåˆ¶å…³é—­è¾“å‡ºä½¿èƒ½
+	// æ­¤ bit ä¸ä¼šè‡ªåŠ¨æ¸…é›¶ï¼Œåœ¨å¼ºåˆ¶å…³é—­è¾“å‡ºæœŸé—´ï¼ŒA å£æ’å…¥æ£€æµ‹å…³é—­ï¼Œä¸å“åº”æŒ‰é”®æ‰“å¼€è¾“å‡ºï¼ŒType-C å£åªä½œä¸º sink
 	const u8 reg_dischg_value = 0x08;
 
 	if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_CTRG_MODE, data, sizeof(data)) <= 0)
 		return -1;
 
-	//¼ì²é×´Ì¬ÊÇ·ñÒ»ÖÂ
+	//æ£€æŸ¥çŠ¶æ€æ˜¯å¦ä¸€è‡´
 	switch(mode)
 	{
 		case SW6303_MODE_ALL:
@@ -1102,7 +1102,7 @@ s8 c_usb_sw6303_set_work_mode(const I2cObj_T *p_i2c_obj, SW6303_Mode_E mode, boo
 				if(en != en_temp)
 					break;
 
-				//×îºóÒ»¸ö,Ö±½Ó·µ»Ø	
+				//æœ€åä¸€ä¸ª,ç›´æ¥è¿”å›	
 				return 2;
 		}
 		
@@ -1110,15 +1110,15 @@ s8 c_usb_sw6303_set_work_mode(const I2cObj_T *p_i2c_obj, SW6303_Mode_E mode, boo
 				return -2;
 	}
 
-	//¸üĞÂ×´Ì¬
-	// 0£ºÎŞÓ°Ïì
-	// 1£ºÇ¿ÖÆ¹Ø±Õ³äµç
+	//æ›´æ–°çŠ¶æ€
+	// 0ï¼šæ— å½±å“
+	// 1ï¼šå¼ºåˆ¶å…³é—­å……ç”µ
 	switch(mode)
 	{
 		case SW6303_MODE_ALL:
 		case SW6303_MODE_DISCHG:
 		{
-				//¹Ø±Õ·Åµç
+				//å…³é—­æ”¾ç”µ
 				if(en == false)
 					data[0] = data[0] | reg_dischg_value;
 				else
@@ -1130,7 +1130,7 @@ s8 c_usb_sw6303_set_work_mode(const I2cObj_T *p_i2c_obj, SW6303_Mode_E mode, boo
 
 		case SW6303_MODE_CHG:
 		{
-				//¹Ø±Õ³äµç
+				//å…³é—­å……ç”µ
 				if(en == false)
 					data[0] = data[0] | reg_chg_value;
 				else
@@ -1149,13 +1149,13 @@ s8 c_usb_sw6303_set_work_mode(const I2cObj_T *p_i2c_obj, SW6303_Mode_E mode, boo
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    »ñÈ¡ADCÊı¾İ
------ËµÃ÷(±¸×¢)  Í¨¹ıREG0x30ÅäÖÃADCÑ¡Ôñ£¬È»ºó¶ÁÈ¡REG0x31ºÍREG0x32»ñÈ¡ADCÊı¾İ
------´«Èë²ÎÊı    p_i2c_obj: I2C¶ÔÏó
-				adc_sel: ADCÊı¾İÑ¡ÔñÀàĞÍ
------·µ»ØÖµ     s16: ADCÔ­Ê¼Êı¾İ(12Î»)£¬Ê§°Ü·µ»Ø-1
------×÷Õß       LJD
------ÈÕÆÚ       2026-01-22
+-----å‡½æ•°åŠŸèƒ½    è·å–ADCæ•°æ®
+-----è¯´æ˜(å¤‡æ³¨)  é€šè¿‡REG0x30é…ç½®ADCé€‰æ‹©ï¼Œç„¶åè¯»å–REG0x31å’ŒREG0x32è·å–ADCæ•°æ®
+-----ä¼ å…¥å‚æ•°    p_i2c_obj: I2Cå¯¹è±¡
+				adc_sel: ADCæ•°æ®é€‰æ‹©ç±»å‹
+-----è¿”å›å€¼     s16: ADCåŸå§‹æ•°æ®(12ä½)ï¼Œå¤±è´¥è¿”å›-1
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-01-22
 ************************************************************************************************************************/
 s16 s_usb_sw6303_get_adc_data(const I2cObj_T *p_i2c_obj, ADC_Sel_E adc_sel)
 {
@@ -1165,64 +1165,64 @@ s16 s_usb_sw6303_get_adc_data(const I2cObj_T *p_i2c_obj, ADC_Sel_E adc_sel)
 	u16 adc_value = 0;
 	u8 reg_value;
 
-	// ¸ù¾İADCÀàĞÍÉèÖÃREG0x30µÄÖµ
+	// æ ¹æ®ADCç±»å‹è®¾ç½®REG0x30çš„å€¼
 	switch(adc_sel)
 	{
 		case ADC_SEL_VBUS:
-			reg_value = 0;   // ÊäÈëÊä³öµçÑ¹£¨8mV£©
+			reg_value = 0;   // è¾“å…¥è¾“å‡ºç”µå‹ï¼ˆ8mVï¼‰
 			break;
 		case ADC_SEL_IBUS:
-			reg_value = 1;   // ÊäÈë/Êä³öIBUSµçÁ÷£¨4mA£©
+			reg_value = 1;   // è¾“å…¥/è¾“å‡ºIBUSç”µæµï¼ˆ4mAï¼‰
 			break;
 		case ADC_SEL_VBAT:
-			reg_value = 2;   // µç³ØµçÑ¹£¨7mV£©
+			reg_value = 2;   // ç”µæ± ç”µå‹ï¼ˆ7mVï¼‰
 			break;
 		case ADC_SEL_IBAT:
-			reg_value = 3;   // ÊäÈë/Êä³öIBATµçÁ÷£¨5mA£©
+			reg_value = 3;   // è¾“å…¥/è¾“å‡ºIBATç”µæµï¼ˆ5mAï¼‰
 			break;
 		case ADC_SEL_TEMP:
-			reg_value = 9;   // Ğ¾Æ¬ÎÂ¶È(1/6.82¡ãC)
+			reg_value = 9;   // èŠ¯ç‰‡æ¸©åº¦(1/6.82Â°C)
 			break;
 		case ADC_SEL_NTC:
-			reg_value = 10;  // NTCµçÑ¹£¨1.1mV£©
+			reg_value = 10;  // NTCç”µå‹ï¼ˆ1.1mVï¼‰
 			break;
 		default:
 			return -1;
 	}
 
-	// 1. Ğ´REG0x30ÅäÖÃADCÊı¾İÑ¡Ôñ
+	// 1. å†™REG0x30é…ç½®ADCæ•°æ®é€‰æ‹©
 	data[0] = reg_value;
 	if(cI2C_WriteBytes(p_i2c_obj, SW6303_REG_ADC_CONFIG, data, sizeof(data)) <= 0)
 		return -2;
 
-	// 2. ¶ÁREG0x31»ñÈ¡ADCÊı¾İµÍ8Î»£¨±ØĞëÏÈ¶ÁµÍ8Î»£©
+	// 2. è¯»REG0x31è·å–ADCæ•°æ®ä½8ä½ï¼ˆå¿…é¡»å…ˆè¯»ä½8ä½ï¼‰
 	if(cI2C_ReadBytes(p_i2c_obj, SW6303_REG_ADC_DATA_LOW, data, sizeof(data)) <= 0)
 		return -3;
 	adc_low = data[0];
 
-	// 3. ¶ÁREG0x32»ñÈ¡ADCÊı¾İ¸ß4Î»
+	// 3. è¯»REG0x32è·å–ADCæ•°æ®é«˜4ä½
 	if(cI2C_ReadBytes(p_i2c_obj, SW6303_REG_ADC_DATA_HIGH, data, sizeof(data)) <= 0)
 		return -4;
-	adc_high = data[0] & 0x0F;  // Ö»È¡µÍ4Î»
+	adc_high = data[0] & 0x0F;  // åªå–ä½4ä½
 
-	// 4. ×éºÏ12Î»ADCÊı¾İ
+	// 4. ç»„åˆ12ä½ADCæ•°æ®
 	adc_value = (adc_high << 8) | adc_low;
 
 	return (s16)adc_value;
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ	SW6303 ¸´Î»IC regD9
------ËµÃ÷(±¸×¢) bit5-7
-				I2C Ğ´²Ù×÷Ê¹ÄÜ£¬Èç¹ûÒªĞ´ÆäËû¼Ä´æÆ÷£¨³ı REG0x20~0x24 Ö®
-				Íâ£©£¬ĞèÒªÏÈÖ´ĞĞÈçÏÂ²Ù×÷£º
-				1) Ğ´ REG0x24=0x20
-				2) Ğ´ REG0x24=0x40 
-				3) Ğ´ REG0x24=0x80
------´«Èë²ÎÊı   p_i2c_obj: I2C¶ÔÏó
------·µ»ØÖµ     s8  1:³É¹¦    -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-01-22
+-----å‡½æ•°åŠŸèƒ½	SW6303 å¤ä½IC regD9
+-----è¯´æ˜(å¤‡æ³¨) bit5-7
+				I2C å†™æ“ä½œä½¿èƒ½ï¼Œå¦‚æœè¦å†™å…¶ä»–å¯„å­˜å™¨ï¼ˆé™¤ REG0x20~0x24 ä¹‹
+				å¤–ï¼‰ï¼Œéœ€è¦å…ˆæ‰§è¡Œå¦‚ä¸‹æ“ä½œï¼š
+				1) å†™ REG0x24=0x20
+				2) å†™ REG0x24=0x40 
+				3) å†™ REG0x24=0x80
+-----ä¼ å…¥å‚æ•°   p_i2c_obj: I2Cå¯¹è±¡
+-----è¿”å›å€¼     s8  1:æˆåŠŸ    -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-01-22
 ************************************************************************************************************************/
 s8 c_usb_sw6303_reset(const I2cObj_T *p_i2c_obj)
 {
@@ -1230,17 +1230,17 @@ s8 c_usb_sw6303_reset(const I2cObj_T *p_i2c_obj)
 	u16 reg_addr = 0xD9;
 
 	if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-		log_w("bUsbTask:¿ªÊ¼¸´Î»");
+		log_w("bUsbTask:å¼€å§‹å¤ä½");
 
-	//¿ªÆôĞ´Ê¹ÄÜ
+	//å¼€å¯å†™ä½¿èƒ½
 	if(c_usb_sw6303_write_enable(p_i2c_obj, true) <= 0)
 		return -1;
 
-	//¹Ø±Õ¸ßÎ»µØÖ·
+	//å…³é—­é«˜ä½åœ°å€
 	// if(c_usb_sw6303_high_reg_addr_enable(p_i2c_obj, false) <= 0)
 	// 	return -2;
 
-	/* Ğ´ REG0x24 = 0x20 */
+	/* å†™ REG0x24 = 0x20 */
 	data[0] = 0x20;
 	if(cI2C_WriteBytes(p_i2c_obj, reg_addr, data, sizeof(data)) <= 0)
 		return -3;
@@ -1249,16 +1249,16 @@ s8 c_usb_sw6303_reset(const I2cObj_T *p_i2c_obj)
 	if(data[0] != 0x20)
 	{
 		if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-			log_w("bUsbTask:Ğ´Èë¸´Î»Ê§°Ü,¶ÁÈ¡Êı¾İ%d", data[0]);
+			log_w("bUsbTask:å†™å…¥å¤ä½å¤±è´¥,è¯»å–æ•°æ®%d", data[0]);
 		return -30;
 	}
 
-	/* Ğ´ REG0x24 = 0x40 */
+	/* å†™ REG0x24 = 0x40 */
 	data[0] = 0x40;
 	if(cI2C_WriteBytes(p_i2c_obj, reg_addr, data, sizeof(data)) <= 0)
 		return -4;
 	
-	/* Ğ´ REG0x24 = 0x80 */
+	/* å†™ REG0x24 = 0x80 */
 	data[0] = 0x80;
 	if(cI2C_WriteBytes(p_i2c_obj, reg_addr, data, sizeof(data)) <= 0)
 		return -5;
@@ -1267,7 +1267,7 @@ s8 c_usb_sw6303_reset(const I2cObj_T *p_i2c_obj)
 	if(data[0] != 0x80)
 	{
 		if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-			log_w("bUsbTask:Ğ´Èë¸´Î»Ê§°Ü,¶ÁÈ¡Êı¾İ%d", data[0]);
+			log_w("bUsbTask:å†™å…¥å¤ä½å¤±è´¥,è¯»å–æ•°æ®%d", data[0]);
 		return -6;
 	}
 		
@@ -1275,29 +1275,29 @@ s8 c_usb_sw6303_reset(const I2cObj_T *p_i2c_obj)
 		return -7;
 	
 	if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-		log_w("bUsbTask:¸´Î»³É¹¦");
+		log_w("bUsbTask:å¤ä½æˆåŠŸ");
 
-	/* Èç¹ûÒÑ¾­Ê¹ÄÜ£¬Ö±½Ó·µ»Ø */
+	/* å¦‚æœå·²ç»ä½¿èƒ½ï¼Œç›´æ¥è¿”å› */
 	return 1;
 }
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ	SW6303 »ñÈ¡¶Ë¿Ú×´Ì¬ reg1D
------ËµÃ÷(±¸×¢)	REG0x1D: ¶Ë¿Ú×´Ì¬Ö¸Ê¾
-				bit7: C1×÷ÎªsourceµÄÁ¬½Ó×´Ì¬ (0-Î´Á¬½Ó, 1-Á¬½Ó)
-				bit6: C1×÷ÎªsinkµÄÁ¬½Ó×´Ì¬ (0-Î´Á¬½Ó, 1-Á¬½Ó)
-				bit5: C2×÷ÎªsourceµÄÁ¬½Ó×´Ì¬ (0-Î´Á¬½Ó, 1-Á¬½Ó)
-				bit4: C2×÷ÎªsinkµÄÁ¬½Ó×´Ì¬ (0-Î´Á¬½Ó, 1-Á¬½Ó)
+-----å‡½æ•°åŠŸèƒ½	SW6303 è·å–ç«¯å£çŠ¶æ€ reg1D
+-----è¯´æ˜(å¤‡æ³¨)	REG0x1D: ç«¯å£çŠ¶æ€æŒ‡ç¤º
+				bit7: C1ä½œä¸ºsourceçš„è¿æ¥çŠ¶æ€ (0-æœªè¿æ¥, 1-è¿æ¥)
+				bit6: C1ä½œä¸ºsinkçš„è¿æ¥çŠ¶æ€ (0-æœªè¿æ¥, 1-è¿æ¥)
+				bit5: C2ä½œä¸ºsourceçš„è¿æ¥çŠ¶æ€ (0-æœªè¿æ¥, 1-è¿æ¥)
+				bit4: C2ä½œä¸ºsinkçš„è¿æ¥çŠ¶æ€ (0-æœªè¿æ¥, 1-è¿æ¥)
 				bit3: reserved
-				bit2: A¿ÚÔÚÏß×´Ì¬ (0-²»ÔÚÏß, 1-ÔÚÏß)
-				bit1: C1¿ÚµÄÔÚÏß×´Ì¬ (0-²»ÔÚÏß, 1-ÔÚÏß)
-				bit0: C2¿ÚµÄÔÚÏß×´Ì¬ (0-²»ÔÚÏß, 1-ÔÚÏß)
------´«Èë²ÎÊı   p_i2c_obj: I2C¶ÔÏó
-				p_status: ¶Ë¿Ú×´Ì¬½á¹¹ÌåÖ¸Õë
------·µ»ØÖµ     s8  1:³É¹¦    -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-02-04
+				bit2: Aå£åœ¨çº¿çŠ¶æ€ (0-ä¸åœ¨çº¿, 1-åœ¨çº¿)
+				bit1: C1å£çš„åœ¨çº¿çŠ¶æ€ (0-ä¸åœ¨çº¿, 1-åœ¨çº¿)
+				bit0: C2å£çš„åœ¨çº¿çŠ¶æ€ (0-ä¸åœ¨çº¿, 1-åœ¨çº¿)
+-----ä¼ å…¥å‚æ•°   p_i2c_obj: I2Cå¯¹è±¡
+				p_status: ç«¯å£çŠ¶æ€ç»“æ„ä½“æŒ‡é’ˆ
+-----è¿”å›å€¼     s8  1:æˆåŠŸ    -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-02-04
 ************************************************************************************************************************/
 s8 c_usb_sw6303_get_port_status(const I2cObj_T *p_i2c_obj, SW6303_PortStatus_T *p_status)
 {
@@ -1307,43 +1307,43 @@ s8 c_usb_sw6303_get_port_status(const I2cObj_T *p_i2c_obj, SW6303_PortStatus_T *
 	if(p_i2c_obj == NULL || p_status == NULL)
 		return -1;
 
-	/* ¶ÁÈ¡REG0x1D¼Ä´æÆ÷Öµ */
+	/* è¯»å–REG0x1Då¯„å­˜å™¨å€¼ */
 	if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_PORT_STATUS, data, sizeof(data)) <= 0)
 	{
 		if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-			log_e("SW6303:¶ÁÈ¡¶Ë¿Ú×´Ì¬¼Ä´æÆ÷Ê§°Ü,´íÎó´úÂë%d", c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_PORT_STATUS, data, sizeof(data)));
+			log_e("SW6303:è¯»å–ç«¯å£çŠ¶æ€å¯„å­˜å™¨å¤±è´¥,é”™è¯¯ä»£ç %d", c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_PORT_STATUS, data, sizeof(data)));
 		return -2;
 	}
 
 	reg_value = data[0];
 
-	/* ½âÎö¼Ä´æÆ÷Öµ */
-	// C1¿Ú×´Ì¬
+	/* è§£æå¯„å­˜å™¨å€¼ */
+	// C1å£çŠ¶æ€
 	p_status->bC1SrcConn = (reg_value & 0x80) ? true : false;    // bit7
 	p_status->bC1SinkConn = (reg_value & 0x40) ? true : false;   // bit6
 	p_status->bC1Online = (reg_value & 0x02) ? true : false;          // bit1
 
-	// C2¿Ú×´Ì¬
+	// C2å£çŠ¶æ€
 	p_status->bC2SrcConn = (reg_value & 0x20) ? true : false;    // bit5
 	p_status->bC2SinkConn = (reg_value & 0x10) ? true : false;   // bit4
 	p_status->bC2Online = (reg_value & 0x01) ? true : false;         // bit0
 
-	// A¿Ú×´Ì¬
+	// Aå£çŠ¶æ€
 	p_status->bAOnline = (reg_value & 0x04) ? true : false;           // bit2
 
 	return 1;
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¶ÁÈ¡³äµçÄ¿±êµçÑ¹ÉèÖÃÖµ
------ËµÃ÷(±¸×¢)  Í¨¹ıREG0x46ºÍREG0x47¶ÁÈ¡³äµçÄ¿±êµçÑ¹ÉèÖÃ
-                ³äµçÄ¿±êµçÑ¹ = charger_vol[11:0] * 10mV
-                ·¶Î§: 3.3V ~ 27.3V (Êµ¼Ê²»ÔÊĞí³¬¹ı26V)
------´«Èë²ÎÊı    p_i2c_obj: I2C¶ÔÏó
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      s16: ³äµçÄ¿±êµçÑ¹Öµ(µ¥Î»: mV), Ê§°Ü·µ»Ø-1
------×÷Õß       LJD
------ÈÕÆÚ       2026-02-25
+-----å‡½æ•°åŠŸèƒ½    è¯»å–å……ç”µç›®æ ‡ç”µå‹è®¾ç½®å€¼
+-----è¯´æ˜(å¤‡æ³¨)  é€šè¿‡REG0x46å’ŒREG0x47è¯»å–å……ç”µç›®æ ‡ç”µå‹è®¾ç½®
+                å……ç”µç›®æ ‡ç”µå‹ = charger_vol[11:0] * 10mV
+                èŒƒå›´: 3.3V ~ 27.3V (å®é™…ä¸å…è®¸è¶…è¿‡26V)
+-----ä¼ å…¥å‚æ•°    p_i2c_obj: I2Cå¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      s16: å……ç”µç›®æ ‡ç”µå‹å€¼(å•ä½: mV), å¤±è´¥è¿”å›-1
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-02-25
 ************************************************************************************************************************/
 s16 s_usb_sw6303_get_chg_target_volt(const I2cObj_T *p_i2c_obj)
 {
@@ -1355,49 +1355,49 @@ s16 s_usb_sw6303_get_chg_target_volt(const I2cObj_T *p_i2c_obj)
     if(p_i2c_obj == NULL)
         return -1;
 
-    /* ¶ÁÈ¡REG0x46: ³äµçÄ¿±êµçÑ¹µÍ8Î» */
+    /* è¯»å–REG0x46: å……ç”µç›®æ ‡ç”µå‹ä½8ä½ */
     if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_CTRG_CHG_VOLT_LOW, &data_low, 1) <= 0)
     {
         if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-            log_e("SW6303:¶ÁÈ¡³äµçÄ¿±êµçÑ¹µÍ8Î»Ê§°Ü");
+            log_e("SW6303:è¯»å–å……ç”µç›®æ ‡ç”µå‹ä½8ä½å¤±è´¥");
         return -2;
     }
 
-    /* ¶ÁÈ¡REG0x47: ³äµçÄ¿±êµçÑ¹¸ß4Î» */
+    /* è¯»å–REG0x47: å……ç”µç›®æ ‡ç”µå‹é«˜4ä½ */
     if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_CTRG_CHG_VOLT_HIGH, &data_high, 1) <= 0)
     {
         if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-            log_e("SW6303:¶ÁÈ¡³äµçÄ¿±êµçÑ¹¸ß4Î»Ê§°Ü");
+            log_e("SW6303:è¯»å–å……ç”µç›®æ ‡ç”µå‹é«˜4ä½å¤±è´¥");
         return -3;
     }
 
-    /* ×éºÏ12Î»Êı¾İ: charger_vol[11:0] */
+    /* ç»„åˆ12ä½æ•°æ®: charger_vol[11:0] */
     reg_value = ((u16)(data_high & 0x0F) << 8) | data_low;
 
-    /* ¼ÆËãµçÑ¹Öµ: ³äµçÄ¿±êµçÑ¹ = charger_vol[11:0] * 10mV */
+    /* è®¡ç®—ç”µå‹å€¼: å……ç”µç›®æ ‡ç”µå‹ = charger_vol[11:0] * 10mV */
     volt_mv = (s16)(reg_value * 10);
 
     if(uPrint.tFlag.bUsbTask)
-        log_i("SW6303:³äµçÄ¿±êµçÑ¹=%dmV (¼Ä´æÆ÷Öµ=0x%03X)", volt_mv, reg_value);
+        log_i("SW6303:å……ç”µç›®æ ‡ç”µå‹=%dmV (å¯„å­˜å™¨å€¼=0x%03X)", volt_mv, reg_value);
 
     return volt_mv;
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¶ÁÈ¡ÏµÍ³×´Ì¬Ö¸Ê¾ (REG0x18)
------ËµÃ÷(±¸×¢)  REG0x18: ÏµÍ³×´Ì¬Ö¸Ê¾
-                bit7: ³äµçÒì³£´¥·¢ÊÂ¼şÖ¸Ê¾ (0-ÎŞÒì³£, 1-Òì³£µ¼ÖÂ³äµç¹Ø±Õ)
-                bit6: ·ÅµçÒì³£´¥·¢ÊÂ¼şÖ¸Ê¾ (0-ÎŞÒì³£, 1-Òì³£µ¼ÖÂ·Åµç¹Ø±Õ)
-                bit5: ³äµç×´Ì¬Ö¸Ê¾Î» (0-³äµç¹Ø±Õ, 1-³äµç´ò¿ª)
-                bit4: ·Åµç×´Ì¬Ö¸Ê¾Î» (0-·Åµç¹Ø±Õ, 1-·Åµç´ò¿ª)
-                bit3: C1¿ÚÍ¨Â·×´Ì¬Ö¸Ê¾Î» (0-¹Ø±Õ, 1-´ò¿ª)
-                bit2: C2¿ÚÍ¨Â·×´Ì¬Ö¸Ê¾Î» (0-¹Ø±Õ, 1-´ò¿ª)
-                bit0: A¿ÚÍ¨Â·×´Ì¬Ö¸Ê¾Î» (0-¹Ø±Õ, 1-´ò¿ª)
------´«Èë²ÎÊı    p_i2c_obj: I2C¶ÔÏó
-                p_status: ÏµÍ³×´Ì¬½á¹¹ÌåÖ¸Õë
------·µ»ØÖµ      s8: 1-³É¹¦, -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-03-02
+-----å‡½æ•°åŠŸèƒ½    è¯»å–ç³»ç»ŸçŠ¶æ€æŒ‡ç¤º (REG0x18)
+-----è¯´æ˜(å¤‡æ³¨)  REG0x18: ç³»ç»ŸçŠ¶æ€æŒ‡ç¤º
+                bit7: å……ç”µå¼‚å¸¸è§¦å‘äº‹ä»¶æŒ‡ç¤º (0-æ— å¼‚å¸¸, 1-å¼‚å¸¸å¯¼è‡´å……ç”µå…³é—­)
+                bit6: æ”¾ç”µå¼‚å¸¸è§¦å‘äº‹ä»¶æŒ‡ç¤º (0-æ— å¼‚å¸¸, 1-å¼‚å¸¸å¯¼è‡´æ”¾ç”µå…³é—­)
+                bit5: å……ç”µçŠ¶æ€æŒ‡ç¤ºä½ (0-å……ç”µå…³é—­, 1-å……ç”µæ‰“å¼€)
+                bit4: æ”¾ç”µçŠ¶æ€æŒ‡ç¤ºä½ (0-æ”¾ç”µå…³é—­, 1-æ”¾ç”µæ‰“å¼€)
+                bit3: C1å£é€šè·¯çŠ¶æ€æŒ‡ç¤ºä½ (0-å…³é—­, 1-æ‰“å¼€)
+                bit2: C2å£é€šè·¯çŠ¶æ€æŒ‡ç¤ºä½ (0-å…³é—­, 1-æ‰“å¼€)
+                bit0: Aå£é€šè·¯çŠ¶æ€æŒ‡ç¤ºä½ (0-å…³é—­, 1-æ‰“å¼€)
+-----ä¼ å…¥å‚æ•°    p_i2c_obj: I2Cå¯¹è±¡
+                p_status: ç³»ç»ŸçŠ¶æ€ç»“æ„ä½“æŒ‡é’ˆ
+-----è¿”å›å€¼      s8: 1-æˆåŠŸ, -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-03-02
 ************************************************************************************************************************/
 s8 c_usb_sw6303_get_sys_status(const I2cObj_T *p_i2c_obj, SW6303_SysStatus_T *p_status)
 {
@@ -1406,15 +1406,15 @@ s8 c_usb_sw6303_get_sys_status(const I2cObj_T *p_i2c_obj, SW6303_SysStatus_T *p_
     if(p_i2c_obj == NULL || p_status == NULL)
         return -1;
 
-    /* ¶ÁÈ¡REG0x18¼Ä´æÆ÷Öµ */
+    /* è¯»å–REG0x18å¯„å­˜å™¨å€¼ */
     if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_SYS_STATUS, data, sizeof(data)) <= 0)
     {
         if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-            log_e("SW6303:¶ÁÈ¡ÏµÍ³×´Ì¬¼Ä´æÆ÷Ê§°Ü");
+            log_e("SW6303:è¯»å–ç³»ç»ŸçŠ¶æ€å¯„å­˜å™¨å¤±è´¥");
         return -2;
     }
 
-    /* ½âÎö¼Ä´æÆ÷Öµ */
+    /* è§£æå¯„å­˜å™¨å€¼ */
     p_status->bChgAbnormal = (data[0] & 0x80) ? true : false;    // bit7
     p_status->bDchgAbnormal = (data[0] & 0x40) ? true : false;   // bit6
     p_status->bChgStatus = (data[0] & 0x20) ? true : false;      // bit5
@@ -1427,19 +1427,19 @@ s8 c_usb_sw6303_get_sys_status(const I2cObj_T *p_i2c_obj, SW6303_SysStatus_T *p_
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¶ÁÈ¡Òì³£ÊÂ¼şÖ¸Ê¾ (REG0x15)
------ËµÃ÷(±¸×¢)  REG0x15: Òì³£ÊÂ¼şÖ¸Ê¾
-                bit5: µçÁ¿¼ÆÁ¿Íê³ÉÖ¸Ê¾ - Ğ´1ÇåÁã
-                bit4: µç³ØÇ·Ñ¹UVLOÊÂ¼şÖ¸Ê¾ - Ğ´1ÇåÁã
-                bit3: ³äµçÒì³£ÊÂ¼şÖ¸Ê¾ - Ğ´1ÇåÁã
-                bit2: ·ÅµçÒì³£ÊÂ¼şÖ¸Ê¾ - Ğ´1ÇåÁã
-                bit1: °´¼üÊÂ¼şÖ¸Ê¾ - Ğ´1ÇåÁã
-                bit0: ³¡¾°±ä»¯ÊÂ¼şÖ¸Ê¾ - Ğ´1ÇåÁã
------´«Èë²ÎÊı    p_i2c_obj: I2C¶ÔÏó
-                p_event: Òì³£ÊÂ¼ş×´Ì¬½á¹¹ÌåÖ¸Õë
------·µ»ØÖµ      s8: 1-³É¹¦, -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-03-02
+-----å‡½æ•°åŠŸèƒ½    è¯»å–å¼‚å¸¸äº‹ä»¶æŒ‡ç¤º (REG0x15)
+-----è¯´æ˜(å¤‡æ³¨)  REG0x15: å¼‚å¸¸äº‹ä»¶æŒ‡ç¤º
+                bit5: ç”µé‡è®¡é‡å®ŒæˆæŒ‡ç¤º - å†™1æ¸…é›¶
+                bit4: ç”µæ± æ¬ å‹UVLOäº‹ä»¶æŒ‡ç¤º - å†™1æ¸…é›¶
+                bit3: å……ç”µå¼‚å¸¸äº‹ä»¶æŒ‡ç¤º - å†™1æ¸…é›¶
+                bit2: æ”¾ç”µå¼‚å¸¸äº‹ä»¶æŒ‡ç¤º - å†™1æ¸…é›¶
+                bit1: æŒ‰é”®äº‹ä»¶æŒ‡ç¤º - å†™1æ¸…é›¶
+                bit0: åœºæ™¯å˜åŒ–äº‹ä»¶æŒ‡ç¤º - å†™1æ¸…é›¶
+-----ä¼ å…¥å‚æ•°    p_i2c_obj: I2Cå¯¹è±¡
+                p_event: å¼‚å¸¸äº‹ä»¶çŠ¶æ€ç»“æ„ä½“æŒ‡é’ˆ
+-----è¿”å›å€¼      s8: 1-æˆåŠŸ, -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-03-02
 ************************************************************************************************************************/
 s8 c_usb_sw6303_get_abnormal_event(const I2cObj_T *p_i2c_obj, SW6303_AbnormalEvent_T *p_event)
 {
@@ -1448,15 +1448,15 @@ s8 c_usb_sw6303_get_abnormal_event(const I2cObj_T *p_i2c_obj, SW6303_AbnormalEve
     if(p_i2c_obj == NULL || p_event == NULL)
         return -1;
 
-    /* ¶ÁÈ¡REG0x15¼Ä´æÆ÷Öµ */
+    /* è¯»å–REG0x15å¯„å­˜å™¨å€¼ */
     if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_ABNORMAL_EVENT, data, sizeof(data)) <= 0)
     {
         if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-            log_e("SW6303:¶ÁÈ¡Òì³£ÊÂ¼ş¼Ä´æÆ÷Ê§°Ü");
+            log_e("SW6303:è¯»å–å¼‚å¸¸äº‹ä»¶å¯„å­˜å™¨å¤±è´¥");
         return -2;
     }
 
-    /* ½âÎö¼Ä´æÆ÷Öµ */
+    /* è§£æå¯„å­˜å™¨å€¼ */
     p_event->bCapCalcDone = (data[0] & 0x20) ? true : false;         // bit5
     p_event->bUvloEvent = (data[0] & 0x10) ? true : false;           // bit4
     p_event->bChgAbnormalEvent = (data[0] & 0x08) ? true : false;    // bit3
@@ -1468,20 +1468,20 @@ s8 c_usb_sw6303_get_abnormal_event(const I2cObj_T *p_i2c_obj, SW6303_AbnormalEve
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    Çå³ıÒì³£ÊÂ¼ş±êÖ¾ (REG0x15)
------ËµÃ÷(±¸×¢)  ÏòREG0x15¶ÔÓ¦bitĞ´1ÇåÁãÒì³£ÊÂ¼ş±êÖ¾
-                bit7-6: reserved (±£Áô²»±ä)
-                SW6303_EVENT_CAP_CALC_DONE:  bit5 - µçÁ¿¼ÆÁ¿Íê³ÉÖ¸Ê¾
-                SW6303_EVENT_UVLO:           bit4 - µç³ØÇ·Ñ¹UVLOÊÂ¼şÖ¸Ê¾
-                SW6303_EVENT_CHG_ABNORMAL:   bit3 - ³äµçÒì³£ÊÂ¼şÖ¸Ê¾
-                SW6303_EVENT_DCHG_ABNORMAL:  bit2 - ·ÅµçÒì³£ÊÂ¼şÖ¸Ê¾
-                SW6303_EVENT_KEY:            bit1 - °´¼üÊÂ¼şÖ¸Ê¾
-                SW6303_EVENT_SCENE_CHANGE:   bit0 - ³¡¾°±ä»¯ÊÂ¼şÖ¸Ê¾
------´«Èë²ÎÊı    p_i2c_obj: I2C¶ÔÏó
-                event_type: Òì³£ÊÂ¼şÀàĞÍ
------·µ»ØÖµ      s8: 1-³É¹¦, -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-03-02
+-----å‡½æ•°åŠŸèƒ½    æ¸…é™¤å¼‚å¸¸äº‹ä»¶æ ‡å¿— (REG0x15)
+-----è¯´æ˜(å¤‡æ³¨)  å‘REG0x15å¯¹åº”bitå†™1æ¸…é›¶å¼‚å¸¸äº‹ä»¶æ ‡å¿—
+                bit7-6: reserved (ä¿ç•™ä¸å˜)
+                SW6303_EVENT_CAP_CALC_DONE:  bit5 - ç”µé‡è®¡é‡å®ŒæˆæŒ‡ç¤º
+                SW6303_EVENT_UVLO:           bit4 - ç”µæ± æ¬ å‹UVLOäº‹ä»¶æŒ‡ç¤º
+                SW6303_EVENT_CHG_ABNORMAL:   bit3 - å……ç”µå¼‚å¸¸äº‹ä»¶æŒ‡ç¤º
+                SW6303_EVENT_DCHG_ABNORMAL:  bit2 - æ”¾ç”µå¼‚å¸¸äº‹ä»¶æŒ‡ç¤º
+                SW6303_EVENT_KEY:            bit1 - æŒ‰é”®äº‹ä»¶æŒ‡ç¤º
+                SW6303_EVENT_SCENE_CHANGE:   bit0 - åœºæ™¯å˜åŒ–äº‹ä»¶æŒ‡ç¤º
+-----ä¼ å…¥å‚æ•°    p_i2c_obj: I2Cå¯¹è±¡
+                event_type: å¼‚å¸¸äº‹ä»¶ç±»å‹
+-----è¿”å›å€¼      s8: 1-æˆåŠŸ, -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-03-02
 ************************************************************************************************************************/
 s8 c_usb_sw6303_clear_abnormal_event(const I2cObj_T *p_i2c_obj, SW6303_EventType_E event_type)
 {
@@ -1494,7 +1494,7 @@ s8 c_usb_sw6303_clear_abnormal_event(const I2cObj_T *p_i2c_obj, SW6303_EventType
     if(event_type >= SW6303_EVENT_MAX)
         return -2;
 
-    /* ¸ù¾İÊÂ¼şÀàĞÍ¼ÆËãbitÑÚÂë */
+    /* æ ¹æ®äº‹ä»¶ç±»å‹è®¡ç®—bitæ©ç  */
     switch(event_type)
     {
         case SW6303_EVENT_CAP_CALC_DONE:
@@ -1519,45 +1519,45 @@ s8 c_usb_sw6303_clear_abnormal_event(const I2cObj_T *p_i2c_obj, SW6303_EventType
             return -3;
     }
 
-    /* ÏÈ¶ÁÈ¡REG0x15¼Ä´æÆ÷µ±Ç°Öµ */
+    /* å…ˆè¯»å–REG0x15å¯„å­˜å™¨å½“å‰å€¼ */
     if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_ABNORMAL_EVENT, data, sizeof(data)) <= 0)
     {
         if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-            log_e("SW6303:¶ÁÈ¡Òì³£ÊÂ¼ş¼Ä´æÆ÷Ê§°Ü");
+            log_e("SW6303:è¯»å–å¼‚å¸¸äº‹ä»¶å¯„å­˜å™¨å¤±è´¥");
         return -4;
     }
 
-    /* ±£Áôbit7-6²»±ä£¬Ö»ĞŞ¸Äbit0-5£¬Ğ´1ÇåÁã¶ÔÓ¦ÊÂ¼ş±êÖ¾ */
+    /* ä¿ç•™bit7-6ä¸å˜ï¼Œåªä¿®æ”¹bit0-5ï¼Œå†™1æ¸…é›¶å¯¹åº”äº‹ä»¶æ ‡å¿— */
     data[0] = (data[0] & 0xC0) | bit_mask;
     if(c_usb_sw6303_write_bytes(p_i2c_obj, SW6303_REG_ABNORMAL_EVENT, data, sizeof(data)) <= 0)
     {
         if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-            log_e("SW6303:Çå³ıÒì³£ÊÂ¼şÊ§°Ü, event_type=%d", event_type);
+            log_e("SW6303:æ¸…é™¤å¼‚å¸¸äº‹ä»¶å¤±è´¥, event_type=%d", event_type);
         return -5;
     }
 
     if(uPrint.tFlag.bUsbTask)
-        log_i("SW6303:Çå³ıÒì³£ÊÂ¼ş³É¹¦, event_type=%d", event_type);
+        log_i("SW6303:æ¸…é™¤å¼‚å¸¸äº‹ä»¶æˆåŠŸ, event_type=%d", event_type);
 
     return 1;
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¶ÁÈ¡ÏµÍ³Òì³£×´Ì¬0 (REG0x2A) - ·ÅµçÒì³£
------ËµÃ÷(±¸×¢)  REG0x2A: ÏµÍ³Òì³£×´Ì¬Ö¸Ê¾0
-                bit6: ·ÅµçÊ±µç³Ø¹ıÑ¹Òì³£
-                bit5: ·ÅµçÊ±Ğ¾Æ¬¹ıÎÂÒì³£
-                bit4: ·ÅµçÊ±NTC¹ıÎÂÒì³£
-                bit3: ·ÅµçÊ±VBUS¹ıÔØÒì³£
-                bit2: ·ÅµçÊ±VBUS¶ÌÂ·Òì³£
-                bit1: ·ÅµçÊ±VBUSÂıËÙ¹ıÑ¹±£»¤Òì³£
-                bit0: ·ÅµçÊ±VBUS¿ìËÙ¹ıÑ¹±£»¤Òì³£
-                ×¢Òâ: ÕâĞ©bitÔÚÏÂ´Î·ÅµçÊÂ¼şÊ±×Ô¶¯ÇåÁã
------´«Èë²ÎÊı    p_i2c_obj: I2C¶ÔÏó
-                p_status: Òì³£×´Ì¬0½á¹¹ÌåÖ¸Õë
------·µ»ØÖµ      s8: 1-³É¹¦, -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-03-02
+-----å‡½æ•°åŠŸèƒ½    è¯»å–ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€0 (REG0x2A) - æ”¾ç”µå¼‚å¸¸
+-----è¯´æ˜(å¤‡æ³¨)  REG0x2A: ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€æŒ‡ç¤º0
+                bit6: æ”¾ç”µæ—¶ç”µæ± è¿‡å‹å¼‚å¸¸
+                bit5: æ”¾ç”µæ—¶èŠ¯ç‰‡è¿‡æ¸©å¼‚å¸¸
+                bit4: æ”¾ç”µæ—¶NTCè¿‡æ¸©å¼‚å¸¸
+                bit3: æ”¾ç”µæ—¶VBUSè¿‡è½½å¼‚å¸¸
+                bit2: æ”¾ç”µæ—¶VBUSçŸ­è·¯å¼‚å¸¸
+                bit1: æ”¾ç”µæ—¶VBUSæ…¢é€Ÿè¿‡å‹ä¿æŠ¤å¼‚å¸¸
+                bit0: æ”¾ç”µæ—¶VBUSå¿«é€Ÿè¿‡å‹ä¿æŠ¤å¼‚å¸¸
+                æ³¨æ„: è¿™äº›bitåœ¨ä¸‹æ¬¡æ”¾ç”µäº‹ä»¶æ—¶è‡ªåŠ¨æ¸…é›¶
+-----ä¼ å…¥å‚æ•°    p_i2c_obj: I2Cå¯¹è±¡
+                p_status: å¼‚å¸¸çŠ¶æ€0ç»“æ„ä½“æŒ‡é’ˆ
+-----è¿”å›å€¼      s8: 1-æˆåŠŸ, -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-03-02
 ************************************************************************************************************************/
 s8 c_usb_sw6303_get_abnormal_status0(const I2cObj_T *p_i2c_obj, SW6303_AbnormalStatus0_T *p_status)
 {
@@ -1566,15 +1566,15 @@ s8 c_usb_sw6303_get_abnormal_status0(const I2cObj_T *p_i2c_obj, SW6303_AbnormalS
     if(p_i2c_obj == NULL || p_status == NULL)
         return -1;
 
-    /* ¶ÁÈ¡REG0x2A¼Ä´æÆ÷Öµ */
+    /* è¯»å–REG0x2Aå¯„å­˜å™¨å€¼ */
     if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_SYS_ABNORMAL_STATUS0, data, sizeof(data)) <= 0)
     {
         if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-            log_e("SW6303:¶ÁÈ¡Òì³£×´Ì¬0¼Ä´æÆ÷Ê§°Ü");
+            log_e("SW6303:è¯»å–å¼‚å¸¸çŠ¶æ€0å¯„å­˜å™¨å¤±è´¥");
         return -2;
     }
 
-    /* ½âÎö¼Ä´æÆ÷Öµ */
+    /* è§£æå¯„å­˜å™¨å€¼ */
     p_status->bDchgBatOvp = (data[0] & 0x40) ? true : false;       // bit6
     p_status->bDchgChipOtp = (data[0] & 0x20) ? true : false;      // bit5
     p_status->bDchgNtcOtp = (data[0] & 0x10) ? true : false;       // bit4
@@ -1587,22 +1587,22 @@ s8 c_usb_sw6303_get_abnormal_status0(const I2cObj_T *p_i2c_obj, SW6303_AbnormalS
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¶ÁÈ¡ÏµÍ³Òì³£×´Ì¬1 (REG0x2B) - ³äµçÒì³£
------ËµÃ÷(±¸×¢)  REG0x2B: ÏµÍ³Òì³£×´Ì¬Ö¸Ê¾1
-                bit7: µç³ØµçÑ¹µÍÓÚ1.5VÒì³£
-                bit6: ³äµç³¬Ê±Òì³£
-                bit5: ³äÂúÊÂ¼şÖ¸Ê¾
-                bit4: ³äµçÊ±µç³Ø¹ıÑ¹Òì³£
-                bit3: ³äµçÊ±Ğ¾Æ¬¹ıÎÂÒì³£
-                bit2: ³äµçÊ±NTC¹ıÎÂÒì³£
-                bit1: ³äµçÊ±VBUSÂıËÙ¹ıÑ¹Òì³£
-                bit0: ³äµçÊ±VBUS¿ìËÙ¹ıÑ¹Òì³£
-                ×¢Òâ: ÕâĞ©bitÔÚÏÂ´Î³äµçÊÂ¼şÊ±×Ô¶¯ÇåÁã
------´«Èë²ÎÊı    p_i2c_obj: I2C¶ÔÏó
-                p_status: Òì³£×´Ì¬1½á¹¹ÌåÖ¸Õë
------·µ»ØÖµ      s8: 1-³É¹¦, -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-03-02
+-----å‡½æ•°åŠŸèƒ½    è¯»å–ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€1 (REG0x2B) - å……ç”µå¼‚å¸¸
+-----è¯´æ˜(å¤‡æ³¨)  REG0x2B: ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€æŒ‡ç¤º1
+                bit7: ç”µæ± ç”µå‹ä½äº1.5Vå¼‚å¸¸
+                bit6: å……ç”µè¶…æ—¶å¼‚å¸¸
+                bit5: å……æ»¡äº‹ä»¶æŒ‡ç¤º
+                bit4: å……ç”µæ—¶ç”µæ± è¿‡å‹å¼‚å¸¸
+                bit3: å……ç”µæ—¶èŠ¯ç‰‡è¿‡æ¸©å¼‚å¸¸
+                bit2: å……ç”µæ—¶NTCè¿‡æ¸©å¼‚å¸¸
+                bit1: å……ç”µæ—¶VBUSæ…¢é€Ÿè¿‡å‹å¼‚å¸¸
+                bit0: å……ç”µæ—¶VBUSå¿«é€Ÿè¿‡å‹å¼‚å¸¸
+                æ³¨æ„: è¿™äº›bitåœ¨ä¸‹æ¬¡å……ç”µäº‹ä»¶æ—¶è‡ªåŠ¨æ¸…é›¶
+-----ä¼ å…¥å‚æ•°    p_i2c_obj: I2Cå¯¹è±¡
+                p_status: å¼‚å¸¸çŠ¶æ€1ç»“æ„ä½“æŒ‡é’ˆ
+-----è¿”å›å€¼      s8: 1-æˆåŠŸ, -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-03-02
 ************************************************************************************************************************/
 s8 c_usb_sw6303_get_abnormal_status1(const I2cObj_T *p_i2c_obj, SW6303_AbnormalStatus1_T *p_status)
 {
@@ -1611,15 +1611,15 @@ s8 c_usb_sw6303_get_abnormal_status1(const I2cObj_T *p_i2c_obj, SW6303_AbnormalS
     if(p_i2c_obj == NULL || p_status == NULL)
         return -1;
 
-    /* ¶ÁÈ¡REG0x2B¼Ä´æÆ÷Öµ */
+    /* è¯»å–REG0x2Bå¯„å­˜å™¨å€¼ */
     if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_SYS_ABNORMAL_STATUS1, data, sizeof(data)) <= 0)
     {
         if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-            log_e("SW6303:¶ÁÈ¡Òì³£×´Ì¬1¼Ä´æÆ÷Ê§°Ü");
+            log_e("SW6303:è¯»å–å¼‚å¸¸çŠ¶æ€1å¯„å­˜å™¨å¤±è´¥");
         return -2;
     }
 
-    /* ½âÎö¼Ä´æÆ÷Öµ */
+    /* è§£æå¯„å­˜å™¨å€¼ */
     p_status->bBatBelow1_5V = (data[0] & 0x80) ? true : false;      // bit7
     p_status->bChgTimeout = (data[0] & 0x40) ? true : false;        // bit6
     p_status->bChgFull = (data[0] & 0x20) ? true : false;           // bit5
@@ -1633,20 +1633,20 @@ s8 c_usb_sw6303_get_abnormal_status1(const I2cObj_T *p_i2c_obj, SW6303_AbnormalS
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¶ÁÈ¡ÏµÍ³Òì³£×´Ì¬2 (REG0x2C)
------ËµÃ÷(±¸×¢)  REG0x2C: ÏµÍ³Òì³£×´Ì¬Ö¸Ê¾2
-                bit[7:6]: °´¼üÊÂ¼şÖ¸Ê¾ (0-ÎŞ, 1-¶Ì°´, 2-Ë«»÷, 3-³¤°´)
-                bit4: ·ÅµçÊ±62368µÍÎÂÒì³£
-                bit3: ³äµçÊ±62368µÍÎÂÒì³£
-                bit2: ³äµç62368¹ıÎÂÒì³£
-                bit1: ·ÅµçÊ±DPDM 5.5V¹ıÑ¹Òì³£
-                bit0: ·ÅµçÊ±CC 5.5V¹ıÑ¹Òì³£
-                ×¢Òâ: ÕâĞ©bitÔÚÏÂ´Î¶ÔÓ¦ÊÂ¼şÊ±×Ô¶¯ÇåÁã
------´«Èë²ÎÊı    p_i2c_obj: I2C¶ÔÏó
-                p_status: Òì³£×´Ì¬2½á¹¹ÌåÖ¸Õë
------·µ»ØÖµ      s8: 1-³É¹¦, -1:Ê§°Ü
------×÷Õß       LJD
------ÈÕÆÚ       2026-03-02
+-----å‡½æ•°åŠŸèƒ½    è¯»å–ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€2 (REG0x2C)
+-----è¯´æ˜(å¤‡æ³¨)  REG0x2C: ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€æŒ‡ç¤º2
+                bit[7:6]: æŒ‰é”®äº‹ä»¶æŒ‡ç¤º (0-æ— , 1-çŸ­æŒ‰, 2-åŒå‡», 3-é•¿æŒ‰)
+                bit4: æ”¾ç”µæ—¶62368ä½æ¸©å¼‚å¸¸
+                bit3: å……ç”µæ—¶62368ä½æ¸©å¼‚å¸¸
+                bit2: å……ç”µ62368è¿‡æ¸©å¼‚å¸¸
+                bit1: æ”¾ç”µæ—¶DPDM 5.5Vè¿‡å‹å¼‚å¸¸
+                bit0: æ”¾ç”µæ—¶CC 5.5Vè¿‡å‹å¼‚å¸¸
+                æ³¨æ„: è¿™äº›bitåœ¨ä¸‹æ¬¡å¯¹åº”äº‹ä»¶æ—¶è‡ªåŠ¨æ¸…é›¶
+-----ä¼ å…¥å‚æ•°    p_i2c_obj: I2Cå¯¹è±¡
+                p_status: å¼‚å¸¸çŠ¶æ€2ç»“æ„ä½“æŒ‡é’ˆ
+-----è¿”å›å€¼      s8: 1-æˆåŠŸ, -1:å¤±è´¥
+-----ä½œè€…       LJD
+-----æ—¥æœŸ       2026-03-02
 ************************************************************************************************************************/
 s8 c_usb_sw6303_get_abnormal_status2(const I2cObj_T *p_i2c_obj, SW6303_AbnormalStatus2_T *p_status)
 {
@@ -1655,15 +1655,15 @@ s8 c_usb_sw6303_get_abnormal_status2(const I2cObj_T *p_i2c_obj, SW6303_AbnormalS
     if(p_i2c_obj == NULL || p_status == NULL)
         return -1;
 
-    /* ¶ÁÈ¡REG0x2C¼Ä´æÆ÷Öµ */
+    /* è¯»å–REG0x2Cå¯„å­˜å™¨å€¼ */
     if(c_usb_sw6303_read_bytes(p_i2c_obj, SW6303_REG_SYS_ABNORMAL_STATUS2, data, sizeof(data)) <= 0)
     {
         if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-            log_e("SW6303:¶ÁÈ¡Òì³£×´Ì¬2¼Ä´æÆ÷Ê§°Ü");
+            log_e("SW6303:è¯»å–å¼‚å¸¸çŠ¶æ€2å¯„å­˜å™¨å¤±è´¥");
         return -2;
     }
 
-    /* ½âÎö¼Ä´æÆ÷Öµ */
+    /* è§£æå¯„å­˜å™¨å€¼ */
     p_status->eKeyEvent = (SW6303_KeyEvent_E)((data[0] >> 6) & 0x03);  // bit[7:6]
     p_status->bDchg62368LowTemp = (data[0] & 0x10) ? true : false;     // bit4
     p_status->bChg62368LowTemp = (data[0] & 0x08) ? true : false;      // bit3

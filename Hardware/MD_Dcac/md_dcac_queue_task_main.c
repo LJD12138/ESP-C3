@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ¶ÓÁĞº¯Êı                                                  			*
+ *                                         é˜Ÿåˆ—å‡½æ•°                                                  			*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Dcac/md_dcac_queue_task.h"
@@ -19,10 +19,10 @@
 #define       	dcacTASK_GET_PARAM_CYCLE_TIME			1000
 
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************//
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
 
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 static void v_proc_rec_param(void);
 static void v_check_dischg_or_chg_perm(void);
 static void v_check_close_dischg(void);
@@ -30,43 +30,43 @@ static void v_set_total_chg_pwr(void);
 static void v_set_ac_chg_pwr(void);
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:Ö÷ÈÎÎñ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:ä¸»ä»»åŠ¡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_dcac_queue_task_main(Task_T *tp_task)
 {
-	//*****************************************·Ç¹¤×÷Ä£Ê½,¼ì²éÄæ±äÊÇ·ñ¿ªÆôÖĞ**************************************
+	//*****************************************éå·¥ä½œæ¨¡å¼,æ£€æŸ¥é€†å˜æ˜¯å¦å¼€å¯ä¸­**************************************
 	if(tDcac.eDisChgState >= IOS_STARTING && 
-		(tSysInfo.uPerm.tPerm.bDisChgPerm ==false || tDcac.uPerm.tPerm.bDisChgPerm ==false))  //ACÊä³ö»¹ÔÚ´ò¿ª
+		(tSysInfo.uPerm.tPerm.bDisChgPerm ==false || tDcac.uPerm.tPerm.bDisChgPerm ==false))  //ACè¾“å‡ºè¿˜åœ¨æ‰“å¼€
 	{
 		cDCAC_Switch(DSO_AC_OUT, ST_OFF, false);
 		if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-			log_w("bDcacTask:µ±Ç°²»Ğí¿É·Åµç,Ìí¼Ó¹Ø±ÕÄæ±äÊä³öÈÎÎñ");
+			log_w("bDcacTask:å½“å‰ä¸è®¸å¯æ”¾ç”µ,æ·»åŠ å…³é—­é€†å˜è¾“å‡ºä»»åŠ¡");
 	}
 	// else if(tDcac.eParanInState >= IOS_STARTING && 
 	// 	tDcac.uPerm.tPerm.bParaInPerm == false)
 	// {
-	// 	cQueue_AddQueueTask(tp_task, DTI_CTRL_PARA_IN, ST_OFF,false);//¹Ø±ÕÄæ±ä
+	// 	cQueue_AddQueueTask(tp_task, DTI_CTRL_PARA_IN, ST_OFF,false);//å…³é—­é€†å˜
 		
 	// 	if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-	// 		log_w("bDcacTask:µ±Ç°²»Ğí¿É²¢Íø,Ìí¼Ó¹Ø±Õ²¢ÍøÈÎÎñ");
+	// 		log_w("bDcacTask:å½“å‰ä¸è®¸å¯å¹¶ç½‘,æ·»åŠ å…³é—­å¹¶ç½‘ä»»åŠ¡");
 	// }
 //	else if(tDcac.eChgState >= IOS_STARTING && 
 //		(tSysInfo.uPerm.tPerm.bChgPerm ==false || tDcac.uPerm.tPerm.bChgPerm == false))
 //	{
-//		cQueue_AddQueueTask(tp_task, DTI_CTRL_DCAC_IN, ST_OFF,false);//¹Ø±ÕÄæ±ä
+//		cQueue_AddQueueTask(tp_task, DTI_CTRL_DCAC_IN, ST_OFF,false);//å…³é—­é€†å˜
 	
 //		if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-//			log_w("bDcacTask:µ±Ç°²»Ğí¿É³äµç,Ìí¼Ó¹Ø±ÕÄæ±äÊäÈëÈÎÎñ");
+//			log_w("bDcacTask:å½“å‰ä¸è®¸å¯å……ç”µ,æ·»åŠ å…³é—­é€†å˜è¾“å…¥ä»»åŠ¡");
 //	}
 	
-	//¶ÓÁĞÀïÃæÓĞÈÎÎñ
+	//é˜Ÿåˆ—é‡Œé¢æœ‰ä»»åŠ¡
 	if(lwrb_get_full(&tp_task->tQueueBuff))
 	{
-		cQueue_GotoStep( tp_task, STEP_END );  //½áÊø
+		cQueue_GotoStep( tp_task, STEP_END );  //ç»“æŸ
 		return;
 	}
 	
@@ -74,39 +74,39 @@ void v_dcac_queue_task_main(Task_T *tp_task)
     {
         case 0:
         {
-			if(c_dcac_cs_get_param(4) == true)  //»ñÈ¡²ÎÊı
-				cQueue_GotoStep(tp_task, STEP_NEXT);  //ÏÂÒ»²½
+			if(c_dcac_cs_get_param(4) == true)  //è·å–å‚æ•°
+				cQueue_GotoStep(tp_task, STEP_NEXT);  //ä¸‹ä¸€æ­¥
 			else
 				break;
         }
 		
 		case 1:
         {
-			// if(b_dcac_cs_get_param2() == true)  //»ñÈ¡²ÎÊı
-				cQueue_GotoStep(tp_task, STEP_NEXT);  //ÏÂÒ»²½
+			// if(b_dcac_cs_get_param2() == true)  //è·å–å‚æ•°
+				cQueue_GotoStep(tp_task, STEP_NEXT);  //ä¸‹ä¸€æ­¥
 			// else
 			// 	break;
         }
 		
 		case 2:
         {
-			// if(b_dcac_cs_get_param3() == true)  //»ñÈ¡²ÎÊı
-				cQueue_GotoStep(tp_task, STEP_NEXT);  //ÏÂÒ»²½
+			// if(b_dcac_cs_get_param3() == true)  //è·å–å‚æ•°
+				cQueue_GotoStep(tp_task, STEP_NEXT);  //ä¸‹ä¸€æ­¥
 			// else
 			// 	break;
         }
 		
 		case 3:
         {
-			//´¦Àí½ÓÊÜÊı¾İ
+			//å¤„ç†æ¥å—æ•°æ®
 			v_proc_rec_param();
-			//¼ì²é³ä·ÅµçĞí¿É
+			//æ£€æŸ¥å……æ”¾ç”µè®¸å¯
 			v_check_dischg_or_chg_perm();
-			//·Åµç¿ØÖÆ
+			//æ”¾ç”µæ§åˆ¶
 			v_check_close_dischg();
-			//ÉèÖÃ×ÜµÄ³äµç¹¦ÂÊ
+			//è®¾ç½®æ€»çš„å……ç”µåŠŸç‡
 			// v_set_total_chg_pwr();
-			//ÉèÖÃACµÄ³äµç¹¦ÂÊ
+			//è®¾ç½®ACçš„å……ç”µåŠŸç‡
 			// v_set_ac_chg_pwr();
 			
 			cQueue_GotoStep(tp_task, 0);
@@ -114,14 +114,14 @@ void v_dcac_queue_task_main(Task_T *tp_task)
 		break;
 			
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
     }
 	
-	//¶ÓÁĞÀïÃæÓĞÈÎÎñ
+	//é˜Ÿåˆ—é‡Œé¢æœ‰ä»»åŠ¡
 	if(lwrb_get_full(&tp_task->tQueueBuff))  
 	{
-		cQueue_GotoStep( tp_task, STEP_END );  //½áÊø
+		cQueue_GotoStep( tp_task, STEP_END );  //ç»“æŸ
 		return;
 	}
 	
@@ -129,15 +129,15 @@ void v_dcac_queue_task_main(Task_T *tp_task)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    »ñÈ¡²ÎÊı´¦Àí
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è·å–å‚æ•°å¤„ç†
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_proc_rec_param(void)
 {
-	//»ñÈ¡ÎÂ¶È
+	//è·å–æ¸©åº¦
 	
 	tDcac.sMaxTemp = tDcacRx.sMaxTemp;
 	
@@ -152,7 +152,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			bDcac_SetErrCode(DEC_DCAC_IN_VOLT, false);
 	}
 	
-	//Êä³ö
+	//è¾“å‡º
 	if(tDcacRx.uErrCode.tCode.tSys.bOOV || tDcacRx.uErrCode.tCode.tSys.bOUV)
 	{
 		if(tDcac.uErrCode.tCode.bDcacOutVolt == 0)
@@ -164,7 +164,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			bDcac_SetErrCode(DEC_DCAC_OUT_VOLT, false);
 	}
 	
-	//¹ıÎÂ
+	//è¿‡æ¸©
 	if(tDcacRx.uErrCode.tCode.tSys.bOT)
 	{
 		if(tDcac.uErrCode.tCode.bDcacOT == 0)
@@ -176,7 +176,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			bDcac_SetErrCode(DEC_DCAC_OT, false);
 	}
 
-	//¹ıÔØ
+	//è¿‡è½½
 	if(tDcacRx.uErrCode.tCode.tSys.bOL)
 	{
 		if(tDcac.uErrCode.tCode.bDcacOL == 0)
@@ -188,7 +188,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			bDcac_SetErrCode(DEC_DCAC_OL, false);
 	}
 	
-	//¶ÌÂ·
+	//çŸ­è·¯
 	if(tDcacRx.uErrCode.tCode.tSys.bSC)
 	{
 		if(tDcac.uErrCode.tCode.bDcacSC == 0)
@@ -200,8 +200,8 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			bDcac_SetErrCode(DEC_DCAC_SC, false);
 	}
 	
-	//----------------------------------¹ÊÕÏ´¦Àí--------------------------------------
-	//¹ıÎÂ
+	//----------------------------------æ•…éšœå¤„ç†--------------------------------------
+	//è¿‡æ¸©
 	static vu16  us_over_temp_cnt = 0;
 	if(tDcac.sMaxTemp >= tAppMemParam.tDCAC.sMaxTemp)  
 	{
@@ -211,7 +211,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			if(us_over_temp_cnt >= 2)
 			{
 				us_over_temp_cnt = 0;
-				bDcac_SetErrCode(DEC_SYS_OT,true);//¹ıÎÂ
+				bDcac_SetErrCode(DEC_SYS_OT,true);//è¿‡æ¸©
 			}
 		}
 		else 
@@ -232,7 +232,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			us_over_temp_cnt = 0;
 	}
 	
-	// //¹©µçµÍÑ¹
+	// //ä¾›ç”µä½å‹
 	// static vu16  us_pwr_volt_low_cnt = 0;
 	// if(tAdcSamp.usSysInVolt < tAppMemParam.tDCAC.usMinOpenVolt)  
 	// {
@@ -242,7 +242,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 	// 		if(us_pwr_volt_low_cnt >= 2)
 	// 		{
 	// 			us_pwr_volt_low_cnt = 0;
-	// 			bDcac_SetErrCode(DEC_SYS_UV,true);//Ç·Ñ¹¹ÊÕÏ
+	// 			bDcac_SetErrCode(DEC_SYS_UV,true);//æ¬ å‹æ•…éšœ
 	// 		}
 	// 	}
 	// 	else 
@@ -263,11 +263,11 @@ __STATIC_INLINE void v_proc_rec_param(void)
 	// 		us_pwr_volt_low_cnt = 0;
 	// }
 	
-	//¹ıÁ÷±£»¤
+	//è¿‡æµä¿æŠ¤
 	static vu16  us_total_curr = 0;
     static vu16  us_dyn_delay = 0;
 	static vu16  us_over_curr_cnt=0; 
-	us_total_curr = tDcacRx.usInCurr;  //µ¥Î»0.1A
+	us_total_curr = tDcacRx.usInCurr;  //å•ä½0.1A
 	if(us_total_curr >= (tAppMemParam.tDCAC.usMaxInCurr * 1.33))
 	{
 		if(us_dyn_delay != 4)
@@ -298,8 +298,8 @@ __STATIC_INLINE void v_proc_rec_param(void)
 	else 
 		us_over_curr_cnt = 0;
 	
-	//¹ıÔØ±£»¤
-	//Èç¹ûÊÇ±ß³å±ß·Å,¾Í²»¼ì²â¹ıÔØ,Ö»¼ì²â¹ıÑ¹
+	//è¿‡è½½ä¿æŠ¤
+	//å¦‚æœæ˜¯è¾¹å†²è¾¹æ”¾,å°±ä¸æ£€æµ‹è¿‡è½½,åªæ£€æµ‹è¿‡å‹
 	static vu16  us_temp = 0;
 	static vu16  us_overload_cnt=0;
 	static vu16  us_overload_pwr = 0;
@@ -342,9 +342,9 @@ __STATIC_INLINE void v_proc_rec_param(void)
 		us_overload_cnt = 0;
 	}
 	
-	//Êä³ö×´Ì¬¼ì²â
+	//è¾“å‡ºçŠ¶æ€æ£€æµ‹
 	static vu8 lost_err_cnt=0;
-	if((tDcac.eDisChgState == IOS_WORK && //ÏµÍ³ÅĞ¶ÏÎª¿ªÆô,µ«ÊÇ¼ì²âµ½Îª¹Ø±Õ
+	if((tDcac.eDisChgState == IOS_WORK && //ç³»ç»Ÿåˆ¤æ–­ä¸ºå¼€å¯,ä½†æ˜¯æ£€æµ‹åˆ°ä¸ºå…³é—­
 		(tDcacRx.usOutVolt < tAppMemParam.tDCAC.usMinInVolt)) ||
 	   (tDcac.eDisChgState == IOS_SHUT_DOWN && 
 		(tDcacRx.usOutVolt > tAppMemParam.tDCAC.usMinInVolt))
@@ -358,14 +358,14 @@ __STATIC_INLINE void v_proc_rec_param(void)
 				lost_err_cnt = 0;
 				bDcac_SetErrCode(DEC_SYS_OUT_ERR,true);
 				if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-					log_e("bDcacTask:´íÎóÊä³ö×´Ì¬´íÎó Êä³öµçÑ¹%dV",
+					log_e("bDcacTask:é”™è¯¯è¾“å‡ºçŠ¶æ€é”™è¯¯ è¾“å‡ºç”µå‹%dV",
 								tDcacRx.usOutVolt / 10);
 			}
 		}
 		else
 			lost_err_cnt = 0;
 	}
-	else//ÏµÍ³ÅĞ¶ÏÎª¹Ø±Õ,µ«ÊÇ¼ì²âµ½Îª¿ªÆô
+	else//ç³»ç»Ÿåˆ¤æ–­ä¸ºå…³é—­,ä½†æ˜¯æ£€æµ‹åˆ°ä¸ºå¼€å¯
 	{
 		if(tDcac.uErrCode.tCode.bSysOutErr == 1)
 		{
@@ -375,7 +375,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 				lost_err_cnt = 0;
 				bDcac_SetErrCode(DEC_SYS_OUT_ERR,false);
 				if(uPrint.tFlag.bDcacTask || uPrint.tFlag.bImportant)
-					log_i("bDcacTask:Çå³ıÊä³ö×´Ì¬´íÎó Êä³öµçÑ¹=%dV",
+					log_i("bDcacTask:æ¸…é™¤è¾“å‡ºçŠ¶æ€é”™è¯¯ è¾“å‡ºç”µå‹=%dV",
 								tDcacRx.usOutVolt / 10);
 			}
 			
@@ -384,21 +384,21 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			lost_err_cnt = 0;
 	}
 	
-	//ÊäÈë×´Ì¬¼à²â
+	//è¾“å…¥çŠ¶æ€ç›‘æµ‹
 	static vu8 uc_in_volt_state = 0;
 	static u8 uc_volt_state_cnt = 0;
 	if(tDcacRx.usInVolt < tAppMemParam.tDCAC.usMinInVolt - 60)
 	{
-		//ÍêÈ«µôµç,Çå¿Õ´íÎó
+		//å®Œå…¨æ‰ç”µ,æ¸…ç©ºé”™è¯¯
 		if(tDcacRx.usInVolt < 100)
 		{
-			//¹ıÑ¹
+			//è¿‡å‹
 			if(tDcac.uErrCode.tCode.bSysOV == 1)
 				bDcac_SetErrCode(DEC_SYS_OV,false); 
-			//Çå³ıÊäÈë±£»¤´íÎó
+			//æ¸…é™¤è¾“å…¥ä¿æŠ¤é”™è¯¯
 			if(tDcac.uErrCode.tCode.bSysSetInProte == 1)
 				bDcac_InProteFuncSwitch(false);  
-			//Çå³ıÊäÈë¹ıÁ÷´íÎó
+			//æ¸…é™¤è¾“å…¥è¿‡æµé”™è¯¯
 			if(tDcac.uErrCode.tCode.bSysInOC == 1)
 				bDcac_SetErrCode(DEC_SYS_IN_OC,false); 
 		}
@@ -409,7 +409,7 @@ __STATIC_INLINE void v_proc_rec_param(void)
 			if(uc_volt_state_cnt >= 2)
 			{
 				uc_volt_state_cnt = 0;
-				//ÊäÈëÇ·Ñ¹
+				//è¾“å…¥æ¬ å‹
 				uc_in_volt_state = 0;
 			}
 		}
@@ -435,15 +435,15 @@ __STATIC_INLINE void v_proc_rec_param(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¼ì²é³ä·ÅµçĞí¿É
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æ£€æŸ¥å……æ”¾ç”µè®¸å¯
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_check_dischg_or_chg_perm(void)
 {
-	//³äµçĞí¿É
+	//å……ç”µè®¸å¯
 	if(tDcac.uErrCode.tCode.bDcacInVolt == 1		||
 		tDcac.uErrCode.tCode.bDcacInFreq == 1		||
 		tDcac.uErrCode.tCode.bDcacInOther == 1		||
@@ -515,18 +515,18 @@ __STATIC_INLINE void v_check_dischg_or_chg_perm(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¼ì²é¹Ø±Õ·Åµç
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æ£€æŸ¥å…³é—­æ”¾ç”µ
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_check_close_dischg(void)
 {
 	if(tSysInfo.eDevState != DS_WORK)
 		return;
 	
-	//Êä³öµçÑ¹´ò¿ª
+	//è¾“å‡ºç”µå‹æ‰“å¼€
 	static vu16 us_out_volt_wait_cnt = 0;
 	if(tDcac.uPerm.tPerm.bDisChgPerm == false)
 	{
@@ -539,9 +539,9 @@ __STATIC_INLINE void v_check_close_dischg(void)
 				us_out_volt_wait_cnt = 0;
 				
 				if(uPrint.tFlag.bDcacTask)
-					log_w("bDcacTask:µ±Ç°Éè±¸×´Ì¬0x%x,²»Ğí¿É·Åµç,Ç¿ÖÆ¹Ø±Õ",tDcac.eDevState);
+					log_w("bDcacTask:å½“å‰è®¾å¤‡çŠ¶æ€0x%x,ä¸è®¸å¯æ”¾ç”µ,å¼ºåˆ¶å…³é—­",tDcac.eDevState);
 				
-				//¹Ø±ÕÊä³ö
+				//å…³é—­è¾“å‡º
 				cDCAC_Switch(DSO_AC_OUT, ST_OFF, true);
 			}
 		}
@@ -554,15 +554,15 @@ __STATIC_INLINE void v_check_close_dischg(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃ×ÜµÄ³äµç¹¦ÂÊ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®æ€»çš„å……ç”µåŠŸç‡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_set_total_chg_pwr(void)
 {
-	//ÉèÖÃ×î´ó³äµç¹¦ÂÊ
+	//è®¾ç½®æœ€å¤§å……ç”µåŠŸç‡
 	vu16 us_total_chg_pwr = 0;
 	static vu16 us_last_total_chg_pwr = 100;
 	static vu16 us_total_chg_pwr_err_cnt = 0;
@@ -584,7 +584,7 @@ __STATIC_INLINE void v_set_total_chg_pwr(void)
 	else
 		us_total_chg_pwr = MIN2(sysCHG_PWR_LEVEL3, us_total_chg_pwr);
 
-	//µçĞ¾ÎÂ¶È³¬¹ı45¡ã,½µµÍ¹¦ÂÊ
+	//ç”µèŠ¯æ¸©åº¦è¶…è¿‡45Â°,é™ä½åŠŸç‡
 	if(tBmsRx.tParam.tDevInfo->sMaxTemp >= 45)
 	{
 		if(us_total_chg_pwr > (sysCHG_PWR_LEVEL3 / 2))
@@ -596,15 +596,15 @@ __STATIC_INLINE void v_set_total_chg_pwr(void)
 	else 
 		us_total_chg_pwr_err_cnt = 0;
 
-	//³äµçÑÓÊ±
+	//å……ç”µå»¶æ—¶
 	if(us_chg_delay_cnt < 0xff)
 		us_chg_delay_cnt++;
 		
-	//ÑÓÊ±Æô¶¯
+	//å»¶æ—¶å¯åŠ¨
 	if(us_chg_delay_cnt < 5)
 		return;
 
-	//Î´±ä¸ü
+	//æœªå˜æ›´
 	if(us_total_chg_pwr == us_last_total_chg_pwr && 
 		(us_total_chg_pwr_err_cnt < (2000 / dcacTASK_GET_PARAM_CYCLE_TIME)))
 		return;
@@ -617,11 +617,11 @@ __STATIC_INLINE void v_set_total_chg_pwr(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃAC³äµç¹¦ÂÊ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®ACå……ç”µåŠŸç‡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 __STATIC_INLINE void v_set_ac_chg_pwr(void)
 {
@@ -632,7 +632,7 @@ __STATIC_INLINE void v_set_ac_chg_pwr(void)
 	if(tSysInfo.eDevState != DS_WORK)
 		return;
 	
-	//ÉèÖÃAC³äµç×´Ì¬
+	//è®¾ç½®ACå……ç”µçŠ¶æ€
 	if(tDcacRx.usInVolt > tAppMemParam.tDCAC.usMinInVolt)
 	{
 		if(tDcac.uErrCode.ulCode != 0)
@@ -650,18 +650,18 @@ __STATIC_INLINE void v_set_ac_chg_pwr(void)
 	
 	// us_chg_pwr = tSysInfo.tSetChgPwr.usDCAC;
 	
-	// //ACÉèÖÃµÄ¹¦ÂÊºÍ²ÉÑùµ½µÄ²»Ò»ÖÂ
+	// //ACè®¾ç½®çš„åŠŸç‡å’Œé‡‡æ ·åˆ°çš„ä¸ä¸€è‡´
 	// if(abs(tDcacRx.usInChgPwr - us_chg_pwr) > 100)
 	// 	us_chg_pwr_err++;
 	// else 
 	// 	us_chg_pwr_err = 0;
 
-	// //¹¦ÂÊÃ»±ä»¯,ÍË³ö
+	// //åŠŸç‡æ²¡å˜åŒ–,é€€å‡º
 	// if(us_last_chg_pwr == us_chg_pwr && 
 	// 	(us_chg_pwr_err < (5000 / dcacTASK_GET_PARAM_CYCLE_TIME)))
 	// 	return;
 	
-	// //ÉèÖÃAC³äµç¹¦ÂÊ
+	// //è®¾ç½®ACå……ç”µåŠŸç‡
 	// if(b_dcac_cs_set_chg_pwr(us_chg_pwr) == true)
 	// {
 	// 	us_last_chg_pwr = us_chg_pwr;

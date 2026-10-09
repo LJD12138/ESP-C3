@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³³õÊ¼»¯ÈÎÎñ                                                        *
+ *                                         ç³»ç»Ÿåˆå§‹åŒ–ä»»åŠ¡                                                        *
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "board_config.h"
@@ -103,11 +103,11 @@ void SysParamInit(void)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ³õÊ¼»¯ÈÎÎñµÄÈÎÎñ²ÎÊı    µÚÒ»²½
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    åˆå§‹åŒ–ä»»åŠ¡çš„ä»»åŠ¡å‚æ•°    ç¬¬ä¸€æ­¥
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vBoard_SysInit(void)
 {
@@ -120,8 +120,8 @@ void vBoard_SysInit(void)
 	#endif  //boardPRINT_IFACE
 	
 	#if boardSEGGER
-	SEGGER_RTT_Init();      //³õÊ¼»¯Seeger RTT Êä³ö 
-	SEGGER_SYSVIEW_Conf();  //SystemView ³õÊ¼»¯
+	SEGGER_RTT_Init();      //åˆå§‹åŒ–Seeger RTT è¾“å‡º 
+	SEGGER_SYSVIEW_Conf();  //SystemView åˆå§‹åŒ–
 	#endif  //boardSEGGER
 	
 	#if(boardCM_BACKTRACE)
@@ -138,7 +138,7 @@ void vBoard_SysInit(void)
 		printf("EasyFlash init fail, EfErrCode = %d.r\n", ret);
 	#endif  //boardEASY_FLASH
 	
-	SysParamInit();        //³õÊ¼»¯ÏµÍ³²ÎÊı
+	SysParamInit();        //åˆå§‹åŒ–ç³»ç»Ÿå‚æ•°
 }
 
 
@@ -146,11 +146,11 @@ void vBoard_SysInit(void)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ³õÊ¼»¯ÈÎÎñµÄÈÎÎñ    µÚ¶ş²½
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    åˆå§‹åŒ–ä»»åŠ¡çš„ä»»åŠ¡    ç¬¬äºŒæ­¥
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vBoard_StartTask(void *pvParameters)
 {
@@ -158,40 +158,40 @@ void vBoard_StartTask(void *pvParameters)
     // taskENTER_CRITICAL();
 	#endif  //boardUSE_OS
 
-	bSys_TaskInit();            //ÏµÍ³×ÜÈÎÎñ
+	bSys_TaskInit();            //ç³»ç»Ÿæ€»ä»»åŠ¡
 
 	#if(boardPRINT_IFACE)
 	if(bPrint_TaskInit() == false)
-		uPrint.ulFlag = 0;	//¹Ø±ÕËùÓĞµ÷ÊÔ
+		uPrint.ulFlag = 0;	//å…³é—­æ‰€æœ‰è°ƒè¯•
 	#endif
 
-    vKey_TaskInit();			//°´¼üÈÎÎñ
+    vKey_TaskInit();			//æŒ‰é”®ä»»åŠ¡
 
-	vTimer_TaskInit();			//ÏµÍ³¼ÆÊ±
+	vTimer_TaskInit();			//ç³»ç»Ÿè®¡æ—¶
 
-	// vLight_TaskInit();           //ÕÕÃ÷µÆÈÎÎñ
+	// vLight_TaskInit();           //ç…§æ˜ç¯ä»»åŠ¡
 
-	// bUsb_TaskInit();			//USBÈÎÎñ
+	// bUsb_TaskInit();			//USBä»»åŠ¡
 
-	// bHM_TaskInit();             //·çÉÈÉ¢ÈÈÈÎÎñ
+	// bHM_TaskInit();             //é£æ‰‡æ•£çƒ­ä»»åŠ¡
 
 	#if(boardDISPLAY)
-	bDisp_TaskInit();			//ÏÔÊ¾ÈÎÎñ
+	bDisp_TaskInit();			//æ˜¾ç¤ºä»»åŠ¡
 	#endif  //boardDISPLAY
 
 	#if(boardDCAC_IFACE)
-	bDcac_TaskInit();           //Äæ±äÆ÷·¢ËÍÈÎÎñ
-	bDcac_RecTaskInit();        //Äæ±äÆ÷½ÓÊÕÈÎÎñ
+	bDcac_TaskInit();           //é€†å˜å™¨å‘é€ä»»åŠ¡
+	bDcac_RecTaskInit();        //é€†å˜å™¨æ¥æ”¶ä»»åŠ¡
 	#endif
 	
 	#if(boardBMS_IFACE)
-	bBms_TaskInit();            //BMS·¢ËÍÈÎÎñ
-	bBms_RecTaskInit();         //BMS½ÓÊÕÈÎÎñ
+	bBms_TaskInit();            //BMSå‘é€ä»»åŠ¡
+	bBms_RecTaskInit();         //BMSæ¥æ”¶ä»»åŠ¡
 	#endif
 	
 	#if(boardMPPT_IFACE)
-	bMppt_TaskInit();           //MPPT·¢ËÍÈÎÎñ
-	bMppt_RecTaskInit();        //MPPT½ÓÊÕÈÎÎñ
+	bMppt_TaskInit();           //MPPTå‘é€ä»»åŠ¡
+	bMppt_RecTaskInit();        //MPPTæ¥æ”¶ä»»åŠ¡
 	#endif
 	
 	#if(boardUSE_OS)

@@ -5,25 +5,25 @@
 #include "main.h"
 #include "lwrb.h"
 
-// 1. Ç°ÖÃÉùÃ÷Task_T½á¹¹Ìå
+// 1. å‰ç½®å£°æ˜Task_Tç»“æ„ä½“
 typedef struct Task_T Task_T;
 
-typedef bool (*bpTaskManageFunc)(Task_T *tp_task); //ÈÎÎñµ÷¶È 
-typedef void (*vpFunc)(Task_T *tp_task);  			//Ö´ĞĞÈÎÎñµÄº¯ÊıÖ¸Õë
-typedef void (*vpAddTaskReturnFunc)(u8 num);  		//Ö´ĞĞÈÎÎñµÄº¯ÊıÖ¸Õë
+typedef bool (*bpTaskManageFunc)(Task_T *tp_task); //ä»»åŠ¡è°ƒåº¦ 
+typedef void (*vpFunc)(Task_T *tp_task);  			//æ‰§è¡Œä»»åŠ¡çš„å‡½æ•°æŒ‡é’ˆ
+typedef void (*vpAddTaskReturnFunc)(u8 num);  		//æ‰§è¡Œä»»åŠ¡çš„å‡½æ•°æŒ‡é’ˆ
 
 #pragma pack(1)
 struct Task_T
 {
-	vu8   				ucID;             	//µ±Ç°ÈÎÎñID
-	vu8              	ucStep;             //µ±Ç°²½Öè
-	vu16             	usInParam;          //º¯Êı²ÎÊı
-	vu16              	usStepWaitCnt;		//²½ÖèµÈ´ı´ÎÊı
-	vu16              	usStepRepeatCnt;	//²½ÖèÖØ¸´´ÎÊı
-	vu16              	usTaskWaitCnt;		//ÈÎÎñµÈ´ı´ÎÊı
-	bool 				bNowRun;			//Á¢¿ÌÖ´ĞĞ
-	bpTaskManageFunc    bp_task_manage_func;//ÈÎÎñµ÷¶Èº¯Êı
-	vpFunc				vp_func;			//ÈÎÎñº¯Êı
+	vu8   				ucID;             	//å½“å‰ä»»åŠ¡ID
+	vu8              	ucStep;             //å½“å‰æ­¥éª¤
+	vu16             	usInParam;          //å‡½æ•°å‚æ•°
+	vu16              	usStepWaitCnt;		//æ­¥éª¤ç­‰å¾…æ¬¡æ•°
+	vu16              	usStepRepeatCnt;	//æ­¥éª¤é‡å¤æ¬¡æ•°
+	vu16              	usTaskWaitCnt;		//ä»»åŠ¡ç­‰å¾…æ¬¡æ•°
+	bool 				bNowRun;			//ç«‹åˆ»æ‰§è¡Œ
+	bpTaskManageFunc    bp_task_manage_func;//ä»»åŠ¡è°ƒåº¦å‡½æ•°
+	vpFunc				vp_func;			//ä»»åŠ¡å‡½æ•°
 	vpAddTaskReturnFunc vp_return_func;
 	lwrb_t       		tQueueBuff;
 	u8					uac_task_queue_buff; //

@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ¼ÇÒä²ÎÊý                                                             *
+ *                                         è®°å¿†å‚æ•°                                                             *
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "app_info.h"
@@ -10,10 +10,10 @@
 #include "Print/print_task.h"
 #include "flash_allot_table.h"
 
-//ÎªÁË±àÒë°æ±¾¡¢ÈÕÆÚºÍÊ±¼äÕýÈ·£¬ÐèÒª½øÐÐÉèÖÃ£º×ÜÊÇ±àÒë
-//ÔÚoption for ...ÖÐ¹´Ñ¡ always build
+//ä¸ºäº†ç¼–è¯‘ç‰ˆæœ¬ã€æ—¥æœŸå’Œæ—¶é—´æ­£ç¡®ï¼Œéœ€è¦è¿›è¡Œè®¾ç½®ï¼šæ€»æ˜¯ç¼–è¯‘
+//åœ¨option for ...ä¸­å‹¾é€‰ always build
 
-//****************************************************²ÎÊý³õÊ¼»¯**************************************************//		
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//		
 __ALIGNED(4) AppMemParam_T  	tAppMemParam;
 __ALIGNED(4) BootMemParam_T  	tBootMemParam;
 
@@ -33,14 +33,14 @@ const char tMpptMemParamStr[]	= "tMPPT";
 const char tDcacMemParamStr[]	= "tDCAC";
 const char tSysMemParamStr[]	= "tSYS";
 
-//°Ñ°æ±¾ÐÅÏ¢Ð´ÈëAPPµÄFalshÖÐ,Òª¼ÓÆ«ÒÆ,flashAPP_STARTÊÇNVICÖÐ¶ÏÏòÁ¿±í
+//æŠŠç‰ˆæœ¬ä¿¡æ¯å†™å…¥APPçš„Falshä¸­,è¦åŠ åç§»,flashAPP_STARTæ˜¯NVICä¸­æ–­å‘é‡è¡¨
 const __attribute__((at(flashAPP_START + FLASH_PAGE_SIZE)))  VerInfo_T tAppDefaultVer = {
 	boardSOFTWARE_VERSION,
 	__DATE__,
 	__TIME__,
 };
 
-// //°Ñ°æ±¾ÐÅÏ¢Ð´ÈëAPPµÄFalshÖÐ,Òª¼ÓÆ«ÒÆ,flashAPP_STARTÊÇNVICÖÐ¶ÏÏòÁ¿±í
+// //æŠŠç‰ˆæœ¬ä¿¡æ¯å†™å…¥APPçš„Falshä¸­,è¦åŠ åç§»,flashAPP_STARTæ˜¯NVICä¸­æ–­å‘é‡è¡¨
 // const VerInfo_T tAppDefaultVer = {
 // 	boardSOFTWARE_VERSION,
 // 	"__DATE__",
@@ -57,19 +57,19 @@ const ef_env default_env_set[] = {
 };
 #endif
 
-//****************************************************º¯Êý¶¨Òå**************************************************//
+//****************************************************å‡½æ•°å®šä¹‰**************************************************//
 void v_print_info(void);
 	
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Ìø×ªµ½Boot³ÌÐò
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    cmd:Ìø×ªµÄÖ¸Áî
+-----å‡½æ•°åŠŸèƒ½    è·³è½¬åˆ°Bootç¨‹åº
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    cmd:è·³è½¬çš„æŒ‡ä»¤
 #define     mainINIT_FINISH_FLAG   0x88888888
 #define     mainUPDATA_FLAG        0xAAAAAAAA
 #define     mainDISPLAY_FLAG       0xAAAABBBB
 #define     mainLOW_POWER_FLAG     0xBBBBCCCC
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 void vApp_JumpToBoot(uint32_t cmd)
 {
@@ -78,17 +78,17 @@ void vApp_JumpToBoot(uint32_t cmd)
 	if(uPrint.tFlag.bAppInfo)
 	{
 		if(cmd == mainINIT_FINISH_FLAG)
-			sMyPrint("×¼±¸Ìø×ªµ½Boot³õÊ¼»¯Íê³ÉÈÎÎñ\r\n");
+			sMyPrint("å‡†å¤‡è·³è½¬åˆ°Bootåˆå§‹åŒ–å®Œæˆä»»åŠ¡\r\n");
 		else if(cmd == mainUPDATA_FLAG)
-			sMyPrint("×¼±¸Ìø×ªµ½BootÉý¼¶ÈÎÎñ\r\n");
+			sMyPrint("å‡†å¤‡è·³è½¬åˆ°Bootå‡çº§ä»»åŠ¡\r\n");
 		else if(cmd == mainDISPLAY_FLAG)
-			sMyPrint("×¼±¸Ìø×ªµ½BootÏÔÊ¾ÈÎÎñ\r\n");
+			sMyPrint("å‡†å¤‡è·³è½¬åˆ°Bootæ˜¾ç¤ºä»»åŠ¡\r\n");
 		else if(cmd == mainLOW_POWER_FLAG)
-			sMyPrint("×¼±¸Ìø×ªµ½BootµÍ¹¦ºÄÈÎÎñ\r\n");
+			sMyPrint("å‡†å¤‡è·³è½¬åˆ°Bootä½ŽåŠŸè€—ä»»åŠ¡\r\n");
 		else if(cmd == mainINIT_APP_PARAM_FLAG)
-			sMyPrint("³õÊ¼»¯APP²ÎÊý\r\n");
+			sMyPrint("åˆå§‹åŒ–APPå‚æ•°\r\n");
 		else 
-			sMyPrint("×¼±¸Ìø×ªµ½Boot³õÊ¼»¯ÈÎÎñ\r\n");
+			sMyPrint("å‡†å¤‡è·³è½¬åˆ°Bootåˆå§‹åŒ–ä»»åŠ¡\r\n");
 	}
 	
 	if(cmd == mainINIT_APP_PARAM_FLAG)
@@ -97,65 +97,65 @@ void vApp_JumpToBoot(uint32_t cmd)
 	}
 	else 
 	{
-		//±ê¼ÇÖ¸Áî
+		//æ ‡è®°æŒ‡ä»¤
 		tBootMemParam.tParam.ulCmd = cmd;  
 		tBootMemParam.tParam.eAppState = AS_OK;
 		tBootMemParam.tParam.ucAppFaultCnt = 0;
 		
-		//¿ªÊ¼Ð´ÈëÊý¾Ý
+		//å¼€å§‹å†™å…¥æ•°æ®
 		c_ret = cApp_BootUpdataMemParam(tBootParamStr);
 		if(c_ret <= 0)
 		{
 			if(uPrint.tFlag.bAppInfo)
-				sMyPrint("bAppInfo:BOOT²ÎÊý¸üÐÂÊ§°Ü ´úÂë%d, ÍË³öÖØÆô\r\n",c_ret);
+				sMyPrint("bAppInfo:BOOTå‚æ•°æ›´æ–°å¤±è´¥ ä»£ç %d, é€€å‡ºé‡å¯\r\n",c_ret);
 			return;
 		}
 
 		if(cmd != mainINIT_FINISH_FLAG)
 		{	
-			// __disable_irq();  // ¿ÉÒÔÊ¹ÓÃÕâ¸öº¯Êý ¹Ø±Õ×ÜÖÐ¶Ï
+			// __disable_irq();  // å¯ä»¥ä½¿ç”¨è¿™ä¸ªå‡½æ•° å…³é—­æ€»ä¸­æ–­
 			
-			// //¹Ø±ÕÖÐ¶Ï,È·±£Ìø×ª¹ý³ÌÖÐ ²»»á½øÈëÖÐ¶Ï,µ¼ÖÂÌø×ªÊ§°Ü 
-			// //´Ëº¯Êý»á½«¸ø¶¨µÄÖµ·ÖÅä¸ø¹ÊÕÏÑÚÂë¼Ä´æÆ÷¡£
+			// //å…³é—­ä¸­æ–­,ç¡®ä¿è·³è½¬è¿‡ç¨‹ä¸­ ä¸ä¼šè¿›å…¥ä¸­æ–­,å¯¼è‡´è·³è½¬å¤±è´¥ 
+			// //æ­¤å‡½æ•°ä¼šå°†ç»™å®šçš„å€¼åˆ†é…ç»™æ•…éšœæŽ©ç å¯„å­˜å™¨ã€‚
 			// __set_FAULTMASK(1);	
-			// //ÏµÍ³¸´Î»,¸´Î»ºóÄ¬ÈÏ´ÓMCUµÄÆðÊ¼µØÖ·¿ªÊ¼, 
-			// //Ò²¾ÍÊÇBOOTµÄÆðÊ¼µØÖ·¿ªÊ¼, ÕâÑù³ÌÐò¾Í´ÓAPP»Øµ½ÁËBOOT,
-			// //ÔÙ´ÓBOOTÌø×ªÖÁAPPµÄÊ±ºò, ¶ÑÕ»ÒÑ¾­Çå³ýÁË,Ò²¾Í²»»á·¢ÉúÒç³ö
+			// //ç³»ç»Ÿå¤ä½,å¤ä½åŽé»˜è®¤ä»ŽMCUçš„èµ·å§‹åœ°å€å¼€å§‹, 
+			// //ä¹Ÿå°±æ˜¯BOOTçš„èµ·å§‹åœ°å€å¼€å§‹, è¿™æ ·ç¨‹åºå°±ä»ŽAPPå›žåˆ°äº†BOOT,
+			// //å†ä»ŽBOOTè·³è½¬è‡³APPçš„æ—¶å€™, å †æ ˆå·²ç»æ¸…é™¤äº†,ä¹Ÿå°±ä¸ä¼šå‘ç”Ÿæº¢å‡º
 			// NVIC_SystemReset();	
 		}		
 	}
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ÏµÍ³ÐÅÏ¢³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      true:³É¹¦  false:Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    ç³»ç»Ÿä¿¡æ¯åˆå§‹åŒ–
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      true:æˆåŠŸ  false:å¤±è´¥
 ******************************************************************************************************************/
 s8 cApp_BootInfoInit(void)
 {
 	s8 c_ret = 0;
 	
-	//¶ÁÈ¡BOOTÊý¾Ý
+	//è¯»å–BOOTæ•°æ®
 	c_ret = cApp_BootGetMemParam(tBootMemParamStr);
 	if(c_ret <= 0)
 	{
 		if(uPrint.tFlag.bAppInfo)
-			sMyPrint("bAppInfo:BOOT²ÎÊý¶ÁÈ¡Ê§°Ü ´úÂë%d\r\n",c_ret);
+			sMyPrint("bAppInfo:BOOTå‚æ•°è¯»å–å¤±è´¥ ä»£ç %d\r\n",c_ret);
 		return -1;
 	}
 	
-	//±ê¼Ç
+	//æ ‡è®°
 	tBootMemParam.tParam.eAppState = AS_OK;
 	tBootMemParam.tParam.ucAppFaultCnt = 0;
 	
-	//¸üÐÂ
+	//æ›´æ–°
 	c_ret = cApp_BootUpdataMemParam(tBootParamStr);
 	if(c_ret <= 0)
 	{
 		if(uPrint.tFlag.bAppInfo)
-			sMyPrint("bAppInfo:BOOT²ÎÊý¸üÐÂÊ§°Ü ´úÂë%d\r\n",c_ret);
+			sMyPrint("bAppInfo:BOOTå‚æ•°æ›´æ–°å¤±è´¥ ä»£ç %d\r\n",c_ret);
 		return -2;
 	}
 	
@@ -163,11 +163,11 @@ s8 cApp_BootInfoInit(void)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    »ñÈ¡APPÐÅÏ¢
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      true:²Ù×÷³É¹¦   false:²Ù×÷Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    èŽ·å–APPä¿¡æ¯
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      true:æ“ä½œæˆåŠŸ   false:æ“ä½œå¤±è´¥
 ******************************************************************************************************************/
 s8 cApp_AppInfoInit(void)
 {
@@ -179,66 +179,66 @@ s8 cApp_AppInfoInit(void)
 	const char* p_obj_str = tAppMemParamStr;
 	#endif
 	
-	//--------------------------------------»ñÈ¡APPÏûÏ¢-------------------------------------------
-	//¶ÁÈ¡²ÎÊý
+	//--------------------------------------èŽ·å–APPæ¶ˆæ¯-------------------------------------------
+	//è¯»å–å‚æ•°
 	c_ret = cApp_GetMemParam(p_obj_str);
-	//¶ÁÈ¡²ÎÊýÊ§°Ü
+	//è¯»å–å‚æ•°å¤±è´¥
 	if(c_ret < 0)
 	{
 		if(uPrint.tFlag.bAppInfo)
-			sMyPrint("bAppInfo:APP²ÎÊý¶ÁÈ¡Ê§°Ü ´úÂë%d\r\n",c_ret);
+			sMyPrint("bAppInfo:APPå‚æ•°è¯»å–å¤±è´¥ ä»£ç %d\r\n",c_ret);
 		return -1;
 	}
 
-	//--------------------------------------Ð£ÑéAPPÏûÏ¢-------------------------------------------
-	// ---------ÒÑ¾­³õÊ¼»¯¹ý----------
-	// if(tAppMemParam.tParam.usInitFinish == 0xAAAA)  //²»ÐèÒª³õÊ¼»¯
+	//--------------------------------------æ ¡éªŒAPPæ¶ˆæ¯-------------------------------------------
+	// ---------å·²ç»åˆå§‹åŒ–è¿‡----------
+	// if(tAppMemParam.tParam.usInitFinish == 0xAAAA)  //ä¸éœ€è¦åˆå§‹åŒ–
 	// {
 	// 	if(uPrint.tFlag.bAppInfo)
 	// 	{
 	// 		v_print_info();
-	// 		sMyPrint("bAppInfo:APP²ÎÊý²»ÐèÒªÖØÖÃ\r\n");
+	// 		sMyPrint("bAppInfo:APPå‚æ•°ä¸éœ€è¦é‡ç½®\r\n");
 	// 	}
 	// 	tSysInfo.uInit.tFinish.bIF_SysInit = true;
 	// 	return 1;
 	// }
 	
-	//---------»¹Ã»³õÊ¼»¯----------
-	//³õÊ¼»¯APPÊý¾Ý
+	//---------è¿˜æ²¡åˆå§‹åŒ–----------
+	//åˆå§‹åŒ–APPæ•°æ®
 	c_ret = cApp_MemParamInit(p_obj_str);
 	if(c_ret <= 0)
 	{
 		if(uPrint.tFlag.bAppInfo)
-			sMyPrint("bAppInfo:APP²ÎÊý³õÊ¼»¯Ê§°Ü ´úÂë%d\r\n",c_ret);
+			sMyPrint("bAppInfo:APPå‚æ•°åˆå§‹åŒ–å¤±è´¥ ä»£ç %d\r\n",c_ret);
 		return -2;
 	}
 	
-	//±ê¼Ç
+	//æ ‡è®°
 	tAppMemParam.tParam.usInitFinish = 0xAAAA;
-	//¸üÐÂ²ÎÊý
+	//æ›´æ–°å‚æ•°
 	c_ret = cApp_UpdataMemParam(p_obj_str);
 	if(c_ret <= 0)
 	{
 		if(uPrint.tFlag.bAppInfo)
-			sMyPrint("bAppInfo:APP²ÎÊý¸üÐÂÊ§°Ü ´úÂë%d\r\n",c_ret);
+			sMyPrint("bAppInfo:APPå‚æ•°æ›´æ–°å¤±è´¥ ä»£ç %d\r\n",c_ret);
 		return -3;
 	}
 	
 	if(uPrint.tFlag.bAppInfo)
 	{
 		v_print_info();
-		sMyPrint("bAppInfo:APP²ÎÊýÖØÖÃ³É¹¦\r\n");
+		sMyPrint("bAppInfo:APPå‚æ•°é‡ç½®æˆåŠŸ\r\n");
 	}
 	tSysInfo.uInit.tFinish.bIF_SysInit = false;
 	return 2;
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    APP¼ÇÒä²ÎÊý³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      true:Ð´Èë³É¹¦  false:Ð´ÈëÊ§°Ü
+-----å‡½æ•°åŠŸèƒ½    APPè®°å¿†å‚æ•°åˆå§‹åŒ–
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      true:å†™å…¥æˆåŠŸ  false:å†™å…¥å¤±è´¥
 ******************************************************************************************************************/
 s8 cApp_MemParamInit(const char* id_str)
 {
@@ -247,71 +247,71 @@ s8 cApp_MemParamInit(const char* id_str)
 	
 	if (strcmp(id_str, tAppMemParamStr) == 0)
 	{
-		//°æ±¾ÐÅÏ¢
-		tAppMemParam.tVerInfo 				= tAppDefaultVer;					//°æ±¾ÐÅÏ¢
+		//ç‰ˆæœ¬ä¿¡æ¯
+		tAppMemParam.tVerInfo 				= tAppDefaultVer;					//ç‰ˆæœ¬ä¿¡æ¯
 		
-		//APP²ÎÊý
-		tAppMemParam.tParam.usInitFinish 	= 0;								//³õÊ¼»¯Íê³É±êÖ¾
+		//APPå‚æ•°
+		tAppMemParam.tParam.usInitFinish 	= 0;								//åˆå§‹åŒ–å®Œæˆæ ‡å¿—
 		#if(boardIC_TYPE == boardIC_GD32F30X)
 		memcpy(tAppMemParam.tParam.usUniqueID,(uint16_t *)(0x1FFFF7E8),12);
 		#elif(boardIC_TYPE == boardIC_STM32H7XX)
-		memcpy(tAppMemParam.tParam.usUniqueID, (uint16_t *)(0x1FF1E800), 12);	//Ð¾Æ¬ID
+		memcpy(tAppMemParam.tParam.usUniqueID, (uint16_t *)(0x1FF1E800), 12);	//èŠ¯ç‰‡ID
 		#endif
 		
-		// //ÏÔÊ¾²ÎÊý
+		// //æ˜¾ç¤ºå‚æ•°
 		// bDisp_MemParamInit(&tAppMemParam.tDISP);
 		
-		// //DC²ÎÊý
+		// //DCå‚æ•°
 		// bDc_MemParamInit(&tAppMemParam.tDC);
 		
-		//USB²ÎÊý
+		//USBå‚æ•°
 		bUsb_MemParamInit(&tAppMemParam.tUSB);
 		
-		//BMS²ÎÊý
+		//BMSå‚æ•°
 		#if(boardBMS_IFACE)
 		bBms_MemParamInit(&tAppMemParam.tBMS);
 		#endif  //boardBMS_IFACE
 
-		//MPPT²ÎÊý
+		//MPPTå‚æ•°
 		#if(boardMPPT_IFACE)
 		bMppt_MemParamInit(&tAppMemParam.tMPPT);
 		#endif  //boardMPPT_IFACE
 
-		//DCAC²ÎÊý
+		//DCACå‚æ•°
 		#if(boardDCAC_IFACE)
 		bDcac_MemParamInit(&tAppMemParam.tDCAC);
 		#endif  //boardDCAC_IFACE
 		
-		//SYS²ÎÊý
+		//SYSå‚æ•°
 		bSys_MemParamInit(&tAppMemParam.tSYS);
 	}
-	//°æ±¾ÐÅÏ¢
+	//ç‰ˆæœ¬ä¿¡æ¯
 	else if (strcmp(id_str, tAppVerInfoStr) == 0)
 	{
 		tAppMemParam.tVerInfo 				= tAppDefaultVer;
 	}
-	//ºÍAPP²ÎÊý
+	//å’ŒAPPå‚æ•°
 	else if (strcmp(id_str, tAppParamStr) == 0)
 	{
 		tAppMemParam.tParam.usInitFinish 	= 0;
 		#if(boardIC_TYPE == boardIC_GD32F30X)
 		memcpy(tAppMemParam.tParam.usUniqueID,(uint16_t *)(0x1FFFF7E8),12);
 		#elif(boardIC_TYPE == boardIC_STM32H7XX)
-		memcpy(tAppMemParam.tParam.usUniqueID, (uint16_t *)(0x1FF1E800), 12);	//Ð¾Æ¬ID
+		memcpy(tAppMemParam.tParam.usUniqueID, (uint16_t *)(0x1FF1E800), 12);	//èŠ¯ç‰‡ID
 		#endif
 	}
-	//°æ±¾ÐÅÏ¢ºÍAPP²ÎÊý
+	//ç‰ˆæœ¬ä¿¡æ¯å’ŒAPPå‚æ•°
 	else if (strcmp(id_str, tAppVerAndParamStr) == 0)
 	{
-		//°æ±¾ÐÅÏ¢
-		tAppMemParam.tVerInfo 				= tAppDefaultVer;					//°æ±¾ÐÅÏ¢
+		//ç‰ˆæœ¬ä¿¡æ¯
+		tAppMemParam.tVerInfo 				= tAppDefaultVer;					//ç‰ˆæœ¬ä¿¡æ¯
 		
-		//APP²ÎÊý
-		tAppMemParam.tParam.usInitFinish 	= 0;								//³õÊ¼»¯Íê³É±êÖ¾
+		//APPå‚æ•°
+		tAppMemParam.tParam.usInitFinish 	= 0;								//åˆå§‹åŒ–å®Œæˆæ ‡å¿—
 		#if(boardIC_TYPE == boardIC_GD32F30X)
 		memcpy(tAppMemParam.tParam.usUniqueID,(uint16_t *)(0x1FFFF7E8),12);
 		#elif(boardIC_TYPE == boardIC_STM32H7XX)
-		memcpy(tAppMemParam.tParam.usUniqueID, (uint16_t *)(0x1FF1E800), 12);	//Ð¾Æ¬ID
+		memcpy(tAppMemParam.tParam.usUniqueID, (uint16_t *)(0x1FF1E800), 12);	//èŠ¯ç‰‡ID
 		#endif
 	}
 	// //DISP
@@ -348,11 +348,11 @@ s8 cApp_MemParamInit(const char* id_str)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ¸üÐÂAPP¼ÇÒä²ÎÊý
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    id_str:ÐèÒª¸üÐÂµÄ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      >0 Ð´ÈëµÄ×Ö½ÚÊý   0:Î´²Ù×÷  <0:´íÎó
+-----å‡½æ•°åŠŸèƒ½    æ›´æ–°APPè®°å¿†å‚æ•°
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    id_str:éœ€è¦æ›´æ–°çš„å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      >0 å†™å…¥çš„å­—èŠ‚æ•°   0:æœªæ“ä½œ  <0:é”™è¯¯
 ******************************************************************************************************************/
 s16 cApp_UpdataMemParam(const char* id_str)
 {
@@ -362,124 +362,124 @@ s16 cApp_UpdataMemParam(const char* id_str)
 	#if(boardEASY_FLASH)
 	int write_len = 0;
 	
-	//È«²¿ÖØÖÃ
+	//å…¨éƒ¨é‡ç½®
 	if (strcmp(id_str, tAppMemParamStr) == 0)
 	{
-		//°æ±¾ÐÅÏ¢
+		//ç‰ˆæœ¬ä¿¡æ¯
 		write_len = sizeof(tAppMemParam.tVerInfo);
 		if(ef_set_env_blob(tAppVerInfoStr, &tAppMemParam.tVerInfo, write_len) != EF_NO_ERR)
 			return -2;
 		
-		//APP²ÎÊý
+		//APPå‚æ•°
 		write_len = sizeof(tAppMemParam.tParam);
 		if(ef_set_env_blob(tAppParamStr, &tAppMemParam.tParam, write_len) != EF_NO_ERR)
 			return -3;
 		
-		//ÏÔÊ¾
+		//æ˜¾ç¤º
 		write_len = sizeof(tAppMemParam.tDISP);
 		if(ef_set_env_blob(tDispMemParamStr, &tAppMemParam.tDISP, write_len) != EF_NO_ERR)
 			return -4;
 		
-		//DC²ÎÊý
+		//DCå‚æ•°
 		write_len = sizeof(tAppMemParam.tDC);
 		if(ef_set_env_blob(tDcMemParamStr, &tAppMemParam.tDC, write_len) != EF_NO_ERR)
 			return -5;
 		
-		//USB²ÎÊý
+		//USBå‚æ•°
 		write_len = sizeof(tAppMemParam.tUSB);
 		if(ef_set_env_blob(tUsbMemParamStr, &tAppMemParam.tUSB, write_len) != EF_NO_ERR)
 			return -6;
 		
-		//BMS²ÎÊý
+		//BMSå‚æ•°
 		write_len = sizeof(tAppMemParam.tBMS);
 		if(ef_set_env_blob(tBmsMemParamStr, &tAppMemParam.tBMS, write_len) != EF_NO_ERR)
 			return -7;
 		
-		//MPPT²ÎÊý
+		//MPPTå‚æ•°
 		write_len = sizeof(tAppMemParam.tMPPT);
 		if(ef_set_env_blob(tMpptMemParamStr, &tAppMemParam.tMPPT, write_len) != EF_NO_ERR)
 			return -8;
 		
-		//DCAC²ÎÊý
+		//DCACå‚æ•°
 		write_len = sizeof(tAppMemParam.tDCAC );
 		if(ef_set_env_blob(tDcacMemParamStr, &tAppMemParam.tDCAC, write_len) != EF_NO_ERR)
 			return -9;
 		
-		//ÏµÍ³²ÎÊý
+		//ç³»ç»Ÿå‚æ•°
 		write_len = sizeof(tAppMemParam.tSYS );
 		if(ef_set_env_blob(tSysMemParamStr, &tAppMemParam.tSYS, write_len) != EF_NO_ERR)
 			return -10;
 	}
-	//°æ±¾ÐÅÏ¢
+	//ç‰ˆæœ¬ä¿¡æ¯
 	else if (strcmp(id_str, tAppVerInfoStr) == 0)
 	{
 		write_len = sizeof(tAppMemParam.tVerInfo);
 		if(ef_set_env_blob(id_str, &tAppMemParam.tVerInfo, write_len) != EF_NO_ERR)
 			return -20;
 	}
-	//APP²ÎÊý
+	//APPå‚æ•°
 	else if (strcmp(id_str, tAppParamStr) == 0)
 	{
 		write_len = sizeof(tAppMemParam.tParam);
 		if(ef_set_env_blob(id_str, &tAppMemParam.tParam, write_len) != EF_NO_ERR)
 			return -21;
 	}
-	//°æ±¾ÐÅÏ¢ºÍAPP²ÎÊý
+	//ç‰ˆæœ¬ä¿¡æ¯å’ŒAPPå‚æ•°
 	else if (strcmp(id_str, tAppVerAndParamStr) == 0)
 	{
-		//°æ±¾ÐÅÏ¢
+		//ç‰ˆæœ¬ä¿¡æ¯
 		write_len = sizeof(tAppMemParam.tVerInfo);
 		if(ef_set_env_blob(tAppVerInfoStr, &tAppMemParam.tVerInfo, write_len) != EF_NO_ERR)
 			return -22;
 		
-		//APP²ÎÊý
+		//APPå‚æ•°
 		write_len = sizeof(tAppMemParam.tParam);
 		if(ef_set_env_blob(tAppParamStr, &tAppMemParam.tParam, write_len) != EF_NO_ERR)
 			return -23;
 	}
-	//ÏÔÊ¾²ÎÊý
+	//æ˜¾ç¤ºå‚æ•°
 	else if (strcmp(id_str, tDispMemParamStr) == 0)
 	{
 		write_len = sizeof(tAppMemParam.tDISP);
 		if(ef_set_env_blob(id_str, &tAppMemParam.tDISP, write_len) != EF_NO_ERR)
 			return -24;
 	}
-	//DC²ÎÊý
+	//DCå‚æ•°
 	else if (strcmp(id_str, tDcMemParamStr) == 0)
 	{
 		write_len = sizeof(tAppMemParam.tDC);
 		if(ef_set_env_blob(id_str, &tAppMemParam.tDC, write_len) != EF_NO_ERR)
 			return -25;
 	}
-	//USB²ÎÊý
+	//USBå‚æ•°
 	else if (strcmp(id_str, tUsbMemParamStr) == 0)
 	{
 		write_len = sizeof(tAppMemParam.tUSB);
 		if(ef_set_env_blob(id_str, &tAppMemParam.tUSB, write_len) != EF_NO_ERR)
 			return -26;
 	}
-	//BMS²ÎÊý
+	//BMSå‚æ•°
 	else if (strcmp(id_str, tBmsMemParamStr) == 0)
 	{
 		write_len = sizeof(tAppMemParam.tBMS);
 		if(ef_set_env_blob(id_str, &tAppMemParam.tBMS, write_len) != EF_NO_ERR)
 			return -27;
 	}
-	//MPPT²ÎÊý
+	//MPPTå‚æ•°
 	else if (strcmp(id_str, tMpptMemParamStr) == 0)
 	{
 		write_len = sizeof(tAppMemParam.tMPPT);
 		if(ef_set_env_blob(id_str, &tAppMemParam.tMPPT, write_len) != EF_NO_ERR)
 			return -28;
 	}
-	//DCAC²ÎÊý
+	//DCACå‚æ•°
 	else if (strcmp(id_str, tDcacMemParamStr) == 0)
 	{
 		write_len = sizeof(tAppMemParam.tDCAC);
 		if(ef_set_env_blob(id_str, &tAppMemParam.tDCAC, write_len) != EF_NO_ERR)
 			return -29;
 	}
-	//SYS²ÎÊý
+	//SYSå‚æ•°
 	else if (strcmp(id_str, tSysMemParamStr) == 0)
 	{
 		write_len = sizeof(tAppMemParam.tSYS);
@@ -490,10 +490,10 @@ s16 cApp_UpdataMemParam(const char* id_str)
 		return -99;
 	
 	#else
-	//²Á³ýFalsh×¼±¸Ð´Èë
+	//æ“¦é™¤Falshå‡†å¤‡å†™å…¥
 	if(cFlash_EraseSector(flashAPP_INFO_SATRT, flashAPP_INFO_END) <= 0)
 		return -2;
-	//¿ªÊ¼Ð´ÈëÊý¾Ý
+	//å¼€å§‹å†™å…¥æ•°æ®
 	if(cFlash_Write8BitData(flashAPP_INFO_SATRT, (u8*)&tAppMemParam, sizeof(tAppMemParam)) <= 0)
 		return -3;
 	#endif
@@ -501,11 +501,11 @@ s16 cApp_UpdataMemParam(const char* id_str)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ¸üÐÂAPP¼ÇÒä²ÎÊý
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    id_str:ÐèÒª¸üÐÂµÄ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      >0 ³É¹¦   0:¶ÁÈ¡³¤¶ÈÒì³£  <0:´íÎó
+-----å‡½æ•°åŠŸèƒ½    æ›´æ–°APPè®°å¿†å‚æ•°
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    id_str:éœ€è¦æ›´æ–°çš„å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      >0 æˆåŠŸ   0:è¯»å–é•¿åº¦å¼‚å¸¸  <0:é”™è¯¯
 ******************************************************************************************************************/
 s16 cApp_GetMemParam(const char* id_str)
 {
@@ -516,7 +516,7 @@ s16 cApp_GetMemParam(const char* id_str)
 	int read_len = 0;
 	int return_len = 0;
 	
-	//¶ÁÈ¡ËùÓÐ
+	//è¯»å–æ‰€æœ‰
 	if (strcmp(id_str, tAppMemParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tVerInfo);
@@ -529,7 +529,7 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len != read_len)
 			return -3;
 		
-		//ÏÔÊ¾
+		//æ˜¾ç¤º
 		read_len = sizeof(tAppMemParam.tDISP);
 		return_len = ef_get_env_blob(tDispMemParamStr, &tAppMemParam.tDISP, read_len, NULL);
 		if(return_len != read_len)
@@ -571,26 +571,26 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len != read_len)
 			return -10;
 	}
-	//¶ÁÈ¡°æ±¾ÐÅÏ¢
+	//è¯»å–ç‰ˆæœ¬ä¿¡æ¯
 	else if (strcmp(id_str, tAppVerInfoStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tVerInfo);
 		return_len = ef_get_env_blob(id_str, &tAppMemParam.tVerInfo, read_len, NULL);
 	}
-	//¶ÁÈ¡²ÎÊý
+	//è¯»å–å‚æ•°
 	else if (strcmp(id_str, tAppParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tParam);
 		return_len = ef_get_env_blob(id_str, &tAppMemParam.tParam, read_len, NULL);
 	}
-	//APPµÄ°æ±¾ºÍ²ÎÊý
+	//APPçš„ç‰ˆæœ¬å’Œå‚æ•°
 	else if (strcmp(id_str, tAppVerAndParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tVerInfo);
 		return_len = ef_get_env_blob(tAppVerInfoStr, &tAppMemParam.tVerInfo, read_len, NULL);
 		if(return_len != read_len)
 		{
-			//»¹Ã»³õÊ¼»¯
+			//è¿˜æ²¡åˆå§‹åŒ–
 			if(return_len == 0)
 			{
 				tAppMemParam.tParam.usInitFinish = 0;
@@ -605,7 +605,7 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len != read_len)
 			return -21;
 	}
-	//¶ÁÈ¡ÏÔÊ¾²ÎÊý
+	//è¯»å–æ˜¾ç¤ºå‚æ•°
 	else if (strcmp(id_str, tDispMemParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tDISP);
@@ -613,7 +613,7 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len == 0)
 			return 0;
 	}
-	//¶ÁÈ¡DC²ÎÊý
+	//è¯»å–DCå‚æ•°
 	else if (strcmp(id_str, tDcMemParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tDC);
@@ -621,7 +621,7 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len == 0)
 			return 0;
 	}
-	//¶ÁÈ¡USB²ÎÊý
+	//è¯»å–USBå‚æ•°
 	else if (strcmp(id_str, tUsbMemParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tUSB);
@@ -629,7 +629,7 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len == 0)
 			return 0;
 	}
-	//¶ÁÈ¡BMS²ÎÊý
+	//è¯»å–BMSå‚æ•°
 	else if (strcmp(id_str, tBmsMemParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tBMS);
@@ -637,7 +637,7 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len == 0)
 			return 0;
 	}
-	//¶ÁÈ¡MPPT²ÎÊý
+	//è¯»å–MPPTå‚æ•°
 	else if (strcmp(id_str, tMpptMemParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tMPPT);
@@ -645,7 +645,7 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len == 0)
 			return 0;
 	}
-	//¶ÁÈ¡DCAC²ÎÊý
+	//è¯»å–DCACå‚æ•°
 	else if (strcmp(id_str, tDcacMemParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tDCAC);
@@ -653,7 +653,7 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len == 0)
 			return 0;
 	}
-	//¶ÁÈ¡ÏµÍ³²ÎÊý
+	//è¯»å–ç³»ç»Ÿå‚æ•°
 	else if (strcmp(id_str, tSysMemParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tSYS);
@@ -667,7 +667,7 @@ s16 cApp_GetMemParam(const char* id_str)
 	if(return_len != read_len)
 		return -40;
 	#else
-	//¶ÁÈ¡Êý¾Ý
+	//è¯»å–æ•°æ®
 	if(cFlash_Read8BitData(flashAPP_INFO_SATRT, (u8*)&tAppMemParam, sizeof(tAppMemParam)) <= 0)
 		return -2;
 	#endif
@@ -675,11 +675,11 @@ s16 cApp_GetMemParam(const char* id_str)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    »ñÈ¡×ÜµÄÄ¬ÈÏ²ÎÊý´óÐ¡
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      byteÊýÁ¿´óÐ¡
+-----å‡½æ•°åŠŸèƒ½    èŽ·å–æ€»çš„é»˜è®¤å‚æ•°å¤§å°
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      byteæ•°é‡å¤§å°
 ******************************************************************************************************************/
 u16 usApp_GetMemParamSize(void)
 {
@@ -692,11 +692,11 @@ u16 usApp_GetMemParamSize(void)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ¸üÐÂBOOT¼ÇÒä²ÎÊý
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    id_str:ÐèÒª¸üÐÂµÄ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      >0 Ð´ÈëµÄ×Ö½ÚÊý   0:Î´²Ù×÷  <0:´íÎó
+-----å‡½æ•°åŠŸèƒ½    æ›´æ–°BOOTè®°å¿†å‚æ•°
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    id_str:éœ€è¦æ›´æ–°çš„å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      >0 å†™å…¥çš„å­—èŠ‚æ•°   0:æœªæ“ä½œ  <0:é”™è¯¯
 ******************************************************************************************************************/
 s16 cApp_BootUpdataMemParam(const char* id_str)
 {
@@ -706,20 +706,20 @@ s16 cApp_BootUpdataMemParam(const char* id_str)
 	#if(boardEASY_FLASH)
 	int write_len = 0;
 
-	//È«²¿ÖØÖÃ
+	//å…¨éƒ¨é‡ç½®
 	if (strcmp(id_str, tBootMemParamStr) == 0)
 	{
 		if(ef_env_set_default() != EF_NO_ERR)
 			return -2;
 	}
-	//Ð´Èë°æ±¾ÐÅÏ¢
+	//å†™å…¥ç‰ˆæœ¬ä¿¡æ¯
 	else if (strcmp(id_str, tBootVerInfoStr) == 0)
 	{
 		write_len = sizeof(tBootMemParam.tVerInfo);
 		if(ef_set_env_blob(id_str, &tBootMemParam.tVerInfo, write_len) != EF_NO_ERR)
 			return -10;
 	}
-	//Ð´Èë²ÎÊý
+	//å†™å…¥å‚æ•°
 	else if (strcmp(id_str, tBootParamStr) == 0)
 	{
 		write_len = sizeof(tBootMemParam.tParam);
@@ -730,10 +730,10 @@ s16 cApp_BootUpdataMemParam(const char* id_str)
 		return -99;
 	
 	#else
-	//²Á³ýFalsh×¼±¸Ð´Èë
+	//æ“¦é™¤Falshå‡†å¤‡å†™å…¥
 	if(cFlash_EraseSector(flashAPP_INFO_SATRT, flashAPP_INFO_END) <= 0)
 		return -2;
-	//¿ªÊ¼Ð´ÈëÊý¾Ý
+	//å¼€å§‹å†™å…¥æ•°æ®
 	if(cFlash_Write8BitData(flashAPP_INFO_SATRT, (u8*)&tBootMemParam, sizeof(tBootMemParam)) <= 0)
 		return -3;
 	#endif
@@ -741,11 +741,11 @@ s16 cApp_BootUpdataMemParam(const char* id_str)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    ¸üÐÂBOOT¼ÇÒä²ÎÊý
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    id_str:ÐèÒª¸üÐÂµÄ¶ÔÏó
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      >0 Ð´ÈëµÄ×Ö½ÚÊý   0:Î´²Ù×÷  <0:´íÎó
+-----å‡½æ•°åŠŸèƒ½    æ›´æ–°BOOTè®°å¿†å‚æ•°
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    id_str:éœ€è¦æ›´æ–°çš„å¯¹è±¡
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      >0 å†™å…¥çš„å­—èŠ‚æ•°   0:æœªæ“ä½œ  <0:é”™è¯¯
 ******************************************************************************************************************/
 s16 cApp_BootGetMemParam(const char* id_str)
 {
@@ -756,7 +756,7 @@ s16 cApp_BootGetMemParam(const char* id_str)
 	int read_len = 0;
 	int return_len = 0;
 	
-	//¶ÁÈ¡ËùÓÐ
+	//è¯»å–æ‰€æœ‰
 	if (strcmp(id_str, tBootMemParamStr) == 0)
 	{
 		read_len = sizeof(tBootMemParam.tVerInfo);
@@ -769,13 +769,13 @@ s16 cApp_BootGetMemParam(const char* id_str)
 		if(return_len != read_len)
 		return -3;
 	}
-	//¶ÁÈ¡°æ±¾ÐÅÏ¢
+	//è¯»å–ç‰ˆæœ¬ä¿¡æ¯
 	else if (strcmp(id_str, tBootVerInfoStr) == 0)
 	{
 		read_len = sizeof(tBootMemParam.tVerInfo);
 		return_len = ef_get_env_blob(id_str, &tBootMemParam.tVerInfo, read_len, NULL);
 	}
-	//¶ÁÈ¡²ÎÊý
+	//è¯»å–å‚æ•°
 	else if (strcmp(id_str, tBootParamStr) == 0)
 	{
 		read_len = sizeof(tBootMemParam.tParam);
@@ -787,7 +787,7 @@ s16 cApp_BootGetMemParam(const char* id_str)
 	if(return_len != read_len)
 		return -40;
 	#else
-	//¶ÁÈ¡Êý¾Ý
+	//è¯»å–æ•°æ®
 	if(cFlash_Read8BitData(flashAPP_INFO_SATRT, (u8*)&tBootMemParam, sizeof(tBootMemParam)) <= 0)
 		return -41;
 	#endif
@@ -795,11 +795,11 @@ s16 cApp_BootGetMemParam(const char* id_str)
 }
 
 /*****************************************************************************************************************
------º¯Êý¹¦ÄÜ    Êä³öÂ¼ÈëÐÅÏ¢
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊý    none
------Êä³ö²ÎÊý    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è¾“å‡ºå½•å…¥ä¿¡æ¯
+-----è¯´æ˜Ž(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›žå€¼      none
 ******************************************************************************************************************/
 void v_print_info(void)
 {

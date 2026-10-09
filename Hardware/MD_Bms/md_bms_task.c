@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         µç³Ø°ü·¢ËÍÈÎÎñ                                                          *
+ *                                         ç”µæ± åŒ…å‘é€ä»»åŠ¡                                                          *
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Bms/md_bms_task.h"
@@ -16,29 +16,29 @@
 
 #include "app_info.h"
 
-//****************************************************ÈÎÎñ²ÎÊı³õÊ¼»¯**********************************************//
+//****************************************************ä»»åŠ¡å‚æ•°åˆå§‹åŒ–**********************************************//
 #if(boardUSE_OS)
-#define        	BMS_TASK_PRIO                         	2                       	//ÈÎÎñÓÅÏÈ¼¶ 
-#define        	BMS_TASK_SIZE                         	4096                      	//ÈÎÎñ¶ÑÕ»  Êµ¼Ê×Ö½ÚÊı *4
+#define        	BMS_TASK_PRIO                         	2                       	//ä»»åŠ¡ä¼˜å…ˆçº§ 
+#define        	BMS_TASK_SIZE                         	4096                      	//ä»»åŠ¡å †æ ˆ  å®é™…å­—èŠ‚æ•° *4
 TaskHandle_t    tBmsTaskHandler = NULL; 
 void            vBms_Task(void *pvParameters);
 #endif  //boardUSE_OS
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************//
-//½á¹¹Ìå
-__ALIGNED(4)	Bms_T tBms;			//ÈÎÎñ
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
+//ç»“æ„ä½“
+__ALIGNED(4)	Bms_T tBms;			//ä»»åŠ¡
 static Task_T	*tp_task = NULL;
 
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    µç³Ø°üÈÎÎñ²ÎÊı³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç”µæ± åŒ…ä»»åŠ¡å‚æ•°åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 bool b_bms_task_param_init(void)
 {
@@ -56,34 +56,34 @@ bool b_bms_task_param_init(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    µç³Ø°üÈÎÎñ³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç”µæ± åŒ…ä»»åŠ¡åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 bool bBms_TaskInit(void)
 { 
-	//·¢ËÍĞ­Òé³õÊ¼»¯
+	//å‘é€åè®®åˆå§‹åŒ–
 	if(bBms_SendProtInit() == false)
 		return false;
 	
-	//ÈÎÎñ¶ÓÁĞ³õÊ¼»¯
+	//ä»»åŠ¡é˜Ÿåˆ—åˆå§‹åŒ–
 	if(bBms_QueueInit() == false)
 		return false;
 	
-	//ÈÎÎñ²ÎÊı³õÊ¼»¯
+	//ä»»åŠ¡å‚æ•°åˆå§‹åŒ–
 	if(b_bms_task_param_init() == false)
 		return false;
 	
-	//ÈÎÎñ³õÊ¼»¯
+	//ä»»åŠ¡åˆå§‹åŒ–
 	#if(boardUSE_OS)
-    xTaskCreate((TaskFunction_t )vBms_Task,            	//ÈÎÎñº¯Êı
-                (const char* )"BmsTask",              	//ÈÎÎñÃû³Æ
-                (uint16_t ) BMS_TASK_SIZE,              //ÈÎÎñ¶ÑÕ»´óĞ¡
-                (void* )NULL,                           //´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                (UBaseType_t ) BMS_TASK_PRIO,           //ÈÎÎñÓÅÏÈ¼¶
-                (TaskHandle_t*)&tBmsTaskHandler);       //ÈÎÎñ¾ä±ú
+    xTaskCreate((TaskFunction_t )vBms_Task,            	//ä»»åŠ¡å‡½æ•°
+                (const char* )"BmsTask",              	//ä»»åŠ¡åç§°
+                (uint16_t ) BMS_TASK_SIZE,              //ä»»åŠ¡å †æ ˆå¤§å°
+                (void* )NULL,                           //ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                (UBaseType_t ) BMS_TASK_PRIO,           //ä»»åŠ¡ä¼˜å…ˆçº§
+                (TaskHandle_t*)&tBmsTaskHandler);       //ä»»åŠ¡å¥æŸ„
 	#endif  //boardUSE_OS
 				
 	return true;
@@ -92,11 +92,11 @@ bool bBms_TaskInit(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    µç³Ø°üÈÎÎñ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç”µæ± åŒ…ä»»åŠ¡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void vBms_Task(void *pvParameters)
 {
@@ -123,7 +123,7 @@ void vBms_Task(void *pvParameters)
 		{
 			#if(boardUSE_OS)
 			if(lwrb_get_full(&tp_task->tQueueBuff) == 0)
-				ulTaskNotifyTake(pdTRUE, bmsTASK_CYCLE_TIME);//pdFALSE:ÈÎÎñÍ¨Öª¶àÉÙ´Î¾ÍÖ´ĞĞ¶àÉÙ´Î
+				ulTaskNotifyTake(pdTRUE, bmsTASK_CYCLE_TIME);//pdFALSE:ä»»åŠ¡é€šçŸ¥å¤šå°‘æ¬¡å°±æ‰§è¡Œå¤šå°‘æ¬¡
 			#endif  //boardUSE_OS
 			
 			if(tp_task->bp_task_manage_func != NULL)
@@ -137,15 +137,15 @@ void vBms_Task(void *pvParameters)
 
 /************************************************************************************************************************
 *************************************************************************************************************************
-                                                  È«¾Öº¯Êı
+                                                  å…¨å±€å‡½æ•°
 *************************************************************************************************************************
 *************************************************************************************************************************/
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    »ñÈ¡µç³Ø°üµÄ³äµç×´Ì¬
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:³äµç   false:·Åµç
+-----å‡½æ•°åŠŸèƒ½    è·å–ç”µæ± åŒ…çš„å……ç”µçŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:å……ç”µ   false:æ”¾ç”µ
 ******************************************************************************************************************/
 bool bBms_GetBmsChgState(void)  
 {
@@ -161,17 +161,17 @@ bool bBms_GetBmsChgState(void)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃÉè±¸×´Ì¬
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    DevState_E 
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:Ã»ÓĞ´íÎó  false:ÓĞ´íÎó
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®è®¾å¤‡çŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    DevState_E 
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ²¡æœ‰é”™è¯¯  false:æœ‰é”™è¯¯
 ************************************************************************************************************************/
 bool bBms_SetDevState(DevState_E state)
 {
-	if(tBms.eDevState != state)  //×´Ì¬·¢Éú±ä»¯
+	if(tBms.eDevState != state)  //çŠ¶æ€å‘ç”Ÿå˜åŒ–
 	{
-		if(state == DS_LOST) //¶ªÊ§
+		if(state == DS_LOST) //ä¸¢å¤±
 		{   
 			cQueue_AddQueueTask(tpBmsTask, BTI_NULL, 0, false);
 			
@@ -179,7 +179,7 @@ bool bBms_SetDevState(DevState_E state)
 			STAT_CLR(tSysInfo.Mod_Exist,OL_BMS);
 			#endif
 		}
-		else                 //Á¬ÉÏ
+		else                 //è¿ä¸Š
 		{
 			#if(boardSYS_DATA_UPADATA)
 			STAT_SET(tSysInfo.Mod_Exist,OL_BMS);
@@ -193,18 +193,18 @@ bool bBms_SetDevState(DevState_E state)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃÉè±¸´íÎó´úÂë
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    ERR_CODE
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:Ìí¼ÓÁËÈÎÎñ,²¢Á¢¼´Ö´ĞĞ  false:Ã»ÓĞÌí¼ÓÈÎÎñ,»òÌí¼ÓÁËÈÎÎñ²»Ö´ĞĞ
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®è®¾å¤‡é”™è¯¯ä»£ç 
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    ERR_CODE
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ·»åŠ äº†ä»»åŠ¡,å¹¶ç«‹å³æ‰§è¡Œ  false:æ²¡æœ‰æ·»åŠ ä»»åŠ¡,æˆ–æ·»åŠ äº†ä»»åŠ¡ä¸æ‰§è¡Œ
 ************************************************************************************************************************/
 bool bBms_SetErrCode(BmsErrCode_E code, bool set)
 {
 	static BmsErrCode_E e_next_code;
 	static bool b_next_set;
 	
-	//µÚÒ»´ÎÁ¬½Ó
+	//ç¬¬ä¸€æ¬¡è¿æ¥
 	if(code == BEC_SYS_DEV_LOST)
 	{
 		if(set == false && tBms.uErrCode.tCode.bSysDevLost == 0)
@@ -215,36 +215,36 @@ bool bBms_SetErrCode(BmsErrCode_E code, bool set)
 		}
 	}
 	
-	//±ê¼Ç´íÎó×´Ì¬
+	//æ ‡è®°é”™è¯¯çŠ¶æ€
 	if(uPrint.tFlag.bBmsTask || uPrint.tFlag.bImportant)
 	{
 		if(e_next_code != code || b_next_set != set)
 		{
-			log_e("bBmsTask:ÈÎÎñ´íÎó ´úÂë%d ÀàĞÍ%d",code, set);
+			log_e("bBmsTask:ä»»åŠ¡é”™è¯¯ ä»£ç %d ç±»å‹%d",code, set);
 			e_next_code = code;
 			b_next_set = set;
 		}
 	}
 	
-	//ÓĞ´íÎó
+	//æœ‰é”™è¯¯
 	if(code > BEC_CLEAR_ALL)
 	{
-		//ÉÏ±¨µÄ´íÎó
+		//ä¸ŠæŠ¥çš„é”™è¯¯
 		if(code == BEC_BMS_ERR)
 		{
-			tBms.uErrCode.ulCode &=0xFFFF0000;//È¥³ıµÍÎ»
+			tBms.uErrCode.ulCode &=0xFFFF0000;//å»é™¤ä½ä½
 			if(set == true)
 			{
 				tBms.uErrCode.ulCode |= tBmsRx.usErrCode;
 				if(uPrint.tFlag.bBmsTask || uPrint.tFlag.bImportant)
-					log_e("bBmsTask:Éè±¸ÉÏ±¨´íÎó,´úÂë:0x%x",
+					log_e("bBmsTask:è®¾å¤‡ä¸ŠæŠ¥é”™è¯¯,ä»£ç :0x%x",
 				              tBmsRx.usErrCode);
 			}
 		}
-		//ÏµÍ³ÅĞ¶ÏµÄ´íÎó
+		//ç³»ç»Ÿåˆ¤æ–­çš„é”™è¯¯
 		else 
 		{
-			//ÏµÍ³´íÎó:¶ªÊ§
+			//ç³»ç»Ÿé”™è¯¯:ä¸¢å¤±
 			if(code == BEC_SYS_DEV_LOST)
 			{
 				tBms.uErrCode.ulCode = 0;
@@ -256,17 +256,17 @@ bool bBms_SetErrCode(BmsErrCode_E code, bool set)
 					ERR_SET(tBms.uErrCode.ulCode, (code - 2));
 					
 					if(uPrint.tFlag.bBmsTask || uPrint.tFlag.bImportant)
-						log_e("bBmsTask:ÈÎÎñ´íÎó_BMSÄ£¿é¶ªÊ§");
+						log_e("bBmsTask:ä»»åŠ¡é”™è¯¯_BMSæ¨¡å—ä¸¢å¤±");
 					
 					bBms_SetPerm(BPO_ALL, false);
 				}
 				else
 					bBms_SetDevState(DS_SHUT_DOWN);
 			}
-			//ÆäËûÏµÍ³´íÎó
+			//å…¶ä»–ç³»ç»Ÿé”™è¯¯
 			else 
 			{
-				//ÉèÖÃÇå³ı´íÎóÎ»
+				//è®¾ç½®æ¸…é™¤é”™è¯¯ä½
 				if(set)
 					ERR_SET(tBms.uErrCode.ulCode, (code - 2));
 				else
@@ -289,17 +289,17 @@ bool bBms_SetErrCode(BmsErrCode_E code, bool set)
 	}
 	else 
 	{
-		//Çå³ı´íÎó,ÖØĞÂÆô¶¯
+		//æ¸…é™¤é”™è¯¯,é‡æ–°å¯åŠ¨
 		if(tBms.eDevState == DS_ERR)
 		{
 			bBms_SetDevState(DS_WORK);
 			
-			//****************************************¾¯¸æ,²»¿ÉÒÔÔÚº¯ÊıÖĞµ÷ÓÃ×Ô¼º*********************************************************//
-			//cBms_SwitchÖĞÍ¨¹ıbBms_SetErrCodeµ÷ÓÃ×Ô¼ºcBms_Switch
+			//****************************************è­¦å‘Š,ä¸å¯ä»¥åœ¨å‡½æ•°ä¸­è°ƒç”¨è‡ªå·±*********************************************************//
+			//cBms_Switchä¸­é€šè¿‡bBms_SetErrCodeè°ƒç”¨è‡ªå·±cBms_Switch
 			
 //			cBms_Switch(SO_KEY, ST_ON);
 //			if(uPrint.tFlag.bBmsTask || uPrint.tFlag.bImportant)
-//				sMyPrint("bBmsTask:====Çå³ı´íÎó,ÖØĞÂ´ò¿ªBMS====\r\n");
+//				sMyPrint("bBmsTask:====æ¸…é™¤é”™è¯¯,é‡æ–°æ‰“å¼€BMS====\r\n");
 		}
 	}
 	
@@ -309,11 +309,11 @@ bool bBms_SetErrCode(BmsErrCode_E code, bool set)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´¦Àí½ÓÊÕµ½µÄÊı¾İ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    SwitchType_E
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      Ğ¡ÓÚ0:²Ù×÷Ê§°Ü   µÈÓÚ0:Ã»²Ù×÷    ´óÓÚ0:²Ù×÷³É¹¦
+-----å‡½æ•°åŠŸèƒ½    å¤„ç†æ¥æ”¶åˆ°çš„æ•°æ®
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    SwitchType_E
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      å°äº0:æ“ä½œå¤±è´¥   ç­‰äº0:æ²¡æ“ä½œ    å¤§äº0:æ“ä½œæˆåŠŸ
 ************************************************************************************************************************/
 s8 cBms_Switch(SwitchObject_E obj, SwitchType_E type, bool fore_en)
 {
@@ -328,7 +328,7 @@ s8 cBms_Switch(SwitchObject_E obj, SwitchType_E type, bool fore_en)
 				fore_en == false)
 			{
 				if(uPrint.tFlag.bBmsTask)
-				 sMyPrint("bBmsTask:µ±Ç°×´Ì¬Îª¹¤×÷,²»ÔÊĞí¿ª»ú.¶ÔÏó:%d \r\n",obj);
+				 sMyPrint("bBmsTask:å½“å‰çŠ¶æ€ä¸ºå·¥ä½œ,ä¸å…è®¸å¼€æœº.å¯¹è±¡:%d \r\n",obj);
 				
 				return 0;
 			}
@@ -342,7 +342,7 @@ s8 cBms_Switch(SwitchObject_E obj, SwitchType_E type, bool fore_en)
 				&& fore_en == false)
 			{
 				if(uPrint.tFlag.bBmsTask)
-				 sMyPrint("bBmsTask:µ±Ç°×´Ì¬Îª¹Ø±Õ,²»ÔÊĞí¹Ø»ú.¶ÔÏó:%d \r\n",obj);
+				 sMyPrint("bBmsTask:å½“å‰çŠ¶æ€ä¸ºå…³é—­,ä¸å…è®¸å…³æœº.å¯¹è±¡:%d \r\n",obj);
 				
 				return 0;
 			}
@@ -377,11 +377,11 @@ s8 cBms_Switch(SwitchObject_E obj, SwitchType_E type, bool fore_en)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    »ñÈ¡SOC
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none 
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      SOC
+-----å‡½æ•°åŠŸèƒ½    è·å–SOC
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none 
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      SOC
 ************************************************************************************************************************/
 u8 ucBms_GetSoc(void)
 {
@@ -390,11 +390,11 @@ u8 ucBms_GetSoc(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ³õÊ¼»¯²ÎÊı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    p_bms_mem : ¼ÇÒä²ÎÊı½á¹¹Ìå
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:ÉèÖÃ³É¹¦  ·´Ö®Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    åˆå§‹åŒ–å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    p_bms_mem : è®°å¿†å‚æ•°ç»“æ„ä½“
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:è®¾ç½®æˆåŠŸ  åä¹‹å¤±è´¥
 *****************************************************************************************************************/
 bool bBms_MemParamInit(BmsMemParam_T* p_bms_mem)
 {
@@ -409,11 +409,11 @@ bool bBms_MemParamInit(BmsMemParam_T* p_bms_mem)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃ¼ÇÒä²ÎÊı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    add:true Ôö¼Ó   false:¼õÉÙ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®è®°å¿†å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    add:true å¢åŠ    false:å‡å°‘
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 *****************************************************************************************************************/
 void vBms_MemParamSet(u8 item, bool add)
 {
@@ -494,11 +494,11 @@ void vBms_MemParamSet(u8 item, bool add)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃ³ä·ÅµçĞí¿É
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:ÉèÖÃ³É¹¦  ·´Ö®Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®å……æ”¾ç”µè®¸å¯
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:è®¾ç½®æˆåŠŸ  åä¹‹å¤±è´¥
 ******************************************************************************************************************/
 bool bBms_SetPerm(BmsPermObject_E obj, bool en)  
 {
@@ -506,11 +506,11 @@ bool bBms_SetPerm(BmsPermObject_E obj, bool en)
 	{
 		case BPO_CHG:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tBms.uPerm.tPerm.bChgPerm)
 			{
 				if(uPrint.tFlag.bBmsTask)
-					sMyPrint("bBmsTask:³äµçĞí¿É ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tBms.uPerm.tPerm.bChgPerm);
+					sMyPrint("bBmsTask:å……ç”µè®¸å¯ è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tBms.uPerm.tPerm.bChgPerm);
 				
 				tBms.uPerm.tPerm.bChgPerm = en;
 			}
@@ -519,11 +519,11 @@ bool bBms_SetPerm(BmsPermObject_E obj, bool en)
 		
 		case BPO_DISCHG:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tBms.uPerm.tPerm.bDisChgPerm)
 			{
 				if(uPrint.tFlag.bBmsTask)
-					sMyPrint("bBmsTask:·ÅµçĞí¿É ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tBms.uPerm.tPerm.bDisChgPerm);
+					sMyPrint("bBmsTask:æ”¾ç”µè®¸å¯ è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tBms.uPerm.tPerm.bDisChgPerm);
 				
 				tBms.uPerm.tPerm.bDisChgPerm = en;
 			}
@@ -532,20 +532,20 @@ bool bBms_SetPerm(BmsPermObject_E obj, bool en)
 		
 		case BPO_ALL:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tBms.uPerm.tPerm.bChgPerm)
 			{
 				if(uPrint.tFlag.bBmsTask)
-					sMyPrint("bBmsTask:³äµçĞí¿É ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tBms.uPerm.tPerm.bChgPerm);
+					sMyPrint("bBmsTask:å……ç”µè®¸å¯ è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tBms.uPerm.tPerm.bChgPerm);
 				
 				tBms.uPerm.tPerm.bChgPerm = en;
 			}
 			
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tBms.uPerm.tPerm.bDisChgPerm)
 			{
 				if(uPrint.tFlag.bBmsTask)
-					sMyPrint("bBmsTask:·ÅµçĞí¿É ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tBms.uPerm.tPerm.bDisChgPerm);
+					sMyPrint("bBmsTask:æ”¾ç”µè®¸å¯ è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tBms.uPerm.tPerm.bDisChgPerm);
 				
 				tBms.uPerm.tPerm.bDisChgPerm = en;
 			}
@@ -561,19 +561,19 @@ bool bBms_SetPerm(BmsPermObject_E obj, bool en)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    »ñÈ¡²ÎÊı´¦Àí
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è·å–å‚æ•°å¤„ç†
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 s8 cBms_CheckPerm(void)
 {
-	//----------------------------------Ğí¿É´¦Àí--------------------------------------
-	//·ÅµçĞí¿É
-	if(tBmsRx.tParam.tState.bImpermDisChg == 1		||	//²»Ğí¿É·Åµç
-		tBms.uErrCode.tCode.bSysDisChgUT == 1		||	//·ÅµçµÍÎÂ
-		tBms.uErrCode.tCode.bSysDisChgOT == 1		||	//·Åµç¸ßÎÂ
+	//----------------------------------è®¸å¯å¤„ç†--------------------------------------
+	//æ”¾ç”µè®¸å¯
+	if(tBmsRx.tParam.tState.bImpermDisChg == 1		||	//ä¸è®¸å¯æ”¾ç”µ
+		tBms.uErrCode.tCode.bSysDisChgUT == 1		||	//æ”¾ç”µä½æ¸©
+		tBms.uErrCode.tCode.bSysDisChgOT == 1		||	//æ”¾ç”µé«˜æ¸©
 		ucBms_GetSoc() == 0)
 	{
 		if(tBms.uPerm.tPerm.bDisChgPerm == true)
@@ -585,10 +585,10 @@ s8 cBms_CheckPerm(void)
 			bBms_SetPerm(BPO_DISCHG, true);
 	}
 	
-	//³äµçĞí¿É
-	if(tBmsRx.tParam.tState.bPermChg == 0			||	//²»Ğí¿É³äµç
-		tBms.uErrCode.tCode.bSysChgUT == 1        	|| 	//³äµçµÍÎÂ
-		tBms.uErrCode.tCode.bSysChgOT == 1       	||	//³äµç¸ßÎÂ
+	//å……ç”µè®¸å¯
+	if(tBmsRx.tParam.tState.bPermChg == 0			||	//ä¸è®¸å¯å……ç”µ
+		tBms.uErrCode.tCode.bSysChgUT == 1        	|| 	//å……ç”µä½æ¸©
+		tBms.uErrCode.tCode.bSysChgOT == 1       	||	//å……ç”µé«˜æ¸©
 		ucBms_GetSoc() == 100)
 	{
 		if(tBms.uPerm.tPerm.bChgPerm == true)

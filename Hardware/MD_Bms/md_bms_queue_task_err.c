@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Bms/md_bms_queue_task.h"
@@ -14,11 +14,11 @@
 #define       	bmsTASK_ERR_CYCLE_TIME               		50
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:´íÎó´¦ÀíÈÎÎñ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    BMS_ErrState_N:
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:é”™è¯¯å¤„ç†ä»»åŠ¡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    BMS_ErrState_N:
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_bms_queue_task_err(Task_T *tp_task)
 {
@@ -26,7 +26,7 @@ void v_bms_queue_task_err(Task_T *tp_task)
 	{
 		case 0:
 		{	
-			//Éè±¸¶ªÊ§
+			//è®¾å¤‡ä¸¢å¤±
 			if(tBms.uErrCode.tCode.bSysDevLost == 1)
 			{
 				// bBuz_Tweet(LONG_3);
@@ -35,28 +35,28 @@ void v_bms_queue_task_err(Task_T *tp_task)
 			else
 				bBms_SetDevState(DS_ERR);
 			
-			cQueue_GotoStep(tp_task, STEP_NEXT);  //ÏÂÒ»²½
+			cQueue_GotoStep(tp_task, STEP_NEXT);  //ä¸‹ä¸€æ­¥
 		}
 		break;
 		
 		case 1:
 		{
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 		}
 		
 		break;
 			
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
 	}
 	
 	tp_task->usTaskWaitCnt++;
-	if(tp_task->usTaskWaitCnt > (3000/bmsTASK_ERR_CYCLE_TIME))  //µÈ´ı³¬Ê±
+	if(tp_task->usTaskWaitCnt > (3000/bmsTASK_ERR_CYCLE_TIME))  //ç­‰å¾…è¶…æ—¶
 	{
-		cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+		cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 		if(uPrint.tFlag.bBmsTask || uPrint.tFlag.bImportant)
-			log_w("bBmsTask:´íÎó´¦ÀíÈÎÎñ³¬Ê±,ÍË³öÈÎÎñ");
+			log_w("bBmsTask:é”™è¯¯å¤„ç†ä»»åŠ¡è¶…æ—¶,é€€å‡ºä»»åŠ¡");
 	}
 	
 	#if(boardUSE_OS)

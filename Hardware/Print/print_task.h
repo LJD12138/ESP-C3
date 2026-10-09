@@ -7,8 +7,8 @@
 
 #define       	printTASK_CYCLE_TIME                  	100  
 
-#define      	printCONSOLE_MASTER_ADDR         		0xEF  //ÓÃ»§µØÖ·
-#define      	printCONSOLE_SLAVE_ADDR         		0xEE  //ÓÃ»§µØÖ·
+#define      	printCONSOLE_MASTER_ADDR         		0xEF  //ç”¨æˆ·åœ°å€
+#define      	printCONSOLE_SLAVE_ADDR         		0xEE  //ç”¨æˆ·åœ°å€
 
 #if(boardPRINT_IFACE)
 #include "main.h"
@@ -29,17 +29,17 @@ extern 			u8 										ucaPrintTaskInParam[];
 extern 			TaskHandle_t							tPrintTaskHandler;
 #endif  //boardUSE_OS
 
-//*********************************ÈÎÎñID***********************************
+//*********************************ä»»åŠ¡ID***********************************
 typedef enum : uint8_t
 {										
-	PTI_NULL = 0,      	//¿ÕÈÎÎñº¯Êı
-    PTI_MAIN,      		//Ö÷ÈÎÎñ
-	PTI_REPLY_APP_INFO,	//»Ø¸´ĞÅÏ¢
-	PTI_REPLY_CALI,		//»Ø¸´Ğ£×¼
+	PTI_NULL = 0,      	//ç©ºä»»åŠ¡å‡½æ•°
+    PTI_MAIN,      		//ä¸»ä»»åŠ¡
+	PTI_REPLY_APP_INFO,	//å›å¤ä¿¡æ¯
+	PTI_REPLY_CALI,		//å›å¤æ ¡å‡†
 }PrintTaskId_E;
 #endif	//boardPRINT_IFACE
 
-//¿ªÆôPrintÊä³ö
+//å¼€å¯Printè¾“å‡º
 typedef union 
 {
 	struct

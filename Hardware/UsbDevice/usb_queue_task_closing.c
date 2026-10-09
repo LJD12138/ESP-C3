@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "UsbDevice/usb_queue_task.h"
@@ -15,11 +15,11 @@
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_usb_queue_task_closing(Task_T *tp_task)
 {
@@ -30,7 +30,7 @@ void v_usb_queue_task_closing(Task_T *tp_task)
 			bUsb_SetDevState(DS_CLOSING);
 
 			// if(cUsb_CheckInVolt() < 0)
-				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ÏÂÒ»²½
+				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ä¸‹ä¸€æ­¥
 		}
 		break;
 
@@ -38,7 +38,7 @@ void v_usb_queue_task_closing(Task_T *tp_task)
 		{
 		   if(c_usb_switch_dc_cs(false) > 0)
 			{
-				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ÏÂÒ»²½
+				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ä¸‹ä¸€æ­¥
 				return;
 			}
 		}
@@ -47,25 +47,25 @@ void v_usb_queue_task_closing(Task_T *tp_task)
 		case 2:
 		{
 			bUsb_SetDevState(DS_SHUT_DOWN);
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 		}
 		break;
 			
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
     }
 	
-	//µÈ´ı³¬Ê±
+	//ç­‰å¾…è¶…æ—¶
 	tp_task->usTaskWaitCnt++;
 	if(tp_task->usTaskWaitCnt > (5000 / usbTASK_CLOSING_CYCLE_TIME)) 
 	{
 		bUsb_SetErrCode(UEC_COLSE_FAULT, true);
 
 		if(uPrint.tFlag.bUsbTask)
-			log_w("bUsbTask:¹Ø±ÕÈÎÎñµÈ´ı³¬Ê±,²½Öè%d", tp_task->ucStep);
+			log_w("bUsbTask:å…³é—­ä»»åŠ¡ç­‰å¾…è¶…æ—¶,æ­¥éª¤%d", tp_task->ucStep);
 
-		cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+		cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 	}
 	
 	#if(boardUSE_OS)

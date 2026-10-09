@@ -22,7 +22,7 @@
 // #define     	gpioUSART0_GPIO_TX_PORT                	GPIOA
 #define     	gpioUSART0_GPIO_TX_PIN                 	UART_PIN_NO_CHANGE
 #else
-//¥Æø⁄0÷ÿ”≥…‰
+//‰∏≤Âè£0ÈáçÊò†Â∞Ñ
 #define     	gpioUSART0_GPIO_RX_RCU                 	RCU_GPIOB
 #define     	gpioUSART0_GPIO_RX_PORT                	GPIOB
 #define     	gpioUSART0_GPIO_RX_PIN                 	GPIO_PIN_7

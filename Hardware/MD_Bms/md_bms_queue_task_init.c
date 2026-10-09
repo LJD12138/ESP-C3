@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Bms/md_bms_queue_task.h"
@@ -13,17 +13,17 @@
 
 #define       	bmsTASK_INIT_CYCLE_TIME               		50
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 
 
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_bms_queue_task_init(Task_T *tp_task)
 {
@@ -33,9 +33,9 @@ void v_bms_queue_task_init(Task_T *tp_task)
     {
 		case 0:
         {
-			//»ñÈ¡²ÎÊı,ÓÃÀ´ÅĞ¶ÏÊÇ·ñÊÇ³äµç»½ĞÑ
+			//è·å–å‚æ•°,ç”¨æ¥åˆ¤æ–­æ˜¯å¦æ˜¯å……ç”µå”¤é†’
 			if(c_bms_cs_get_param(1) > 0 || G_TestMode == true)
-				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ÏÂÒ»²½
+				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ä¸‹ä¸€æ­¥
         }break;
 		
 		case 1:
@@ -43,24 +43,24 @@ void v_bms_queue_task_init(Task_T *tp_task)
 			tSysInfo.uInit.tFinish.bIF_BmsTask = 1;
 			cBms_CheckPerm();
 			if(uPrint.tFlag.bBmsTask)
-				sMyPrint("bBmsTask:³õÊ¼»¯BMS----³õÊ¼»¯Íê³É----\r\n");
+				sMyPrint("bBmsTask:åˆå§‹åŒ–BMS----åˆå§‹åŒ–å®Œæˆ----\r\n");
 			
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 		}
         break;
 
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
     }
 	
 	tp_task->usTaskWaitCnt++;
-	if(tp_task->usTaskWaitCnt > (3000 / bmsTASK_INIT_CYCLE_TIME))  //µÈ´ı³¬Ê±
+	if(tp_task->usTaskWaitCnt > (3000 / bmsTASK_INIT_CYCLE_TIME))  //ç­‰å¾…è¶…æ—¶
 	{
 		if(uPrint.tFlag.bBmsTask)
-			log_w("bBmsTask:BMS³õÊ¼»¯ÈÎÎñµÈ´ı³¬Ê±");
+			log_w("bBmsTask:BMSåˆå§‹åŒ–ä»»åŠ¡ç­‰å¾…è¶…æ—¶");
 		
-		cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+		cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 	}
 	
 	#if(boardUSE_OS)

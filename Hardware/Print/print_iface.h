@@ -20,7 +20,7 @@
 // #define     	printUSART_GPIO_TX_RCU          		gpioUSART0_GPIO_TX_RCU
 // #define     	printUSART_GPIO_TX_PORT         		gpioUSART0_GPIO_TX_PORT
 #define     	printUSART_GPIO_TX_PIN          		gpioUSART0_GPIO_TX_PIN
-//¥Æø⁄
+//‰∏≤Âè£
 #if(!boardPRINT_IFACE_DMA_EN)
 #define     	printUSART_IRQ_EN       				1
 #endif
@@ -49,7 +49,7 @@
 #define     	printUSART_GPIO_TX_RCU          		gpioUSART1_GPIO_TX_RCU
 #define     	printUSART_GPIO_TX_PORT         		gpioUSART1_GPIO_TX_PORT
 #define     	printUSART_GPIO_TX_PIN          		gpioUSART1_GPIO_TX_PIN
-//¥Æø⁄
+//‰∏≤Âè£
 #define     	printUSART_IRQ_EN       				1
 #define     	printUSART_RCU          				RCU_USART1
 #define     	printUSART               				USART1
@@ -75,7 +75,7 @@
 #define     	printUSART_GPIO_TX_RCU          		gpioUSART2_GPIO_TX_RCU
 #define     	printUSART_GPIO_TX_PORT         		gpioUSART2_GPIO_TX_PORT
 #define     	printUSART_GPIO_TX_PIN          		gpioUSART2_GPIO_TX_PIN
-//¥Æø⁄
+//‰∏≤Âè£
 #define     	printUSART_IRQ_EN       				1
 #define     	printUSART_RCU          				RCU_USART2
 #define     	printUSART               				USART2
@@ -101,7 +101,7 @@
 #define     	printUSART_GPIO_TX_RCU          		gpioUART3_GPIO_TX_RCU
 #define     	printUSART_GPIO_TX_PORT         		gpioUART3_GPIO_TX_PORT
 #define     	printUSART_GPIO_TX_PIN          		gpioUART3_GPIO_TX_PIN
-//¥Æø⁄
+//‰∏≤Âè£
 #define     	printUSART_IRQ_EN       				1
 #define     	printUSART_RCU          				RCU_UART3
 #define     	printUSART               				UART3
@@ -127,7 +127,7 @@
 #define     	printUSART_GPIO_TX_RCU          		gpioUART4_GPIO_TX_RCU
 #define     	printUSART_GPIO_TX_PORT         		gpioUART4_GPIO_TX_PORT
 #define     	printUSART_GPIO_TX_PIN          		gpioUART4_GPIO_TX_PIN
-//¥Æø⁄
+//‰∏≤Âè£
 #define     	printUSART_IRQ_EN       				1
 #define     	printUSART_RCU          				RCU_UART4
 #define     	printUSART               				UART4
@@ -142,13 +142,13 @@
 #define     	printGPIO_485_TX_EN_RCU       			RCU_GPIOA
 #define     	printGPIO_485_TX_EN_PORT      			GPIOA
 #define     	printGPIO_485_TX_EN_PIN       			GPIO_PIN_8
-#define     	printGPIO_485_TX_EN_ON()      			GPIO_BOP(printGPIO_485_TX_EN_PORT) = (uint32_t)printGPIO_485_TX_EN_PIN   // πƒ‹∑¢ÀÕ
-#define     	printGPIO_485_TX_EN_OFF()     			GPIO_BC(printGPIO_485_TX_EN_PORT) = (uint32_t)printGPIO_485_TX_EN_PIN   // πƒ‹Ω” ’
+#define     	printGPIO_485_TX_EN_ON()      			GPIO_BOP(printGPIO_485_TX_EN_PORT) = (uint32_t)printGPIO_485_TX_EN_PIN   //‰ΩøËÉΩÂèëÈÄÅ
+#define     	printGPIO_485_TX_EN_OFF()     			GPIO_BC(printGPIO_485_TX_EN_PORT) = (uint32_t)printGPIO_485_TX_EN_PIN   //‰ΩøËÉΩÊé•Êî∂
 #endif //boardPRINT_485_IFACE_EN
 
 
-void vPrint_Init(void);//¥Æø⁄≥ı ºªØ
-void vPrint_DeInit( void );//¥Æø⁄≥ı ºªØ
+void vPrint_Init(void);//‰∏≤Âè£ÂàùÂßãÂåñ
+void vPrint_DeInit( void );//‰∏≤Âè£ÂàùÂßãÂåñ
 bool bPrint_DataSendStart(u16 len);
 bool bPrint_CheckSendFinish(void);
 void vPrint_QyqRecData(void);

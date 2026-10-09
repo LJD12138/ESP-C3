@@ -14,7 +14,7 @@ extern "C" {
  *********************/
 #include "main.h"
 
-/* Ìø¹ılv_conf.h£¬Ê¹ÓÃKconfigÅäÖÃ */
+/* è·³è¿‡lv_conf.hï¼Œä½¿ç”¨Kconfigé…ç½® */
 #ifndef LV_CONF_SKIP
 #define LV_CONF_SKIP 1
 #endif

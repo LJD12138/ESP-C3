@@ -21,18 +21,18 @@
 #include "timer_task.h"
 #endif  //boardUSE_OS
 
-//****************************************************ºê¶¨Òå**************************************************// 
+//****************************************************å®å®šä¹‰**************************************************// 
 #define    		printRX_DMA_BUFF_SIZE   				256
 #define    		printTX_DMA_BUFF_SIZE   				256
-#define    		printUART_TX_TIMEOUT_MS					1000  // ·¢ËÍ³¬Ê±Ê±¼ä(ms)
+#define    		printUART_TX_TIMEOUT_MS					1000  // å‘é€è¶…æ—¶æ—¶é—´(ms)
 
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************// 
-static volatile bool 	bDmaTxBusy = false;	//DMA·¢ËÍÃ¦±êÖ¾
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************// 
+static volatile bool 	bDmaTxBusy = false;	//DMAå‘é€å¿™æ ‡å¿—
 static volatile size_t 	S_DataSendSize = 0;
 
-static __ALIGNED(4) u8 ucaPrintRxDmaBuffData[printRX_DMA_BUFF_SIZE];   //ÓÃÓÚ½ÓÊÕÊı¾İ
-static __ALIGNED(4) u8 ucaPrintTxDmaBuffData[printTX_DMA_BUFF_SIZE];   	//ÓÃÓÚ°ÑÊı¾İ×°ÔØµ½DMA·¢ËÍ
+static __ALIGNED(4) u8 ucaPrintRxDmaBuffData[printRX_DMA_BUFF_SIZE];   //ç”¨äºæ¥æ”¶æ•°æ®
+static __ALIGNED(4) u8 ucaPrintTxDmaBuffData[printTX_DMA_BUFF_SIZE];   	//ç”¨äºæŠŠæ•°æ®è£…è½½åˆ°DMAå‘é€
 
 #if(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C61)
 static uart_event_t tUartEvent;
@@ -41,27 +41,27 @@ static QueueHandle_t tUartQueue;
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    printf½Ó¿ÚÓ³Éä
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    printfæ¥å£æ˜ å°„
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 #if boardCM_BACKTRACE
 #pragma import(__use_no_semihosting)             
-//±ê×¼¿âĞèÒªµÄÖ§³Öº¯Êı                 
+//æ ‡å‡†åº“éœ€è¦çš„æ”¯æŒå‡½æ•°                 
 struct __FILE 
 { 
 	int handle; 
 }; 
  
 FILE __stdout;       
-//¶¨Òå_sys_exit()ÒÔ±ÜÃâÊ¹ÓÃ°ëÖ÷»úÄ£Ê½    
+//å®šä¹‰_sys_exit()ä»¥é¿å…ä½¿ç”¨åŠä¸»æœºæ¨¡å¼    
 void _sys_exit(int x) 
 { 
 	x = x; 
 } 
-//ÖØ¶¨Òåfputcº¯Êı 
+//é‡å®šä¹‰fputcå‡½æ•° 
 int fputc(int ch, FILE *f)
 {
 	#if(boardIC_TYPE == boardIC_GD32F30X)
@@ -75,89 +75,89 @@ int fputc(int ch, FILE *f)
 #endif 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    IO¿Ú³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    IOå£åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 static void v_print_gpio_init(void)
 {
-	// //458 ·¢ÉäÊ¹ÄÜ 
+	// //458 å‘å°„ä½¿èƒ½ 
 	// #if(boardPRINT_485_IFACE_EN)
     
 	// #endif
 	
-	// //½Ó¿ÚÊ¹ÄÜ
+	// //æ¥å£ä½¿èƒ½
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿Ú³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 static void v_print_usart_init( void )
 {
 	const uart_config_t uart_config = {
-        .baud_rate = printUSART_BAUD,             // ²¨ÌØÂÊ£¨Èç 115200£©
-        .data_bits = UART_DATA_8_BITS,            // Êı¾İÎ»Îª 8 Î»
-        .parity = UART_PARITY_DISABLE,            // ½ûÓÃÆæÅ¼Ğ£Ñé
-        .stop_bits = UART_STOP_BITS_1,            // 1 ¸öÍ£Ö¹Î»
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,    // ¹Ø±ÕÓ²¼şÁ÷¿Ø
-        .source_clk = UART_SCLK_DEFAULT,          // Ê¹ÓÃÄ¬ÈÏÊ±ÖÓÔ´
+        .baud_rate = printUSART_BAUD,             // æ³¢ç‰¹ç‡ï¼ˆå¦‚ 115200ï¼‰
+        .data_bits = UART_DATA_8_BITS,            // æ•°æ®ä½ä¸º 8 ä½
+        .parity = UART_PARITY_DISABLE,            // ç¦ç”¨å¥‡å¶æ ¡éªŒ
+        .stop_bits = UART_STOP_BITS_1,            // 1 ä¸ªåœæ­¢ä½
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,    // å…³é—­ç¡¬ä»¶æµæ§
+        .source_clk = UART_SCLK_DEFAULT,          // ä½¿ç”¨é»˜è®¤æ—¶é’Ÿæº
     };
-    //1.´®¿ÚÅäÖÃ
+    //1.ä¸²å£é…ç½®
     uart_param_config(printUSART, &uart_config);
 
-    //2.°²×°´®¿ÚÇı¶¯,×¢²áÁË´®¿ÚÏûÏ¢¶ÓÁĞ(ESP32 UARTÇı¶¯ÄÚ²¿Ê¹ÓÃDMA)
-    //Ôö´óRX»º³åÇøÒÔÖ§³ÖDMA´«Êä
+    //2.å®‰è£…ä¸²å£é©±åŠ¨,æ³¨å†Œäº†ä¸²å£æ¶ˆæ¯é˜Ÿåˆ—(ESP32 UARTé©±åŠ¨å†…éƒ¨ä½¿ç”¨DMA)
+    //å¢å¤§RXç¼“å†²åŒºä»¥æ”¯æŒDMAä¼ è¾“
     uart_driver_install(printUSART, printRX_DMA_BUFF_SIZE * 2, printTX_DMA_BUFF_SIZE * 2, 20, &tUartQueue, 0);
     
-    //3.ÖĞ¶ÏÅäÖÃ
+    //3.ä¸­æ–­é…ç½®
     #if(printUSART_IRQ_EN)
     uart_intr_config_t intr_conf = {
         .intr_enable_mask = UART_RXFIFO_FULL_INT_ENA | 
                             UART_RXFIFO_TOUT_INT_ENA,
-        .rx_timeout_thresh = 10,                         // ³¬Ê±ãĞÖµ(µ¥Î»£º±ÈÌØÊ±¼ä)
-        .rxfifo_full_thresh = 112                       // FIFO´¥·¢ãĞÖµ(0-127)
+        .rx_timeout_thresh = 10,                         // è¶…æ—¶é˜ˆå€¼(å•ä½ï¼šæ¯”ç‰¹æ—¶é—´)
+        .rxfifo_full_thresh = 112                       // FIFOè§¦å‘é˜ˆå€¼(0-127)
     };
     uart_intr_config(printUSART, &intr_conf);
     uart_enable_rx_intr(printUSART);
 
-    //5.×¢²áÖĞ¶Ï
-    // esp_intr_alloc(ETS_UART0_INTR_SOURCE + printUSART,          // ÖĞ¶ÏÔ´
-    //                ESP_INTR_FLAG_IRAM | ESP_INTR_FLAG_LEVEL1,   // ÔÚIRAMÖĞÔËĞĞ
-    //                printUSART_IRQ_HANDLER,                      // ISRº¯Êı
-    //                (void*)printUSART,                           // ²ÎÊı
-    //                NULL);                                       // ·µ»Ø¾ä±ú
+    //5.æ³¨å†Œä¸­æ–­
+    // esp_intr_alloc(ETS_UART0_INTR_SOURCE + printUSART,          // ä¸­æ–­æº
+    //                ESP_INTR_FLAG_IRAM | ESP_INTR_FLAG_LEVEL1,   // åœ¨IRAMä¸­è¿è¡Œ
+    //                printUSART_IRQ_HANDLER,                      // ISRå‡½æ•°
+    //                (void*)printUSART,                           // å‚æ•°
+    //                NULL);                                       // è¿”å›å¥æŸ„
     #endif  //printUSART_IRQ_EN
 
-    //5.Òı½ÅÅäÖÃ
+    //5.å¼•è„šé…ç½®
     uart_set_pin(printUSART, printUSART_GPIO_TX_PIN, printUSART_GPIO_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
 }
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    Print³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    Printåˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
-void vPrint_Init( void )//´®¿Ú³õÊ¼»¯
+void vPrint_Init( void )//ä¸²å£åˆå§‹åŒ–
 {
 	v_print_gpio_init();
 	v_print_usart_init();
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¶Ë¿ÚÖØÖÃ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç«¯å£é‡ç½®
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vPrint_DeInit( void )
 {
@@ -165,11 +165,11 @@ void vPrint_DeInit( void )
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿Ú·¢Éäº¯Êı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    SendSize:Òª·¢ËÍÊı¾İµÄ´óĞ¡
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:³É¹¦    false:Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£å‘å°„å‡½æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    SendSize:è¦å‘é€æ•°æ®çš„å¤§å°
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æˆåŠŸ    false:å¤±è´¥
 ******************************************************************************************************************/
 bool bPrint_DataSendStart(u16 len)
 {
@@ -183,22 +183,22 @@ bool bPrint_DataSendStart(u16 len)
 	if(len > printTX_DMA_BUFF_SIZE)
 		len = printTX_DMA_BUFF_SIZE;
 	
-	//È¡³öÊı¾İ
+	//å–å‡ºæ•°æ®
 	S_DataSendSize = lwrb_read(&tPrintTxBuff, ucaPrintTxDmaBuffData, len);
 
     if(S_DataSendSize == 0)
         return false;
 	
 	#if(boardPRINT_IFACE_DMA_EN)
-    // ¼ì²éDMAÊÇ·ñÃ¦Âµ£¬Èç¹ûÊÇÔò·µ»ØÊ§°Ü
+    // æ£€æŸ¥DMAæ˜¯å¦å¿™ç¢Œï¼Œå¦‚æœæ˜¯åˆ™è¿”å›å¤±è´¥
     if(bDmaTxBusy)
         return false;
     
-    // ESP32µÄuart_write_bytesÄÚ²¿Ê¹ÓÃDMA£¬·¢ËÍÍê³Éºó»á×Ô¶¯Çå³ıTX FIFO
-    // ÎÒÃÇ²»ĞèÒªÊÖ¶¯¹ÜÀíDMAÃ¦±êÖ¾£¬Ö±½Ó·¢ËÍ¼´¿É
+    // ESP32çš„uart_write_byteså†…éƒ¨ä½¿ç”¨DMAï¼Œå‘é€å®Œæˆåä¼šè‡ªåŠ¨æ¸…é™¤TX FIFO
+    // æˆ‘ä»¬ä¸éœ€è¦æ‰‹åŠ¨ç®¡ç†DMAå¿™æ ‡å¿—ï¼Œç›´æ¥å‘é€å³å¯
     int ret = uart_write_bytes(printUSART, (const char *)ucaPrintTxDmaBuffData, S_DataSendSize);
     
-    // ¼ì²é·¢ËÍÊÇ·ñ³É¹¦
+    // æ£€æŸ¥å‘é€æ˜¯å¦æˆåŠŸ
     if(ret < 0)
     {
         return false;
@@ -206,27 +206,27 @@ bool bPrint_DataSendStart(u16 len)
     
 	return true;
 	#else
-	// ·ÇDMA·½Ê½·¢ËÍ
+	// éDMAæ–¹å¼å‘é€
 	uart_write_bytes(printUSART, (const char *)ucaPrintTxDmaBuffData, S_DataSendSize);
     return true;
 	#endif  //boardPRINT_IFACE_DMA_EN
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    485·¢ËÍÊ¹ÄÜ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    en true:¿ªÆô    false:¹Ø±Õ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    485å‘é€ä½¿èƒ½
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    en true:å¼€å¯    false:å…³é—­
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 #if(boardPRINT_485_IFACE_EN)
 void vPrint_485TransEnable(bool en)
 {
  	if(en == true)
- 		printGPIO_485_TX_EN_ON();  //ÇĞ»»Îª·¢ËÍÄ£Ê½
+ 		printGPIO_485_TX_EN_ON();  //åˆ‡æ¢ä¸ºå‘é€æ¨¡å¼
  	else
  	{
- 		printGPIO_485_TX_EN_OFF();  //ÇĞ»»Îª½ÓÊÕÄ£Ê½
+ 		printGPIO_485_TX_EN_OFF();  //åˆ‡æ¢ä¸ºæ¥æ”¶æ¨¡å¼
 	
  		#if(!boardUSE_OS)
  		bSysTick_PrintSendFinish = false;
@@ -236,49 +236,49 @@ void vPrint_485TransEnable(bool en)
 #endif
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¼ì²é·¢ÉäÇé¿ö
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:·¢ËÍÍê³É    false:·¢ËÍÖĞ  
+-----å‡½æ•°åŠŸèƒ½    æ£€æŸ¥å‘å°„æƒ…å†µ
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:å‘é€å®Œæˆ    false:å‘é€ä¸­  
 ************************************************************************************************************************/
 bool bPrint_CheckSendFinish(void)
 {
     #if(boardPRINT_IFACE_DMA_EN)
-    // ·Ç×èÈû·½Ê½¼ì²éDMA·¢ËÍÊÇ·ñÍê³É
+    // éé˜»å¡æ–¹å¼æ£€æŸ¥DMAå‘é€æ˜¯å¦å®Œæˆ
 	if(bDmaTxBusy)
 	{
-        // ¼ì²éTX FIFOÊÇ·ñÎª¿Õ
+        // æ£€æŸ¥TX FIFOæ˜¯å¦ä¸ºç©º
         size_t tx_bytes_waiting = 0;
         if(uart_get_buffered_data_len(printUSART, &tx_bytes_waiting) == ESP_OK)
         {
             if(tx_bytes_waiting == 0)
             {
-                // FIFOÎª¿Õ£¬·¢ËÍÍê³É
+                // FIFOä¸ºç©ºï¼Œå‘é€å®Œæˆ
                 bDmaTxBusy = false;
                 S_DataSendSize = 0;
                 
-                // 485Ä£Ê½ÏÂÇĞ»»»Ø½ÓÊÕÄ£Ê½
+                // 485æ¨¡å¼ä¸‹åˆ‡æ¢å›æ¥æ”¶æ¨¡å¼
                 #if(boardPRINT_485_IFACE_EN)
                 vPrint_485TransEnable(false);
                 #endif
             }
         }
-		return false;  // ÕıÔÚ·¢ËÍ
+		return false;  // æ­£åœ¨å‘é€
 	}
 	else 
-		return true;  // ·¢ËÍÍê³É
+		return true;  // å‘é€å®Œæˆ
 	#else
 	return true;
 	#endif  //boardPRINT_IFACE_DMA_EN
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ½øÈëµÍ¹¦ºÄ/Çå³ıÖĞ¶Ï
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è¿›å…¥ä½åŠŸè€—/æ¸…é™¤ä¸­æ–­
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 #if(boardLOW_POWER)
 void vPrint_EnterLowPower( void )
@@ -290,29 +290,29 @@ void vPrint_EnterLowPower( void )
 
 #if(boardPRINT_IFACE_DMA_EN)
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿Ú½ÓÊÕ´¦Àí£¨DMAÄ£Ê½£©
------ËµÃ÷(±¸×¢)  DMAÄ£Ê½ÏÂÊ¹ÓÃUARTÊÂ¼ş¶ÓÁĞ½ÓÊÕÊı¾İ
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£æ¥æ”¶å¤„ç†ï¼ˆDMAæ¨¡å¼ï¼‰
+-----è¯´æ˜(å¤‡æ³¨)  DMAæ¨¡å¼ä¸‹ä½¿ç”¨UARTäº‹ä»¶é˜Ÿåˆ—æ¥æ”¶æ•°æ®
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vPrint_QyqRecData(void)
 {
-    //ÕâÀïÓÃÓÚ½ÓÊÕ´®¿ÚµÄÏûÏ¢¶ÓÁĞ
+    //è¿™é‡Œç”¨äºæ¥æ”¶ä¸²å£çš„æ¶ˆæ¯é˜Ÿåˆ—
     if (xQueueReceive(tUartQueue, (void *)&tUartEvent, pdMS_TO_TICKS(10)))
     {
         switch (tUartEvent.type)
         {
-            // Êı¾İ¿É¶ÁĞ´µÄ×´Ì¬
+            // æ•°æ®å¯è¯»å†™çš„çŠ¶æ€
             case UART_DATA:
             {
-                // ÓĞÊı¾İ¿É¶Á
+                // æœ‰æ•°æ®å¯è¯»
                 int len = uart_read_bytes(printUSART, ucaPrintRxDmaBuffData, tUartEvent.size, portMAX_DELAY);
                 if(len > 0 && tpPrintProtoRx != NULL)
                 {
                     lwrb_write(&tpPrintProtoRx->tRxBuff, ucaPrintRxDmaBuffData, len);
                     
-                    // Í¨Öª½ÓÊÕÈÎÎñ
+                    // é€šçŸ¥æ¥æ”¶ä»»åŠ¡
                     #if(boardUSE_OS)
                     vTaskNotifyGiveFromISR(tPrintTaskHandler, NULL);
                     #endif  //boardUSE_OS
@@ -322,7 +322,7 @@ void vPrint_QyqRecData(void)
 
             case UART_FIFO_OVF:
             {
-                // Ó²¼şÊı¾İÒç³ö
+                // ç¡¬ä»¶æ•°æ®æº¢å‡º
                 uart_flush_input(printUSART);
                 xQueueReset(tUartQueue);
             }
@@ -330,7 +330,7 @@ void vPrint_QyqRecData(void)
 
             case UART_BUFFER_FULL:
             {
-                // »·ĞÎ»º³åÇøÒÑÂú
+                // ç¯å½¢ç¼“å†²åŒºå·²æ»¡
                 uart_flush_input(printUSART);
                 xQueueReset(tUartQueue);
             }
@@ -359,28 +359,28 @@ void vPrint_QyqRecData(void)
 
 #else
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´®¿Ú½ÓÊÕ£¨·ÇDMAÄ£Ê½£©
------ËµÃ÷(±¸×¢)  ĞèÒªÔÚÈÎÎñÖĞµ÷ÓÃ
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä¸²å£æ¥æ”¶ï¼ˆéDMAæ¨¡å¼ï¼‰
+-----è¯´æ˜(å¤‡æ³¨)  éœ€è¦åœ¨ä»»åŠ¡ä¸­è°ƒç”¨
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 static u8 uc_read_buff_len=0;
 void vPrint_QyqRecData(void)
 {
-    //ÕâÀïÓÃÓÚ½ÓÊÕ´®¿ÚµÄÏûÏ¢¶ÓÁĞ
+    //è¿™é‡Œç”¨äºæ¥æ”¶ä¸²å£çš„æ¶ˆæ¯é˜Ÿåˆ—
     if (xQueueReceive(tUartQueue, (void *)&tUartEvent, (TickType_t)portMAX_DELAY))
     {
         switch (tUartEvent.type)
         {
-            // Êı¾İ¿É¶ÁĞ´µÄ×´Ì¬
+            // æ•°æ®å¯è¯»å†™çš„çŠ¶æ€
             case UART_DATA:
             {
-                // ÓĞÊı¾İ¿É¶Á
+                // æœ‰æ•°æ®å¯è¯»
                 uc_read_buff_len = uart_read_bytes(printUSART, ucaPrintRxDmaBuffData, tUartEvent.size, portMAX_DELAY);
                 if(uc_read_buff_len && tpPrintProtoRx != NULL)
                     lwrb_write(&tpPrintProtoRx->tRxBuff, ucaPrintRxDmaBuffData, uc_read_buff_len);
-               //Í¨Öª½ÓÊÕÈÎÎñ
+               //é€šçŸ¥æ¥æ”¶ä»»åŠ¡
                 #if(boardUSE_OS)
                 {
                     vTaskNotifyGiveFromISR(tPrintTaskHandler,NULL);
@@ -391,7 +391,7 @@ void vPrint_QyqRecData(void)
 
             case UART_FIFO_OVF:
             {
-                // Ó²¼şÊı¾İÒç³ö
+                // ç¡¬ä»¶æ•°æ®æº¢å‡º
                 uart_flush_input(printUSART);
                 xQueueReset(tUartQueue);
             }
@@ -399,7 +399,7 @@ void vPrint_QyqRecData(void)
 
             case UART_BUFFER_FULL:
             {
-                // »·ĞÎ»º³åÇøÒÑÂú
+                // ç¯å½¢ç¼“å†²åŒºå·²æ»¡
                 uart_flush_input(printUSART);
                 xQueueReset(tUartQueue);
             }

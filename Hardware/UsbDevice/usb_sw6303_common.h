@@ -1,11 +1,11 @@
 /***********************************************************************************************************************
 -----@file sw6303_common.h
------º¯Êı¹¦ÄÜ   SW6303 Ğ¾Æ¬Í¨ÓÃÇı¶¯
------×÷Õß       LJD
------°æ±¾ 1.0.0
------ÈÕÆÚ       2026-01-22
------@copyright Copyright (c) 2026  ÉîÛÚÊĞ°Ù¿áĞÂÄÜÔ´ÓĞÏŞ¹«Ë¾
------@par ĞŞ¸ÄÈÕÖ¾:
+-----å‡½æ•°åŠŸèƒ½   SW6303 èŠ¯ç‰‡é€šç”¨é©±åŠ¨
+-----ä½œè€…       LJD
+-----ç‰ˆæœ¬ 1.0.0
+-----æ—¥æœŸ       2026-01-22
+-----@copyright Copyright (c) 2026  æ·±åœ³å¸‚ç™¾é…·æ–°èƒ½æºæœ‰é™å…¬å¸
+-----@par ä¿®æ”¹æ—¥å¿—:
 ************************************************************************************************************************/
 #ifndef USB_SW6303_COMMON_H_
 #define USB_SW6303_COMMON_H_
@@ -13,58 +13,58 @@
 #include "board_config.h"
 #include "i2c2.h"
 
-// SW6303 ¼Ä´æÆ÷µØÖ·¶¨Òå
-#define SW6303_REG_ABNORMAL_EVENT          0x15    // Òì³£ÊÂ¼şÖ¸Ê¾
-#define SW6303_REG_SYS_STATUS              0x18    // ÏµÍ³×´Ì¬Ö¸Ê¾
-#define SW6303_REG_SYS_ABNORMAL_STATUS0    0x2A    // ÏµÍ³Òì³£×´Ì¬Ö¸Ê¾0
-#define SW6303_REG_SYS_ABNORMAL_STATUS1    0x2B    // ÏµÍ³Òì³£×´Ì¬Ö¸Ê¾1
-#define SW6303_REG_SYS_ABNORMAL_STATUS2    0x2C    // ÏµÍ³Òì³£×´Ì¬Ö¸Ê¾2
-#define SW6303_REG_LOW_POWER_SET           0x23    // µÍ¹¦ºÄÉèÖÃ
-#define SW6303_REG_I2C_ENABLE              0x24    // I2CÊ¹ÄÜ
-#define SW6303_REG_PORT_STATUS             0x1D    // ¶Ë¿Ú×´Ì¬Ö¸Ê¾
-#define SW6303_REG_CTRG_MODE               0x28    // Ä£Ê½ÉèÖÃ
-#define SW6303_REG_ADC_CONFIG              0x30    // ADCÅäÖÃ
-#define SW6303_REG_ADC_DATA_LOW            0x31    // ADCÊı¾İµÍ8Î»
-#define SW6303_REG_ADC_DATA_HIGH           0x32    // ADCÊı¾İ¸ß4Î»
-#define SW6303_REG_CTRG_FORCECTL           0x40U   // Ç¿ÖÆ¿ØÖÆÊ¹ÄÜ
-#define SW6303_REG_CTRG_CHG_VOLT_LOW       0x46U   // ³äµçÄ¿±êµçÑ¹µÍ8Î»
-#define SW6303_REG_CTRG_CHG_VOLT_HIGH      0x47U   // ³äµçÄ¿±êµçÑ¹¸ß4Î»
-#define SW6303_REG_CTRG_DCHG_IBAT          0x44U   // Êä³öµç³ØÏŞÁ÷
-#define SW6303_REG_CTRG_PISET              0x45U   // ÊäÈë¹¦ÂÊ
-#define SW6303_REG_CTRG_CHG_IBAT           0x4AU   // ³äµçµç³ØÏŞÁ÷
-#define SW6303_REG_CTRG_POSET              0x4FU   // Êä³ö¹¦ÂÊ
-#define SW6303_REG_STRG_POMAX             0x51U   // ·Åµç×î´ó¹¦ÂÊ
-#define SW6303_REG_STRG_PIMAX             0x52U   // ³äµç×î´ó¹¦ÂÊ
-#define SW6303_REG_STRG_CHG_CFG0         0x107U  // ³äµçÅäÖÃ0
-#define SW6303_REG_STRG_CHG_CFG1         0x108U  // ³äµçÅäÖÃ1
-#define SW6303_REG_STRG_CHG_CFG2         0x109U  // ³äµçÅäÖÃ2
-#define SW6303_REG_STRG_CHG_CFG3         0x10AU  // ³äµçÅäÖÃ3
-#define SW6303_REG_STRG_CHG_CFG4         0x10BU  // ³äµçÅäÖÃ4
-#define SW6303_REG_STRG_CHG_CFG5         0x10CU  // ³äµçÅäÖÃ5
-#define SW6303_REG_STRG_CHG_CFG6         0x10DU  // ³äµçÅäÖÃ6
-#define SW6303_REG_STRG_CHG_CFG7         0x10EU  // ³äµçÅäÖÃ7
-#define SW6303_REG_STRG_CHG_CFG8         0x10FU  // ³äµçÅäÖÃ8
-#define SW6303_REG_STRG_DCHG_CFG0        0x100U  // ·ÅµçÅäÖÃ0
-#define SW6303_REG_STRG_DCHG_CFG1        0x101U  // ·ÅµçÅäÖÃ1
-#define SW6303_REG_STRG_DCHG_CFG2        0x102U  // ·ÅµçÅäÖÃ2
-#define SW6303_REG_STRG_DCHG_CFG3        0x103U  // ·ÅµçÅäÖÃ3
-#define SW6303_REG_STRG_DCHG_CFG4        0x104U  // ·ÅµçÅäÖÃ4
-#define SW6303_REG_STRG_DCHG_CFG5        0x106U  // ·ÅµçÅäÖÃ5
-#define SW6303_REG_TYPEC_SET1             0x132   // TYPECÉèÖÃ1
-#define SW6303_REG_I2C_ENABLE_8BIT_CLR    0x1FF   // Çå³ı8Î»µØÖ·bit£¨ÏòREG0x1FFĞ´0£©
+// SW6303 å¯„å­˜å™¨åœ°å€å®šä¹‰
+#define SW6303_REG_ABNORMAL_EVENT          0x15    // å¼‚å¸¸äº‹ä»¶æŒ‡ç¤º
+#define SW6303_REG_SYS_STATUS              0x18    // ç³»ç»ŸçŠ¶æ€æŒ‡ç¤º
+#define SW6303_REG_SYS_ABNORMAL_STATUS0    0x2A    // ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€æŒ‡ç¤º0
+#define SW6303_REG_SYS_ABNORMAL_STATUS1    0x2B    // ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€æŒ‡ç¤º1
+#define SW6303_REG_SYS_ABNORMAL_STATUS2    0x2C    // ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€æŒ‡ç¤º2
+#define SW6303_REG_LOW_POWER_SET           0x23    // ä½åŠŸè€—è®¾ç½®
+#define SW6303_REG_I2C_ENABLE              0x24    // I2Cä½¿èƒ½
+#define SW6303_REG_PORT_STATUS             0x1D    // ç«¯å£çŠ¶æ€æŒ‡ç¤º
+#define SW6303_REG_CTRG_MODE               0x28    // æ¨¡å¼è®¾ç½®
+#define SW6303_REG_ADC_CONFIG              0x30    // ADCé…ç½®
+#define SW6303_REG_ADC_DATA_LOW            0x31    // ADCæ•°æ®ä½8ä½
+#define SW6303_REG_ADC_DATA_HIGH           0x32    // ADCæ•°æ®é«˜4ä½
+#define SW6303_REG_CTRG_FORCECTL           0x40U   // å¼ºåˆ¶æ§åˆ¶ä½¿èƒ½
+#define SW6303_REG_CTRG_CHG_VOLT_LOW       0x46U   // å……ç”µç›®æ ‡ç”µå‹ä½8ä½
+#define SW6303_REG_CTRG_CHG_VOLT_HIGH      0x47U   // å……ç”µç›®æ ‡ç”µå‹é«˜4ä½
+#define SW6303_REG_CTRG_DCHG_IBAT          0x44U   // è¾“å‡ºç”µæ± é™æµ
+#define SW6303_REG_CTRG_PISET              0x45U   // è¾“å…¥åŠŸç‡
+#define SW6303_REG_CTRG_CHG_IBAT           0x4AU   // å……ç”µç”µæ± é™æµ
+#define SW6303_REG_CTRG_POSET              0x4FU   // è¾“å‡ºåŠŸç‡
+#define SW6303_REG_STRG_POMAX             0x51U   // æ”¾ç”µæœ€å¤§åŠŸç‡
+#define SW6303_REG_STRG_PIMAX             0x52U   // å……ç”µæœ€å¤§åŠŸç‡
+#define SW6303_REG_STRG_CHG_CFG0         0x107U  // å……ç”µé…ç½®0
+#define SW6303_REG_STRG_CHG_CFG1         0x108U  // å……ç”µé…ç½®1
+#define SW6303_REG_STRG_CHG_CFG2         0x109U  // å……ç”µé…ç½®2
+#define SW6303_REG_STRG_CHG_CFG3         0x10AU  // å……ç”µé…ç½®3
+#define SW6303_REG_STRG_CHG_CFG4         0x10BU  // å……ç”µé…ç½®4
+#define SW6303_REG_STRG_CHG_CFG5         0x10CU  // å……ç”µé…ç½®5
+#define SW6303_REG_STRG_CHG_CFG6         0x10DU  // å……ç”µé…ç½®6
+#define SW6303_REG_STRG_CHG_CFG7         0x10EU  // å……ç”µé…ç½®7
+#define SW6303_REG_STRG_CHG_CFG8         0x10FU  // å……ç”µé…ç½®8
+#define SW6303_REG_STRG_DCHG_CFG0        0x100U  // æ”¾ç”µé…ç½®0
+#define SW6303_REG_STRG_DCHG_CFG1        0x101U  // æ”¾ç”µé…ç½®1
+#define SW6303_REG_STRG_DCHG_CFG2        0x102U  // æ”¾ç”µé…ç½®2
+#define SW6303_REG_STRG_DCHG_CFG3        0x103U  // æ”¾ç”µé…ç½®3
+#define SW6303_REG_STRG_DCHG_CFG4        0x104U  // æ”¾ç”µé…ç½®4
+#define SW6303_REG_STRG_DCHG_CFG5        0x106U  // æ”¾ç”µé…ç½®5
+#define SW6303_REG_TYPEC_SET1             0x132   // TYPECè®¾ç½®1
+#define SW6303_REG_I2C_ENABLE_8BIT_CLR    0x1FF   // æ¸…é™¤8ä½åœ°å€bitï¼ˆå‘REG0x1FFå†™0ï¼‰
 
-// ADCÊı¾İÀàĞÍÑ¡Ôñ£¨REG0x30 bit[4:0]£©
+// ADCæ•°æ®ç±»å‹é€‰æ‹©ï¼ˆREG0x30 bit[4:0]ï¼‰
 typedef enum
 {
-    ADC_SEL_VBUS = 0,     // ÊäÈëÊä³öµçÑ¹£¨8mV£©
-    ADC_SEL_IBUS,         // ÊäÈë/Êä³öIBUSµçÁ÷£¨4mA£©
-    ADC_SEL_VBAT,         // µç³ØµçÑ¹£¨7mV£©
-    ADC_SEL_IBAT,         // ÊäÈë/Êä³öIBATµçÁ÷£¨5mA£©
-    ADC_SEL_TEMP,         // Ğ¾Æ¬ÎÂ¶È(1/6.82¡ãC) - ÖµÎª9
-    ADC_SEL_NTC,          // NTCµçÑ¹£¨1.1mV£© - ÖµÎª10
+    ADC_SEL_VBUS = 0,     // è¾“å…¥è¾“å‡ºç”µå‹ï¼ˆ8mVï¼‰
+    ADC_SEL_IBUS,         // è¾“å…¥/è¾“å‡ºIBUSç”µæµï¼ˆ4mAï¼‰
+    ADC_SEL_VBAT,         // ç”µæ± ç”µå‹ï¼ˆ7mVï¼‰
+    ADC_SEL_IBAT,         // è¾“å…¥/è¾“å‡ºIBATç”µæµï¼ˆ5mAï¼‰
+    ADC_SEL_TEMP,         // èŠ¯ç‰‡æ¸©åº¦(1/6.82Â°C) - å€¼ä¸º9
+    ADC_SEL_NTC,          // NTCç”µå‹ï¼ˆ1.1mVï¼‰ - å€¼ä¸º10
 }ADC_Sel_E;
 
-// Ç¿ÖÆ¿ØÖÆ²ÎÊı½á¹¹
+// å¼ºåˆ¶æ§åˆ¶å‚æ•°ç»“æ„
 #pragma pack(1)
 typedef struct
 {
@@ -79,64 +79,64 @@ typedef struct
 }SW6303_ForceCtrl_T;
 #pragma pack()
 
-// TYPEC½ÇÉ«¶¨Òå
+// TYPECè§’è‰²å®šä¹‰
 typedef enum
 {
-    SW6303_TYPEC_ROLE_DRP = 0,    // Ë«½ÇÉ«
-    SW6303_TYPEC_ROLE_SRC = 1,    // ·Åµç
-    SW6303_TYPEC_ROLE_SNK = 2,    // ³äµç
+    SW6303_TYPEC_ROLE_DRP = 0,    // åŒè§’è‰²
+    SW6303_TYPEC_ROLE_SRC = 1,    // æ”¾ç”µ
+    SW6303_TYPEC_ROLE_SNK = 2,    // å……ç”µ
 }SW6303_TYPEC_ROLE_E;
 
-// Ä£Ê½ÉèÖÃ
+// æ¨¡å¼è®¾ç½®
 typedef enum : u8
 {
-    SW6303_MODE_ALL = 0,      // ³ä·Åµç
-    SW6303_MODE_DISCHG,       // ·Åµç
-    SW6303_MODE_CHG,          // ³äµç
+    SW6303_MODE_ALL = 0,      // å……æ”¾ç”µ
+    SW6303_MODE_DISCHG,       // æ”¾ç”µ
+    SW6303_MODE_CHG,          // å……ç”µ
 }SW6303_Mode_E;
 
-// SW6303¿ØÖÆ¶ÔÏó¶¨Òå
+// SW6303æ§åˆ¶å¯¹è±¡å®šä¹‰
 typedef enum : u8
 {
-    SW6303_CTRL_OBJ_VBUS = 0,      // Êä³öµçÑ¹
-    SW6303_CTRL_OBJ_CHG_VOLT,      // ³äµçµçÑ¹
-    SW6303_CTRL_OBJ_MAX_IN_PWR,    // ×î´óÊäÈë¹¦ÂÊ
-    SW6303_CTRL_OBJ_CHG_HOLD_VOLT, // ³äµç hold ÃÅÏŞ
-    SW6303_CTRL_OBJ_TEMP,         // Ô¤Áô
-    SW6303_CTRL_OBJ_IBAT,         // µç³ØÏŞÁ÷
-    SW6303_CTRL_OBJ_IBUS,         // Êä³öµçÁ÷
-    SW6303_CTRL_OBJ_MAX_OUT_PWR,  // ×î´óÊä³ö¹¦ÂÊ
-    SW6303_CTRL_OBJ_ALL,          // ÉèÖÃËùÓĞ
+    SW6303_CTRL_OBJ_VBUS = 0,      // è¾“å‡ºç”µå‹
+    SW6303_CTRL_OBJ_CHG_VOLT,      // å……ç”µç”µå‹
+    SW6303_CTRL_OBJ_MAX_IN_PWR,    // æœ€å¤§è¾“å…¥åŠŸç‡
+    SW6303_CTRL_OBJ_CHG_HOLD_VOLT, // å……ç”µ hold é—¨é™
+    SW6303_CTRL_OBJ_TEMP,         // é¢„ç•™
+    SW6303_CTRL_OBJ_IBAT,         // ç”µæ± é™æµ
+    SW6303_CTRL_OBJ_IBUS,         // è¾“å‡ºç”µæµ
+    SW6303_CTRL_OBJ_MAX_OUT_PWR,  // æœ€å¤§è¾“å‡ºåŠŸç‡
+    SW6303_CTRL_OBJ_ALL,          // è®¾ç½®æ‰€æœ‰
     SW6303_CTRL_OBJ_MAX
 }SW6303_CtrlObj_E;
 
-// SW6303·ÅµçÅäÖÃ¶ÔÏó¶¨Òå
+// SW6303æ”¾ç”µé…ç½®å¯¹è±¡å®šä¹‰
 typedef enum : u8
 {
-    SW6303_DCHG_CFG_OBJ_ALL = 0,        // ÅäÖÃËùÓĞ·Åµç¼Ä´æÆ÷
-    SW6303_DCHG_CFG_OBJ_CFG0,           // ·ÅµçÅäÖÃ0 (REG0x100)
-    SW6303_DCHG_CFG_OBJ_CFG1,           // ·ÅµçÅäÖÃ1 (REG0x101)
-    SW6303_DCHG_CFG_OBJ_CFG2,           // ·ÅµçÅäÖÃ2 (REG0x102)
-    SW6303_DCHG_CFG_OBJ_CFG3,           // ·ÅµçÅäÖÃ3 (REG0x103)
-    SW6303_DCHG_CFG_OBJ_CFG4,           // ·ÅµçÅäÖÃ4 (REG0x104)
-    SW6303_DCHG_CFG_OBJ_CFG5,           // ·ÅµçÅäÖÃ5 (REG0x106)
+    SW6303_DCHG_CFG_OBJ_ALL = 0,        // é…ç½®æ‰€æœ‰æ”¾ç”µå¯„å­˜å™¨
+    SW6303_DCHG_CFG_OBJ_CFG0,           // æ”¾ç”µé…ç½®0 (REG0x100)
+    SW6303_DCHG_CFG_OBJ_CFG1,           // æ”¾ç”µé…ç½®1 (REG0x101)
+    SW6303_DCHG_CFG_OBJ_CFG2,           // æ”¾ç”µé…ç½®2 (REG0x102)
+    SW6303_DCHG_CFG_OBJ_CFG3,           // æ”¾ç”µé…ç½®3 (REG0x103)
+    SW6303_DCHG_CFG_OBJ_CFG4,           // æ”¾ç”µé…ç½®4 (REG0x104)
+    SW6303_DCHG_CFG_OBJ_CFG5,           // æ”¾ç”µé…ç½®5 (REG0x106)
     SW6303_DCHG_CFG_OBJ_MAX
 }SW6303_DchgCfgObj_E;
 
-// ·ÅµçºãÎÂ»·ãĞÖµ¶¨Òå
+// æ”¾ç”µæ’æ¸©ç¯é˜ˆå€¼å®šä¹‰
 typedef enum : u8
 {
-    SW6303_DCHG_TEMP_THR_60C = 0,   // 60¡ãC
-    SW6303_DCHG_TEMP_THR_70C,       // 70¡ãC
-    SW6303_DCHG_TEMP_THR_80C,       // 80¡ãC
-    SW6303_DCHG_TEMP_THR_90C,       // 90¡ãC
-    SW6303_DCHG_TEMP_THR_100C,      // 100¡ãC
-    SW6303_DCHG_TEMP_THR_110C,      // 110¡ãC
-    SW6303_DCHG_TEMP_THR_120C,      // 120¡ãC
-    SW6303_DCHG_TEMP_THR_130C,      // 130¡ãC
+    SW6303_DCHG_TEMP_THR_60C = 0,   // 60Â°C
+    SW6303_DCHG_TEMP_THR_70C,       // 70Â°C
+    SW6303_DCHG_TEMP_THR_80C,       // 80Â°C
+    SW6303_DCHG_TEMP_THR_90C,       // 90Â°C
+    SW6303_DCHG_TEMP_THR_100C,      // 100Â°C
+    SW6303_DCHG_TEMP_THR_110C,      // 110Â°C
+    SW6303_DCHG_TEMP_THR_120C,      // 120Â°C
+    SW6303_DCHG_TEMP_THR_130C,      // 130Â°C
 }SW6303_DchgTempThr_E;
 
-// Êä³ö¹¦ÂÊÉèÖÃ¶¨Òå
+// è¾“å‡ºåŠŸç‡è®¾ç½®å®šä¹‰
 typedef enum : u8
 {
     SW6303_OUT_PWR_27W = 0,    // 27W
@@ -149,7 +149,7 @@ typedef enum : u8
     SW6303_OUT_PWR_RESERVED,    // reserved
 }SW6303_OutPwr_E;
 
-// ¶à¿ÚÊä³ö×î´óµçÁ÷¶¨Òå
+// å¤šå£è¾“å‡ºæœ€å¤§ç”µæµå®šä¹‰
 typedef enum : u8
 {
     SW6303_MULTI_PORT_MAX_I_4_2A = 0,  // 4.2A
@@ -158,7 +158,7 @@ typedef enum : u8
     SW6303_MULTI_PORT_MAX_I_6_2A,      // 6.2A
 }SW6303_MultiPortMaxI_E;
 
-// VBUSÏŞÁ÷¹Ì¶¨Æ«ÒÆ¶¨Òå
+// VBUSé™æµå›ºå®šåç§»å®šä¹‰
 typedef enum : u8
 {
     SW6303_VBUS_I_OFFSET_300MA = 0,    // 300mA
@@ -167,7 +167,7 @@ typedef enum : u8
     SW6303_VBUS_I_OFFSET_600MA,        // 600mA
 }SW6303_VbusIOffset_E;
 
-// Êä³öµçÑ¹¹Ì¶¨Æ«ÒÆ¶¨Òå
+// è¾“å‡ºç”µå‹å›ºå®šåç§»å®šä¹‰
 typedef enum : u8
 {
     SW6303_VBUS_V_OFFSET_100MV = 0,    // 100mV
@@ -176,7 +176,7 @@ typedef enum : u8
     SW6303_VBUS_V_OFFSET_300MV,        // 300mV
 }SW6303_VbusVOffset_E;
 
-// Ïß²¹ÉèÖÃ¶¨Òå
+// çº¿è¡¥è®¾ç½®å®šä¹‰
 typedef enum : u8
 {
     SW6303_LINE_COMP_60MV_A = 0,    // 60mV/A
@@ -185,16 +185,16 @@ typedef enum : u8
     SW6303_LINE_COMP_80MV_A,       // 80mV/A
 }SW6303_LineComp_E;
 
-// ·ÅµçIBATÏŞÁ÷Ä¬ÈÏÖµ¶¨Òå
+// æ”¾ç”µIBATé™æµé»˜è®¤å€¼å®šä¹‰
 typedef enum : u8
 {
     SW6303_DCHG_IBAT_12A = 0,  // 12A
     SW6303_DCHG_IBAT_10A,      // 10A
     SW6303_DCHG_IBAT_8A,       // 8A
-    SW6303_DCHG_IBAT_INVALID,  // ²»ÉúĞ§
+    SW6303_DCHG_IBAT_INVALID,  // ä¸ç”Ÿæ•ˆ
 }SW6303_DchgIbatDef_E;
 
-// UVLO³ÙÖÍ¶¨Òå (NÎªµç³Ø½ÚÊı)
+// UVLOè¿Ÿæ»å®šä¹‰ (Nä¸ºç”µæ± èŠ‚æ•°)
 typedef enum : u8
 {
     SW6303_UVLO_HYST_0_4V = 0,   // 0.4V*N
@@ -207,7 +207,7 @@ typedef enum : u8
     SW6303_UVLO_HYST_0_8V,       // 0.8V*N
 }SW6303_UvloHyst_E;
 
-// ÈıÔªï®µç³ØÇ·Ñ¹ÃÅÏŞ¶¨Òå (NÎªµç³Ø½ÚÊı)
+// ä¸‰å…ƒé”‚ç”µæ± æ¬ å‹é—¨é™å®šä¹‰ (Nä¸ºç”µæ± èŠ‚æ•°)
 typedef enum : u8
 {
     SW6303_LIPO_UVLO_3_0V = 0,   // 3.0V*N
@@ -220,36 +220,36 @@ typedef enum : u8
     SW6303_LIPO_UVLO_3_3V,       // 3.3V*N
 }SW6303_LipoUvlo_E;
 
-// µç¸ĞÉèÖÃ¶¨Òå
+// ç”µæ„Ÿè®¾ç½®å®šä¹‰
 typedef enum : u8
 {
     SW6303_INDUCTOR_4_7UH = 0,   // 4.7uH
     SW6303_INDUCTOR_10UH,        // 10uH
 }SW6303_Inductor_E;
 
-// ·ÅµçNTC¸ßÎÂÃÅÏŞ¶¨Òå
+// æ”¾ç”µNTCé«˜æ¸©é—¨é™å®šä¹‰
 typedef enum : u8
 {
-    SW6303_DCHG_NTC_HIGH_60C = 0,   // 60¡ãC
-    SW6303_DCHG_NTC_HIGH_50C,       // 50¡ãC
-    SW6303_DCHG_NTC_HIGH_55C,       // 55¡ãC
-    SW6303_DCHG_NTC_HIGH_65C,       // 65¡ãC
+    SW6303_DCHG_NTC_HIGH_60C = 0,   // 60Â°C
+    SW6303_DCHG_NTC_HIGH_50C,       // 50Â°C
+    SW6303_DCHG_NTC_HIGH_55C,       // 55Â°C
+    SW6303_DCHG_NTC_HIGH_65C,       // 65Â°C
 }SW6303_DchgNtcHigh_E;
 
-// ·ÅµçNTCµÍÎÂÃÅÏŞ¶¨Òå
+// æ”¾ç”µNTCä½æ¸©é—¨é™å®šä¹‰
 typedef enum : u8
 {
-    SW6303_DCHG_NTC_LOW_M20C = 0,   // -20¡ãC
-    SW6303_DCHG_NTC_LOW_M15C,       // -15¡ãC
-    SW6303_DCHG_NTC_LOW_M10C,       // -10¡ãC
-    SW6303_DCHG_NTC_LOW_M5C,        // -5¡ãC
-    SW6303_DCHG_NTC_LOW_0C,         // 0¡ãC
-    SW6303_DCHG_NTC_LOW_INVALID,    // ²»ÉúĞ§
-    SW6303_DCHG_NTC_LOW_M25C,       // -25¡ãC
-    SW6303_DCHG_NTC_LOW_M30C,       // -30¡ãC
+    SW6303_DCHG_NTC_LOW_M20C = 0,   // -20Â°C
+    SW6303_DCHG_NTC_LOW_M15C,       // -15Â°C
+    SW6303_DCHG_NTC_LOW_M10C,       // -10Â°C
+    SW6303_DCHG_NTC_LOW_M5C,        // -5Â°C
+    SW6303_DCHG_NTC_LOW_0C,         // 0Â°C
+    SW6303_DCHG_NTC_LOW_INVALID,    // ä¸ç”Ÿæ•ˆ
+    SW6303_DCHG_NTC_LOW_M25C,       // -25Â°C
+    SW6303_DCHG_NTC_LOW_M30C,       // -30Â°C
 }SW6303_DchgNtcLow_E;
 
-// ³äµçÅäÖÃ0: ÊäÈë×î¸ß¹¦ÂÊÉèÖÃ
+// å……ç”µé…ç½®0: è¾“å…¥æœ€é«˜åŠŸç‡è®¾ç½®
 typedef enum : u8
 {
     SW6303_CHG_IN_PWR_27W = 0,    // 27W
@@ -262,7 +262,7 @@ typedef enum : u8
     SW6303_CHG_IN_PWR_RESERVED,    // reserved
 }SW6303_ChgInPwr_E;
 
-// µç³ØÀàĞÍÉèÖÃ
+// ç”µæ± ç±»å‹è®¾ç½®
 typedef enum : u8
 {
     SW6303_BAT_TYPE_4_2V = 0,    // 4.2V
@@ -270,25 +270,25 @@ typedef enum : u8
     SW6303_BAT_TYPE_4_35V,        // 4.35V
     SW6303_BAT_TYPE_4_4V,         // 4.4V
     SW6303_BAT_TYPE_4_5V,         // 4.5V
-    SW6303_BAT_TYPE_3_6V,         // 3.6V, Á×ËáÌúï®
-    SW6303_BAT_TYPE_3_65V_1,      // 3.65V, Á×ËáÌúï®
-    SW6303_BAT_TYPE_3_65V_2,      // 3.65V, Á×ËáÌúï®
+    SW6303_BAT_TYPE_3_6V,         // 3.6V, ç£·é…¸é“é”‚
+    SW6303_BAT_TYPE_3_65V_1,      // 3.65V, ç£·é…¸é“é”‚
+    SW6303_BAT_TYPE_3_65V_2,      // 3.65V, ç£·é…¸é“é”‚
 }SW6303_BatType_E;
 
-// µç³Ø½ÚÊıÉèÖÃ
+// ç”µæ± èŠ‚æ•°è®¾ç½®
 typedef enum : u8
 {
-    SW6303_BAT_CELL_2 = 0,    // 2½Ú
-    SW6303_BAT_CELL_2_2,    // 2½Ú
-    SW6303_BAT_CELL_2_3,    // 2½Ú
-    SW6303_BAT_CELL_3,       // 3½Ú
-    SW6303_BAT_CELL_4,       // 4½Ú
-    SW6303_BAT_CELL_5,       // 5½Ú
-    SW6303_BAT_CELL_6,       // 6½Ú (²»Ö§³Ö4.5Vµç³ØÀàĞÍ)
-    SW6303_BAT_CELL_7,       // 7½Ú (½öÖ§³ÖÁ×ËáÌúï®µç³Ø)
+    SW6303_BAT_CELL_2 = 0,    // 2èŠ‚
+    SW6303_BAT_CELL_2_2,    // 2èŠ‚
+    SW6303_BAT_CELL_2_3,    // 2èŠ‚
+    SW6303_BAT_CELL_3,       // 3èŠ‚
+    SW6303_BAT_CELL_4,       // 4èŠ‚
+    SW6303_BAT_CELL_5,       // 5èŠ‚
+    SW6303_BAT_CELL_6,       // 6èŠ‚ (ä¸æ”¯æŒ4.5Vç”µæ± ç±»å‹)
+    SW6303_BAT_CELL_7,       // 7èŠ‚ (ä»…æ”¯æŒç£·é…¸é“é”‚ç”µæ± )
 }SW6303_BatCell_E;
 
-// 5VÏŞÑ¹ÃÅÏŞÉèÖÃ
+// 5Vé™å‹é—¨é™è®¾ç½®
 typedef enum : u8
 {
     SW6303_5V_OVP_4_6V = 0,    // 4.6V
@@ -301,7 +301,7 @@ typedef enum : u8
     SW6303_5V_OVP_4_9V,         // 4.9V
 }SW6303_5V_Ovp_E;
 
-// 9VÏŞÑ¹ÃÅÏŞÉèÖÃ
+// 9Vé™å‹é—¨é™è®¾ç½®
 typedef enum : u8
 {
     SW6303_9V_OVP_8_5V = 0,    // 8.5V
@@ -314,7 +314,7 @@ typedef enum : u8
     SW6303_9V_OVP_8_9V,         // 8.9V
 }SW6303_9V_Ovp_E;
 
-// 10VÏŞÑ¹ÃÅÏŞÉèÖÃ
+// 10Vé™å‹é—¨é™è®¾ç½®
 typedef enum : u8
 {
     SW6303_10V_OVP_9_5V = 0,   // 9.5V
@@ -327,7 +327,7 @@ typedef enum : u8
     SW6303_10V_OVP_9_9V,        // 9.9V
 }SW6303_10V_Ovp_E;
 
-// 12VÏŞÑ¹ÃÅÏŞÉèÖÃ
+// 12Vé™å‹é—¨é™è®¾ç½®
 typedef enum : u8
 {
     SW6303_12V_OVP_11_5V = 0,   // 11.5V
@@ -340,7 +340,7 @@ typedef enum : u8
     SW6303_12V_OVP_11_9V,        // 11.9V
 }SW6303_12V_Ovp_E;
 
-// 15VÏŞÑ¹ÃÅÏŞÉèÖÃ
+// 15Vé™å‹é—¨é™è®¾ç½®
 typedef enum : u8
 {
     SW6303_15V_OVP_14_5V = 0,   // 14.5V
@@ -353,7 +353,7 @@ typedef enum : u8
     SW6303_15V_OVP_13_8V,        // 13.8V
 }SW6303_15V_Ovp_E;
 
-// 20VÏŞÑ¹ÃÅÏŞÉèÖÃ
+// 20Vé™å‹é—¨é™è®¾ç½®
 typedef enum : u8
 {
     SW6303_20V_OVP_19_5V = 0,   // 19.5V
@@ -366,7 +366,7 @@ typedef enum : u8
     SW6303_20V_OVP_18_8V,        // 18.8V
 }SW6303_20V_Ovp_E;
 
-// Á×ËáÌúï®µç³Øä¸Á÷³äµçÃÅÏŞÉèÖÃ (NÎªµç³Ø½ÚÊı)
+// ç£·é…¸é“é”‚ç”µæ± æ¶“æµå……ç”µé—¨é™è®¾ç½® (Nä¸ºç”µæ± èŠ‚æ•°)
 typedef enum : u8
 {
     SW6303_FE_TRICKLE_2_75V = 0,   // 2.75V*N
@@ -375,7 +375,7 @@ typedef enum : u8
     SW6303_FE_TRICKLE_2_8V,        // 2.8V*N
 }SW6303_FeTrickle_E;
 
-// ä¸Á÷³äµçµçÁ÷ÉèÖÃ
+// æ¶“æµå……ç”µç”µæµè®¾ç½®
 typedef enum : u8
 {
     SW6303_TRICKLE_I_100MA = 0,   // 100mA
@@ -384,7 +384,7 @@ typedef enum : u8
     SW6303_TRICKLE_I_400MA,       // 400mA
 }SW6303_TrickleI_E;
 
-// ä¸Á÷³äµçµçÑ¹³ÙÖÍÉèÖÃ (NÎªµç³Ø½ÚÊı)
+// æ¶“æµå……ç”µç”µå‹è¿Ÿæ»è®¾ç½® (Nä¸ºç”µæ± èŠ‚æ•°)
 typedef enum : u8
 {
     SW6303_TRICKLE_HYST_0_1V = 0,   // 0.1V*N
@@ -393,16 +393,16 @@ typedef enum : u8
     SW6303_TRICKLE_HYST_0_4V,       // 0.4V*N
 }SW6303_TrickleHyst_E;
 
-// ºãÁ÷³äµç³¬Ê±ÉèÖÃ
+// æ’æµå……ç”µè¶…æ—¶è®¾ç½®
 typedef enum : u8
 {
     SW6303_CC_TIMEOUT_22H = 0,    // 22h
     SW6303_CC_TIMEOUT_33H,        // 33h
     SW6303_CC_TIMEOUT_48H,        // 48h
-    SW6303_CC_TIMEOUT_INVALID,    // ¹Ø±ÕºãÁ÷³äµç³¬Ê±
+    SW6303_CC_TIMEOUT_INVALID,    // å…³é—­æ’æµå……ç”µè¶…æ—¶
 }SW6303_CcTimeout_E;
 
-// ³äµç½ØÖÁµçÁ÷ÉèÖÃ
+// å……ç”µæˆªè‡³ç”µæµè®¾ç½®
 typedef enum : u8
 {
     SW6303_CHG_END_I_200MA = 0,   // 200mA
@@ -411,7 +411,7 @@ typedef enum : u8
     SW6303_CHG_END_I_400MA,       // 400mA
 }SW6303_ChgEndI_E;
 
-// C¿Ú5V³äµçµçÁ÷ÉèÖÃ
+// Cå£5Vå……ç”µç”µæµè®¾ç½®
 typedef enum : u8
 {
     SW6303_C_5V_I_3_0A = 0,    // 3.0A
@@ -432,7 +432,7 @@ typedef enum : u8
     SW6303_C_5V_I_3_3A,         // 3.3A
 }SW6303_C5V_I_E;
 
-// B¿ÚºÍL¿Ú5V³äµçµçÁ÷ÉèÖÃ
+// Bå£å’ŒLå£5Vå……ç”µç”µæµè®¾ç½®
 typedef enum : u8
 {
     SW6303_BL_5V_I_2_0A = 0,    // 2.0A
@@ -445,248 +445,248 @@ typedef enum : u8
     SW6303_BL_5V_I_2_3A,        // 2.3A
 }SW6303_BL5V_I_E;
 
-// ³äµçNTCµÍÎÂ±£»¤ÃÅÏŞÉèÖÃ
+// å……ç”µNTCä½æ¸©ä¿æŠ¤é—¨é™è®¾ç½®
 typedef enum : u8
 {
-    SW6303_CHG_NTC_LOW_0C = 0,    // 0¡ãC
-    SW6303_CHG_NTC_LOW_5C,         // 5¡ãC
-    SW6303_CHG_NTC_LOW_10C,        // 10¡ãC
-    SW6303_CHG_NTC_LOW_15C,        // 15¡ãC
-    SW6303_CHG_NTC_LOW_20C,        // 20¡ãC
-    SW6303_CHG_NTC_LOW_M5C,       // -5¡ãC
-    SW6303_CHG_NTC_LOW_M10C,       // -10¡ãC
-    SW6303_CHG_NTC_LOW_INVALID,    // ²»ÉúĞ§
+    SW6303_CHG_NTC_LOW_0C = 0,    // 0Â°C
+    SW6303_CHG_NTC_LOW_5C,         // 5Â°C
+    SW6303_CHG_NTC_LOW_10C,        // 10Â°C
+    SW6303_CHG_NTC_LOW_15C,        // 15Â°C
+    SW6303_CHG_NTC_LOW_20C,        // 20Â°C
+    SW6303_CHG_NTC_LOW_M5C,       // -5Â°C
+    SW6303_CHG_NTC_LOW_M10C,       // -10Â°C
+    SW6303_CHG_NTC_LOW_INVALID,    // ä¸ç”Ÿæ•ˆ
 }SW6303_ChgNtcLow_E;
 
-// ³äµçNTC¸ßÎÂ±£»¤ÃÅÏŞÉèÖÃ
+// å……ç”µNTCé«˜æ¸©ä¿æŠ¤é—¨é™è®¾ç½®
 typedef enum : u8
 {
-    SW6303_CHG_NTC_HIGH_45C = 0,   // 45¡ãC
-    SW6303_CHG_NTC_HIGH_50C,       // 50¡ãC
-    SW6303_CHG_NTC_HIGH_55C,       // 55¡ãC
-    SW6303_CHG_NTC_HIGH_60C,       // 60¡ãC
+    SW6303_CHG_NTC_HIGH_45C = 0,   // 45Â°C
+    SW6303_CHG_NTC_HIGH_50C,       // 50Â°C
+    SW6303_CHG_NTC_HIGH_55C,       // 55Â°C
+    SW6303_CHG_NTC_HIGH_60C,       // 60Â°C
 }SW6303_ChgNtcHigh_E;
 
-// ±ß³ä±ß·ÅÉèÖÃ¶¨Òå
+// è¾¹å……è¾¹æ”¾è®¾ç½®å®šä¹‰
 typedef enum : u8
 {
-    SW6303_BYPASS_ALLOW = 0,    // ÔÊĞí5V±ß³ä±ß·Å
-    SW6303_BYPASS_CHG_PRIORITY, // ³äµçÓÅÏÈ£¬½ûÖ¹5V±ß³ä±ß·Å
+    SW6303_BYPASS_ALLOW = 0,    // å…è®¸5Vè¾¹å……è¾¹æ”¾
+    SW6303_BYPASS_CHG_PRIORITY, // å……ç”µä¼˜å…ˆï¼Œç¦æ­¢5Vè¾¹å……è¾¹æ”¾
 }SW6303_Bypass_E;
 
-// SW6303³äµçÅäÖÃ¶ÔÏó¶¨Òå
+// SW6303å……ç”µé…ç½®å¯¹è±¡å®šä¹‰
 typedef enum : u8
 {
-    SW6303_CHG_CFG_OBJ_ALL = 0,         // ÅäÖÃËùÓĞ³äµç¼Ä´æÆ÷
-    SW6303_CHG_CFG_OBJ_CFG0,            // ³äµçÅäÖÃ0 (REG0x107)
-    SW6303_CHG_CFG_OBJ_CFG1,            // ³äµçÅäÖÃ1 (REG0x108)
-    SW6303_CHG_CFG_OBJ_CFG2,            // ³äµçÅäÖÃ2 (REG0x109)
-    SW6303_CHG_CFG_OBJ_CFG3,            // ³äµçÅäÖÃ3 (REG0x10A)
-    SW6303_CHG_CFG_OBJ_CFG4,            // ³äµçÅäÖÃ4 (REG0x10B)
-    SW6303_CHG_CFG_OBJ_CFG5,            // ³äµçÅäÖÃ5 (REG0x10C)
-    SW6303_CHG_CFG_OBJ_CFG6,            // ³äµçÅäÖÃ6 (REG0x10D)
-    SW6303_CHG_CFG_OBJ_CFG7,            // ³äµçÅäÖÃ7 (REG0x10E)
-    SW6303_CHG_CFG_OBJ_CFG8,            // ³äµçÅäÖÃ8 (REG0x10F)
+    SW6303_CHG_CFG_OBJ_ALL = 0,         // é…ç½®æ‰€æœ‰å……ç”µå¯„å­˜å™¨
+    SW6303_CHG_CFG_OBJ_CFG0,            // å……ç”µé…ç½®0 (REG0x107)
+    SW6303_CHG_CFG_OBJ_CFG1,            // å……ç”µé…ç½®1 (REG0x108)
+    SW6303_CHG_CFG_OBJ_CFG2,            // å……ç”µé…ç½®2 (REG0x109)
+    SW6303_CHG_CFG_OBJ_CFG3,            // å……ç”µé…ç½®3 (REG0x10A)
+    SW6303_CHG_CFG_OBJ_CFG4,            // å……ç”µé…ç½®4 (REG0x10B)
+    SW6303_CHG_CFG_OBJ_CFG5,            // å……ç”µé…ç½®5 (REG0x10C)
+    SW6303_CHG_CFG_OBJ_CFG6,            // å……ç”µé…ç½®6 (REG0x10D)
+    SW6303_CHG_CFG_OBJ_CFG7,            // å……ç”µé…ç½®7 (REG0x10E)
+    SW6303_CHG_CFG_OBJ_CFG8,            // å……ç”µé…ç½®8 (REG0x10F)
     SW6303_CHG_CFG_OBJ_MAX
 }SW6303_ChgCfgObj_E;
 
-// ³äµçÅäÖÃ²ÎÊı½á¹¹
+// å……ç”µé…ç½®å‚æ•°ç»“æ„
 #pragma pack(1)
 typedef struct
 {
-    // REG0x107: ³äµçÅäÖÃ0
-    bool                bFcFixPower;          // ¿ì³äÊÇ·ñ°´ÕÕ¹Ì¶¨¹¦ÂÊ³äµç (bit4: 0-°´×î´óµçÁ÷, 1-°´¹Ì¶¨¹¦ÂÊ)
-    bool                bAutoDetectInPwr;      // ÊäÈë×î¸ß¹¦ÂÊÉèÖÃ·½Ê½ (bit3: 0-×Ô¶¯, 1-ÊÖ¶¯ÉèÖÃ)
-    SW6303_ChgInPwr_E   eInPwr;              // ÊäÈë×î¸ß¹¦ÂÊÉèÖÃ (bit[2:0])
+    // REG0x107: å……ç”µé…ç½®0
+    bool                bFcFixPower;          // å¿«å……æ˜¯å¦æŒ‰ç…§å›ºå®šåŠŸç‡å……ç”µ (bit4: 0-æŒ‰æœ€å¤§ç”µæµ, 1-æŒ‰å›ºå®šåŠŸç‡)
+    bool                bAutoDetectInPwr;      // è¾“å…¥æœ€é«˜åŠŸç‡è®¾ç½®æ–¹å¼ (bit3: 0-è‡ªåŠ¨, 1-æ‰‹åŠ¨è®¾ç½®)
+    SW6303_ChgInPwr_E   eInPwr;              // è¾“å…¥æœ€é«˜åŠŸç‡è®¾ç½® (bit[2:0])
     
-    // REG0x108: ³äµçÅäÖÃ1
-    bool                bAutoDetectBatType;    // µç³ØÀàĞÍÉèÖÃ·½Ê½ (bit7: 0-×Ô¶¯, 1-ÊÖ¶¯ÉèÖÃ)
-    SW6303_BatType_E    eBatType;            // µç³ØÀàĞÍÉèÖÃ (bit[6:4])
-    bool                bAutoDetectBatCell;    // µç³Ø½ÚÊıÉèÖÃ·½Ê½ (bit3: 0-×Ô¶¯, 1-ÊÖ¶¯ÉèÖÃ)
-    SW6303_BatCell_E    eBatCell;            // µç³Ø½ÚÊıÉèÖÃ (bit[2:0])
+    // REG0x108: å……ç”µé…ç½®1
+    bool                bAutoDetectBatType;    // ç”µæ± ç±»å‹è®¾ç½®æ–¹å¼ (bit7: 0-è‡ªåŠ¨, 1-æ‰‹åŠ¨è®¾ç½®)
+    SW6303_BatType_E    eBatType;            // ç”µæ± ç±»å‹è®¾ç½® (bit[6:4])
+    bool                bAutoDetectBatCell;    // ç”µæ± èŠ‚æ•°è®¾ç½®æ–¹å¼ (bit3: 0-è‡ªåŠ¨, 1-æ‰‹åŠ¨è®¾ç½®)
+    SW6303_BatCell_E    eBatCell;            // ç”µæ± èŠ‚æ•°è®¾ç½® (bit[2:0])
     
-    // REG0x109: ³äµçÅäÖÃ2
-    bool                bChgAbove1_5V;        // µç³ØµçÑ¹µÍÓÚ1.5VÊ±ÊÇ·ñ³äµç (bit7: 0-ÔÊĞí, 1-²»ÔÊĞí)
-    SW6303_5V_Ovp_E     e5VOvp;              // 5VÏŞÑ¹ÃÅÏŞÉèÖÃ (bit[6:4])
-    bool                bTrickleTimeout;      // ä¸Á÷³äµç³¬Ê±ÉèÖÃ (bit3: 0-40·ÖÖÓ, 1-¹Ø±Õ³¬Ê±)
-    SW6303_9V_Ovp_E     e9VOvp;              // 9VÏŞÑ¹ÃÅÏŞÉèÖÃ (bit[2:0])
+    // REG0x109: å……ç”µé…ç½®2
+    bool                bChgAbove1_5V;        // ç”µæ± ç”µå‹ä½äº1.5Væ—¶æ˜¯å¦å……ç”µ (bit7: 0-å…è®¸, 1-ä¸å…è®¸)
+    SW6303_5V_Ovp_E     e5VOvp;              // 5Vé™å‹é—¨é™è®¾ç½® (bit[6:4])
+    bool                bTrickleTimeout;      // æ¶“æµå……ç”µè¶…æ—¶è®¾ç½® (bit3: 0-40åˆ†é’Ÿ, 1-å…³é—­è¶…æ—¶)
+    SW6303_9V_Ovp_E     e9VOvp;              // 9Vé™å‹é—¨é™è®¾ç½® (bit[2:0])
     
-    // REG0x10A: ³äµçÅäÖÃ3
-    bool                bAdapterPullDisable;    // ÊÊÅäÆ÷À­¹ÒÊ¹ÄÜ (bit7: 0-Ê¹ÄÜ, 1-½ûÖ¹)
-    SW6303_10V_Ovp_E    e10VOvp;             // 10VÏŞÑ¹ÃÅÏŞÉèÖÃ (bit[6:4])
-    SW6303_Bypass_E     eBypassMode;         // ±ß³ä±ß·ÅÉèÖÃ (bit3: 0-ÔÊĞí5V±ß³ä±ß·Å, 1-³äµçÓÅÏÈ£¬½ûÖ¹5V±ß³ä±ß·Å)
-    SW6303_12V_Ovp_E    e12VOvp;             // 12VÏŞÑ¹ÃÅÏŞÉèÖÃ (bit[2:0])
+    // REG0x10A: å……ç”µé…ç½®3
+    bool                bAdapterPullDisable;    // é€‚é…å™¨æ‹‰æŒ‚ä½¿èƒ½ (bit7: 0-ä½¿èƒ½, 1-ç¦æ­¢)
+    SW6303_10V_Ovp_E    e10VOvp;             // 10Vé™å‹é—¨é™è®¾ç½® (bit[6:4])
+    SW6303_Bypass_E     eBypassMode;         // è¾¹å……è¾¹æ”¾è®¾ç½® (bit3: 0-å…è®¸5Vè¾¹å……è¾¹æ”¾, 1-å……ç”µä¼˜å…ˆï¼Œç¦æ­¢5Vè¾¹å……è¾¹æ”¾)
+    SW6303_12V_Ovp_E    e12VOvp;             // 12Vé™å‹é—¨é™è®¾ç½® (bit[2:0])
     
-    // REG0x10B: ³äµçÅäÖÃ4
-    bool                bBypassHoldChange;     // ±ß³ä±ß·ÅholdÃÅÏŞÉèÖÃ (bit7: 0-Ìá¸ßÇ·Ñ¹µ½4.8V, 1-²»±ä)
-    SW6303_15V_Ovp_E    e15VOvp;             // 15VÏŞÑ¹ÃÅÏŞÉèÖÃ (bit[6:4])
-    SW6303_20V_Ovp_E    e20VOvp;             // 20VÏŞÑ¹ÃÅÏŞÉèÖÃ (bit[2:0])
+    // REG0x10B: å……ç”µé…ç½®4
+    bool                bBypassHoldChange;     // è¾¹å……è¾¹æ”¾holdé—¨é™è®¾ç½® (bit7: 0-æé«˜æ¬ å‹åˆ°4.8V, 1-ä¸å˜)
+    SW6303_15V_Ovp_E    e15VOvp;             // 15Vé™å‹é—¨é™è®¾ç½® (bit[6:4])
+    SW6303_20V_Ovp_E    e20VOvp;             // 20Vé™å‹é—¨é™è®¾ç½® (bit[2:0])
     
-    // REG0x10C: ³äµçÅäÖÃ5
-    bool                bLimitVoltageAdapt;   // ÏŞÑ¹ÃÅÏŞ×ÔÊÊÓ¦ (bit3: 0-µçÁ÷>3A½µµÍÏŞÑ¹, 1-²»½µµÍ)
+    // REG0x10C: å……ç”µé…ç½®5
+    bool                bLimitVoltageAdapt;   // é™å‹é—¨é™è‡ªé€‚åº” (bit3: 0-ç”µæµ>3Aé™ä½é™å‹, 1-ä¸é™ä½)
     
-    // REG0x10D: ³äµçÅäÖÃ6
-    SW6303_FeTrickle_E  eFeTrickle;          // Á×ËáÌúï®µç³Øä¸Á÷³äµçÃÅÏŞ (bit[7:6])
-    SW6303_TrickleI_E   eTrickleI;           // ä¸Á÷³äµçµçÁ÷ (bit[5:4])
-    SW6303_TrickleHyst_E eTrickleHyst;        // ä¸Á÷³äµçµçÑ¹³ÙÖÍ (bit[3:2])
-    SW6303_CcTimeout_E  eCcTimeout;          // ºãÁ÷³äµç³¬Ê±ÉèÖÃ (bit[1:0])
+    // REG0x10D: å……ç”µé…ç½®6
+    SW6303_FeTrickle_E  eFeTrickle;          // ç£·é…¸é“é”‚ç”µæ± æ¶“æµå……ç”µé—¨é™ (bit[7:6])
+    SW6303_TrickleI_E   eTrickleI;           // æ¶“æµå……ç”µç”µæµ (bit[5:4])
+    SW6303_TrickleHyst_E eTrickleHyst;        // æ¶“æµå……ç”µç”µå‹è¿Ÿæ» (bit[3:2])
+    SW6303_CcTimeout_E  eCcTimeout;          // æ’æµå……ç”µè¶…æ—¶è®¾ç½® (bit[1:0])
     
-    // REG0x10E: ³äµçÅäÖÃ7
-    SW6303_ChgEndI_E   eChgEndI;            // ³äµç½ØÖÁµçÁ÷ÉèÖÃ (bit[7:6])
-    SW6303_C5V_I_E     eC5VI;               // C¿Ú5V³äµçµçÁ÷ÉèÖÃ (bit[3:0])
+    // REG0x10E: å……ç”µé…ç½®7
+    SW6303_ChgEndI_E   eChgEndI;            // å……ç”µæˆªè‡³ç”µæµè®¾ç½® (bit[7:6])
+    SW6303_C5V_I_E     eC5VI;               // Cå£5Vå……ç”µç”µæµè®¾ç½® (bit[3:0])
     
-    // REG0x10F: ³äµçÅäÖÃ8
-    SW6303_BL5V_I_E    eBL5VI;              // B¿ÚºÍL¿Ú5V³äµçµçÁ÷ÉèÖÃ (bit[7:5])
-    SW6303_ChgNtcLow_E  eChgNtcLow;         // ³äµçÊ±NTCµÍÎÂ±£»¤ÃÅÏŞ (bit[4:2])
-    SW6303_ChgNtcHigh_E eChgNtcHigh;        // ³äµçÊ±NTC¸ßÎÂ±£»¤ÃÅÏŞ (bit[1:0])
+    // REG0x10F: å……ç”µé…ç½®8
+    SW6303_BL5V_I_E    eBL5VI;              // Bå£å’ŒLå£5Vå……ç”µç”µæµè®¾ç½® (bit[7:5])
+    SW6303_ChgNtcLow_E  eChgNtcLow;         // å……ç”µæ—¶NTCä½æ¸©ä¿æŠ¤é—¨é™ (bit[4:2])
+    SW6303_ChgNtcHigh_E eChgNtcHigh;        // å……ç”µæ—¶NTCé«˜æ¸©ä¿æŠ¤é—¨é™ (bit[1:0])
 }SW6303_ChgCfg_T;
 #pragma pack()
 
-// ¶Ë¿Ú×´Ì¬²ÎÊı½á¹¹
+// ç«¯å£çŠ¶æ€å‚æ•°ç»“æ„
 #pragma pack(1)
 typedef struct
 {
-    // C1¿Ú×´Ì¬
-    bool            bC1SrcConn;         // C1×÷ÎªsourceµÄÁ¬½Ó×´Ì¬ (bit7: 0-Î´Á¬½Ó, 1-Á¬½Ó)
-    bool            bC1SinkConn;        // C1×÷ÎªsinkµÄÁ¬½Ó×´Ì¬ (bit6: 0-Î´Á¬½Ó, 1-Á¬½Ó)
-    bool            bC1Online;          // C1¿ÚµÄÔÚÏß×´Ì¬ (bit1: 0-²»ÔÚÏß, 1-ÔÚÏß)
+    // C1å£çŠ¶æ€
+    bool            bC1SrcConn;         // C1ä½œä¸ºsourceçš„è¿æ¥çŠ¶æ€ (bit7: 0-æœªè¿æ¥, 1-è¿æ¥)
+    bool            bC1SinkConn;        // C1ä½œä¸ºsinkçš„è¿æ¥çŠ¶æ€ (bit6: 0-æœªè¿æ¥, 1-è¿æ¥)
+    bool            bC1Online;          // C1å£çš„åœ¨çº¿çŠ¶æ€ (bit1: 0-ä¸åœ¨çº¿, 1-åœ¨çº¿)
     
-    // C2¿Ú×´Ì¬
-    bool            bC2SrcConn;         // C2×÷ÎªsourceµÄÁ¬½Ó×´Ì¬ (bit5: 0-Î´Á¬½Ó, 1-Á¬½Ó)
-    bool            bC2SinkConn;        // C2×÷ÎªsinkµÄÁ¬½Ó×´Ì¬ (bit4: 0-Î´Á¬½Ó, 1-Á¬½Ó)
-    bool            bC2Online;          // C2¿ÚµÄÔÚÏß×´Ì¬ (bit0: 0-²»ÔÚÏß, 1-ÔÚÏß)
+    // C2å£çŠ¶æ€
+    bool            bC2SrcConn;         // C2ä½œä¸ºsourceçš„è¿æ¥çŠ¶æ€ (bit5: 0-æœªè¿æ¥, 1-è¿æ¥)
+    bool            bC2SinkConn;        // C2ä½œä¸ºsinkçš„è¿æ¥çŠ¶æ€ (bit4: 0-æœªè¿æ¥, 1-è¿æ¥)
+    bool            bC2Online;          // C2å£çš„åœ¨çº¿çŠ¶æ€ (bit0: 0-ä¸åœ¨çº¿, 1-åœ¨çº¿)
     
-    // A¿Ú×´Ì¬
-    bool            bAOnline;           // A¿ÚÔÚÏß×´Ì¬ (bit2: 0-²»ÔÚÏß, 1-ÔÚÏß)
+    // Aå£çŠ¶æ€
+    bool            bAOnline;           // Aå£åœ¨çº¿çŠ¶æ€ (bit2: 0-ä¸åœ¨çº¿, 1-åœ¨çº¿)
 }SW6303_PortStatus_T;
 #pragma pack()
 
-// Òì³£ÊÂ¼şÀàĞÍ¶¨Òå (REG0x15)
+// å¼‚å¸¸äº‹ä»¶ç±»å‹å®šä¹‰ (REG0x15)
 typedef enum : u8
 {
-    SW6303_EVENT_CAP_CALC_DONE = 0,     // µçÁ¿¼ÆÁ¿Íê³ÉÖ¸Ê¾ (bit5)
-    SW6303_EVENT_UVLO,                   // µç³ØÇ·Ñ¹UVLOÊÂ¼şÖ¸Ê¾ (bit4)
-    SW6303_EVENT_CHG_ABNORMAL,           // ³äµçÒì³£ÊÂ¼şÖ¸Ê¾ (bit3)
-    SW6303_EVENT_DCHG_ABNORMAL,          // ·ÅµçÒì³£ÊÂ¼şÖ¸Ê¾ (bit2)
-    SW6303_EVENT_KEY,                    // °´¼üÊÂ¼şÖ¸Ê¾ (bit1)
-    SW6303_EVENT_SCENE_CHANGE,           // ³¡¾°±ä»¯ÊÂ¼şÖ¸Ê¾ (bit0)
+    SW6303_EVENT_CAP_CALC_DONE = 0,     // ç”µé‡è®¡é‡å®ŒæˆæŒ‡ç¤º (bit5)
+    SW6303_EVENT_UVLO,                   // ç”µæ± æ¬ å‹UVLOäº‹ä»¶æŒ‡ç¤º (bit4)
+    SW6303_EVENT_CHG_ABNORMAL,           // å……ç”µå¼‚å¸¸äº‹ä»¶æŒ‡ç¤º (bit3)
+    SW6303_EVENT_DCHG_ABNORMAL,          // æ”¾ç”µå¼‚å¸¸äº‹ä»¶æŒ‡ç¤º (bit2)
+    SW6303_EVENT_KEY,                    // æŒ‰é”®äº‹ä»¶æŒ‡ç¤º (bit1)
+    SW6303_EVENT_SCENE_CHANGE,           // åœºæ™¯å˜åŒ–äº‹ä»¶æŒ‡ç¤º (bit0)
     SW6303_EVENT_MAX
 }SW6303_EventType_E;
 
-// ÏµÍ³×´Ì¬½á¹¹Ìå (REG0x18)
+// ç³»ç»ŸçŠ¶æ€ç»“æ„ä½“ (REG0x18)
 #pragma pack(1)
 typedef struct
 {
-    bool            bChgAbnormal;        // ³äµçÒì³£´¥·¢ÊÂ¼şÖ¸Ê¾ (bit7: 0-ÎŞÒì³£, 1-Òì³£µ¼ÖÂ³äµç¹Ø±Õ)
-    bool            bDchgAbnormal;       // ·ÅµçÒì³£´¥·¢ÊÂ¼şÖ¸Ê¾ (bit6: 0-ÎŞÒì³£, 1-Òì³£µ¼ÖÂ·Åµç¹Ø±Õ)
-    bool            bChgStatus;          // ³äµç×´Ì¬Ö¸Ê¾Î» (bit5: 0-³äµç¹Ø±Õ, 1-³äµç´ò¿ª)
-    bool            bDchgStatus;         // ·Åµç×´Ì¬Ö¸Ê¾Î» (bit4: 0-·Åµç¹Ø±Õ, 1-·Åµç´ò¿ª)
-    bool            bC1PathStatus;       // C1¿ÚÍ¨Â·×´Ì¬Ö¸Ê¾Î» (bit3: 0-¹Ø±Õ, 1-´ò¿ª)
-    bool            bC2PathStatus;       // C2¿ÚÍ¨Â·×´Ì¬Ö¸Ê¾Î» (bit2: 0-¹Ø±Õ, 1-´ò¿ª)
-    bool            bAPathStatus;        // A¿ÚÍ¨Â·×´Ì¬Ö¸Ê¾Î» (bit0: 0-¹Ø±Õ, 1-´ò¿ª)
+    bool            bChgAbnormal;        // å……ç”µå¼‚å¸¸è§¦å‘äº‹ä»¶æŒ‡ç¤º (bit7: 0-æ— å¼‚å¸¸, 1-å¼‚å¸¸å¯¼è‡´å……ç”µå…³é—­)
+    bool            bDchgAbnormal;       // æ”¾ç”µå¼‚å¸¸è§¦å‘äº‹ä»¶æŒ‡ç¤º (bit6: 0-æ— å¼‚å¸¸, 1-å¼‚å¸¸å¯¼è‡´æ”¾ç”µå…³é—­)
+    bool            bChgStatus;          // å……ç”µçŠ¶æ€æŒ‡ç¤ºä½ (bit5: 0-å……ç”µå…³é—­, 1-å……ç”µæ‰“å¼€)
+    bool            bDchgStatus;         // æ”¾ç”µçŠ¶æ€æŒ‡ç¤ºä½ (bit4: 0-æ”¾ç”µå…³é—­, 1-æ”¾ç”µæ‰“å¼€)
+    bool            bC1PathStatus;       // C1å£é€šè·¯çŠ¶æ€æŒ‡ç¤ºä½ (bit3: 0-å…³é—­, 1-æ‰“å¼€)
+    bool            bC2PathStatus;       // C2å£é€šè·¯çŠ¶æ€æŒ‡ç¤ºä½ (bit2: 0-å…³é—­, 1-æ‰“å¼€)
+    bool            bAPathStatus;        // Aå£é€šè·¯çŠ¶æ€æŒ‡ç¤ºä½ (bit0: 0-å…³é—­, 1-æ‰“å¼€)
 }SW6303_SysStatus_T;
 #pragma pack()
 
-// ÏµÍ³Òì³£×´Ì¬0½á¹¹Ìå (REG0x2A) - ·ÅµçÒì³£
+// ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€0ç»“æ„ä½“ (REG0x2A) - æ”¾ç”µå¼‚å¸¸
 #pragma pack(1)
 typedef struct
 {
-    bool            bDchgBatOvp;         // ·ÅµçÊ±µç³Ø¹ıÑ¹Òì³£ (bit6)
-    bool            bDchgChipOtp;        // ·ÅµçÊ±Ğ¾Æ¬¹ıÎÂÒì³£ (bit5)
-    bool            bDchgNtcOtp;         // ·ÅµçÊ±NTC¹ıÎÂÒì³£ (bit4)
-    bool            bDchgVbusOcp;        // ·ÅµçÊ±VBUS¹ıÔØÒì³£ (bit3)
-    bool            bDchgVbusShort;      // ·ÅµçÊ±VBUS¶ÌÂ·Òì³£ (bit2)
-    bool            bDchgVbusSlowOvp;    // ·ÅµçÊ±VBUSÂıËÙ¹ıÑ¹±£»¤Òì³£ (bit1)
-    bool            bDchgVbusFastOvp;    // ·ÅµçÊ±VBUS¿ìËÙ¹ıÑ¹±£»¤Òì³£ (bit0)
+    bool            bDchgBatOvp;         // æ”¾ç”µæ—¶ç”µæ± è¿‡å‹å¼‚å¸¸ (bit6)
+    bool            bDchgChipOtp;        // æ”¾ç”µæ—¶èŠ¯ç‰‡è¿‡æ¸©å¼‚å¸¸ (bit5)
+    bool            bDchgNtcOtp;         // æ”¾ç”µæ—¶NTCè¿‡æ¸©å¼‚å¸¸ (bit4)
+    bool            bDchgVbusOcp;        // æ”¾ç”µæ—¶VBUSè¿‡è½½å¼‚å¸¸ (bit3)
+    bool            bDchgVbusShort;      // æ”¾ç”µæ—¶VBUSçŸ­è·¯å¼‚å¸¸ (bit2)
+    bool            bDchgVbusSlowOvp;    // æ”¾ç”µæ—¶VBUSæ…¢é€Ÿè¿‡å‹ä¿æŠ¤å¼‚å¸¸ (bit1)
+    bool            bDchgVbusFastOvp;    // æ”¾ç”µæ—¶VBUSå¿«é€Ÿè¿‡å‹ä¿æŠ¤å¼‚å¸¸ (bit0)
 }SW6303_AbnormalStatus0_T;
 #pragma pack()
 
-// ÏµÍ³Òì³£×´Ì¬1½á¹¹Ìå (REG0x2B) - ³äµçÒì³£
+// ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€1ç»“æ„ä½“ (REG0x2B) - å……ç”µå¼‚å¸¸
 #pragma pack(1)
 typedef struct
 {
-    bool            bBatBelow1_5V;       // µç³ØµçÑ¹µÍÓÚ1.5VÒì³£ (bit7)
-    bool            bChgTimeout;         // ³äµç³¬Ê±Òì³£ (bit6)
-    bool            bChgFull;            // ³äÂúÊÂ¼şÖ¸Ê¾ (bit5)
-    bool            bChgBatOvp;          // ³äµçÊ±µç³Ø¹ıÑ¹Òì³£ (bit4)
-    bool            bChgChipOtp;         // ³äµçÊ±Ğ¾Æ¬¹ıÎÂÒì³£ (bit3)
-    bool            bChgNtcOtp;          // ³äµçÊ±NTC¹ıÎÂÒì³£ (bit2)
-    bool            bChgVbusSlowOvp;     // ³äµçÊ±VBUSÂıËÙ¹ıÑ¹Òì³£ (bit1)
-    bool            bChgVbusFastOvp;     // ³äµçÊ±VBUS¿ìËÙ¹ıÑ¹Òì³£ (bit0)
+    bool            bBatBelow1_5V;       // ç”µæ± ç”µå‹ä½äº1.5Vå¼‚å¸¸ (bit7)
+    bool            bChgTimeout;         // å……ç”µè¶…æ—¶å¼‚å¸¸ (bit6)
+    bool            bChgFull;            // å……æ»¡äº‹ä»¶æŒ‡ç¤º (bit5)
+    bool            bChgBatOvp;          // å……ç”µæ—¶ç”µæ± è¿‡å‹å¼‚å¸¸ (bit4)
+    bool            bChgChipOtp;         // å……ç”µæ—¶èŠ¯ç‰‡è¿‡æ¸©å¼‚å¸¸ (bit3)
+    bool            bChgNtcOtp;          // å……ç”µæ—¶NTCè¿‡æ¸©å¼‚å¸¸ (bit2)
+    bool            bChgVbusSlowOvp;     // å……ç”µæ—¶VBUSæ…¢é€Ÿè¿‡å‹å¼‚å¸¸ (bit1)
+    bool            bChgVbusFastOvp;     // å……ç”µæ—¶VBUSå¿«é€Ÿè¿‡å‹å¼‚å¸¸ (bit0)
 }SW6303_AbnormalStatus1_T;
 #pragma pack()
 
-// °´¼üÊÂ¼şÀàĞÍ¶¨Òå (REG0x2C bit[7:6])
+// æŒ‰é”®äº‹ä»¶ç±»å‹å®šä¹‰ (REG0x2C bit[7:6])
 typedef enum : u8
 {
-    SW6303_KEY_EVENT_NONE = 0,     // Î´·¢Éú°´¼üÊÂ¼ş
-    SW6303_KEY_EVENT_SHORT,        // ·¢Éú¶Ì°´
-    SW6303_KEY_EVENT_DOUBLE,       // ·¢ÉúË«»÷
-    SW6303_KEY_EVENT_LONG,         // ·¢Éú³¤°´
+    SW6303_KEY_EVENT_NONE = 0,     // æœªå‘ç”ŸæŒ‰é”®äº‹ä»¶
+    SW6303_KEY_EVENT_SHORT,        // å‘ç”ŸçŸ­æŒ‰
+    SW6303_KEY_EVENT_DOUBLE,       // å‘ç”ŸåŒå‡»
+    SW6303_KEY_EVENT_LONG,         // å‘ç”Ÿé•¿æŒ‰
 }SW6303_KeyEvent_E;
 
-// ÏµÍ³Òì³£×´Ì¬2½á¹¹Ìå (REG0x2C)
+// ç³»ç»Ÿå¼‚å¸¸çŠ¶æ€2ç»“æ„ä½“ (REG0x2C)
 #pragma pack(1)
 typedef struct
 {
-    SW6303_KeyEvent_E   eKeyEvent;          // °´¼üÊÂ¼şÖ¸Ê¾ (bit[7:6])
-    bool                bDchg62368LowTemp;  // ·ÅµçÊ±62368µÍÎÂÒì³£ (bit4)
-    bool                bChg62368LowTemp;   // ³äµçÊ±62368µÍÎÂÒì³£ (bit3)
-    bool                bChg62368Otp;       // ³äµç62368¹ıÎÂÒì³£ (bit2)
-    bool                bDchgDpdmOvp;       // ·ÅµçÊ±DPDM 5.5V¹ıÑ¹Òì³£ (bit1)
-    bool                bDchgCcOvp;         // ·ÅµçÊ±CC 5.5V¹ıÑ¹Òì³£ (bit0)
+    SW6303_KeyEvent_E   eKeyEvent;          // æŒ‰é”®äº‹ä»¶æŒ‡ç¤º (bit[7:6])
+    bool                bDchg62368LowTemp;  // æ”¾ç”µæ—¶62368ä½æ¸©å¼‚å¸¸ (bit4)
+    bool                bChg62368LowTemp;   // å……ç”µæ—¶62368ä½æ¸©å¼‚å¸¸ (bit3)
+    bool                bChg62368Otp;       // å……ç”µ62368è¿‡æ¸©å¼‚å¸¸ (bit2)
+    bool                bDchgDpdmOvp;       // æ”¾ç”µæ—¶DPDM 5.5Vè¿‡å‹å¼‚å¸¸ (bit1)
+    bool                bDchgCcOvp;         // æ”¾ç”µæ—¶CC 5.5Vè¿‡å‹å¼‚å¸¸ (bit0)
 }SW6303_AbnormalStatus2_T;
 #pragma pack()
 
-// Òì³£ÊÂ¼ş×´Ì¬½á¹¹Ìå (REG0x15)
+// å¼‚å¸¸äº‹ä»¶çŠ¶æ€ç»“æ„ä½“ (REG0x15)
 #pragma pack(1)
 typedef struct
 {
-    bool            bCapCalcDone;        // µçÁ¿¼ÆÁ¿Íê³ÉÖ¸Ê¾ (bit5) - Ğ´1ÇåÁã
-    bool            bUvloEvent;          // µç³ØÇ·Ñ¹UVLOÊÂ¼şÖ¸Ê¾ (bit4) - Ğ´1ÇåÁã
-    bool            bChgAbnormalEvent;   // ³äµçÒì³£ÊÂ¼şÖ¸Ê¾ (bit3) - Ğ´1ÇåÁã
-    bool            bDchgAbnormalEvent;  // ·ÅµçÒì³£ÊÂ¼şÖ¸Ê¾ (bit2) - Ğ´1ÇåÁã
-    bool            bKeyEvent;           // °´¼üÊÂ¼şÖ¸Ê¾ (bit1) - Ğ´1ÇåÁã
-    bool            bSceneChangeEvent;   // ³¡¾°±ä»¯ÊÂ¼şÖ¸Ê¾ (bit0) - Ğ´1ÇåÁã
+    bool            bCapCalcDone;        // ç”µé‡è®¡é‡å®ŒæˆæŒ‡ç¤º (bit5) - å†™1æ¸…é›¶
+    bool            bUvloEvent;          // ç”µæ± æ¬ å‹UVLOäº‹ä»¶æŒ‡ç¤º (bit4) - å†™1æ¸…é›¶
+    bool            bChgAbnormalEvent;   // å……ç”µå¼‚å¸¸äº‹ä»¶æŒ‡ç¤º (bit3) - å†™1æ¸…é›¶
+    bool            bDchgAbnormalEvent;  // æ”¾ç”µå¼‚å¸¸äº‹ä»¶æŒ‡ç¤º (bit2) - å†™1æ¸…é›¶
+    bool            bKeyEvent;           // æŒ‰é”®äº‹ä»¶æŒ‡ç¤º (bit1) - å†™1æ¸…é›¶
+    bool            bSceneChangeEvent;   // åœºæ™¯å˜åŒ–äº‹ä»¶æŒ‡ç¤º (bit0) - å†™1æ¸…é›¶
 }SW6303_AbnormalEvent_T;
 #pragma pack()
 
-// ·ÅµçÅäÖÃ²ÎÊı½á¹¹
+// æ”¾ç”µé…ç½®å‚æ•°ç»“æ„
 #pragma pack(1)
 typedef struct
 {
-    // REG0x100: ·ÅµçÅäÖÃ0
-    bool            bTempLoopEnable;          // ºãÎÂ»·Ê¹ÄÜ (bit7: 0-Ê¹ÄÜ, 1-½ûÖ¹)
-    SW6303_DchgTempThr_E   eTempThr;          // ºãÎÂ»·ãĞÖµ (bit[6:4])
-    bool            bPwrAutoDetect;           // Êä³ö×î´ó¹¦ÂÊ×Ô¶¯¼ì²â (bit3: 0-×Ô¶¯, 1-ÊÖ¶¯ÉèÖÃ)
-    SW6303_OutPwr_E       eOutPwr;            // Êä³ö¹¦ÂÊÉèÖÃ (bit[2:0])
+    // REG0x100: æ”¾ç”µé…ç½®0
+    bool            bTempLoopEnable;          // æ’æ¸©ç¯ä½¿èƒ½ (bit7: 0-ä½¿èƒ½, 1-ç¦æ­¢)
+    SW6303_DchgTempThr_E   eTempThr;          // æ’æ¸©ç¯é˜ˆå€¼ (bit[6:4])
+    bool            bPwrAutoDetect;           // è¾“å‡ºæœ€å¤§åŠŸç‡è‡ªåŠ¨æ£€æµ‹ (bit3: 0-è‡ªåŠ¨, 1-æ‰‹åŠ¨è®¾ç½®)
+    SW6303_OutPwr_E       eOutPwr;            // è¾“å‡ºåŠŸç‡è®¾ç½® (bit[2:0])
     
-    // REG0x101: ·ÅµçÅäÖÃ1
-    SW6303_MultiPortMaxI_E  eMultiPortMaxI;   // ¶à¿ÚÊä³ö×î´óµçÁ÷ (bit[7:6])
-    SW6303_VbusIOffset_E    eVbusIOffset;     // VBUSÏŞÁ÷¹Ì¶¨Æ«ÒÆ (bit[5:4])
-    SW6303_VbusVOffset_E    eVbusVOffset;     // Êä³öµçÑ¹¹Ì¶¨Æ«ÒÆ (bit[3:2])
-    SW6303_LineComp_E       eLineComp;        // Ïß²¹ÉèÖÃ (bit[1:0])
+    // REG0x101: æ”¾ç”µé…ç½®1
+    SW6303_MultiPortMaxI_E  eMultiPortMaxI;   // å¤šå£è¾“å‡ºæœ€å¤§ç”µæµ (bit[7:6])
+    SW6303_VbusIOffset_E    eVbusIOffset;     // VBUSé™æµå›ºå®šåç§» (bit[5:4])
+    SW6303_VbusVOffset_E    eVbusVOffset;     // è¾“å‡ºç”µå‹å›ºå®šåç§» (bit[3:2])
+    SW6303_LineComp_E       eLineComp;        // çº¿è¡¥è®¾ç½® (bit[1:0])
     
-    // REG0x102: ·ÅµçÅäÖÃ2
-    bool            bFcLineCompEnable;      // ¿ì³äÄ£Ê½Ïß²¹Ê¹ÄÜ (bit7: 0-Ê¹ÄÜ, 1-½ûÖ¹)
-    bool            bVbusFastOvpEnable;    // VBUS¿ìËÙ¹ıÑ¹±£»¤¿ØÖÆ (bit2: 0-´ò¿ª, 1-¹Ø±Õ)
+    // REG0x102: æ”¾ç”µé…ç½®2
+    bool            bFcLineCompEnable;      // å¿«å……æ¨¡å¼çº¿è¡¥ä½¿èƒ½ (bit7: 0-ä½¿èƒ½, 1-ç¦æ­¢)
+    bool            bVbusFastOvpEnable;    // VBUSå¿«é€Ÿè¿‡å‹ä¿æŠ¤æ§åˆ¶ (bit2: 0-æ‰“å¼€, 1-å…³é—­)
     
-    // REG0x103: ·ÅµçÅäÖÃ3
-    SW6303_DchgIbatDef_E   eDchgIbatDef;     // ·ÅµçIBATÏŞÁ÷Ä¬ÈÏÖµ (bit[7:6])
-    u8              ucLipoUvloThr;         // Á×ËáÌúï®µç³ØÇ·Ñ¹ÃÅÏŞ (bit[3:0], 0:2.75V*N, 1~12:1.9~3.0*N,0.1V/step)
+    // REG0x103: æ”¾ç”µé…ç½®3
+    SW6303_DchgIbatDef_E   eDchgIbatDef;     // æ”¾ç”µIBATé™æµé»˜è®¤å€¼ (bit[7:6])
+    u8              ucLipoUvloThr;         // ç£·é…¸é“é”‚ç”µæ± æ¬ å‹é—¨é™ (bit[3:0], 0:2.75V*N, 1~12:1.9~3.0*N,0.1V/step)
     
-    // REG0x104: ·ÅµçÅäÖÃ4
-    SW6303_UvloHyst_E      eUvloHyst;         // UVLO³ÙÖÍ (bit[6:4])
-    SW6303_LipoUvlo_E     eLipoUvlo;         // ÈıÔªï®µç³ØÇ·Ñ¹ÃÅÏŞ (bit[2:0])
+    // REG0x104: æ”¾ç”µé…ç½®4
+    SW6303_UvloHyst_E      eUvloHyst;         // UVLOè¿Ÿæ» (bit[6:4])
+    SW6303_LipoUvlo_E     eLipoUvlo;         // ä¸‰å…ƒé”‚ç”µæ± æ¬ å‹é—¨é™ (bit[2:0])
     
-    // REG0x106: ·ÅµçÅäÖÃ5
-    SW6303_Inductor_E     eInductor;         // µç¸ĞÉèÖÃ (bit7)
-    SW6303_DchgNtcHigh_E   eNtcHighThr;      // ·ÅµçNTC¸ßÎÂÃÅÏŞ (bit[5:4])
-    SW6303_DchgNtcLow_E    eNtcLowThr;       // ·ÅµçNTCµÍÎÂÃÅÏŞ (bit[2:0])
+    // REG0x106: æ”¾ç”µé…ç½®5
+    SW6303_Inductor_E     eInductor;         // ç”µæ„Ÿè®¾ç½® (bit7)
+    SW6303_DchgNtcHigh_E   eNtcHighThr;      // æ”¾ç”µNTCé«˜æ¸©é—¨é™ (bit[5:4])
+    SW6303_DchgNtcLow_E    eNtcLowThr;       // æ”¾ç”µNTCä½æ¸©é—¨é™ (bit[2:0])
 }SW6303_DchgCfg_T;
 #pragma pack()
 
-// Í¨ÓÃº¯ÊıÉùÃ÷
+// é€šç”¨å‡½æ•°å£°æ˜
 s8 c_usb_sw6303_read_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, u8 *buf, u8 len);
 s8 c_usb_sw6303_write_bytes(const I2cObj_T *p_i2c_obj, u16 reg_addr, const u8 *buf, u8 len);
 s8 c_usb_sw6303_high_reg_addr_enable(const I2cObj_T *p_i2c_obj, bool en);
@@ -702,7 +702,7 @@ s8 c_usb_sw6303_reset(const I2cObj_T *p_i2c_obj);
 s8 c_usb_sw6303_get_port_status(const I2cObj_T *p_i2c_obj, SW6303_PortStatus_T *p_status);
 s16 s_usb_sw6303_get_chg_target_volt(const I2cObj_T *p_i2c_obj);
 
-// Òì³£ÊÂ¼şÏà¹Øº¯ÊıÉùÃ÷
+// å¼‚å¸¸äº‹ä»¶ç›¸å…³å‡½æ•°å£°æ˜
 s8 c_usb_sw6303_get_sys_status(const I2cObj_T *p_i2c_obj, SW6303_SysStatus_T *p_status);
 s8 c_usb_sw6303_get_abnormal_event(const I2cObj_T *p_i2c_obj, SW6303_AbnormalEvent_T *p_event);
 s8 c_usb_sw6303_clear_abnormal_event(const I2cObj_T *p_i2c_obj, SW6303_EventType_E event_type);

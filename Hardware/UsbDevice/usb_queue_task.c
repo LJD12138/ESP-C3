@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³×ÜÈÎÎñµÄ¶ÓÁĞº¯Êı                                                  *
+ *                                         ç³»ç»Ÿæ€»ä»»åŠ¡çš„é˜Ÿåˆ—å‡½æ•°                                                  *
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "UsbDevice/usb_queue_task.h"
@@ -15,11 +15,11 @@
 #include "freertos/task.h"
 #endif  //boardUSE_OS
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************//
-__ALIGNED(4) 	Task_T *tpUsbTask = NULL;  	//¶ÓÁĞÈÎÎñ
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************//
+__ALIGNED(4) 	Task_T *tpUsbTask = NULL;  	//é˜Ÿåˆ—ä»»åŠ¡
 
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 static bool b_task_manage_func_cb(Task_T *tp_task);
 static void v_add_task_return_func_cb(u8 num);
 static void v_usb_queue_task_shut_down(Task_T *tp_task);
@@ -27,29 +27,29 @@ static void v_usb_queue_task_shut_down(Task_T *tp_task);
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¶ÓÁĞ³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    é˜Ÿåˆ—åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 bool bUsb_QueueInit(void)
 {
 	s8 c_result = 1;
 	
-	//ÈÎÎñ¶ÓÁĞ³õÊ¼»¯
+	//ä»»åŠ¡é˜Ÿåˆ—åˆå§‹åŒ–
 	c_result = cQueue_TaskInit(&tpUsbTask, 8, b_task_manage_func_cb, v_add_task_return_func_cb);
 	if(c_result <= 0)
 	{
 		if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-			log_e("bUsbTask:tpUsbTaskÈÎÎñ¶ÔÏó³õÊ¼»¯Ê§°Ü,´úÂë&d",c_result);
+			log_e("bUsbTask:tpUsbTaskä»»åŠ¡å¯¹è±¡åˆå§‹åŒ–å¤±è´¥,ä»£ç &d",c_result);
 		
 		return false;
 	}
 	else if(tpUsbTask == NULL)
 	{
 		if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-			log_e("bUsbTask:tpUsbTaskÈÎÎñ¶ÔÏó´´½¨Ê§°Ü");
+			log_e("bUsbTask:tpUsbTaskä»»åŠ¡å¯¹è±¡åˆ›å»ºå¤±è´¥");
 		
 		return false;
 	}
@@ -59,11 +59,11 @@ bool bUsb_QueueInit(void)
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ×°ÔØÈÎÎñº¯Êı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:³É¹¦   false:Ê§°Ü 
+-----å‡½æ•°åŠŸèƒ½    è£…è½½ä»»åŠ¡å‡½æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æˆåŠŸ   false:å¤±è´¥ 
 ******************************************************************************************************************/
 static bool b_task_manage_func_cb(Task_T *tp_task)
 {
@@ -82,7 +82,7 @@ static bool b_task_manage_func_cb(Task_T *tp_task)
 	if(uc_temp%3 != 0 && uc_temp != 0)
 	{
 		if(uPrint.tFlag.bUsbTask || uPrint.tFlag.bImportant)
-			log_e("bUsbTask:ÈÎÎñ¶ÓÁĞ³¤¶ÈÒì³£ ³¤¶È%d",uc_temp);
+			log_e("bUsbTask:ä»»åŠ¡é˜Ÿåˆ—é•¿åº¦å¼‚å¸¸ é•¿åº¦%d",uc_temp);
 		lwrb_reset(&tp_task->tQueueBuff);
 		return false;
 	}
@@ -115,7 +115,7 @@ static bool b_task_manage_func_cb(Task_T *tp_task)
             tp_task->vp_func = v_usb_queue_task_init;
 			
 			if(uPrint.tFlag.bUsbTask)
-				sMyPrint("bUsbTask:----×°ÔØ³õÊ¼»¯ÈÎÎñ----\r\n");
+				sMyPrint("bUsbTask:----è£…è½½åˆå§‹åŒ–ä»»åŠ¡----\r\n");
         }break;
         
         case UTI_CLOSING:
@@ -123,7 +123,7 @@ static bool b_task_manage_func_cb(Task_T *tp_task)
             tp_task->vp_func = v_usb_queue_task_closing;
 			
 			if(uPrint.tFlag.bUsbTask)
-				sMyPrint("bUsbTask:----×°ÔØ¹Ø±ÕÈÎÎñ----\r\n");
+				sMyPrint("bUsbTask:----è£…è½½å…³é—­ä»»åŠ¡----\r\n");
         }break; 
            
         case UTI_SHUT_DOWN:
@@ -131,7 +131,7 @@ static bool b_task_manage_func_cb(Task_T *tp_task)
 			tp_task->vp_func = v_usb_queue_task_shut_down;
 			
 			if(uPrint.tFlag.bUsbTask)
-				sMyPrint("bUsbTask:----×°ÔØ¹Ø±ÕÍê³ÉÈÎÎñ----\r\n",tp_task->usInParam);
+				sMyPrint("bUsbTask:----è£…è½½å…³é—­å®Œæˆä»»åŠ¡----\r\n",tp_task->usInParam);
         }break;
 		
 		case UTI_ERR:
@@ -139,13 +139,13 @@ static bool b_task_manage_func_cb(Task_T *tp_task)
             tp_task->vp_func = v_usb_queue_task_err;
 			
 			if(uPrint.tFlag.bUsbTask)
-				sMyPrint("bUsbTask:----×°ÔØ´íÎóÈÎÎñ----\r\n");
+				sMyPrint("bUsbTask:----è£…è½½é”™è¯¯ä»»åŠ¡----\r\n");
         }break;
 
 		case UTI_BOOTING:
         {  
 			if(uPrint.tFlag.bUsbTask)
-				sMyPrint("bUsbTask:----×°ÔØÆô¶¯ÈÎÎñ----\r\n");
+				sMyPrint("bUsbTask:----è£…è½½å¯åŠ¨ä»»åŠ¡----\r\n");
 			tp_task->vp_func = v_usb_queue_task_booting;
         }
         break;
@@ -153,7 +153,7 @@ static bool b_task_manage_func_cb(Task_T *tp_task)
 		case UTI_WORK:
         {  
 			if(uPrint.tFlag.bUsbTask)
-				sMyPrint("bUsbTask:----×°ÔØ¹¤×÷ÈÎÎñ----\r\n");
+				sMyPrint("bUsbTask:----è£…è½½å·¥ä½œä»»åŠ¡----\r\n");
 			tp_task->vp_func = v_usb_queue_task_work;
         }
         break;
@@ -172,11 +172,11 @@ static void v_add_task_return_func_cb(u8 num)
 {
 	switch(num)
 	{
-		//Ìí¼ÓÁËÈÎÎñ
+		//æ·»åŠ äº†ä»»åŠ¡
 		case 2:
 		{
 			#if(boardUSE_OS)
-			xTaskNotifyGive(tUsbTaskHandler); //·¢Í¨Öª
+			xTaskNotifyGive(tUsbTaskHandler); //å‘é€šçŸ¥
 			#endif  //boardUSE_OS
 		}
 		break;
@@ -187,17 +187,17 @@ static void v_add_task_return_func_cb(u8 num)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 static void v_usb_queue_task_shut_down(Task_T *tp_task)
 {
 	c_usb_switch_dc_cs(false);
 	memset((u8*)&tUsb, 0, sizeof(tUsb));
 	bUsb_SetDevState(DS_SHUT_DOWN);
-	ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //µÈ´ıÈÎÎñÍ¨Öª  Ò»Ö±µÈ´ı,Ö±µ½ÊÍ·ÅÍ¨Öª
-	cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+	ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //ç­‰å¾…ä»»åŠ¡é€šçŸ¥  ä¸€ç›´ç­‰å¾…,ç›´åˆ°é‡Šæ”¾é€šçŸ¥
+	cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 }

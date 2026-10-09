@@ -16,67 +16,67 @@ extern lwrb_t tMpptReplyBuff;
 extern TaskHandle_t tMpptRecTaskHandle;
 #endif  //boardUSE_OS
 
-//*****************************·µ»Ø²ÎÊı*************************************
-#pragma pack (1)   //Ç¿ÖÆ½øĞĞ1×Ö½Ú¶ÔÆë
+//*****************************è¿”å›å‚æ•°*************************************
+#pragma pack (1)   //å¼ºåˆ¶è¿›è¡Œ1å­—èŠ‚å¯¹é½
 typedef struct
 {
-	InOutState_E		eChgState;			//³äµç×´Ì¬
-	vu16 				usInCurr;   		//ÊäÈëµçÁ÷ 0.1A
-	vu16 				usInVolt;   		//ÊäÈëµçÑ¹ 0.1V
-	vu16 				usInPwr;   			//ÊäÈëµçÁ÷ 0.1W
+	InOutState_E		eChgState;			//å……ç”µçŠ¶æ€
+	vu16 				usInCurr;   		//è¾“å…¥ç”µæµ 0.1A
+	vu16 				usInVolt;   		//è¾“å…¥ç”µå‹ 0.1V
+	vu16 				usInPwr;   			//è¾“å…¥ç”µæµ 0.1W
 	vu16    			usOutVolt;    		//0.1V
 	vu16    			usOutCurr;    		//0.1A
 	vu16    			usOutPwr;     		//0.1W
-	vu16    			usChgPwr;     		//³äµç¹¦ÂÊ W
-	s8             		cMaxTemp;           //1ÉãÊÏ¶È
-	u8 					ucErrCode;   		//¹ÊÕÏ×´Ì¬
+	vu16    			usChgPwr;     		//å……ç”µåŠŸç‡ W
+	s8             		cMaxTemp;           //1æ‘„æ°åº¦
+	u8 					ucErrCode;   		//æ•…éšœçŠ¶æ€
 }MpptParam_T;  
-#pragma pack()   //È¡Ïû½øĞĞ1×Ö½Ú¶ÔÆë
+#pragma pack()   //å–æ¶ˆè¿›è¡Œ1å­—èŠ‚å¯¹é½
 
-//*********************************ÊäÈëÀàĞÍ**********************************
+//*********************************è¾“å…¥ç±»å‹**********************************
 typedef enum  : uint8_t
 {
     MIT_NULL = 0,
-    MIT_DC,       //ÊÊÅäÆ÷      
-    MIT_PV,       //Ì«ÑôÄÜ
+    MIT_DC,       //é€‚é…å™¨      
+    MIT_PV,       //å¤ªé˜³èƒ½
 }MpptInType_U;
 
-//*****************************´íÎó×´Ì¬*************************************
+//*****************************é”™è¯¯çŠ¶æ€*************************************
 typedef union
 {
 	struct
 	{
-		vu16 bIOV:1;		//¹ıÑ¹
-		vu16 bIUV:1;		//Ç·Ñ¹
-		vu16 bOOV:1;		//¹ıÑ¹
-		vu16 bOUV:1;		//Ç·Ñ¹
+		vu16 bIOV:1;		//è¿‡å‹
+		vu16 bIUV:1;		//æ¬ å‹
+		vu16 bOOV:1;		//è¿‡å‹
+		vu16 bOUV:1;		//æ¬ å‹
 
-		vu16 bOL:1;			//¹ıÔØ
-		vu16 bOT:1;			//¹ıÎÂ
-		vu16 bEnErr:1;		//Ê¹ÄÜ¹ÊÕÏ
+		vu16 bOL:1;			//è¿‡è½½
+		vu16 bOT:1;			//è¿‡æ¸©
+		vu16 bEnErr:1;		//ä½¿èƒ½æ•…éšœ
 		
 		vu16 :9;
 	}tCode;
 	vu16 usCode;   
 }MpptRecErrState_U;
 
-//*********************************ÈÎÎñ¶ÔÏó**********************************
-#pragma pack (1)   //Ç¿ÖÆ½øĞĞ1×Ö½Ú¶ÔÆë
+//*********************************ä»»åŠ¡å¯¹è±¡**********************************
+#pragma pack (1)   //å¼ºåˆ¶è¿›è¡Œ1å­—èŠ‚å¯¹é½
 typedef struct
 {											
-	MpptInType_U		uInType;			//ÊäÈëÀàĞÍ
-	MpptRecErrState_U	uErrCode;           //´íÎó×´Ì¬
-	u16           		usInVolt;      		//ÊäÈëµçÑ¹ 0.1V
-    u16           		usInCurr;      		//ÊäÈëµçÁ÷ 0.01A
-	u16 				usInPwr;			//ÊäÈë¹¦ÂÊ 0.1W
-    u16           		usOutVolt;      	//Êä³öµçÑ¹ 0.1V
-    u16           		usOutCurr;      	//Êä³öµçÁ÷ 0.01A
-	u16 				usOutPwr;			//ÊäÈë¹¦ÂÊ 0.1W
-	u16			  		usMaxInPwr;			//×î´óÊäÈë¹¦ÂÊ 0.1W
-	s16					sMaxTemp;			//×î´óÎÂ¶È ÉãÊÏ¶È
+	MpptInType_U		uInType;			//è¾“å…¥ç±»å‹
+	MpptRecErrState_U	uErrCode;           //é”™è¯¯çŠ¶æ€
+	u16           		usInVolt;      		//è¾“å…¥ç”µå‹ 0.1V
+    u16           		usInCurr;      		//è¾“å…¥ç”µæµ 0.01A
+	u16 				usInPwr;			//è¾“å…¥åŠŸç‡ 0.1W
+    u16           		usOutVolt;      	//è¾“å‡ºç”µå‹ 0.1V
+    u16           		usOutCurr;      	//è¾“å‡ºç”µæµ 0.01A
+	u16 				usOutPwr;			//è¾“å…¥åŠŸç‡ 0.1W
+	u16			  		usMaxInPwr;			//æœ€å¤§è¾“å…¥åŠŸç‡ 0.1W
+	s16					sMaxTemp;			//æœ€å¤§æ¸©åº¦ æ‘„æ°åº¦
 }MpptRx_T;              
 extern MpptRx_T     	tMpptRx; 
-#pragma pack()   //È¡Ïû½øĞĞ1×Ö½Ú¶ÔÆë
+#pragma pack()   //å–æ¶ˆè¿›è¡Œ1å­—èŠ‚å¯¹é½
 
 
 bool bMppt_RecTaskInit(void);

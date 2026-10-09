@@ -4,11 +4,11 @@
  * File    : md_display_api.c
  * Date    : 2026-01-23 17:48:41
  * Author  : LJD(291483914@qq.com)
- * Desc    : ÏÔÊ¾ÆÁAPI²ã - µ×²ã»æÍ¼º¯ÊıºÍ³õÊ¼»¯
+ * Desc    : æ˜¾ç¤ºå±APIå±‚ - åº•å±‚ç»˜å›¾å‡½æ•°å’Œåˆå§‹åŒ–
  * -------------------------------------------------------
  * History :
- * 2026-02-07 ÊÊÅäESP-LCDÇı¶¯£¬ÓÅ»¯»æÍ¼º¯Êı
- * 2026-02-24 ÓÅ»¯£ºÒÆ³ıÎ´Ê¹ÓÃµÄº¯Êı£¨SetCursor, FastFillColor, EnableTEµÈ£©
+ * 2026-02-07 é€‚é…ESP-LCDé©±åŠ¨ï¼Œä¼˜åŒ–ç»˜å›¾å‡½æ•°
+ * 2026-02-24 ä¼˜åŒ–ï¼šç§»é™¤æœªä½¿ç”¨çš„å‡½æ•°ï¼ˆSetCursor, FastFillColor, EnableTEç­‰ï¼‰
  * -------------------------------------------------------
  * Copyright (c) 2026 -inc
  *******************************************************************************************************************************/
@@ -25,22 +25,22 @@
 //****************************************************Macros*******************************************************************//
 #define TAG "DISP_API"
 
-/* Ë¢ÆÁ»º³åÇø - ÓÃÓÚ´¿É«Ìî³ä */
+/* åˆ·å±ç¼“å†²åŒº - ç”¨äºçº¯è‰²å¡«å…… */
 static uint8_t S_lcd_fill_buf[dispLCD_BUF_SIZE];
 
 //****************************************************Static Function Declaration***********************************************/
 
 /**
- * @brief ·¢ËÍ³õÊ¼»¯ÃüÁîĞòÁĞ
+ * @brief å‘é€åˆå§‹åŒ–å‘½ä»¤åºåˆ—
  */
 static void lcd_send_init_commands(void);
 
 //****************************************************Function Implementation**************************************************/
 
 /**
- * @brief       ÏòÒº¾§Ğ´¼Ä´æÆ÷ÃüÁî
- * @param       uc_reg: ÒªĞ´µÄÃüÁî
- * @retval      ÎŞ
+ * @brief       å‘æ¶²æ™¶å†™å¯„å­˜å™¨å‘½ä»¤
+ * @param       uc_reg: è¦å†™çš„å‘½ä»¤
+ * @retval      æ— 
  */
 void vDisp_LCD_WR_REG(uint8_t uc_reg)
 {
@@ -50,9 +50,9 @@ void vDisp_LCD_WR_REG(uint8_t uc_reg)
 }
 
 /**
- * @brief       ÏòÒº¾§Ğ´Ò»¸ö×Ö½ÚÊı¾İ
- * @param       uc_dat: ÒªĞ´µÄÊı¾İ
- * @retval      ÎŞ
+ * @brief       å‘æ¶²æ™¶å†™ä¸€ä¸ªå­—èŠ‚æ•°æ®
+ * @param       uc_dat: è¦å†™çš„æ•°æ®
+ * @retval      æ— 
  */
 void vDisp_LCD_WR_Byte(uint8_t uc_dat)
 {
@@ -61,9 +61,9 @@ void vDisp_LCD_WR_Byte(uint8_t uc_dat)
 }
 
 /**
- * @brief       ÏòÒº¾§Ğ´Ò»¸ö°ë×ÖÊı¾İ£¨16Î»£©
- * @param       us_dat: ÒªĞ´µÄÊı¾İ
- * @retval      ÎŞ
+ * @brief       å‘æ¶²æ™¶å†™ä¸€ä¸ªåŠå­—æ•°æ®ï¼ˆ16ä½ï¼‰
+ * @param       us_dat: è¦å†™çš„æ•°æ®
+ * @retval      æ— 
  */
 void vDisp_LCD_WR_HalfWord(uint16_t us_dat)
 {
@@ -73,10 +73,10 @@ void vDisp_LCD_WR_HalfWord(uint16_t us_dat)
 }
 
 /**
- * @brief       ÏòÒº¾§Á¬ĞøĞ´Èëlen¸ö×Ö½ÚÊı¾İ
- * @param       puc_dat: ÒªĞ´µÄÊı¾İµØÖ·
- * @param       len£ºÒªĞ´Èë×Ö½Ú³¤¶È
- * @retval      ÎŞ
+ * @brief       å‘æ¶²æ™¶è¿ç»­å†™å…¥lenä¸ªå­—èŠ‚æ•°æ®
+ * @param       puc_dat: è¦å†™çš„æ•°æ®åœ°å€
+ * @param       lenï¼šè¦å†™å…¥å­—èŠ‚é•¿åº¦
+ * @retval      æ— 
  */
 void vDisp_LCD_WR_DATA(const uint8_t *puc_dat, int len)
 {
@@ -86,12 +86,12 @@ void vDisp_LCD_WR_DATA(const uint8_t *puc_dat, int len)
 }
 
 /**
- * @brief       ÉèÖÃÏÔÊ¾´°¿Ú
- * @param       us_xs:´°¿ÚÁĞÆğÊ¼µØÖ·
- * @param       us_ys:×ø±êĞĞÆğÊ¼µØÖ·
- * @param       us_xe:´°¿ÚÁĞ½áÊøµØÖ·
- * @param       us_ye:×ø±êĞĞ½áÊøµØÖ·
- * @retval      ÎŞ
+ * @brief       è®¾ç½®æ˜¾ç¤ºçª—å£
+ * @param       us_xs:çª—å£åˆ—èµ·å§‹åœ°å€
+ * @param       us_ys:åæ ‡è¡Œèµ·å§‹åœ°å€
+ * @param       us_xe:çª—å£åˆ—ç»“æŸåœ°å€
+ * @param       us_ye:åæ ‡è¡Œç»“æŸåœ°å€
+ * @retval      æ— 
  */
 void vDisp_LCD_Address_Set(uint16_t us_xs, uint16_t us_ys, uint16_t us_xe, uint16_t us_ye)
 {
@@ -114,13 +114,13 @@ void vDisp_LCD_Address_Set(uint16_t us_xs, uint16_t us_ys, uint16_t us_xe, uint1
 }
 
 /**
- * @brief       Ö¸¶¨ÑÕÉ«Ìî³äÇøÓò£¨Ê¹ÓÃ»º³åÇøÓÅ»¯£©
- * @param       us_xs:Ìî³äÇøÓòÁĞÆğÊ¼µØÖ·
- * @param       us_ys:Ìî³äÇøÓòĞĞÆğÊ¼µØÖ·
- * @param       us_xe:Ìî³äÇøÓòÁĞ½áÊøµØÖ·
- * @param       us_ye:Ìî³äÇøÓòĞĞ½áÊøµØÖ·
- * @param       us_color:Ìî³äÑÕÉ«Öµ
- * @retval      ÎŞ
+ * @brief       æŒ‡å®šé¢œè‰²å¡«å……åŒºåŸŸï¼ˆä½¿ç”¨ç¼“å†²åŒºä¼˜åŒ–ï¼‰
+ * @param       us_xs:å¡«å……åŒºåŸŸåˆ—èµ·å§‹åœ°å€
+ * @param       us_ys:å¡«å……åŒºåŸŸè¡Œèµ·å§‹åœ°å€
+ * @param       us_xe:å¡«å……åŒºåŸŸåˆ—ç»“æŸåœ°å€
+ * @param       us_ye:å¡«å……åŒºåŸŸè¡Œç»“æŸåœ°å€
+ * @param       us_color:å¡«å……é¢œè‰²å€¼
+ * @retval      æ— 
  */
 void vDisp_LCD_Fill(uint16_t us_xs, uint16_t us_ys, uint16_t us_xe, uint16_t us_ye, uint16_t us_color)
 {
@@ -132,13 +132,13 @@ void vDisp_LCD_Fill(uint16_t us_xs, uint16_t us_ys, uint16_t us_xe, uint16_t us_
     uint8_t color_high = us_color >> 8;
     uint8_t color_low = us_color & 0xFF;
     
-    /* Ô¤Ìî³ä»º³åÇø */
+    /* é¢„å¡«å……ç¼“å†²åŒº */
     for (uint32_t i = 0; i < dispLCD_BUF_SIZE / 2; i++) {
         S_lcd_fill_buf[i * 2] = color_high;
         S_lcd_fill_buf[i * 2 + 1] = color_low;
     }
     
-    /* ·ÖÅú´Î·¢ËÍÊı¾İ */
+    /* åˆ†æ‰¹æ¬¡å‘é€æ•°æ® */
     while (byte_count > 0) {
         uint32_t bytes_to_send = (byte_count > dispLCD_BUF_SIZE) ? dispLCD_BUF_SIZE : byte_count;
         vDisp_LCD_WR_DATA(S_lcd_fill_buf, bytes_to_send);
@@ -147,9 +147,9 @@ void vDisp_LCD_Fill(uint16_t us_xs, uint16_t us_ys, uint16_t us_xe, uint16_t us_
 }
 
 /**
- * @brief       ³õÊ¼»¯LCD
- * @param       ÎŞ
- * @retval      ÎŞ
+ * @brief       åˆå§‹åŒ–LCD
+ * @param       æ— 
+ * @retval      æ— 
  */
 void vDisp_LCD_Init(void)
 {
@@ -159,11 +159,11 @@ void vDisp_LCD_Init(void)
 }
 
 /**
- * @brief       ·¢ËÍ³õÊ¼»¯ÃüÁîĞòÁĞ
+ * @brief       å‘é€åˆå§‹åŒ–å‘½ä»¤åºåˆ—
  */
 static void lcd_send_init_commands(void)
 {
-    /* ·¢ËÍÀ©Õ¹¼Ä´æÆ÷½âËøĞòÁĞ */
+    /* å‘é€æ‰©å±•å¯„å­˜å™¨è§£é”åºåˆ— */
     vDisp_LCD_WR_REG(0xff); vDisp_LCD_WR_Byte(0xa5);
     vDisp_LCD_WR_REG(0x9a); vDisp_LCD_WR_Byte(0x08);
     vDisp_LCD_WR_REG(0x9b); vDisp_LCD_WR_Byte(0x08);
@@ -172,12 +172,12 @@ static void lcd_send_init_commands(void)
     vDisp_LCD_WR_REG(0x9e); vDisp_LCD_WR_Byte(0xc4);
     vDisp_LCD_WR_REG(0x8f); vDisp_LCD_WR_Byte(0x55); vDisp_LCD_WR_Byte(0x04);
     
-    /* µçÑ¹ÉèÖÃ */
+    /* ç”µå‹è®¾ç½® */
     vDisp_LCD_WR_REG(0x84); vDisp_LCD_WR_Byte(0x90);
     vDisp_LCD_WR_REG(0x83); vDisp_LCD_WR_Byte(0x7b);
     vDisp_LCD_WR_REG(0x85); vDisp_LCD_WR_Byte(0x33);
     
-    /* GammaĞ£ÕıÉèÖÃ */
+    /* Gammaæ ¡æ­£è®¾ç½® */
     vDisp_LCD_WR_REG(0x60); vDisp_LCD_WR_Byte(0x00);
     vDisp_LCD_WR_REG(0x70); vDisp_LCD_WR_Byte(0x00);
     vDisp_LCD_WR_REG(0x61); vDisp_LCD_WR_Byte(0x02);
@@ -211,7 +211,7 @@ static void lcd_send_init_commands(void)
     vDisp_LCD_WR_REG(0x6f); vDisp_LCD_WR_Byte(0x00);
     vDisp_LCD_WR_REG(0x7f); vDisp_LCD_WR_Byte(0x00);
     
-    /* Ô´Çı¶¯ÉèÖÃ */
+    /* æºé©±åŠ¨è®¾ç½® */
     vDisp_LCD_WR_REG(0x50); vDisp_LCD_WR_Byte(0x00);
     vDisp_LCD_WR_REG(0x52); vDisp_LCD_WR_Byte(0xd6);
     vDisp_LCD_WR_REG(0x53); vDisp_LCD_WR_Byte(0x08);
@@ -219,11 +219,11 @@ static void lcd_send_init_commands(void)
     vDisp_LCD_WR_REG(0x55); vDisp_LCD_WR_Byte(0x1e);
     vDisp_LCD_WR_REG(0x56); vDisp_LCD_WR_Byte(0x1c);
     
-    /* GOA MapÑ¡Ôñ */
+    /* GOA Mapé€‰æ‹© */
     vDisp_LCD_WR_REG(0xa0);
     vDisp_LCD_WR_Byte(0x2b); vDisp_LCD_WR_Byte(0x24); vDisp_LCD_WR_Byte(0x00);
     
-    /* Ê±ĞòÉèÖÃ */
+    /* æ—¶åºè®¾ç½® */
     vDisp_LCD_WR_REG(0xa1); vDisp_LCD_WR_Byte(0x87);
     vDisp_LCD_WR_REG(0xa2); vDisp_LCD_WR_Byte(0x86);
     vDisp_LCD_WR_REG(0xa5); vDisp_LCD_WR_Byte(0x00);
@@ -257,7 +257,7 @@ static void lcd_send_init_commands(void)
     vDisp_LCD_WR_REG(0xD0); vDisp_LCD_WR_Byte(0x6e);
     vDisp_LCD_WR_REG(0xD1); vDisp_LCD_WR_Byte(0x6f);
     
-    /* ÆäËûÉèÖÃ */
+    /* å…¶ä»–è®¾ç½® */
     vDisp_LCD_WR_REG(0xAB); vDisp_LCD_WR_Byte(0x03); vDisp_LCD_WR_Byte(0x67);
     vDisp_LCD_WR_REG(0xAC); vDisp_LCD_WR_Byte(0x03); vDisp_LCD_WR_Byte(0x6b);
     vDisp_LCD_WR_REG(0xAD); vDisp_LCD_WR_Byte(0x03); vDisp_LCD_WR_Byte(0x68);
@@ -269,7 +269,7 @@ static void lcd_send_init_commands(void)
     vDisp_LCD_WR_REG(0xB7); vDisp_LCD_WR_Byte(0x7e);
     vDisp_LCD_WR_REG(0xB8); vDisp_LCD_WR_Byte(0x7e);
     
-    /* µçÔ´ÉèÖÃ */
+    /* ç”µæºè®¾ç½® */
     vDisp_LCD_WR_REG(0xe0); vDisp_LCD_WR_Byte(0x00);
     vDisp_LCD_WR_REG(0xe1); vDisp_LCD_WR_Byte(0x03); vDisp_LCD_WR_Byte(0x0f);
     vDisp_LCD_WR_REG(0xe2); vDisp_LCD_WR_Byte(0x04);
@@ -288,43 +288,43 @@ static void lcd_send_init_commands(void)
     vDisp_LCD_WR_REG(0xf0); vDisp_LCD_WR_Byte(0xd0);
     vDisp_LCD_WR_REG(0xf1); vDisp_LCD_WR_Byte(0x0e);
     
-    /* É¨ÃèÉèÖÃ */
+    /* æ‰«æè®¾ç½® */
     vDisp_LCD_WR_REG(0xf2);
     vDisp_LCD_WR_Byte(0x2c); vDisp_LCD_WR_Byte(0x1b); vDisp_LCD_WR_Byte(0x0b); vDisp_LCD_WR_Byte(0x20);
     
-    /* 1 dotÄ£Ê½ */
+    /* 1 dotæ¨¡å¼ */
     vDisp_LCD_WR_REG(0xe9); vDisp_LCD_WR_Byte(0x29);
     vDisp_LCD_WR_REG(0xec); vDisp_LCD_WR_Byte(0x04);
     
-    /* TEÉèÖÃ */
+    /* TEè®¾ç½® */
     vDisp_LCD_WR_REG(0x35); vDisp_LCD_WR_Byte(0x00);
     vDisp_LCD_WR_REG(0x44); vDisp_LCD_WR_Byte(0x00); vDisp_LCD_WR_Byte(0x10);
     vDisp_LCD_WR_REG(0x46); vDisp_LCD_WR_Byte(0x10);
     
-    /* ÍË³öÀ©Õ¹¼Ä´æÆ÷ */
+    /* é€€å‡ºæ‰©å±•å¯„å­˜å™¨ */
     vDisp_LCD_WR_REG(0xff); vDisp_LCD_WR_Byte(0x00);
     
-    /* ÏñËØ¸ñÊ½ */
+    /* åƒç´ æ ¼å¼ */
     vDisp_LCD_WR_REG(0x3a); vDisp_LCD_WR_Byte(0x05);
     
-    /* ÄÚ´æ·ÃÎÊ¿ØÖÆ£¨·½Ïò£© */
+    /* å†…å­˜è®¿é—®æ§åˆ¶ï¼ˆæ–¹å‘ï¼‰ */
     vDisp_LCD_WR_REG(0x36);
     const uint8_t madctl_table[4] = {0x00, 0xC0, 0x60, 0xA0};
     vDisp_LCD_WR_Byte(madctl_table[USE_HORIZONTAL % 4]);
     
-    /* ÍË³öĞİÃß */
+    /* é€€å‡ºä¼‘çœ  */
     vDisp_LCD_WR_REG(0x11);
     vTaskDelay(pdMS_TO_TICKS(220));
     
-    /* ¿ªÆôÏÔÊ¾ */
+    /* å¼€å¯æ˜¾ç¤º */
     vDisp_LCD_WR_REG(0x29);
     vTaskDelay(pdMS_TO_TICKS(200));
 }
 
 /**
- * @brief       Òº¾§½øÈëĞİÃß
- * @param       ÎŞ
- * @retval      ÎŞ
+ * @brief       æ¶²æ™¶è¿›å…¥ä¼‘çœ 
+ * @param       æ— 
+ * @retval      æ— 
  */
 void vDisp_LCD_Enter_Sleep(void)
 {
@@ -338,9 +338,9 @@ void vDisp_LCD_Enter_Sleep(void)
 }
 
 /**
- * @brief       Òº¾§ÍË³öĞİÃß
- * @param       ÎŞ
- * @retval      ÎŞ
+ * @brief       æ¶²æ™¶é€€å‡ºä¼‘çœ 
+ * @param       æ— 
+ * @retval      æ— 
  */
 void vDisp_LCD_Exit_Sleep(void)
 {
@@ -353,9 +353,9 @@ void vDisp_LCD_Exit_Sleep(void)
 }
 
 /**
- * @brief       ÇåÆÁº¯Êı
- * @param       us_color: Ìî³äÑÕÉ«
- * @retval      ÎŞ
+ * @brief       æ¸…å±å‡½æ•°
+ * @param       us_color: å¡«å……é¢œè‰²
+ * @retval      æ— 
  */
 void vDisp_LCD_Clear(uint16_t us_color)
 {
@@ -363,9 +363,9 @@ void vDisp_LCD_Clear(uint16_t us_color)
 }
 
 /**
- * @brief       »ñÈ¡ÏÔÊ¾ÆÁ¿í¶È
- * @param       ÎŞ
- * @retval      ¿í¶ÈÏñËØÊı
+ * @brief       è·å–æ˜¾ç¤ºå±å®½åº¦
+ * @param       æ— 
+ * @retval      å®½åº¦åƒç´ æ•°
  */
 uint16_t usDisp_LCD_GetWidth(void)
 {
@@ -373,9 +373,9 @@ uint16_t usDisp_LCD_GetWidth(void)
 }
 
 /**
- * @brief       »ñÈ¡ÏÔÊ¾ÆÁ¸ß¶È
- * @param       ÎŞ
- * @retval      ¸ß¶ÈÏñËØÊı
+ * @brief       è·å–æ˜¾ç¤ºå±é«˜åº¦
+ * @param       æ— 
+ * @retval      é«˜åº¦åƒç´ æ•°
  */
 uint16_t usDisp_LCD_GetHeight(void)
 {

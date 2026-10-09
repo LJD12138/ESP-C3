@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³×ÜÈÎÎñ                                                           *
+ *                                         ç³»ç»Ÿæ€»ä»»åŠ¡                                                           *
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "Sys/sys_task.h"
@@ -36,32 +36,32 @@
 #endif
 
 
-//****************************************************ÈÎÎñ³õÊ¼»¯**************************************************//
+//****************************************************ä»»åŠ¡åˆå§‹åŒ–**************************************************//
 #if(boardUSE_OS)
-#define     	SYS_TASK_PRIO                  			3     //ÈÎÎñÓÅÏÈ¼¶ 
-#define      	SYS_TASK_STK_SIZE              			4096   //ÈÎÎñ¶ÑÕ»  Êµ¼Ê×Ö½ÚÊı *4
+#define     	SYS_TASK_PRIO                  			3     //ä»»åŠ¡ä¼˜å…ˆçº§ 
+#define      	SYS_TASK_STK_SIZE              			4096   //ä»»åŠ¡å †æ ˆ  å®é™…å­—èŠ‚æ•° *4
 TaskHandle_t  	tSysTaskHandler = NULL; 
 void         	vSys_Task(void *pvParameters);
 #endif  //boardUSE_OS
 
 
-//****************************************************²ÎÊı³õÊ¼»¯**************************************************// 
+//****************************************************å‚æ•°åˆå§‹åŒ–**************************************************// 
 SysInfo_T tSysInfo; 
 static Task_T *tp_task = NULL;
 bool G_TestMode = false;
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 static bool b_task_param_init(void);
 static void v_sys_check_prote(void);
 static void v_sys_get_perm(void);
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÏµÍ³ÈÎÎñ³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç³»ç»Ÿä»»åŠ¡åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 bool bSys_TaskInit(void)
 {
@@ -72,12 +72,12 @@ bool bSys_TaskInit(void)
 		return false;
 	
 	#if(boardUSE_OS)
-    xTaskCreate((TaskFunction_t )vSys_Task,				//ÈÎÎñº¯Êı
-                (const char* )"bSysTask",				//ÈÎÎñÃû³Æ
-                (uint16_t ) SYS_TASK_STK_SIZE,          //ÈÎÎñ¶ÑÕ»´óĞ¡
-                (void* )NULL,                           //´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                (UBaseType_t ) SYS_TASK_PRIO,           //ÈÎÎñÓÅÏÈ¼¶
-                (TaskHandle_t*)&tSysTaskHandler);      	//ÈÎÎñ¾ä±ú
+    xTaskCreate((TaskFunction_t )vSys_Task,				//ä»»åŠ¡å‡½æ•°
+                (const char* )"bSysTask",				//ä»»åŠ¡åç§°
+                (uint16_t ) SYS_TASK_STK_SIZE,          //ä»»åŠ¡å †æ ˆå¤§å°
+                (void* )NULL,                           //ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                (UBaseType_t ) SYS_TASK_PRIO,           //ä»»åŠ¡ä¼˜å…ˆçº§
+                (TaskHandle_t*)&tSysTaskHandler);      	//ä»»åŠ¡å¥æŸ„
 	#endif  //boardUSE_OS
 
 	return true;
@@ -85,25 +85,25 @@ bool bSys_TaskInit(void)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñ²ÎÊı³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‚æ•°åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 static bool b_task_param_init(void)
 {
 	if(tpSysTask == NULL)
 		return false;
 	
-	//ÏµÍ³ÈÎÎñ²ÎÊı
+	//ç³»ç»Ÿä»»åŠ¡å‚æ•°
 	memset(&tSysInfo, 0, sizeof(tSysInfo));
 	
-	tSysInfo.sMaxTemp = 25;				//ÉèÖÃÄ¬ÈÏ×î¸ßÎÂ¶È
-	tSysInfo.sMinTemp = 25;				//ÉèÖÃÄ¬ÈÏ×îµÍÎÂ¶È
+	tSysInfo.sMaxTemp = 25;				//è®¾ç½®é»˜è®¤æœ€é«˜æ¸©åº¦
+	tSysInfo.sMinTemp = 25;				//è®¾ç½®é»˜è®¤æœ€ä½æ¸©åº¦
 	// tSysInfo.uInit.tFinish.bIF_Gpio = 1;
 	// bSys_SetAutoOffTime(tAppMemParam.tSYS.usAutoOffTime);
-	bSys_SetDevState(DS_INIT, false);	//½øÈë³õÊ¼»¯
+	bSys_SetDevState(DS_INIT, false);	//è¿›å…¥åˆå§‹åŒ–
 	
 	tp_task = tpSysTask;
 	
@@ -111,11 +111,11 @@ static bool b_task_param_init(void)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÏµÍ³Ñ­»·ÈÎÎñ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç³»ç»Ÿå¾ªç¯ä»»åŠ¡
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vSys_Task(void *pvParameters)
 {
@@ -150,7 +150,7 @@ void vSys_Task(void *pvParameters)
 		{
 			#if(boardUSE_OS)
 			if(lwrb_get_full(&tp_task->tQueueBuff) == 0)
-				ulTaskNotifyTake(pdFALSE, sysTASK_CYCLE_TIME);//pdFALSE:ÈÎÎñÍ¨Öª¶àÉÙ´Î¾ÍÖ´ĞĞ¶àÉÙ´Î
+				ulTaskNotifyTake(pdFALSE, sysTASK_CYCLE_TIME);//pdFALSE:ä»»åŠ¡é€šçŸ¥å¤šå°‘æ¬¡å°±æ‰§è¡Œå¤šå°‘æ¬¡
 			#endif  //boardUSE_OS
 			
 			if(tp_task->bp_task_manage_func != NULL)
@@ -161,15 +161,15 @@ void vSys_Task(void *pvParameters)
 
 /************************************************************************************************************************
 *************************************************************************************************************************
-                                                  ¾Ö²¿º¯Êı
+                                                  å±€éƒ¨å‡½æ•°
 *************************************************************************************************************************
 *************************************************************************************************************************/
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¼ì²éÏµÍ³±£»¤
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æ£€æŸ¥ç³»ç»Ÿä¿æŠ¤
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 static void v_sys_check_prote(void)
 {
@@ -187,7 +187,7 @@ static void v_sys_check_prote(void)
 	else 
 		us_delay_time = sysTASK_CYCLE_TIME;
 	
-	//------------------------------------------------ÎÂ¶È»ñÈ¡-----------------------------------------------
+	//------------------------------------------------æ¸©åº¦è·å–-----------------------------------------------
 	s16 s_max_temp = 0;
 	s16 s_min_temp = 0;
 	
@@ -214,7 +214,7 @@ static void v_sys_check_prote(void)
 	
 	tSysInfo.sMinTemp = s_min_temp;
 	
-	//------------------------------------------------ÏµÍ³ÊäÈë¹ıÑ¹-----------------------------------------------
+	//------------------------------------------------ç³»ç»Ÿè¾“å…¥è¿‡å‹-----------------------------------------------
 	// static u16 us_over_volt_cnt = 0; 
 	// if(bAdc_CheckSysInVolt() == VS_HIGH)
 	// {
@@ -239,7 +239,7 @@ static void v_sys_check_prote(void)
 		
 	// }
 	
-	// //-----------------------------------------------ÏµÍ³ÊäÈëÇ·Ñ¹--------------------------------------------------
+	// //-----------------------------------------------ç³»ç»Ÿè¾“å…¥æ¬ å‹--------------------------------------------------
 	// static u16 us_low_volt_cnt = 0; 
 	// if((bAdc_CheckSysInVolt() == VS_LOW && bSys_ExistInVolt() == false) || tBms.uErrCode.tCode.uBmsCode.tCode.bCellUV)
 	// {
@@ -263,7 +263,7 @@ static void v_sys_check_prote(void)
 	// 	}
 	// }
 	
-	//------------------------------------------------ÏµÍ³ÊäÈë¹ıÎÂ-----------------------------------------------------
+	//------------------------------------------------ç³»ç»Ÿè¾“å…¥è¿‡æ¸©-----------------------------------------------------
 	if(
 	   #if(boardBMS_IFACE)
 	   tBms.uErrCode.tCode.bSysChgOT == 1     ||
@@ -286,7 +286,7 @@ static void v_sys_check_prote(void)
 	}
 	
 	
-	//---------------------------------------------ÏµÍ³ÊäÈëµÍÎÂ ---------------------------------------------------
+	//---------------------------------------------ç³»ç»Ÿè¾“å…¥ä½æ¸© ---------------------------------------------------
 	if(
 		#if(boardBMS_IFACE)
 		tBms.uErrCode.tCode.bSysChgUT == 1     || 
@@ -305,7 +305,7 @@ static void v_sys_check_prote(void)
 			bSys_SetErrCode(SEC_UT, false);
 	}
 	
-	//-----------------------------------------ÏµÍ³¹ıÔØ±£»¤---------------------------------------------------
+	//-----------------------------------------ç³»ç»Ÿè¿‡è½½ä¿æŠ¤---------------------------------------------------
 	if( 
 		#if(boardDCAC_IFACE)
 		bDcac_GetOverLoadState() == true
@@ -324,15 +324,15 @@ static void v_sys_check_prote(void)
 			bSys_SetErrCode(SEC_OL, false);
 	}
 	
-	//--------------------------------------µÍSOC×Ô¶¯¹Ø»ú--------------------------------------------------------
+	//--------------------------------------ä½SOCè‡ªåŠ¨å…³æœº--------------------------------------------------------
 	// static vu16 us_soc_low_cnt = 0;
 	// if(	
 	// 	#if(boardBMS_IFACE)
 	// 	ucBms_GetSoc() == 0 && 			//SOC = 0%
-	// 	tBms.eDevState != DS_LOST &&	//BMS·ÇÀëÏß
+	// 	tBms.eDevState != DS_LOST &&	//BMSéç¦»çº¿
 	// 	#endif  //boardBMS_IFACE
-	// 	bSys_ExistInVolt() == false &&	//·Ç³äµç×´Ì¬
-	// 	G_TestMode == false)			//·Ç²âÊÔÄ£Ê½
+	// 	bSys_ExistInVolt() == false &&	//éå……ç”µçŠ¶æ€
+	// 	G_TestMode == false)			//éæµ‹è¯•æ¨¡å¼
 	// {
 	// 	if(tSysInfo.uErrCode.tCode.b0SOC == false)
 	// 		us_soc_low_cnt++;
@@ -347,31 +347,31 @@ static void v_sys_check_prote(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    »ñÈ¡ÏµÍ³µÄĞí¿É
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è·å–ç³»ç»Ÿçš„è®¸å¯
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 *****************************************************************************************************************/
 static void v_sys_get_perm(void)
 {
 	vu16 us_delay_time = 0;
 	
-	//²âÊÔÄ£Ê½
+	//æµ‹è¯•æ¨¡å¼
 	if(G_TestMode == true)
 	{
 		bSys_SetPerm(SPO_CHG,true);
 		bSys_SetPerm(SPO_DISCHG,true);
 		return;
 	}
-	//³õÊ¼»¯×´Ì¬»ò¹Ø»ú
+	//åˆå§‹åŒ–çŠ¶æ€æˆ–å…³æœº
 	else if(tpSysTask->ucID == STI_INIT)
 	{
 		bSys_SetPerm(SPO_ALL,false);
 		return;
 	}
 	
-	//¸üĞÂÈÎÎñÊ±¼ä
+	//æ›´æ–°ä»»åŠ¡æ—¶é—´
 	if(tpSysTask->ucID == STI_CLOSING ||
 			tpSysTask->ucID == STI_BOOTING ||
 			tpSysTask->ucID == STI_WORK)
@@ -381,14 +381,14 @@ static void v_sys_get_perm(void)
 	else 
 		us_delay_time = sysTASK_CYCLE_TIME;
 	
-	//------------------------------------------³äµçĞí¿É------------------------------------------------------
+	//------------------------------------------å……ç”µè®¸å¯------------------------------------------------------
 	if(	
 		#if(boardBMS_IFACE)
-		tBms.uPerm.tPerm.bChgPerm == 0			||	//BMS²»Ğí¿É³äµç
+		tBms.uPerm.tPerm.bChgPerm == 0			||	//BMSä¸è®¸å¯å……ç”µ
 		#endif  //boardBMS_IFACE
-		tSysInfo.uPerm.tPerm.bForceClose == 1	||	//Ç¿ÖÆ¹Ø±Õ
-		tSysInfo.eDevState == DS_CLOSING		||	//¿ªÊ¼¹Ø±Õ
-		tSysInfo.uErrCode.tCode.bOV == 1)			//ÏµÍ³¹ıÑ¹
+		tSysInfo.uPerm.tPerm.bForceClose == 1	||	//å¼ºåˆ¶å…³é—­
+		tSysInfo.eDevState == DS_CLOSING		||	//å¼€å§‹å…³é—­
+		tSysInfo.uErrCode.tCode.bOV == 1)			//ç³»ç»Ÿè¿‡å‹
 	{
 		if(tSysInfo.uPerm.tPerm.bChgPerm == true)
 			bSys_SetPerm(SPO_CHG,false);
@@ -399,15 +399,15 @@ static void v_sys_get_perm(void)
 			bSys_SetPerm(SPO_CHG,true);
 	}
 	
-	//------------------------------------------·ÅµçĞí¿É------------------------------------------------------
+	//------------------------------------------æ”¾ç”µè®¸å¯------------------------------------------------------
 	if(
 		#if(boardBMS_IFACE)
-		tBms.uPerm.tPerm.bDisChgPerm == 0		||	//BMS²»Ğí¿É·Åµç
+		tBms.uPerm.tPerm.bDisChgPerm == 0		||	//BMSä¸è®¸å¯æ”¾ç”µ
 		#endif  //boardBMS_IFACE
-		tSysInfo.uPerm.tPerm.bForceClose == 1	||	//Ç¿ÖÆ¹Ø±Õ
-		tSysInfo.eDevState == DS_CLOSING		||	//¿ªÊ¼¹Ø±Õ
-		tSysInfo.uErrCode.tCode.b0SOC == 1		||	//µÍSOC
-		tSysInfo.uErrCode.tCode.bUV == 1)    		//Ç·Ñ¹
+		tSysInfo.uPerm.tPerm.bForceClose == 1	||	//å¼ºåˆ¶å…³é—­
+		tSysInfo.eDevState == DS_CLOSING		||	//å¼€å§‹å…³é—­
+		tSysInfo.uErrCode.tCode.b0SOC == 1		||	//ä½SOC
+		tSysInfo.uErrCode.tCode.bUV == 1)    		//æ¬ å‹
 	{
 		if(tSysInfo.uPerm.tPerm.bDisChgPerm == true)
 			bSys_SetPerm(SPO_DISCHG,false);
@@ -458,15 +458,15 @@ static void v_sys_get_perm(void)
 
 /************************************************************************************************************************
 *************************************************************************************************************************
-                                                  È«¾Öº¯Êı
+                                                  å…¨å±€å‡½æ•°
 *************************************************************************************************************************
 *************************************************************************************************************************/
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¹¤×÷¹ı³ÌÖĞ¼ì²âÊÇ·ñ½øÈë¹Ø»ú»òÖØÆô,²¢½øÈëµ¹¼ÆÊ±
------ËµÃ÷(±¸×¢)  Ã»ÓĞ´Ë¹¦ÄÜ
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    å·¥ä½œè¿‡ç¨‹ä¸­æ£€æµ‹æ˜¯å¦è¿›å…¥å…³æœºæˆ–é‡å¯,å¹¶è¿›å…¥å€’è®¡æ—¶
+-----è¯´æ˜(å¤‡æ³¨)  æ²¡æœ‰æ­¤åŠŸèƒ½
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void vSys_TickTimer(void) 
 {
@@ -536,63 +536,63 @@ void vSys_TickTimer(void)
 				break;
 		}
 	}
-//	log_e("Õâ¸öÊÇ´íÎó");
-//	log_w("Õâ¸öÊÇ¾¯¸æ");
-//	log_i("ÕâÊÇÒ»ÌõÌáÊ¾");
+//	log_e("è¿™ä¸ªæ˜¯é”™è¯¯");
+//	log_w("è¿™ä¸ªæ˜¯è­¦å‘Š");
+//	log_i("è¿™æ˜¯ä¸€æ¡æç¤º");
 
-	if(bSys_IsWorkState() == false) //·Ç¹¤×÷×´Ì¬²»¼ì²â 
+	if(bSys_IsWorkState() == false) //éå·¥ä½œçŠ¶æ€ä¸æ£€æµ‹ 
 		return;
 	
-	//***************************************************¹Ø»úµ¹¼ÆÊ±*****************************************************
+	//***************************************************å…³æœºå€’è®¡æ—¶*****************************************************
 	if(tSysInfo.usAutoOffTime) 
 	{
 		if(tSysInfo.usAutoOffCnt)
 		{
 			tSysInfo.usAutoOffCnt--;
-			if(tSysInfo.usAutoOffCnt == 0)//µ¹¼ÆÊ±Îª0½øÈë
+			if(tSysInfo.usAutoOffCnt == 0)//å€’è®¡æ—¶ä¸º0è¿›å…¥
 			{
 				// bDisp_Switch(ST_ON, false);
 				cSys_Switch(SO_KEY,ST_OFF, false);
 				if(uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant)
-					sMyPrint("Sys_Task:====µ¹¼ÆÊ±½áÊø,½øÈë¹Ø»ú  Ê±¼ä=%dS====\r\n",tSysInfo.usAutoOffTime);
+					sMyPrint("Sys_Task:====å€’è®¡æ—¶ç»“æŸ,è¿›å…¥å…³æœº  æ—¶é—´=%dS====\r\n",tSysInfo.usAutoOffTime);
 			}
 		}	
 	}
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¸üĞÂ×Ô¶¯¹Ø»úµ¹¼ÆÊ±
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æ›´æ–°è‡ªåŠ¨å…³æœºå€’è®¡æ—¶
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
 void  vSys_RefreshOffTime(void)
 {
     if(tSysInfo.usAutoOffTime)
     {
-        tSysInfo.usAutoOffCnt =  tSysInfo.usAutoOffTime;         //¸üĞÂµ¹¼ÆÊ±
+        tSysInfo.usAutoOffCnt =  tSysInfo.usAutoOffTime;         //æ›´æ–°å€’è®¡æ—¶
     }
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¸üĞÂÏµÍ³È«²¿µÄ¹Ø»úµ¹¼ÆÊ±
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    æ›´æ–°ç³»ç»Ÿå…¨éƒ¨çš„å…³æœºå€’è®¡æ—¶
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/
-void vSys_RefreshAllOffTime(bool BLON)  //¸üĞÂÏµÍ³µÄ×Ô¶¯¹Ø±ÕÊ±¼ä
+void vSys_RefreshAllOffTime(bool BLON)  //æ›´æ–°ç³»ç»Ÿçš„è‡ªåŠ¨å…³é—­æ—¶é—´
 {
-    vSys_RefreshOffTime();        //ÏµÍ³¹Ø»úµ¹¼ÆÊ±      
+    vSys_RefreshOffTime();        //ç³»ç»Ÿå…³æœºå€’è®¡æ—¶      
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ×Ô¶¯¹Ø±Õ¹¦ÄÜ¿ª¹Ø
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:²Ù×÷³É¹¦  false:²Ù×÷²»³É¹¦
+-----å‡½æ•°åŠŸèƒ½    è‡ªåŠ¨å…³é—­åŠŸèƒ½å¼€å…³
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ“ä½œæˆåŠŸ  false:æ“ä½œä¸æˆåŠŸ
 ************************************************************************************************************************/
 bool bSys_SetAutoOffTime(u16 time)
 {
@@ -602,70 +602,70 @@ bool bSys_SetAutoOffTime(u16 time)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃÏµÍ³ÔËĞĞ×´Ì¬
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    step:
-					  DS_INIT = 0,          // ³õÊ¼»¯
-					  DS_CLOSING ,          // ¹Ø±ÕÖĞ
-					  DS_SHUT_DOWN,         // ¹Ø»ú×´Ì¬
-					  DS_ERR,               // ´íÎó×´Ì¬
-					  DS_BOOTING,           // ×°ÔØÖĞ
-					  DS_WORK,              // ¹¤×÷×´Ì¬
-					  DS_ENG_MODE,          // ¹¤³ÌÄ£Ê½
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®ç³»ç»Ÿè¿è¡ŒçŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    step:
+					  DS_INIT = 0,          // åˆå§‹åŒ–
+					  DS_CLOSING ,          // å…³é—­ä¸­
+					  DS_SHUT_DOWN,         // å…³æœºçŠ¶æ€
+					  DS_ERR,               // é”™è¯¯çŠ¶æ€
+					  DS_BOOTING,           // è£…è½½ä¸­
+					  DS_WORK,              // å·¥ä½œçŠ¶æ€
+					  DS_ENG_MODE,          // å·¥ç¨‹æ¨¡å¼
 				 bz:
-					  true ´ò¿ª ·äÃùÆ÷
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:²Ù×÷³É¹¦   false:²Ù×÷Ê§°Ü
+					  true æ‰“å¼€ èœ‚é¸£å™¨
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ“ä½œæˆåŠŸ   false:æ“ä½œå¤±è´¥
 ************************************************************************************************************************/
 bool bSys_SetDevState(DevState_E state, bool bz)
 {
 	if(tSysInfo.eDevState != state)
 	{
 		tSysInfo.eDevState = state;
-		if(tSysInfo.eDevState == DS_INIT)  //³õÊ¼»¯
+		if(tSysInfo.eDevState == DS_INIT)  //åˆå§‹åŒ–
 		{
 			gpioASSIST_OPEN_ON();
 			if(uPrint.tFlag.bSysTask)
-				sMyPrint("bSysTask:----¸üĞÂÏµÍ³ÈÎÎñ×´Ì¬Îª³õÊ¼»¯----\r\n");
+				sMyPrint("bSysTask:----æ›´æ–°ç³»ç»Ÿä»»åŠ¡çŠ¶æ€ä¸ºåˆå§‹åŒ–----\r\n");
 		}
-		else if(tSysInfo.eDevState == DS_CLOSING)  //¹Ø±ÕÖĞ
+		else if(tSysInfo.eDevState == DS_CLOSING)  //å…³é—­ä¸­
 		{
 			if(uPrint.tFlag.bSysTask)
-				sMyPrint("bSysTask:----¸üĞÂÏµÍ³ÈÎÎñ×´Ì¬Îª¹Ø±ÕÖĞ----\r\n");
+				sMyPrint("bSysTask:----æ›´æ–°ç³»ç»Ÿä»»åŠ¡çŠ¶æ€ä¸ºå…³é—­ä¸­----\r\n");
 		}
-		else if(tSysInfo.eDevState == DS_SHUT_DOWN)  //¹Ø±Õ
+		else if(tSysInfo.eDevState == DS_SHUT_DOWN)  //å…³é—­
 		{
 			gpioASSIST_OPEN_OFF();
 			if(uPrint.tFlag.bSysTask)
-				sMyPrint("bSysTask:----¸üĞÂÏµÍ³ÈÎÎñ×´Ì¬Îª¹Ø±Õ----\r\n");
+				sMyPrint("bSysTask:----æ›´æ–°ç³»ç»Ÿä»»åŠ¡çŠ¶æ€ä¸ºå…³é—­----\r\n");
 		}
-		else if(tSysInfo.eDevState == DS_ERR)  //´íÎó
+		else if(tSysInfo.eDevState == DS_ERR)  //é”™è¯¯
 		{
 			if(uPrint.tFlag.bSysTask)
-				sMyPrint("bSysTask:----¸üĞÂÏµÍ³ÈÎÎñ×´Ì¬Îª´íÎó----\r\n");
+				sMyPrint("bSysTask:----æ›´æ–°ç³»ç»Ÿä»»åŠ¡çŠ¶æ€ä¸ºé”™è¯¯----\r\n");
 		}
-		else if(tSysInfo.eDevState == DS_BOOTING)    //Æô¶¯ÖĞ
+		else if(tSysInfo.eDevState == DS_BOOTING)    //å¯åŠ¨ä¸­
 		{
 			gpioASSIST_OPEN_ON();
 			if(uPrint.tFlag.bSysTask)
-				sMyPrint("bSysTask:----¸üĞÂÏµÍ³ÈÎÎñ×´Ì¬ÎªÆô¶¯ÖĞ----\r\n");
+				sMyPrint("bSysTask:----æ›´æ–°ç³»ç»Ÿä»»åŠ¡çŠ¶æ€ä¸ºå¯åŠ¨ä¸­----\r\n");
 		}
-		else if(tSysInfo.eDevState == DS_WORK)    //¹¤×÷
+		else if(tSysInfo.eDevState == DS_WORK)    //å·¥ä½œ
 		{
 			if(uPrint.tFlag.bSysTask)
-				sMyPrint("bSysTask:----¸üĞÂÏµÍ³ÈÎÎñ×´Ì¬Îª¹¤×÷----\r\n");
+				sMyPrint("bSysTask:----æ›´æ–°ç³»ç»Ÿä»»åŠ¡çŠ¶æ€ä¸ºå·¥ä½œ----\r\n");
 		}
 		#if(boardENG_MODE_EN)
-		else if(tSysInfo.eDevState == DS_ENG_MODE)  //¹¤³ÌÄ£Ê½
+		else if(tSysInfo.eDevState == DS_ENG_MODE)  //å·¥ç¨‹æ¨¡å¼
 		{
 			if(uPrint.tFlag.bSysTask)
-				sMyPrint("bSysTask:----¸üĞÂÏµÍ³ÈÎÎñ×´Ì¬Îª¹¤³ÌÄ£Ê½----\r\n");
+				sMyPrint("bSysTask:----æ›´æ–°ç³»ç»Ÿä»»åŠ¡çŠ¶æ€ä¸ºå·¥ç¨‹æ¨¡å¼----\r\n");
 		}
 		#endif //boardENG_MODE_EN
-		else if(tSysInfo.eDevState == DS_UPDATA_MODE)    //¹¤×÷
+		else if(tSysInfo.eDevState == DS_UPDATA_MODE)    //å·¥ä½œ
 		{
 			if(uPrint.tFlag.bSysTask)
-				sMyPrint("bSysTask:----¸üĞÂÏµÍ³ÈÎÎñ×´Ì¬ÎªÉı¼¶Ä£Ê½----\r\n");
+				sMyPrint("bSysTask:----æ›´æ–°ç³»ç»Ÿä»»åŠ¡çŠ¶æ€ä¸ºå‡çº§æ¨¡å¼----\r\n");
 		}
 	}	
 	
@@ -680,20 +680,20 @@ bool bSys_SetDevState(DevState_E state, bool bz)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ¼ì²éÏµÍ³»îÔ¾µÄ×´Ì¬
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:»îÔ¾  false:²»»îÔ¾
+-----å‡½æ•°åŠŸèƒ½    æ£€æŸ¥ç³»ç»Ÿæ´»è·ƒçš„çŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ´»è·ƒ  false:ä¸æ´»è·ƒ
 ************************************************************************************************************************/
 bool bSys_CheckActState(void)
 {
-	if( tUsb.eDevState		>= DS_BOOTING	||  //USB¹¤×÷
-	    tLight.eDevState	>= DS_WORK		||	//ÕÕÃ÷¹¤×÷
-	    // tDc.eDevState		>= DS_BOOTING	||	//DC¹¤×÷
-		bSys_IsChgState()	== true			||	//³äµç×´Ì¬
-		tSysInfo.usOutPwr	>  0			||	//´¦ÓÚ·Åµç
-		bSys_ExistInVolt()	== true				//»¹²å×Åµç
+	if( tUsb.eDevState		>= DS_BOOTING	||  //USBå·¥ä½œ
+	    tLight.eDevState	>= DS_WORK		||	//ç…§æ˜å·¥ä½œ
+	    // tDc.eDevState		>= DS_BOOTING	||	//DCå·¥ä½œ
+		bSys_IsChgState()	== true			||	//å……ç”µçŠ¶æ€
+		tSysInfo.usOutPwr	>  0			||	//å¤„äºæ”¾ç”µ
+		bSys_ExistInVolt()	== true				//è¿˜æ’ç€ç”µ
 	   )
 	{
 		return true;
@@ -705,11 +705,11 @@ bool bSys_CheckActState(void)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´æÔÚÊäÈëµçÔ´
------ËµÃ÷(±¸×¢)  »¹²å×Åµç
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:²å×Å³äµç  false:¶Ï¿ª³äµç
+-----å‡½æ•°åŠŸèƒ½    å­˜åœ¨è¾“å…¥ç”µæº
+-----è¯´æ˜(å¤‡æ³¨)  è¿˜æ’ç€ç”µ
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ’ç€å……ç”µ  false:æ–­å¼€å……ç”µ
 ************************************************************************************************************************/
 bool bSys_ExistInVolt(void)
 {
@@ -736,21 +736,21 @@ bool bSys_ExistInVolt(void)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´¦ÓÚ³äµç×´Ì¬
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:³äµç  false:²»³äµç
+-----å‡½æ•°åŠŸèƒ½    å¤„äºå……ç”µçŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:å……ç”µ  false:ä¸å……ç”µ
 ************************************************************************************************************************/
 bool bSys_IsChgState(void)
 {
 	if( 
 		#if(boardDCAC_IFACE)
-		tDcac.eChgState >= IOS_STARTING		//Äæ±ä³äµç
+		tDcac.eChgState >= IOS_STARTING		//é€†å˜å……ç”µ
 		#endif  //boardDCAC_IFACE
 
 		#if(boardMPPT_IFACE)
-	    || tMppt.eDevState >= DS_BOOTING	//MPPT¹¤×÷
+	    || tMppt.eDevState >= DS_BOOTING	//MPPTå·¥ä½œ
 		#endif  //boardMPPT_IFACE
 
 		#if(!boardMPPT_IFACE && !boardDCAC_IFACE)
@@ -768,11 +768,11 @@ bool bSys_IsChgState(void)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´¦ÓÚ¹¤×÷×´Ì¬
------ËµÃ÷(±¸×¢)  °üº¬¹¤×÷ºÍÆô¶¯ÖĞ
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:¹¤×÷  false:²»¹¤×÷
+-----å‡½æ•°åŠŸèƒ½    å¤„äºå·¥ä½œçŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  åŒ…å«å·¥ä½œå’Œå¯åŠ¨ä¸­
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:å·¥ä½œ  false:ä¸å·¥ä½œ
 ************************************************************************************************************************/
 bool bSys_IsWorkState(void)
 {
@@ -789,11 +789,11 @@ bool bSys_IsWorkState(void)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ´¦ÓÚ¹Ø»ú×´Ì¬
------ËµÃ÷(±¸×¢)  °üº¬¹Ø»úºÍ¹Ø»úÖĞ
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:³äµç  false:²»³äµç
+-----å‡½æ•°åŠŸèƒ½    å¤„äºå…³æœºçŠ¶æ€
+-----è¯´æ˜(å¤‡æ³¨)  åŒ…å«å…³æœºå’Œå…³æœºä¸­
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:å……ç”µ  false:ä¸å……ç”µ
 ************************************************************************************************************************/
 bool bSys_IsShutDownState(void)
 {
@@ -810,22 +810,22 @@ bool bSys_IsShutDownState(void)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ³äµç»½ĞÑ
------ËµÃ÷(±¸×¢)  °üº¬¹Ø»úºÍ¹Ø»úÖĞ
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:ÓĞ  false:ÎŞ
+-----å‡½æ•°åŠŸèƒ½    å……ç”µå”¤é†’
+-----è¯´æ˜(å¤‡æ³¨)  åŒ…å«å…³æœºå’Œå…³æœºä¸­
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æœ‰  false:æ— 
 ************************************************************************************************************************/
 bool bSys_ChgWakeUp(SwitchObject_E obj)
 {
-	//¹Ø»ú×´Ì¬ÏÂ && ·ÇÇ¿ÖÆ¹Ø»ú
+	//å…³æœºçŠ¶æ€ä¸‹ && éå¼ºåˆ¶å…³æœº
 	if((bSys_IsShutDownState() ==true || 
 		tSysInfo.eDevState == DS_INIT) && 
 		tSysInfo.uPerm.tPerm.bForceClose == false)
 	{
-		cSys_Switch(obj, ST_ON, false); //¿ª»ú
+		cSys_Switch(obj, ST_ON, false); //å¼€æœº
 		if(uPrint.tFlag.bSysTask)
-			sMyPrint("bSysTask:¿ªÆô³äµç»½ĞÑ\r\n");
+			sMyPrint("bSysTask:å¼€å¯å……ç”µå”¤é†’\r\n");
 		return true;
 	}
 	else 
@@ -835,14 +835,14 @@ bool bSys_ChgWakeUp(SwitchObject_E obj)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÏµÍ³¿ª¹Ø»úº¯Êı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    ¿ª¹ØÀàĞÍ
-				 SST_NULL=0,//½øĞĞÈ¡·´
+-----å‡½æ•°åŠŸèƒ½    ç³»ç»Ÿå¼€å…³æœºå‡½æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    å¼€å…³ç±»å‹
+				 SST_NULL=0,//è¿›è¡Œå–å
 				 SST_ON,
 				 SST_OFF,
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      Ğ¡ÓÚ0:ÓĞ´íÎó   µÈÓÚ0:Ã»²Ù×÷    ´óÓÚ0:²Ù×÷³É¹¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      å°äº0:æœ‰é”™è¯¯   ç­‰äº0:æ²¡æ“ä½œ    å¤§äº0:æ“ä½œæˆåŠŸ
 ************************************************************************************************************************/
 s8 cSys_Switch(SwitchObject_E obj,SwitchType_E type, bool fore_en)
 {
@@ -858,7 +858,7 @@ s8 cSys_Switch(SwitchObject_E obj,SwitchType_E type, bool fore_en)
 				fore_en == false)
 			{
 				if(uPrint.tFlag.bSysTask)
-					sMyPrint("bSysTask:µ±Ç°×´Ì¬Îª¹¤×÷,²»ÔÊĞí¿ª»ú.¶ÔÏó:%d\r\n",u_param.tTaskParam.ucObj);
+					sMyPrint("bSysTask:å½“å‰çŠ¶æ€ä¸ºå·¥ä½œ,ä¸å…è®¸å¼€æœº.å¯¹è±¡:%d\r\n",u_param.tTaskParam.ucObj);
 				 
 				return 0;
 			}
@@ -872,7 +872,7 @@ s8 cSys_Switch(SwitchObject_E obj,SwitchType_E type, bool fore_en)
 				 fore_en == false)
 			{
 				if(uPrint.tFlag.bSysTask)
-					sMyPrint("bSysTask:µ±Ç°×´Ì¬Îª¹Ø»ú,²»ÔÊĞí¹Ø»ú.¶ÔÏó:%d\r\n",u_param.tTaskParam.ucObj);
+					sMyPrint("bSysTask:å½“å‰çŠ¶æ€ä¸ºå…³æœº,ä¸å…è®¸å…³æœº.å¯¹è±¡:%d\r\n",u_param.tTaskParam.ucObj);
 			 
 				return 0;
 			}
@@ -894,18 +894,18 @@ s8 cSys_Switch(SwitchObject_E obj,SwitchType_E type, bool fore_en)
 					cQueue_AddQueueTask(tpSysTask, STI_BOOTING, u_param.usTaskInParam, fore_en);
 			
 				if(uPrint.tFlag.bSysTask)
-					sMyPrint("bSysTask:¿ª»ú\r\n");
+					sMyPrint("bSysTask:å¼€æœº\r\n");
 			}
 			else                                                                  
 			{
 				LoopOff:
-				//²å×Å³äµçÏß,²»¹Ø»ú
+				//æ’ç€å……ç”µçº¿,ä¸å…³æœº
 				if(bSys_ExistInVolt() == true && fore_en == false)
 				{
 					// bBuz_Tweet(LONG_2);
 				
 					if(uPrint.tFlag.bSysTask)
-						log_w("bSysTask:²å×Å³äµçÏß,²»ÔÊĞí¹Ø»ú");
+						log_w("bSysTask:æ’ç€å……ç”µçº¿,ä¸å…è®¸å…³æœº");
 					return -2;
 				}
 			
@@ -915,12 +915,12 @@ s8 cSys_Switch(SwitchObject_E obj,SwitchType_E type, bool fore_en)
 					cQueue_AddQueueTask(tpSysTask, STI_CLOSING, u_param.usTaskInParam, fore_en);
 				
 					if(uPrint.tFlag.bSysTask)
-						sMyPrint("bSysTask:¹Ø»ú\r\n");
+						sMyPrint("bSysTask:å…³æœº\r\n");
 				}
 				// else  
 				// {
 				// 	if(uPrint.tFlag.bSysTask)
-				// 		sMyPrint("bSysTask:ÆÁÄ»ĞİÃß,¿ªÊ¼»½ĞÑÆÁÄ»\r\n");
+				// 		sMyPrint("bSysTask:å±å¹•ä¼‘çœ ,å¼€å§‹å”¤é†’å±å¹•\r\n");
 				// }
 			}
 			// bDisp_Switch(ST_ON, false);
@@ -932,11 +932,11 @@ s8 cSys_Switch(SwitchObject_E obj,SwitchType_E type, bool fore_en)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ³õÊ¼»¯²ÎÊı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    p_dcac_mem : ¼ÇÒä²ÎÊı½á¹¹Ìå
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:ÉèÖÃ³É¹¦  ·´Ö®Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    åˆå§‹åŒ–å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    p_dcac_mem : è®°å¿†å‚æ•°ç»“æ„ä½“
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:è®¾ç½®æˆåŠŸ  åä¹‹å¤±è´¥
 *****************************************************************************************************************/
 bool bSys_MemParamInit(SysMemParam_T* p_sys_mem)
 {
@@ -949,11 +949,11 @@ bool bSys_MemParamInit(SysMemParam_T* p_sys_mem)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃ¼ÇÒä²ÎÊı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    add:true Ôö¼Ó   false:¼õÉÙ
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®è®°å¿†å‚æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    add:true å¢åŠ    false:å‡å°‘
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 *****************************************************************************************************************/
 void vSys_MemParamSet(u8 item, bool add)
 {
@@ -1005,11 +1005,11 @@ void vSys_MemParamSet(u8 item, bool add)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃ³ä·ÅµçĞí¿É
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:ÉèÖÃ³É¹¦  ·´Ö®Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®å……æ”¾ç”µè®¸å¯
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:è®¾ç½®æˆåŠŸ  åä¹‹å¤±è´¥
 ******************************************************************************************************************/
 bool bSys_SetPerm(SysPermObject_E obj, bool en)
 {
@@ -1017,11 +1017,11 @@ bool bSys_SetPerm(SysPermObject_E obj, bool en)
 	{
 		case SPO_CHG:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tSysInfo.uPerm.tPerm.bChgPerm)
 			{
 				if(uPrint.tFlag.bSysTask)
-					sMyPrint("bSysTask:ÉèÖÃ³äµçĞí¿É: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tSysInfo.uPerm.tPerm.bChgPerm);
+					sMyPrint("bSysTask:è®¾ç½®å……ç”µè®¸å¯: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tSysInfo.uPerm.tPerm.bChgPerm);
 				
 				tSysInfo.uPerm.tPerm.bChgPerm = en;
 			}
@@ -1030,11 +1030,11 @@ bool bSys_SetPerm(SysPermObject_E obj, bool en)
 		
 		case SPO_DISCHG:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tSysInfo.uPerm.tPerm.bDisChgPerm)
 			{
 				if(uPrint.tFlag.bSysTask)
-					sMyPrint("bSysTask:ÉèÖÃ·ÅµçĞí¿É: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tSysInfo.uPerm.tPerm.bDisChgPerm);
+					sMyPrint("bSysTask:è®¾ç½®æ”¾ç”µè®¸å¯: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tSysInfo.uPerm.tPerm.bDisChgPerm);
 				
 				tSysInfo.uPerm.tPerm.bDisChgPerm = en;
 			}
@@ -1043,11 +1043,11 @@ bool bSys_SetPerm(SysPermObject_E obj, bool en)
 		
 		case SPO_FORCE_CLOSE:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tSysInfo.uPerm.tPerm.bForceClose)
 			{
 				if(uPrint.tFlag.bSysTask)
-					sMyPrint("bSysTask:ÉèÖÃÇ¿ÖÆ¹Ø»ú: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tSysInfo.uPerm.tPerm.bForceClose);
+					sMyPrint("bSysTask:è®¾ç½®å¼ºåˆ¶å…³æœº: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tSysInfo.uPerm.tPerm.bForceClose);
 				
 				tSysInfo.uPerm.tPerm.bForceClose = en;
 			}
@@ -1056,29 +1056,29 @@ bool bSys_SetPerm(SysPermObject_E obj, bool en)
 		
 		case SPO_ALL:
 		{
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tSysInfo.uPerm.tPerm.bChgPerm)
 			{
 				if(uPrint.tFlag.bSysTask)
-					sMyPrint("bSysTask:ÉèÖÃ³äµçĞí¿É: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tSysInfo.uPerm.tPerm.bChgPerm);
+					sMyPrint("bSysTask:è®¾ç½®å……ç”µè®¸å¯: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tSysInfo.uPerm.tPerm.bChgPerm);
 				
 				tSysInfo.uPerm.tPerm.bChgPerm = en;
 			}
 			
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tSysInfo.uPerm.tPerm.bDisChgPerm)
 			{
 				if(uPrint.tFlag.bSysTask)
-					sMyPrint("bSysTask:ÉèÖÃ·ÅµçĞí¿É: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tSysInfo.uPerm.tPerm.bDisChgPerm);
+					sMyPrint("bSysTask:è®¾ç½®æ”¾ç”µè®¸å¯: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tSysInfo.uPerm.tPerm.bDisChgPerm);
 				
 				tSysInfo.uPerm.tPerm.bDisChgPerm = en;
 			}
 			
-			//×´Ì¬±ä»¯
+			//çŠ¶æ€å˜åŒ–
 			if(en != tSysInfo.uPerm.tPerm.bForceClose)
 			{
 				if(uPrint.tFlag.bSysTask)
-					sMyPrint("bSysTask:ÉèÖÃÇ¿ÖÆ¹Ø»ú: ÉèÖÃ=%d µ±Ç°×´Ì¬=%d \r\n",en,tSysInfo.uPerm.tPerm.bForceClose);
+					sMyPrint("bSysTask:è®¾ç½®å¼ºåˆ¶å…³æœº: è®¾ç½®=%d å½“å‰çŠ¶æ€=%d \r\n",en,tSysInfo.uPerm.tPerm.bForceClose);
 				
 				tSysInfo.uPerm.tPerm.bForceClose = en;
 			}
@@ -1093,11 +1093,11 @@ bool bSys_SetPerm(SysPermObject_E obj, bool en)
 
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÉèÖÃÉè±¸´íÎó´úÂë
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    ERR_CODE
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:Ìí¼ÓÁËÈÎÎñ,²¢Á¢¼´Ö´ĞĞ  false:Ã»ÓĞÌí¼ÓÈÎÎñ,»òÌí¼ÓÁËÈÎÎñ²»Ö´ĞĞ
+-----å‡½æ•°åŠŸèƒ½    è®¾ç½®è®¾å¤‡é”™è¯¯ä»£ç 
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    ERR_CODE
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:æ·»åŠ äº†ä»»åŠ¡,å¹¶ç«‹å³æ‰§è¡Œ  false:æ²¡æœ‰æ·»åŠ ä»»åŠ¡,æˆ–æ·»åŠ äº†ä»»åŠ¡ä¸æ‰§è¡Œ
 ************************************************************************************************************************/
 bool bSys_SetErrCode(SysErrCode_E code, bool set)
 {
@@ -1109,29 +1109,29 @@ bool bSys_SetErrCode(SysErrCode_E code, bool set)
 		if(e_next_code != code || b_next_set != set)
 		{
 			// if(tSysInfo.uErrCode.tCode.bOV)
-			// 	log_e("bSysTask:ÊäÈë¹ıÑ¹ µçÑ¹=%dV",tAdcSamp.usSysInVolt/10);
+			// 	log_e("bSysTask:è¾“å…¥è¿‡å‹ ç”µå‹=%dV",tAdcSamp.usSysInVolt/10);
 			// else if(tSysInfo.uErrCode.tCode.bUV)
-			// 	log_e("bSysTask:ÊäÈëÇ·Ñ¹ µçÑ¹=%dV",tAdcSamp.usSysInVolt/10);
+			// 	log_e("bSysTask:è¾“å…¥æ¬ å‹ ç”µå‹=%dV",tAdcSamp.usSysInVolt/10);
 			// else if(tSysInfo.uErrCode.tCode.bOT)
-			// 	log_e("bSysTask:ÏµÍ³¹ıÎÂ %dÉãÊÏ¶È",tSysInfo.sMaxTemp);
+			// 	log_e("bSysTask:ç³»ç»Ÿè¿‡æ¸© %dæ‘„æ°åº¦",tSysInfo.sMaxTemp);
 			// else if(tSysInfo.uErrCode.tCode.bUT)
-			// 	log_e("bSysTask:ÏµÍ³µÍÎÂ,%dÉãÊÏ¶È",tSysInfo.sMinTemp);
+			// 	log_e("bSysTask:ç³»ç»Ÿä½æ¸©,%dæ‘„æ°åº¦",tSysInfo.sMinTemp);
 			// else if(tSysInfo.uErrCode.tCode.bOL)
-			// 	log_e("bSysTask:ÏµÍ³¹ıÔØ");
+			// 	log_e("bSysTask:ç³»ç»Ÿè¿‡è½½");
 			// else if(tSysInfo.uErrCode.tCode.b0SOC)
 			// 	log_e("bSysTask:SOC = 0%");
 			// else if(tSysInfo.uErrCode.tCode.bBootFault)
-			// 	log_w("bSysTask:Æô¶¯ÈÎÎñµÈ´ı³¬Ê±,¿ªÊ¼¹Ø±ÕÏµÍ³");
+			// 	log_w("bSysTask:å¯åŠ¨ä»»åŠ¡ç­‰å¾…è¶…æ—¶,å¼€å§‹å…³é—­ç³»ç»Ÿ");
 			// else if(tSysInfo.uErrCode.tCode.bCloseFault)
-			// 	log_w("bSysTask:¹Ø±ÕÏµÍ³ÈÎÎñµÈ´ı³¬Ê±,ÍË³ö");
+			// 	log_w("bSysTask:å…³é—­ç³»ç»Ÿä»»åŠ¡ç­‰å¾…è¶…æ—¶,é€€å‡º");
 			// else
-				log_e("bSysTask:ÏµÍ³´íÎó ´úÂë%d ÀàĞÍ%d",code,set);
+				log_e("bSysTask:ç³»ç»Ÿé”™è¯¯ ä»£ç %d ç±»å‹%d",code,set);
 			e_next_code = code;
 			b_next_set = set;
 		}
 	}
 	
-	//ÓĞ´íÎó
+	//æœ‰é”™è¯¯
 	if(code > SEC_CLEAR_ALL)
 	{
 		if(set)
@@ -1150,13 +1150,13 @@ bool bSys_SetErrCode(SysErrCode_E code, bool set)
 	}
 	else 
 	{
-		//Çå³ı´íÎó,ÖØĞÂÆô¶¯
+		//æ¸…é™¤é”™è¯¯,é‡æ–°å¯åŠ¨
 		if(tSysInfo.eDevState == DS_ERR)
 		{
 			bSys_SetDevState(DS_WORK,true);
 			
 			if(uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant)
-				log_i("bSysTask:Çå³ı´íÎó,ÖØĞÂ½øÈë¹¤×÷×´Ì¬");
+				log_i("bSysTask:æ¸…é™¤é”™è¯¯,é‡æ–°è¿›å…¥å·¥ä½œçŠ¶æ€");
 		}
 	}
 	
@@ -1164,11 +1164,11 @@ bool bSys_SetErrCode(SysErrCode_E code, bool set)
 }
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    Ç·Ñ¹ÇëÇó³äµç
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      true:ÇëÇóÇ·Ñ¹³äµç  false:Ã»ÓĞ
+-----å‡½æ•°åŠŸèƒ½    æ¬ å‹è¯·æ±‚å……ç”µ
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      true:è¯·æ±‚æ¬ å‹å……ç”µ  false:æ²¡æœ‰
 ************************************************************************************************************************/
 bool bSys_LowVoltReqChg(void)
 {

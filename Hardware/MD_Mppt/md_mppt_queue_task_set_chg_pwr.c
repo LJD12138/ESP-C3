@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "MD_Mppt/md_mppt_queue_task.h"
@@ -16,15 +16,15 @@
 #define       	mpptTASK_SET_PWR_CYCLE_TIME               		100
 
 
-//****************************************************º¯ÊıÉùÃ÷****************************************************//
+//****************************************************å‡½æ•°å£°æ˜****************************************************//
 
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÈÎÎñº¯Êı:³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ä»»åŠ¡å‡½æ•°:åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ******************************************************************************************************************/
 void v_mppt_queue_task_set_chg_pwr(Task_T *tp_task)
 {
@@ -39,16 +39,16 @@ void v_mppt_queue_task_set_chg_pwr(Task_T *tp_task)
 				bMppt_SetDevState(DS_CLOSING);
 			
 			if(c_mppt_cs_set_pwr(us_set_in_pwr) > 0)
-				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ÏÂÒ»²½
-			else//·¢ËÍº¯ÊıÒªµ¥¶À¼ÆÊı
+				cQueue_GotoStep(tp_task, STEP_NEXT);  	//ä¸‹ä¸€æ­¥
+			else//å‘é€å‡½æ•°è¦å•ç‹¬è®¡æ•°
 			{
 				tp_task->usStepRepeatCnt++;
 				if(tp_task->usStepRepeatCnt >= 2)
 				{
 					if(uPrint.tFlag.bMpptTask)
-						log_w("bMpptTask:·¢ËÍÊ§°Ü´ÎÊı¹ı¶à,ÍË³öÉèÖÃ³äµç¹¦ÂÊÈÎÎñ");
+						log_w("bMpptTask:å‘é€å¤±è´¥æ¬¡æ•°è¿‡å¤š,é€€å‡ºè®¾ç½®å……ç”µåŠŸç‡ä»»åŠ¡");
 					
-					cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+					cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 				}
 			}
 		}break;
@@ -59,7 +59,7 @@ void v_mppt_queue_task_set_chg_pwr(Task_T *tp_task)
 			if(tp_task->usStepWaitCnt >= (1000/mpptTASK_SET_PWR_CYCLE_TIME))
 			{
 				if(uPrint.tFlag.bMpptTask)
-					log_w("bMpptTask:µÈ´ıÉèÖÃ³äµç¹¦ÂÊ»Ø¸´³¬Ê±");
+					log_w("bMpptTask:ç­‰å¾…è®¾ç½®å……ç”µåŠŸç‡å›å¤è¶…æ—¶");
 				
 				cQueue_GotoStep(tp_task, STEP_FORWARD);
 			}
@@ -70,24 +70,24 @@ void v_mppt_queue_task_set_chg_pwr(Task_T *tp_task)
 				u16 us_in_pwr;
 			}tMyStruct;
 
-			//Ğ£ÑéÊı¾İ
+			//æ ¡éªŒæ•°æ®
 			u8 len = lwrb_get_full(&tMpptReplyBuff);
 			if(len != sizeof(tMyStruct) || tMpptReplyBuff.buff == NULL)
 			{
 				if(uPrint.tFlag.bDcacTask && uPrint.tFlag.bImportant)
-					log_w("bDcacTask:·µ»ØÊı¾İ´íÎó,³¤¶È%d", len);
+					log_w("bDcacTask:è¿”å›æ•°æ®é”™è¯¯,é•¿åº¦%d", len);
 				cQueue_GotoStep(tp_task, STEP_FORWARD);
 				break;
 			}
 			
-			//¶ÁÈ¡Êı¾İ
+			//è¯»å–æ•°æ®
 			lwrb_read(&tMpptReplyBuff, (u8*)&tMyStruct, sizeof(tMyStruct));
 			
-			//Ğ£ÑéÊı¾İ
+			//æ ¡éªŒæ•°æ®
 			if(tMyStruct.uc_obj != 0)
 			{
 				if(uPrint.tFlag.bDcacTask && uPrint.tFlag.bImportant)
-					log_w("bDcacTask:·µ»Ø¶ÔÏó%d´íÎó", tMyStruct.uc_obj);
+					log_w("bDcacTask:è¿”å›å¯¹è±¡%dé”™è¯¯", tMyStruct.uc_obj);
 				cQueue_GotoStep(tp_task, STEP_FORWARD);
 				break;
 			}
@@ -97,12 +97,12 @@ void v_mppt_queue_task_set_chg_pwr(Task_T *tp_task)
 				if(us_set_in_pwr)
 				{
 					bMppt_SetDevState(DS_WORK);
-					cQueue_GotoStep(tp_task, STEP_NEXT);  	//ÏÂÒ»²½
+					cQueue_GotoStep(tp_task, STEP_NEXT);  	//ä¸‹ä¸€æ­¥
 				}
 				else
 				{
 					bMppt_SetDevState(DS_SHUT_DOWN);
-					cQueue_GotoStep(tp_task, STEP_NEXT);  	//ÏÂÒ»²½
+					cQueue_GotoStep(tp_task, STEP_NEXT);  	//ä¸‹ä¸€æ­¥
 				}
 			}
 		}
@@ -111,24 +111,24 @@ void v_mppt_queue_task_set_chg_pwr(Task_T *tp_task)
 		case 2:
         {
 			if(uPrint.tFlag.bMpptTask)
-				sMyPrint("bMpptTask:----ÉèÖÃMPPT³äµç¹¦ÂÊ%dWÍê³É----\r\n",us_set_in_pwr);
+				sMyPrint("bMpptTask:----è®¾ç½®MPPTå……ç”µåŠŸç‡%dWå®Œæˆ----\r\n",us_set_in_pwr);
 			
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			
 			break;
         }
 			
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+			cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 			break;
 	}
 	
-	//µÈ´ı³¬Ê±
+	//ç­‰å¾…è¶…æ—¶
 	tp_task->usTaskWaitCnt++;
 	if(tp_task->usTaskWaitCnt>(3000/mpptTASK_SET_PWR_CYCLE_TIME)) 
 	{
 		if(uPrint.tFlag.bMpptTask)
-			log_w("bMpptTask:ÉèÖÃMPPT³äµç¹¦ÂÊÈÎÎñµÈ´ı³¬Ê±");
+			log_w("bMpptTask:è®¾ç½®MPPTå……ç”µåŠŸç‡ä»»åŠ¡ç­‰å¾…è¶…æ—¶");
 		
 		if(tMppt.eDevState == DS_BOOTING)
 		{
@@ -136,7 +136,7 @@ void v_mppt_queue_task_set_chg_pwr(Task_T *tp_task)
 			c_mppt_cs_set_pwr(0);
 		}
 		
-		cQueue_GotoStep(tp_task, STEP_END);  //½áÊø
+		cQueue_GotoStep(tp_task, STEP_END);  //ç»“æŸ
 	}
 	
 	#if(boardUSE_OS)

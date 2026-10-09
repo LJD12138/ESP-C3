@@ -18,65 +18,65 @@ extern  		Task_T									*tpDcacTask;
 extern  		TaskHandle_t                          	tDcacTaskHandler;
 #endif  //boardUSE_OS
 
-//*******ÈÎÎñ ID  ************************************************
+//*******ä»»åŠ¡ ID  ************************************************
 typedef enum : uint8_t
 {
-	DTI_NULL = 0,      				//¿ÕÈÎÎñº¯Êý
-    DTI_INIT,          				//³õÊ¼»¯Äæ±ä
-    DTI_MAIN,      					//Ñ­»·»ñÈ¡Äæ±äµÄÊý¾Ý
-    DTI_CTRL_SW,					//¿ØÖÆ¿ª¹Ø
-	DTI_ERR_PROC,   				//´íÎó´¦Àí
+	DTI_NULL = 0,      				//ç©ºä»»åŠ¡å‡½æ•°
+    DTI_INIT,          				//åˆå§‹åŒ–é€†å˜
+    DTI_MAIN,      					//å¾ªçŽ¯èŽ·å–é€†å˜çš„æ•°æ®
+    DTI_CTRL_SW,					//æŽ§åˆ¶å¼€å…³
+	DTI_ERR_PROC,   				//é”™è¯¯å¤„ç†
 }DCAC_Task_ID_E;
 
 
 
-//´íÎó±êÖ¾
+//é”™è¯¯æ ‡å¿—
 typedef enum 
 {
-    DEC_CLEAR_ALL = 0,				//ÇåËùÓÐ´íÎó	
+    DEC_CLEAR_ALL = 0,				//æ¸…æ‰€æœ‰é”™è¯¯	
 
-	DEC_DCAC_IN_VOLT = 1,			//Äæ±äÆ÷±¨´í
-	DEC_DCAC_IN_FREQ,				//Äæ±äÆ÷±¨´í
-	DEC_DCAC_IN_OTHER,				//Äæ±äÆ÷±¨´í
-	DEC_DCAC_OUT_VOLT,				//Äæ±äÆ÷±¨´í
-	DEC_DCAC_OUT_OTHER,				//Äæ±äÆ÷±¨´í
-	DEC_DCAC_HIGH_VOLT,				//Äæ±äÆ÷±¨´í
-	DEC_DCAC_BAT_OV,				//Äæ±äÆ÷±¨´í
-	DEC_DCAC_BAT_UV,				//Äæ±äÆ÷±¨´í
+	DEC_DCAC_IN_VOLT = 1,			//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_IN_FREQ,				//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_IN_OTHER,				//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_OUT_VOLT,				//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_OUT_OTHER,				//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_HIGH_VOLT,				//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_BAT_OV,				//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_BAT_UV,				//é€†å˜å™¨æŠ¥é”™
 	
-	DEC_DCAC_OT,					//Äæ±äÆ÷±¨´í
-	DEC_DCAC_OC,					//Äæ±äÆ÷±¨´í
-	DEC_DCAC_OL,					//Äæ±äÆ÷±¨´í
-	DEC_DCAC_SC,					//Äæ±äÆ÷±¨´í
-	DEC_DCAC_FUSE,					//Äæ±äÆ÷±¨´í
-	DEC_DCAC_RELAY,					//Äæ±äÆ÷±¨´í
-	DEC_DCAC_PARA,					//Äæ±äÆ÷±¨´í
-	DEC_DCAC_NTC,					//Äæ±äÆ÷±¨´í
+	DEC_DCAC_OT,					//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_OC,					//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_OL,					//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_SC,					//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_FUSE,					//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_RELAY,					//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_PARA,					//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_NTC,					//é€†å˜å™¨æŠ¥é”™
 	
-	DEC_DCAC_OTHER = 17,			//Äæ±äÆ÷±¨´í
-	DEC_DCAC_1,						//Äæ±äÆ÷±¨´í
-	DEC_DCAC_2,						//Äæ±äÆ÷±¨´í
-	DEC_DCAC_3,						//Äæ±äÆ÷±¨´í
+	DEC_DCAC_OTHER = 17,			//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_1,						//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_2,						//é€†å˜å™¨æŠ¥é”™
+	DEC_DCAC_3,						//é€†å˜å™¨æŠ¥é”™
 	
-	DEC_SYS_DEV_LOST = 21,			//Éè±¸¶ªÊ§
-	DEC_SYS_OT,						//¹ýÎÂ
-	DEC_SYS_UT,						//µÍÎÂ
-	DEC_SYS_OV,						//¹ýÑ¹
-	DEC_SYS_UV,                		//Ç·Ñ¹
-	DEC_SYS_SET_IN_PROTE,			//ÊäÈë±£»¤
-	DEC_SYS_OUT_OL,         		//ÏµÍ³¹ýÔØ
-	DEC_SYS_OUT_ERR,              	//Êä³ö´íÎó
+	DEC_SYS_DEV_LOST = 21,			//è®¾å¤‡ä¸¢å¤±
+	DEC_SYS_OT,						//è¿‡æ¸©
+	DEC_SYS_UT,						//ä½Žæ¸©
+	DEC_SYS_OV,						//è¿‡åŽ‹
+	DEC_SYS_UV,                		//æ¬ åŽ‹
+	DEC_SYS_SET_IN_PROTE,			//è¾“å…¥ä¿æŠ¤
+	DEC_SYS_OUT_OL,         		//ç³»ç»Ÿè¿‡è½½
+	DEC_SYS_OUT_ERR,              	//è¾“å‡ºé”™è¯¯
 	
-	DEC_SYS_IN_OC = 29,    			//¹ýÁ÷
+	DEC_SYS_IN_OC = 29,    			//è¿‡æµ
 }DCAC_ErrCode_E;
 
 
-//´íÎó×´Ì¬¼¯ºÏ
+//é”™è¯¯çŠ¶æ€é›†åˆ
 typedef union
 {
 	struct
 	{
-		//Äæ±äÆ÷ÉÏ±¨´íÎó(¿ªÊ¼)
+		//é€†å˜å™¨ä¸ŠæŠ¥é”™è¯¯(å¼€å§‹)
 		vu32 bDcacInVolt:1;
 		vu32 bDcacInFreq:1;
 		vu32 bDcacInOther:1;
@@ -97,9 +97,9 @@ typedef union
 		
 		vu32 bDcacOther:1;
 		vu32 bDcactemp:3;
-		//Äæ±äÆ÷ÉÏ±¨´íÎó(½áÊø)
+		//é€†å˜å™¨ä¸ŠæŠ¥é”™è¯¯(ç»“æŸ)
 		
-		//ÏµÍ³ÅÐ¶ÏµÄ´íÎó
+		//ç³»ç»Ÿåˆ¤æ–­çš„é”™è¯¯
 		vu32 bSysDevLost:1;
 		vu32 bSysOT:1;
 		vu32 bSysUT:1;
@@ -115,24 +115,24 @@ typedef union
 	vu32 ulCode;   
 }DCAC_ErrState_U;
 
-//¿ª¹ØµÄ¶ÔÏó
+//å¼€å…³çš„å¯¹è±¡
 typedef enum : uint8_t
 {
-	DSO_AC_OUT=0,  		//Êä³ö
-	DSO_AC_IN,    		//³äµç
-	DSO_PARA_IN,    	//²¢Íø
-	DSO_OFF_ALL,     	//¹Ø±ÕËùÓÐ
+	DSO_AC_OUT=0,  		//è¾“å‡º
+	DSO_AC_IN,    		//å……ç”µ
+	DSO_PARA_IN,    	//å¹¶ç½‘
+	DSO_OFF_ALL,     	//å…³é—­æ‰€æœ‰
 }DACD_SwitchObject_E;
 
-//*********************************Ðí¿É*************************************
+//*********************************è®¸å¯*************************************
 typedef union
 {
 	struct 
 	{
-		u8 				bChgPerm:1;			//³äµçÐí¿É
-		u8 				bDisChgPerm:1;		//·ÅµçÐí¿É
-		u8				bParaInPerm:1;		//²¢Íø
-		u8 				bForceClose:1;		//Ç¿ÖÆ¹Ø±Õ
+		u8 				bChgPerm:1;			//å……ç”µè®¸å¯
+		u8 				bDisChgPerm:1;		//æ”¾ç”µè®¸å¯
+		u8				bParaInPerm:1;		//å¹¶ç½‘
+		u8 				bForceClose:1;		//å¼ºåˆ¶å…³é—­
 		u8 				temp:4;
 	}tPerm;
 	u8 ucPerm;
@@ -140,48 +140,48 @@ typedef union
 
 typedef enum : uint8_t
 {
-	DPO_CHG = 0,		//³äµç
-	DPO_DISCHG,    		//·Åµç
-	DPO_PARA_IN,    	//²¢Íø
+	DPO_CHG = 0,		//å……ç”µ
+	DPO_DISCHG,    		//æ”¾ç”µ
+	DPO_PARA_IN,    	//å¹¶ç½‘
 	DPO_ALL,			//
 }DcacPermObject_E;
 
-//*********************************ÈÎÎñ¶ÔÏó**********************************
+//*********************************ä»»åŠ¡å¯¹è±¡**********************************
 #pragma pack(1)
 typedef struct
 {
-	DevState_E  		eDevState;         	//Éè±¸×´Ì¬
-	DCAC_ErrState_U 	uErrCode;           //´íÎó×´Ì¬
-	InOutState_E		eChgState;			//³äµç×´Ì¬
-	InOutState_E		eDisChgState;		//·Åµç×´Ì¬
-	InOutState_E		eParanInState;		//²¢Íø×´Ì¬
-	DcacPerm_U			uPerm;				//Ðí¿É
-	vu16                usAutoOffCnt;    	//Ê±¼ä´Á´óÓÚÕâ¸öÖµ¾Í¹Ø±ÕÄæ±äÆ÷
-	vu16                usAutoOffTime;   	//¹Ø±ÕÄæ±äÆ÷µÄÊ±¼ä,0Îª²»¿ªÆô  
-	s16                 sMaxTemp;           //ÈÎÎñ×î¸ßÎÂ¶È
+	DevState_E  		eDevState;         	//è®¾å¤‡çŠ¶æ€
+	DCAC_ErrState_U 	uErrCode;           //é”™è¯¯çŠ¶æ€
+	InOutState_E		eChgState;			//å……ç”µçŠ¶æ€
+	InOutState_E		eDisChgState;		//æ”¾ç”µçŠ¶æ€
+	InOutState_E		eParanInState;		//å¹¶ç½‘çŠ¶æ€
+	DcacPerm_U			uPerm;				//è®¸å¯
+	vu16                usAutoOffCnt;    	//æ—¶é—´æˆ³å¤§äºŽè¿™ä¸ªå€¼å°±å…³é—­é€†å˜å™¨
+	vu16                usAutoOffTime;   	//å…³é—­é€†å˜å™¨çš„æ—¶é—´,0ä¸ºä¸å¼€å¯  
+	s16                 sMaxTemp;           //ä»»åŠ¡æœ€é«˜æ¸©åº¦
 }
 Dcac_T;
 #pragma pack()
 extern Dcac_T 			tDcac;
 
-#pragma pack(1)//Ç¿ÖÆÒ»¸ö×Ö½Ú¶ÔÆë
+#pragma pack(1)//å¼ºåˆ¶ä¸€ä¸ªå­—èŠ‚å¯¹é½
 typedef struct
 {
-	vu16             	usAutoOffTime;  	//×Ô¶¯¹Ø±ÕÊ±¼ä  0Îª¹Ø±Õ´Ë¹¦ÄÜ
-	vu16             	usMinOpenVolt;      //×îÐ¡¿ªÆôµçÑ¹
-	vu16             	usVoltRating;       //¶î¶¨µçÑ¹
-	vu16             	usMaxInVolt;		//×î´óÊäÈëµçÑ¹
-	vu16             	usMinInVolt;		//×îÐ¡ÊäÈëµçÑ¹
-	vu16             	usInPwrRating;		//ÊäÈë¶î¶¨¹¦ÂÊ
-	vu16             	usMinInPwr;			//×îÐ¡ÊäÈë¹¦ÂÊ
-	vu16             	usMaxInCurr;		//×î´óÊäÈëµçÁ÷ 0.1A
-	vu16             	usOutPwrRating;		//Êä³ö¶î¶¨¹¦ÂÊ
-	vu16             	usOverLoadPwr;      //¹ýÔØ¹¦ÂÊ
-	vu16             	usParaInPwr;      	//²¢Íø¹¦ÂÊ
-	vu16             	usAcOutFreq;      	//Äæ±äÊä³öÆµÂÊ
-	s8               	sMaxTemp;      		//ÔÊÐíµÄ×î´óÎÂ¶È
+	vu16             	usAutoOffTime;  	//è‡ªåŠ¨å…³é—­æ—¶é—´  0ä¸ºå…³é—­æ­¤åŠŸèƒ½
+	vu16             	usMinOpenVolt;      //æœ€å°å¼€å¯ç”µåŽ‹
+	vu16             	usVoltRating;       //é¢å®šç”µåŽ‹
+	vu16             	usMaxInVolt;		//æœ€å¤§è¾“å…¥ç”µåŽ‹
+	vu16             	usMinInVolt;		//æœ€å°è¾“å…¥ç”µåŽ‹
+	vu16             	usInPwrRating;		//è¾“å…¥é¢å®šåŠŸçŽ‡
+	vu16             	usMinInPwr;			//æœ€å°è¾“å…¥åŠŸçŽ‡
+	vu16             	usMaxInCurr;		//æœ€å¤§è¾“å…¥ç”µæµ 0.1A
+	vu16             	usOutPwrRating;		//è¾“å‡ºé¢å®šåŠŸçŽ‡
+	vu16             	usOverLoadPwr;      //è¿‡è½½åŠŸçŽ‡
+	vu16             	usParaInPwr;      	//å¹¶ç½‘åŠŸçŽ‡
+	vu16             	usAcOutFreq;      	//é€†å˜è¾“å‡ºé¢‘çŽ‡
+	s8               	sMaxTemp;      		//å…è®¸çš„æœ€å¤§æ¸©åº¦
 }DcacMemParam_T;
-#pragma pack() //È¡ÏûÒ»¸ö×Ö½Ú¶ÔÆë
+#pragma pack() //å–æ¶ˆä¸€ä¸ªå­—èŠ‚å¯¹é½
 
 bool bDcac_TaskInit(void);
 s8 cDCAC_Switch(DACD_SwitchObject_E obj, SwitchType_E sw,bool buz_en);

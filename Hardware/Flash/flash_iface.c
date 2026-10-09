@@ -13,13 +13,13 @@
 #include "esp_log.h"
 #endif
 
-//------------------------------------±äÁ¿³£Á¿¶¨Òå------------------------------------
+//------------------------------------å˜é‡å¸¸é‡å®šä¹‰------------------------------------
 Flash_T  tFlash;
 
 #if(boardUSE_SFUD)
-const sfud_flash *flash = NULL; //»ñÈ¡Éè±¸½á¹¹Ìå
+const sfud_flash *flash = NULL; //è·å–è®¾å¤‡ç»“æ„ä½“
 #ifdef SFUD_USING_QSPI
-const sfud_flash *qspi_flash = NULL; //»ñÈ¡Éè±¸½á¹¹Ìå
+const sfud_flash *qspi_flash = NULL; //è·å–è®¾å¤‡ç»“æ„ä½“
 #endif  //SFUD_USING_QSPI
 #endif  //boardUSE_SFUD
 
@@ -28,11 +28,11 @@ const esp_partition_t *tpPartition = NULL;
 #endif
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    Flash½Ó¿Ú³õÊ¼»¯
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    Flashæ¥å£åˆå§‹åŒ–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 *****************************************************************************************************************/
 bool bFlash_IfaceInit(void)
 {
@@ -46,10 +46,10 @@ bool bFlash_IfaceInit(void)
 	#if(boardUSE_SFUD)
 	if(sfud_init() == SFUD_SUCCESS)
 	{
-		//IC1 Flash³õÊ¼»¯
-		flash = sfud_get_device_table() + 0;  //»ñÈ¡Éè±¸ĞÅÏ¢
+		//IC1 Flashåˆå§‹åŒ–
+		flash = sfud_get_device_table() + 0;  //è·å–è®¾å¤‡ä¿¡æ¯
 		
-		//IC2 QSPI³õÊ¼»¯
+		//IC2 QSPIåˆå§‹åŒ–
 		#ifdef SFUD_USING_QSPI
 		sfud_qspi_fast_read_enable(sfud_get_device(SFUD_W25Q_DEVICE_INDEX1), 4);
 		qspi_flash = sfud_get_device(SFUD_W25Q_DEVICE_INDEX1);
@@ -64,11 +64,11 @@ bool bFlash_IfaceInit(void)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    flash ²Á³ıº¯Êı
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    start_addr:¿ªÊ¼µØÖ·    end_addr:½áÊøµØÖ·
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    flash æ“¦é™¤å‡½æ•°
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    start_addr:å¼€å§‹åœ°å€    end_addr:ç»“æŸåœ°å€
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 *****************************************************************************************************************/
 s8 cFlash_EraseSector(u32 start_addr,u32 end_addr)
 {
@@ -106,11 +106,11 @@ s8 cFlash_EraseSector(u32 start_addr,u32 end_addr)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    flash Ğ´Èëº¯Êı,°´8Î»Ğ´Èë
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    start_addr:¿ªÊ¼µØÖ·    data:Êı¾İ    len:×Ö½Ú³¤¶È
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      0:Ğ´Èë³É¹¦    ·´Ö®Ê§°Ü
+-----å‡½æ•°åŠŸèƒ½    flash å†™å…¥å‡½æ•°,æŒ‰8ä½å†™å…¥
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    start_addr:å¼€å§‹åœ°å€    data:æ•°æ®    len:å­—èŠ‚é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      0:å†™å…¥æˆåŠŸ    åä¹‹å¤±è´¥
 *****************************************************************************************************************/
 s8 cFlash_Write8BitData(u32 start_addr, u8* data, u32 len)
 {
@@ -129,7 +129,7 @@ s8 cFlash_Write8BitData(u32 start_addr, u8* data, u32 len)
 	if(sfud_write(flash, start_addr, len, data) != SFUD_SUCCESS)
 		return -2;
 	#else
-//	#error "´íÎó,µ±Ç°STMH7 ²»´øÄÚ²¿Flash²Ù×÷";
+//	#error "é”™è¯¯,å½“å‰STMH7 ä¸å¸¦å†…éƒ¨Flashæ“ä½œ";
 	#endif  //boardUSE_SFUD
     #elif(boardIC_TYPE == boardIC_ESP32C61)
     if(tpPartition->address > start_addr)
@@ -145,7 +145,7 @@ s8 cFlash_Write8BitData(u32 start_addr, u8* data, u32 len)
 
 	if(uPrint.tFlag.bOperFlash)
 	{
-		sMyPrint("\r\n Ğ´ÈëµÄÊı¾İ ³¤¶È= %d ",len);
+		sMyPrint("\r\n å†™å…¥çš„æ•°æ® é•¿åº¦= %d ",len);
 		for(int i = 0; i < len; i++)
 		{
 			sMyPrint("%x ",data[i]);
@@ -157,11 +157,11 @@ s8 cFlash_Write8BitData(u32 start_addr, u8* data, u32 len)
 }
 
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    flash ¶ÁÈ¡º¯Êı,°´8Î»¶ÁÈ¡
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    start_addr:¿ªÊ¼µØÖ·    data:´æ·ÅÊı¾İbuffµÄÖ¸Õë   len:×Ö½Ú³¤¶È
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    flash è¯»å–å‡½æ•°,æŒ‰8ä½è¯»å–
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    start_addr:å¼€å§‹åœ°å€    data:å­˜æ”¾æ•°æ®buffçš„æŒ‡é’ˆ   len:å­—èŠ‚é•¿åº¦
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 *****************************************************************************************************************/
 s8 cFlash_Read8BitData(u32 start_addr, u8* data, u32 len)
 {
@@ -196,7 +196,7 @@ s8 cFlash_Read8BitData(u32 start_addr, u8* data, u32 len)
 	
 	if(uPrint.tFlag.bOperFlash)
 	{
-		sMyPrint("\r\n¶ÁÈ¡µÄÊı¾İ ³¤¶È= %d ",len);
+		sMyPrint("\r\nè¯»å–çš„æ•°æ® é•¿åº¦= %d ",len);
 		for(int i = 0; i < len; i++)
 		{
 			sMyPrint("%x ",data[i]);
@@ -210,11 +210,11 @@ s8 cFlash_Read8BitData(u32 start_addr, u8* data, u32 len)
 #if(FLASH_DEBUG)
 //#include "systick.h"
 /*****************************************************************************************************************
------º¯Êı¹¦ÄÜ    flash²âÊÔDemo
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    flashæµ‹è¯•Demo
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 *****************************************************************************************************************/
 void sfud_qspi_test_demo(void);
 void sfud_spi_test_demo(void);
@@ -287,10 +287,10 @@ void sfud_spi_test_demo(void)
     /* erase test */
     ret = cFlash_EraseSector(addr, (addr + tpPartition->size));
     if (ret > 0)
-        sMyPrint("²Á³ıÍê³É.µØÖ·0x%08X.´óĞ¡%zu\r\n", addr, size);
+        sMyPrint("æ“¦é™¤å®Œæˆ.åœ°å€0x%08X.å¤§å°%zu\r\n", addr, size);
     else
     {
-        sMyPrint("²Á³ıÊ§°Ü.\r\n");
+        sMyPrint("æ“¦é™¤å¤±è´¥.\r\n");
         return;
     }
     /* write test */
@@ -299,17 +299,17 @@ void sfud_spi_test_demo(void)
 	ret = cFlash_Write8BitData(addr, &uc_w_buf[write_offset], 200); addr +=200; write_offset +=200;
 	ret = cFlash_Write8BitData(addr, &uc_w_buf[write_offset], 112); addr = tpPartition->address;
     if (ret > 0)
-        sMyPrint("FlashĞ´ÈëÍê³É.µØÖ·0x%08X.´óĞ¡%zu.\r\n",  addr, size);
+        sMyPrint("Flashå†™å…¥å®Œæˆ.åœ°å€0x%08X.å¤§å°%zu.\r\n",  addr, size);
     else
     {
-        sMyPrint("FlashĞ´ÈëÊ§°Ü.\r\n");
+        sMyPrint("Flashå†™å…¥å¤±è´¥.\r\n");
         return;
     }
     /* read test */
     ret = cFlash_Read8BitData(addr, uc_r_buf, size);
     if (ret > 0)
     {
-        sMyPrint("Flash¶ÁÈ¡Íê³É.µØÖ·0x%08X,´óĞ¡%zu. :\r\n", addr, size);
+        sMyPrint("Flashè¯»å–å®Œæˆ.åœ°å€0x%08X,å¤§å°%zu. :\r\n", addr, size);
         sMyPrint("Offset (h) 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\r\n");
         for (int i = 0; i < size; i++)
         {
@@ -329,18 +329,18 @@ void sfud_spi_test_demo(void)
         sMyPrint("\r\n");
     }
     else
-        sMyPrint("Flash¶ÁÈ¡Ê§°Ü.\r\n");
+        sMyPrint("Flashè¯»å–å¤±è´¥.\r\n");
     
     /* data check */
     for (int i = 0; i < size; i++)
     {
         if (uc_r_buf[i] != uc_w_buf[i])
         {
-            sMyPrint("Êı¾İ±È½ÏÊ§°Ü.\r\n");
+            sMyPrint("æ•°æ®æ¯”è¾ƒå¤±è´¥.\r\n");
             return;
         }
     }
-    sMyPrint("Êı¾İ±È½Ï³É¹¦.\r\n");
+    sMyPrint("æ•°æ®æ¯”è¾ƒæˆåŠŸ.\r\n");
 }
 
 #ifdef SFUD_USING_QSPI
@@ -365,10 +365,10 @@ void sfud_qspi_test_demo(void)
     /* erase test */
     ret = sfud_erase(flash, addr, size);
     if (ret == SFUD_SUCCESS)
-        sMyPrint("²Á³ı%sÍê³É.µØÖ·0x%08X.´óĞ¡%zu\r\n", flash->name, addr, size);
+        sMyPrint("æ“¦é™¤%så®Œæˆ.åœ°å€0x%08X.å¤§å°%zu\r\n", flash->name, addr, size);
     else
     {
-        sMyPrint("²Á³ı%sÊ§°Ü.\r\n", flash->name);
+        sMyPrint("æ“¦é™¤%så¤±è´¥.\r\n", flash->name);
         return;
     }
     /* write test */
@@ -376,17 +376,17 @@ void sfud_qspi_test_demo(void)
 	ret = sfud_write(flash, addr, 200, &uc_w_buf[addr]); addr +=200;
 	ret = sfud_write(flash, addr, 112, &uc_w_buf[addr]); addr = 0;
     if (ret == SFUD_SUCCESS)
-        sMyPrint("%s  FlashĞ´ÈëÍê³É.µØÖ·0x%08X.´óĞ¡%zu.\r\n", flash->name, addr, size);
+        sMyPrint("%s  Flashå†™å…¥å®Œæˆ.åœ°å€0x%08X.å¤§å°%zu.\r\n", flash->name, addr, size);
     else
     {
-        sMyPrint("%s  FlashĞ´ÈëÊ§°Ü.\r\n", flash->name);
+        sMyPrint("%s  Flashå†™å…¥å¤±è´¥.\r\n", flash->name);
         return;
     }
     /* read test */
     ret = sfud_read(flash, addr, size, uc_r_buf);
     if (ret == SFUD_SUCCESS)
     {
-        sMyPrint("%s  Flash¶ÁÈ¡Íê³É.µØÖ·0x%08X,´óĞ¡%zu. :\r\n", flash->name, addr, size);
+        sMyPrint("%s  Flashè¯»å–å®Œæˆ.åœ°å€0x%08X,å¤§å°%zu. :\r\n", flash->name, addr, size);
         sMyPrint("Offset (h) 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\r\n");
         for (int i = 0; i < size; i++)
         {
@@ -404,18 +404,18 @@ void sfud_qspi_test_demo(void)
         sMyPrint("\r\n");
     }
     else
-        sMyPrint("%s  Flash¶ÁÈ¡Ê§°Ü.\r\n", flash->name);
+        sMyPrint("%s  Flashè¯»å–å¤±è´¥.\r\n", flash->name);
     
     /* data check */
     for (int i = 0; i < size; i++)
     {
         if (uc_r_buf[i] != uc_w_buf[i])
         {
-            sMyPrint("Êı¾İ±È½ÏÊ§°Ü.\r\n");
+            sMyPrint("æ•°æ®æ¯”è¾ƒå¤±è´¥.\r\n");
             return;
         }
     }
-    sMyPrint("Êı¾İ±È½Ï³É¹¦.\r\n");
+    sMyPrint("æ•°æ®æ¯”è¾ƒæˆåŠŸ.\r\n");
 }
 #endif  //SFUD_USING_QSPI
 #endif  //FLASH_DEBUG

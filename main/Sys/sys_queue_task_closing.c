@@ -1,6 +1,6 @@
 /*****************************************************************************************************************
 *                                                                                                                *
- *                                         ÏµÍ³µÄ¶ÓÁĞº¯Êı                                                  		*
+ *                                         ç³»ç»Ÿçš„é˜Ÿåˆ—å‡½æ•°                                                  		*
 *                                                                                                                *
 ******************************************************************************************************************/
 #include "Sys/sys_queue_task.h"
@@ -15,14 +15,14 @@
 #include "MD_Bms/md_bms_task.h"
 #endif  //boardBMS_IFACE
 
-#define     	sysTASK_CLOSE_CYCLE_TIME					10 //ÈÎÎñÊ±¼ä
+#define     	sysTASK_CLOSE_CYCLE_TIME					10 //ä»»åŠ¡æ—¶é—´
 
 /***********************************************************************************************************************
------º¯Êı¹¦ÄÜ    ÏµÍ³¹Ø±ÕÖĞ
------ËµÃ÷(±¸×¢)  none
------´«Èë²ÎÊı    none
------Êä³ö²ÎÊı    none
------·µ»ØÖµ      none
+-----å‡½æ•°åŠŸèƒ½    ç³»ç»Ÿå…³é—­ä¸­
+-----è¯´æ˜(å¤‡æ³¨)  none
+-----ä¼ å…¥å‚æ•°    none
+-----è¾“å‡ºå‚æ•°    none
+-----è¿”å›å€¼      none
 ************************************************************************************************************************/  
 void v_sys_queue_task_closing(Task_T *tp_task)
 {
@@ -36,99 +36,99 @@ void v_sys_queue_task_closing(Task_T *tp_task)
 	
     switch (tp_task->ucStep)
     {
-		//************************************²½Öè0:³õÊ¼»¯**********************************************
+		//************************************æ­¥éª¤0:åˆå§‹åŒ–**********************************************
 		case 0:
 		{
 			bSys_SetDevState(DS_CLOSING,true);
-			cQueue_GotoStep( tp_task, STEP_NEXT );  //ÏÂÒ»²½
+			cQueue_GotoStep( tp_task, STEP_NEXT );  //ä¸‹ä¸€æ­¥
 		}break ;
 		
 		
-		//************************************²½Öè1:³õÊ¼»¯Äæ±ä²ÎÊı**********************************************
+		//************************************æ­¥éª¤1:åˆå§‹åŒ–é€†å˜å‚æ•°**********************************************
 		case 1:
 		{
-			cQueue_GotoStep( tp_task, STEP_NEXT );  //ÏÂÒ»²½
+			cQueue_GotoStep( tp_task, STEP_NEXT );  //ä¸‹ä¸€æ­¥
 			
-			//µÈ´ı³¬Ê±ÏÂÒ»²½
+			//ç­‰å¾…è¶…æ—¶ä¸‹ä¸€æ­¥
 			tp_task->usStepWaitCnt++;
 			if(tp_task->usStepWaitCnt >= 3)
 			{
 				tp_task->usStepWaitCnt = 0;
-				cQueue_GotoStep( tp_task, STEP_NEXT );  //ÏÂÒ»²½
+				cQueue_GotoStep( tp_task, STEP_NEXT );  //ä¸‹ä¸€æ­¥
 				
 				if(uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) 
-					log_w("bSysTask:¹Ø±ÕÏµÍ³µÈ´ı³¬Ê±");
+					log_w("bSysTask:å…³é—­ç³»ç»Ÿç­‰å¾…è¶…æ—¶");
 			}
 		}
 		break ;
 		
-		//************************************²½Öè3:µÈ´ıÉè±¸¹Ø±Õ**********************************************
+		//************************************æ­¥éª¤3:ç­‰å¾…è®¾å¤‡å…³é—­**********************************************
 		case 2:
 		{
-			// if(bSys_CheckActState() == false )  //µÈ´ı¹Ø±Õ tSysInfo.uInit.tFinish.bIF_DcacTask == 1
+			// if(bSys_CheckActState() == false )  //ç­‰å¾…å…³é—­ tSysInfo.uInit.tFinish.bIF_DcacTask == 1
 			{
-				cQueue_GotoStep( tp_task, STEP_NEXT );  //ÏÂÒ»²½
+				cQueue_GotoStep( tp_task, STEP_NEXT );  //ä¸‹ä¸€æ­¥
 				break;
 			}				
 
-			//µÈ´ı³¬Ê±ÏÂÒ»²½
+			//ç­‰å¾…è¶…æ—¶ä¸‹ä¸€æ­¥
 			tp_task->usStepWaitCnt++;
 			if(tp_task->usStepWaitCnt >= (5000 / sysTASK_CLOSE_CYCLE_TIME))
 			{
 				tp_task->usStepWaitCnt = 0;
-				cQueue_GotoStep( tp_task, STEP_NEXT );  //ÏÂÒ»²½
+				cQueue_GotoStep( tp_task, STEP_NEXT );  //ä¸‹ä¸€æ­¥
 				
 				if(uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) 
-					log_w("bSysTask:µÈ´ıÉè±¸¹Ø±Õ³¬Ê±,Ç¿ÖÆ¹Ø±Õ");
+					log_w("bSysTask:ç­‰å¾…è®¾å¤‡å…³é—­è¶…æ—¶,å¼ºåˆ¶å…³é—­");
 			}
 		}
 		break ;
 		
-		//************************************²½Öè1:¿ªÆôBMS**********************************************
+		//************************************æ­¥éª¤1:å¼€å¯BMS**********************************************
 		case 3:
 		{
 			#if(boardBMS_IFACE)
-			if(cBms_Switch(SO_KEY, ST_OFF, false) < 0)  //²Ù×÷Ê§°Ü
+			if(cBms_Switch(SO_KEY, ST_OFF, false) < 0)  //æ“ä½œå¤±è´¥
 			{
 				if(uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) 
-					sMyPrint("bSysTask:¹Ø±ÕBMSÊ§°Ü\r\n");
+					sMyPrint("bSysTask:å…³é—­BMSå¤±è´¥\r\n");
 				
 				vTaskDelay(500);
 				break;
 			}
 			#endif  //boardBMS_IFACE
 			
-			cQueue_GotoStep( tp_task, STEP_NEXT );  //ÏÂÒ»²½
+			cQueue_GotoStep( tp_task, STEP_NEXT );  //ä¸‹ä¸€æ­¥
 		}break ;
 		
-		//************************************²½Öè2:µÈ´ıBMS¿ªÆô**********************************************
+		//************************************æ­¥éª¤2:ç­‰å¾…BMSå¼€å¯**********************************************
 		case 4:
 		{
 			#if(boardBMS_IFACE)
 			if(tBms.eDevState == DS_SHUT_DOWN)
 			#endif  //boardBMS_IFACE
 			{
-				cQueue_GotoStep(tp_task, STEP_NEXT);  //ÏÂÒ»²½
+				cQueue_GotoStep(tp_task, STEP_NEXT);  //ä¸‹ä¸€æ­¥
 			}	
 
-			//µÈ´ı³¬Ê±ÖØĞÂ´ÓµÚÒ»²½¿ªÊ¼
+			//ç­‰å¾…è¶…æ—¶é‡æ–°ä»ç¬¬ä¸€æ­¥å¼€å§‹
 			tp_task->usStepWaitCnt++;
 			if(tp_task->usStepWaitCnt >= (5000 / sysTASK_CLOSE_CYCLE_TIME))
 			{
 				tp_task->usStepWaitCnt = 0;
-				cQueue_GotoStep(tp_task, STEP_FORWARD);  //ÉÏÒ»²½
+				cQueue_GotoStep(tp_task, STEP_FORWARD);  //ä¸Šä¸€æ­¥
 				
 				if(uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) 
-					sMyPrint("bSysTask:µÈ´ıBMS¹Ø±ÕÍê³É³¬Ê±\r\n");
+					sMyPrint("bSysTask:ç­‰å¾…BMSå…³é—­å®Œæˆè¶…æ—¶\r\n");
 			}
 		}break ;
 		
-		//************************************²½Öè4:¹Ø±ÕÍê³É**********************************************
+		//************************************æ­¥éª¤4:å…³é—­å®Œæˆ**********************************************
 		case 5:
 		{
 			bSys_SetDevState(DS_SHUT_DOWN, false);
 			
-			cQueue_GotoStep( tp_task, STEP_END );  //½áÊø
+			cQueue_GotoStep( tp_task, STEP_END );  //ç»“æŸ
 		}
 		break ;
 		
@@ -137,14 +137,14 @@ void v_sys_queue_task_closing(Task_T *tp_task)
 			break;
     }
 	
-	//³õÊ¼»¯µÈ´ı10S,³¬Ê±ÍË³ö
+	//åˆå§‹åŒ–ç­‰å¾…10S,è¶…æ—¶é€€å‡º
 	tp_task->usTaskWaitCnt++;
 	if(tp_task->usTaskWaitCnt > (10000/sysTASK_CLOSE_CYCLE_TIME) && tp_task->ucStep != STEP_END)
 	{
 		
 		bSys_SetErrCode(SEC_COLSE_FAULT, true);
 
-		cQueue_GotoStep( tp_task, STEP_END );  //½áÊø
+		cQueue_GotoStep( tp_task, STEP_END );  //ç»“æŸ
 	}
 	
 	vTaskDelay(sysTASK_CLOSE_CYCLE_TIME);
