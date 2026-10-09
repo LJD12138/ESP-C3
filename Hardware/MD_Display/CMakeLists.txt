@@ -1,6 +1,6 @@
-# MD_Display CMakeLists.txt - ST7789 + FT6336 版本
+# MD_Display CMakeLists.txt - ST7789 + FT6336 鐗堟湰
 
-# 明确列出所有源文件
+# 鏄庣‘鍒楀嚭鎵�鏈夋簮鏂囦欢
 set(SRCS
     "lvgl_ui.c"
     "md_display_task.c"
@@ -9,7 +9,7 @@ set(SRCS
     "lv_port_disp.c"
     "lv_port_indev.c"
 )
-# 包含 ui 目录下的所有源文件
+# 鍖呭惈 ui 鐩綍涓嬬殑鎵�鏈夋簮鏂囦欢
 file(GLOB UI_SRCS "ui/*.c")
 
 set(SRCS ${SRCS} ${UI_SRCS})

@@ -12,19 +12,11 @@
 extern	TimerHandle_t 	tConsoleRxEnTimer; 	//单次定时器
 #endif
 
-#if(boardMPPT_485_IFACE_EN)
-extern TimerHandle_t 	tMpptRxEnTimer; //单次定时器
-#endif
-
 #if(boardPRINT_485_IFACE_EN)
 extern TimerHandle_t 	tPrintRxEnTimer; //单次定时器
 #endif
 
 extern TimerHandle_t 	tWakeUpBmsTimer;
-
-#if(boardDCAC_485_IFACE_EN)
-extern TimerHandle_t 	tDcacRxEnTimer;
-#endif
 
 extern TimerHandle_t 	tRepetTimer;   //重复定时器  repetition
 

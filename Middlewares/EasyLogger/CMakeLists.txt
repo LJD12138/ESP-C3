@@ -1,18 +1,18 @@
-# EasyLogger×é¼þCMakeLists.txt
-# ¹¦ÄÜ£º³¬ÇáÁ¿¼¶¡¢¸ßÐÔÄÜµÄC/C++ÈÕÖ¾¿â
+# EasyLoggerç»„ä»¶CMakeLists.txt
+# åŠŸèƒ½ï¼šè¶…è½»é‡çº§ã€é«˜æ€§èƒ½çš„C/C++æ—¥å¿—åº“
 
-# # ÊÕ¼¯ºËÐÄÔ´ÎÄ¼þ
+# # æ”¶é›†æ ¸å¿ƒæºæ–‡ä»¶
 # file(GLOB_RECURSE EASYLOGGER_SRCS
 #     "src/*.c"
 #     "port/*.c"
 # )
 
-# # ¿ÉÑ¡£º±àÒëFlash²å¼þ
+# # å¯é€‰ï¼šç¼–è¯‘Flashæ’ä»¶
 # file(GLOB EASYLOGGER_FLASH_SRCS
 #     "plugins/flash/*.c"
 # )
 
-# # ¿ÉÑ¡£º±àÒëFile²å¼þ
+# # å¯é€‰ï¼šç¼–è¯‘Fileæ’ä»¶
 # file(GLOB EASYLOGGER_FILE_SRCS
 #     "plugins/file/*.c"
 # )

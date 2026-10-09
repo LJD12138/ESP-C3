@@ -113,7 +113,6 @@ void v_sys_queue_task_init(Task_T *tp_task)
 				cQueue_GotoStep(tp_task, STEP_NEXT);
 			// else if(bSys_ExistInVolt() == true)
 			// {
-			// 	bSys_ChgWakeUp(SO_MPPT);
 			// 	cQueue_GotoStep(tp_task, STEP_NEXT);
 			// }
 			// else if(tAdcSamp.usSysInVolt > 200 && tBms.eDevState == DS_LOST)  //10V 0.1V
@@ -122,7 +121,6 @@ void v_sys_queue_task_init(Task_T *tp_task)
 			// 	tp_task->usStepWaitCnt++;
 			// 	if(tp_task->usStepWaitCnt > (5000 / sysTASK_INIT_CYCLE_TIME))
 			// 	{
-			// 		bSys_ChgWakeUp(SO_MPPT);
 			// 		cQueue_GotoStep(tp_task, STEP_NEXT);
 			// 	}
 			// 	else 
@@ -139,8 +137,6 @@ void v_sys_queue_task_init(Task_T *tp_task)
 		{
 			if(bKey_AcIsPress() == false &&  //工厂模式
 				bKey_PowerIsPress() == true &&
-				bKey_UsbIsPress() == false &&
-				bKey_DcIsPress() == false &&
 				bKey_LightIsPress() == false)
 			{
 				if(uc_tri_type != 2)
@@ -151,25 +147,8 @@ void v_sys_queue_task_init(Task_T *tp_task)
 				
 				tp_task->usStepWaitCnt++;
 			}
-			#if(boardENG_MODE_EN)  //工程模式
-			else if(bKey_AcIsPress() == false &&
-				bKey_PowerIsPress() == true &&
-				bKey_UsbIsPress() == false &&
-				bKey_DcIsPress() == true &&
-				bKey_LightIsPress() == false)
-			{
-				if(uc_tri_type != 1)
-				{
-					uc_tri_type = 1;
-					tp_task->usStepWaitCnt = 0;
-				}
-				
-				tp_task->usStepWaitCnt++;
-			}
-			#endif
 			else if(tSysInfo.uInit.tFinish.bIF_BmsTask ||
-					tSysInfo.uInit.tFinish.bIF_DispTask
-					)//tSysInfo.uInit.tFinish.bIF_UsbTask
+					tSysInfo.uInit.tFinish.bIF_DispTask)
 			{
 				uc_tri_type = 0;
 				tp_task->usStepWaitCnt = 0;

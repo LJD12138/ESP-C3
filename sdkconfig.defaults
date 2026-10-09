@@ -1,0 +1,13 @@
+# ESP32-C3 (G02) 项目默认配置
+# 说明：本文件用于在 sdkconfig 被重新生成时保留关键选项。
+#       与 main/board_config.h 的 boardHEALTH_MONITOR_EN(健康监控巡检) 配套。
+# ---------------------------------------------------------------
+
+# 健康巡检(HealthTask)依赖：
+#   USE_IDLE_HOOK        -> vApplicationIdleHook 空闲循环计数(CPU 占用率自学习基准)
+#   GENERATE_RUN_TIME_STATS -> uxTaskGetSystemState/vTaskList/vTaskGetRunTimeStats
+#                              (该选项会自动选中 USE_TRACE_FACILITY 与
+#                               USE_STATS_FORMATTING_FUNCTIONS)
+CONFIG_FREERTOS_USE_IDLE_HOOK=y
+CONFIG_FREERTOS_USE_TRACE_FACILITY=y
+CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS=y

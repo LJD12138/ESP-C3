@@ -11,10 +11,6 @@
 #include "Print/print_task.h"
 #include "Adc/adc_task.h"
 #include "Buz/buz_task.h"
-#include "UsbDevice/usb_task.h"
-#include "Dc/dc_task.h"
-#include "MD_Light/md_light_task.h"
-#include "MD_HeatManage/md_hm_task.h"
 #include "..\..\BOOT\Application\flash_allot_table.h"
 
 #include "app_info.h"
@@ -76,27 +72,7 @@ void v_sys_queue_task_eng(Task_T *tp_task)
 			
 		}break;
 		
-		case EMS_MPPT:
-		{
-			
-		}break;
-		
-		case EMS_DCAC:
-		{
-			
-		}break;
-		
 		case EMS_ADC:
-		{
-			
-		}break;
-		
-		case EMS_USB:
-		{
-			
-		}break;
-		
-		case EMS_DC:
 		{
 			
 		}break;

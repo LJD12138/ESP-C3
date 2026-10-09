@@ -101,7 +101,7 @@ void v_sys_queue_task_err(Task_T *tp_task)
 		// //************************************步骤3:充电开机**************************************************
 		// case 3:
 		// {
-		// 	cSys_Switch(SO_MPPT, ST_ON, false); //开机
+		// 	cSys_Switch(SO_KEY, ST_ON, false); //开机
 		// 	if(uPrint.tFlag.bSysTask)
 		// 		sMyPrint("bSysTask:开启充电唤醒\r\n");
 

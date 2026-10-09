@@ -1,5 +1,5 @@
-# Print组件CMakeLists.txt
-# 功能：打印任务和通信协议处理组件
+# Print缁勪欢CMakeLists.txt
+# 鍔熻兘锛氭墦鍗颁换鍔″拰閫氫俊鍗忚澶勭悊缁勪欢
 
 idf_component_register(
     SRCS
@@ -20,5 +20,6 @@ idf_component_register(
         freertos
         main
         ComFunc
+        TaskQueue
         Protocol
 )

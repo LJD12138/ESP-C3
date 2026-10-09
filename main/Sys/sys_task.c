@@ -8,17 +8,9 @@
 #include "Print/print_task.h"
 // #include "Adc/adc_task.h"
 // #include "Buz/buz_task.h"
-#include "UsbDevice/usb_task.h"
-// #include "Dc/dc_task.h"
 #include "Key/key_task.h"
 // #include "Updata/updata_task.h"
 #include "MD_Display/md_display_task.h"
-#include "MD_Light/md_light_task.h"
-
-#include "MD_Mppt/md_mppt_task.h"
-#include "MD_Mppt/md_mppt_rec_task.h"
-#include "MD_Dcac/md_dcac_task.h"
-#include "MD_Dcac/md_dcac_rec_task.h"
 // #include "flash_allot_table.h"
 
 #include "gpio_init.h"
@@ -192,18 +184,6 @@ static void v_sys_check_prote(void)
 	s16 s_min_temp = 0;
 	
 	tSysInfo.sBoardTempMax = 25;
-	if(tUsb.eDevState >= DS_WORK)
-		tSysInfo.sBoardTempMax = MAX2(tSysInfo.sBoardTempMax, tUsb.sMaxTemp);
-	// if(tDc.eDevState >= DS_WORK)
-	// 	tSysInfo.sBoardTempMax = MAX2(tSysInfo.sBoardTempMax, tDc.sMaxTemp);
-
-	#if(boardMPPT_IFACE)
-	s_max_temp = MAX2(s_max_temp, tMppt.sMaxTemp);
-	#endif  //boardMPPT_IFACE
-
-	#if(boardDCAC_IFACE)
-	s_max_temp = MAX2(s_max_temp, tDcac.sMaxTemp);
-	#endif  //boardDCAC_IFACE
 
 	#if(boardBMS_IFACE)
 	s_max_temp = MAX2(s_max_temp, tBms.sMaxTemp);
@@ -267,13 +247,10 @@ static void v_sys_check_prote(void)
 	if(
 	   #if(boardBMS_IFACE)
 	   tBms.uErrCode.tCode.bSysChgOT == 1     ||
-	   tBms.uErrCode.tCode.bSysDisChgOT == 1  ||
+	   tBms.uErrCode.tCode.bSysDisChgOT == 1
+	   #else
+	   0
 	   #endif  //boardBMS_IFACE
-    //    tDc.uErrCode.tCode.bOT == 1            		||
-       tUsb.uErrCode.tCode.bOT == 1	
-	   #if(boardDCAC_IFACE)
-	   || tDcac.uErrCode.tCode.bSysOT == 1
-	   #endif  //boardDCAC_IFACE
 	  )
 	{
 		if(tSysInfo.uErrCode.tCode.bOT == 0)
@@ -306,14 +283,8 @@ static void v_sys_check_prote(void)
 	}
 	
 	//-----------------------------------------系统过载保护---------------------------------------------------
-	if( 
-		#if(boardDCAC_IFACE)
-		bDcac_GetOverLoadState() == true
-		#else
-		0
-		#endif
-	    // || tDc.uErrCode.tCode.bOL == 1
-	  )
+	//过载信号原由DCAC模块提供,DCAC模块已移除,暂判定为无过载
+	if(0)
 	{
 		if(tSysInfo.uErrCode.tCode.bOL == 0)
 			bSys_SetErrCode(SEC_OL, true);
@@ -688,10 +659,7 @@ bool bSys_SetDevState(DevState_E state, bool bz)
 ************************************************************************************************************************/
 bool bSys_CheckActState(void)
 {
-	if( tUsb.eDevState		>= DS_BOOTING	||  //USB工作
-	    tLight.eDevState	>= DS_WORK		||	//照明工作
-	    // tDc.eDevState		>= DS_BOOTING	||	//DC工作
-		bSys_IsChgState()	== true			||	//充电状态
+	if( bSys_IsChgState()	== true			||	//充电状态
 		tSysInfo.usOutPwr	>  0			||	//处于放电
 		bSys_ExistInVolt()	== true				//还插着电
 	   )
@@ -713,19 +681,8 @@ bool bSys_CheckActState(void)
 ************************************************************************************************************************/
 bool bSys_ExistInVolt(void)
 {
-	if( 
-		#if(boardDCAC_IFACE)
-		tDcacRx.usInVolt > tAppMemParam.tDCAC.usMinInVolt
-		#endif  //boardDCAC_IFACE
-
-		#if(boardMPPT_IFACE)
-		|| tMpptRx.usInVolt > tAppMemParam.tMPPT.usMinInVolt
-		#endif  //boardMPPT_IFACE
-
-		#if(!boardMPPT_IFACE && !boardDCAC_IFACE)
-		0
-		#endif  //boardMPPT_IFACE
-	)
+	//输入电压检测原由DCAC/MPPT模块提供,模块已移除,暂判定为无输入电压
+	if(0)
 	{
 		return true;
 	}
@@ -744,19 +701,8 @@ bool bSys_ExistInVolt(void)
 ************************************************************************************************************************/
 bool bSys_IsChgState(void)
 {
-	if( 
-		#if(boardDCAC_IFACE)
-		tDcac.eChgState >= IOS_STARTING		//逆变充电
-		#endif  //boardDCAC_IFACE
-
-		#if(boardMPPT_IFACE)
-	    || tMppt.eDevState >= DS_BOOTING	//MPPT工作
-		#endif  //boardMPPT_IFACE
-
-		#if(!boardMPPT_IFACE && !boardDCAC_IFACE)
-		0
-		#endif  //boardMPPT_IFACE
-	   )
+	//充电状态原由DCAC/MPPT模块提供,模块已移除,暂判定为未充电
+	if(0)
 	{
 		return true;
 	}
@@ -934,7 +880,7 @@ s8 cSys_Switch(SwitchObject_E obj,SwitchType_E type, bool fore_en)
 /*****************************************************************************************************************
 -----函数功能    初始化参数
 -----说明(备注)  none
------传入参数    p_dcac_mem : 记忆参数结构体
+-----传入参数    p_sys_mem : 记忆参数结构体
 -----输出参数    none
 -----返回值      true:设置成功  反之失败
 *****************************************************************************************************************/

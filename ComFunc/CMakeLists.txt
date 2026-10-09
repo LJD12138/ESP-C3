@@ -1,5 +1,5 @@
-# ComFunc×é¼şCMakeLists.txt
-# ¹¦ÄÜ£ºÍ¨ÓÃ¹¦ÄÜ×é¼ş£¨I2C¡¢Ğ£Ñé¡¢¹ıÂË¡¢º¯Êı¡¢¶ÓÁĞÈÎÎñ£©
+# ComFuncç»„ä»¶CMakeLists.txt
+# åŠŸèƒ½ï¼šé€šç”¨åŠŸèƒ½ç»„ä»¶ï¼ˆI2Cã€æ ¡éªŒã€è¿‡æ»¤ã€å‡½æ•°ã€é˜Ÿåˆ—ä»»åŠ¡ï¼‰
 
 idf_component_register(
     SRCS
@@ -8,7 +8,6 @@ idf_component_register(
         "check.c"
         "filtration.c"
         "function.c"
-        "queue_task.c"
     INCLUDE_DIRS
         "."
         "../Middlewares/LightweightRingBuffer"
@@ -17,5 +16,6 @@ idf_component_register(
         freertos
         LightweightRingBuffer
         driver
-        main
 )
+# è¯´æ˜ï¼šmain.h é€šè¿‡ INCLUDE_DIRS("../main") æä¾›,ä¸æ”¾å…¥ REQUIRES,
+#       é¿å… main <-> ComFunc å¾ªç¯ä¾èµ–å¯¼è‡´é“¾æ¥é¡ºåºé”™ä¹±

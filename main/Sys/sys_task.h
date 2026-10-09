@@ -11,20 +11,6 @@
 #endif  //boardUSE_OS
 
 
-//充电功率等级(总的,PV+AC)
-#define  		sysCHG_PWR_LEVEL1              		400
-#define  		sysCHG_PWR_LEVEL2              		900
-//0-100;1-110;2-120;3-220;4-230;5-240
-#if(boardDCAC_VOLT_TYPE==0)	//110V
-#define  		sysCHG_PWR_LEVEL3              		1500	
-#elif(boardDCAC_VOLT_TYPE==3) //230V
-#define  		sysCHG_PWR_LEVEL3              		1800
-#else
-#error "DCAC类型定义有误"
-#endif
-#define  		sysCHG_PWR_LEVEL4              		3000
-
-
 //#define		//4Tab									//10Tab
 #define 		bmsDEV_NUM								6
 extern 			bool 									G_TestMode;
@@ -81,16 +67,8 @@ typedef union
 		
 		u16 			bIF_Print:1;
 		u16 			bIF_SysInit:1;
-		u16 			bIF_MpptTask:1;
-		u16 			bIF_MpptProc:1;
-		
 		u16 			bIF_BmsTask:1;
 		u16 			bIF_BmsProt:1;
-		u16 			bIF_DcacTask:1;
-		u16 			bIF_DcacProt:1;
-		
-		u16 			bIF_UsbTask:1;
-		u16 			bIF_DcTask:1;
 		u16 			bIF_DispTask:1;
 	}tFinish;
 	u16 State;
@@ -118,6 +96,7 @@ typedef enum : uint8_t
 	SEC_0_SOC,			//0%SOC
 	SEC_COLSE_FAULT,	//关闭失败
 	SEC_BOOT_FAULT,		//开启失败
+	SEC_TASK_FAULT,		//任务初始化/创建失败
 }SysErrCode_E;
 
 #pragma pack(1)
@@ -133,18 +112,10 @@ typedef union
 		u16 			b0SOC :1;
 		u16 			bCloseFault :1;
 		u16 			bBootFault :1;
+		u16 			bTaskFault :1;		//任务初始化/创建失败
 	}tCode;
 	u16 usCode;
 }SysErrCode_U;
-#pragma pack()
-
-//*********************************充电功率**********************************
-#pragma pack(1)
-typedef struct
-{
-	vu16              	usMPPT;
-	vu16              	usDCAC;
-}SysChgPwr_T;  
 #pragma pack()
 
 //*********************************任务对象**********************************
@@ -157,7 +128,6 @@ typedef struct
 	Perm_U              uPerm;				//许可
 	InitFinish_U     	uInit;              //初始化完成
 	SysPowerType_E   	ePowerType;         //系统供电类型
-	SysChgPwr_T			tSetChgPwr;			//充电功率
     vu16             	usAutoOffCnt;       //自动关闭计时
 	vu16             	usAutoOffTime;      //自动关闭时间  0为关闭此功能
 	vu16             	usNeedSleepCnt;     //需要休眠计时

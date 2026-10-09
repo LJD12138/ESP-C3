@@ -15,7 +15,7 @@ __ALIGNED(4) 	Task_T *tpSysTask = NULL;  	//队列任务
 
 //****************************************************函数声明****************************************************//
 static bool b_task_manage_func_cb(Task_T *tp_task);
-static void v_add_task_return_func_cb(u8 num);
+static void v_add_task_return_func_cb(Task_T *p_task, u8 num);
 
 /***********************************************************************************************************************
 -----函数功能    任务参数初始化
@@ -27,7 +27,7 @@ static void v_add_task_return_func_cb(u8 num);
 bool bSys_QueueInit(void)
 {
 	//任务队列初始化
-	if(cQueue_TaskInit(&tpSysTask, 8, b_task_manage_func_cb, v_add_task_return_func_cb) <= 0)
+	if(cQueue_TaskInit(&tpSysTask, 8, 0, b_task_manage_func_cb, v_add_task_return_func_cb) <= 0)
 	{
 		if(uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant)
 			log_e("bSysTask:tpSysTask任务对象初始化失败");
@@ -181,7 +181,7 @@ static bool b_task_manage_func_cb(Task_T *tp_task)
     return true;       
 }
 
-static void v_add_task_return_func_cb(u8 num)
+static void v_add_task_return_func_cb(Task_T *p_task, u8 num)
 {
 	switch(num)
 	{

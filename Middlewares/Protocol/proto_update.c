@@ -1,0 +1,123 @@
+/*******************************************************************************************************************************
+ * Project : APP
+ * Module  : APP\Middlewares\Protocol
+ * File    : proto_update.c
+ * Date    : 2026-03-13
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : 升级协议帧解析
+ * -------------------------------------------------------
+ * todo    :
+ * 1. 无
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
+ *******************************************************************************************************************************/
+
+
+//****************************************************Includes******************************************************************//
+#include "proto_update.h"
+
+#include <string.h>
+
+#if(boardUSE_OS)
+#include "freertos/freertos.h"
+#include "freertos/task.h"
+#endif
+
+#if(boardUPDATE)
+#include "Sys/sys_queue_task_update.h"
+#if(boardBMS_EN)
+#include "MD_Bms/md_bms_task.h"
+#include "MD_Bms/md_bms_prot_frame.h"
+#endif
+
+#include "Print/print_prot_frame.h"
+
+//****************************************************Macros********************************************************************//
+#define			UPDATE_BUFF_SIZE						256		/* 需兼容Megmeet升级帧(文件头56B/数据包236B)及Baiku大数据帧 */
+
+
+//****************************************************Parameter Initialization**************************************************//
+
+
+
+//****************************************************Function Declaration******************************************************//
+
+
+
+
+
+
+/***********************************************************************************************************************
+ * 函数功能    : 解析协议
+ * 说明(备注)  : none
+ * 传入参数    : FrameInf协议的结构体
+ * 输出参数    : none
+ * 返回值      : 小于0:操作失败   等于0:没操作    大于0:操作成功
+ ************************************************************************************************************************/
+s8 cUpdate_ProtoCheck(lwrb_t* proto_buff)
+{
+	s8 c_ret = 0;
+	
+    if(proto_buff == NULL)
+        return -1;
+
+    //获取数据长度
+	vu16 us_char_len = lwrb_get_full(proto_buff);
+
+	if(us_char_len == 0)
+		return 0;
+
+	if(us_char_len > UPDATE_BUFF_SIZE)
+		return -2;
+
+    u8 uca_buff[UPDATE_BUFF_SIZE];
+
+    //Xmodem
+	if(us_char_len == 1)
+	{
+		lwrb_read(proto_buff, uca_buff, us_char_len);
+		u8 index = uca_buff[0];
+		switch(index)
+		{
+			case XMODEM_FRM_FLAG_ACK:
+			{
+				tUpdate.usRecFrameCnt++;
+			}
+			break;
+			
+			case XMODEM_FRM_FLAG_NAK:
+			{
+				tUpdate.usRecFrameCnt = 0;
+			}
+			break;
+
+			//取消
+			case XMODEM_FRM_FLAG_CAN:
+			{
+				tUpdate.usRecFrameCnt = 0;
+			}
+			break;
+			
+			default:
+			{
+			}
+			break;
+		}
+		c_print_info_trans(uca_buff, us_char_len);
+		return PT_XMODEM;
+	}
+    //BMS Baiku协议
+	else if(tBms.eDevState == DS_UPDATE_MODE)
+	{
+		if(tpBmsProtoRx == NULL || (us_char_len > tpBmsProtoRx->tRxBuff.size))
+			return -3;
+
+		lwrb_read(proto_buff, uca_buff, us_char_len);
+		c_ret = cBaiku_UpdateCheck(tpBmsProtoRx, uca_buff, us_char_len);
+		
+		if(c_ret > 0)
+			return PT_BAIKU;
+	}
+    return PT_NULL;
+}
+#endif  //boardUPDATE

@@ -26,11 +26,7 @@ const char tAppVerInfoStr[]		= "tAppVerInfo";
 const char tAppParamStr[] 		= "tAppParam";
 const char tAppVerAndParamStr[]	= "tAppVerAndParam";
 const char tDispMemParamStr[]	= "tDISP";
-const char tDcMemParamStr[]		= "tDC";
-const char tUsbMemParamStr[]	= "tUSB";
 const char tBmsMemParamStr[]	= "tBMS";
-const char tMpptMemParamStr[]	= "tMPPT";
-const char tDcacMemParamStr[]	= "tDCAC";
 const char tSysMemParamStr[]	= "tSYS";
 
 //把版本信息写入APP的Falsh中,要加偏移,flashAPP_START是NVIC中断向量表
@@ -52,8 +48,6 @@ const __attribute__((at(flashAPP_START + FLASH_PAGE_SIZE)))  VerInfo_T tAppDefau
 const ef_env default_env_set[] = {
 	{(char*)tAppVerInfoStr, (u8*)&tAppDefaultVer, sizeof(tAppDefaultVer)},
     {(char*)tAppParamStr,&tAppMemParam.tParam, sizeof(tAppMemParam.tParam)},
-    {(char*)tDcMemParamStr,&tAppMemParam.tDC, sizeof(tAppMemParam.tDC)},
-	{(char*)tMpptMemParamStr,&tAppMemParam.tMPPT, sizeof(tAppMemParam.tMPPT)},
 };
 #endif
 
@@ -261,26 +255,10 @@ s8 cApp_MemParamInit(const char* id_str)
 		// //显示参数
 		// bDisp_MemParamInit(&tAppMemParam.tDISP);
 		
-		// //DC参数
-		// bDc_MemParamInit(&tAppMemParam.tDC);
-		
-		//USB参数
-		bUsb_MemParamInit(&tAppMemParam.tUSB);
-		
 		//BMS参数
 		#if(boardBMS_IFACE)
 		bBms_MemParamInit(&tAppMemParam.tBMS);
 		#endif  //boardBMS_IFACE
-
-		//MPPT参数
-		#if(boardMPPT_IFACE)
-		bMppt_MemParamInit(&tAppMemParam.tMPPT);
-		#endif  //boardMPPT_IFACE
-
-		//DCAC参数
-		#if(boardDCAC_IFACE)
-		bDcac_MemParamInit(&tAppMemParam.tDCAC);
-		#endif  //boardDCAC_IFACE
 		
 		//SYS参数
 		bSys_MemParamInit(&tAppMemParam.tSYS);
@@ -317,27 +295,11 @@ s8 cApp_MemParamInit(const char* id_str)
 	// //DISP
 	// else if (strcmp(id_str, tDispMemParamStr) == 0)
 	// 	bDisp_MemParamInit(&tAppMemParam.tDISP);
-	// //DC
-	// else if (strcmp(id_str, tDcMemParamStr) == 0)
-	// 	bDc_MemParamInit(&tAppMemParam.tDC);
-	//USB
-	else if (strcmp(id_str, tUsbMemParamStr) == 0)
-		bUsb_MemParamInit(&tAppMemParam.tUSB);
 	//BMS
 	#if(boardBMS_IFACE)
 	else if (strcmp(id_str, tBmsMemParamStr) == 0)
 		bBms_MemParamInit(&tAppMemParam.tBMS);
 	#endif  //boardBMS_IFACE
-	//MPPT
-	#if(boardMPPT_IFACE)
-	else if (strcmp(id_str, tMpptMemParamStr) == 0)
-		bMppt_MemParamInit(&tAppMemParam.tMPPT);
-	#endif  //boardMPPT_IFACE
-	//DCAC
-	#if(boardDCAC_IFACE)
-	else if (strcmp(id_str, tDcacMemParamStr) == 0)
-		bDcac_MemParamInit(&tAppMemParam.tDCAC);
-	#endif  //boardDCAC_IFACE
 	// SYS
 	else if (strcmp(id_str, tSysMemParamStr) == 0)
 		bSys_MemParamInit(&tAppMemParam.tSYS);
@@ -380,30 +342,10 @@ s16 cApp_UpdataMemParam(const char* id_str)
 		if(ef_set_env_blob(tDispMemParamStr, &tAppMemParam.tDISP, write_len) != EF_NO_ERR)
 			return -4;
 		
-		//DC参数
-		write_len = sizeof(tAppMemParam.tDC);
-		if(ef_set_env_blob(tDcMemParamStr, &tAppMemParam.tDC, write_len) != EF_NO_ERR)
-			return -5;
-		
-		//USB参数
-		write_len = sizeof(tAppMemParam.tUSB);
-		if(ef_set_env_blob(tUsbMemParamStr, &tAppMemParam.tUSB, write_len) != EF_NO_ERR)
-			return -6;
-		
 		//BMS参数
 		write_len = sizeof(tAppMemParam.tBMS);
 		if(ef_set_env_blob(tBmsMemParamStr, &tAppMemParam.tBMS, write_len) != EF_NO_ERR)
 			return -7;
-		
-		//MPPT参数
-		write_len = sizeof(tAppMemParam.tMPPT);
-		if(ef_set_env_blob(tMpptMemParamStr, &tAppMemParam.tMPPT, write_len) != EF_NO_ERR)
-			return -8;
-		
-		//DCAC参数
-		write_len = sizeof(tAppMemParam.tDCAC );
-		if(ef_set_env_blob(tDcacMemParamStr, &tAppMemParam.tDCAC, write_len) != EF_NO_ERR)
-			return -9;
 		
 		//系统参数
 		write_len = sizeof(tAppMemParam.tSYS );
@@ -444,40 +386,12 @@ s16 cApp_UpdataMemParam(const char* id_str)
 		if(ef_set_env_blob(id_str, &tAppMemParam.tDISP, write_len) != EF_NO_ERR)
 			return -24;
 	}
-	//DC参数
-	else if (strcmp(id_str, tDcMemParamStr) == 0)
-	{
-		write_len = sizeof(tAppMemParam.tDC);
-		if(ef_set_env_blob(id_str, &tAppMemParam.tDC, write_len) != EF_NO_ERR)
-			return -25;
-	}
-	//USB参数
-	else if (strcmp(id_str, tUsbMemParamStr) == 0)
-	{
-		write_len = sizeof(tAppMemParam.tUSB);
-		if(ef_set_env_blob(id_str, &tAppMemParam.tUSB, write_len) != EF_NO_ERR)
-			return -26;
-	}
 	//BMS参数
 	else if (strcmp(id_str, tBmsMemParamStr) == 0)
 	{
 		write_len = sizeof(tAppMemParam.tBMS);
 		if(ef_set_env_blob(id_str, &tAppMemParam.tBMS, write_len) != EF_NO_ERR)
 			return -27;
-	}
-	//MPPT参数
-	else if (strcmp(id_str, tMpptMemParamStr) == 0)
-	{
-		write_len = sizeof(tAppMemParam.tMPPT);
-		if(ef_set_env_blob(id_str, &tAppMemParam.tMPPT, write_len) != EF_NO_ERR)
-			return -28;
-	}
-	//DCAC参数
-	else if (strcmp(id_str, tDcacMemParamStr) == 0)
-	{
-		write_len = sizeof(tAppMemParam.tDCAC);
-		if(ef_set_env_blob(id_str, &tAppMemParam.tDCAC, write_len) != EF_NO_ERR)
-			return -29;
 	}
 	//SYS参数
 	else if (strcmp(id_str, tSysMemParamStr) == 0)
@@ -535,35 +449,11 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len != read_len)
 			return -4;
 		
-		//DC
-		read_len = sizeof(tAppMemParam.tDC);
-		return_len = ef_get_env_blob(tDcMemParamStr, &tAppMemParam.tDC, read_len, NULL);
-		if(return_len != read_len)
-			return -5;
-		
-		//USB
-		read_len = sizeof(tAppMemParam.tUSB);
-		return_len = ef_get_env_blob(tUsbMemParamStr, &tAppMemParam.tUSB, read_len, NULL);
-		if(return_len != read_len)
-			return -6;
-		
 		//BMS
 		read_len = sizeof(tAppMemParam.tBMS);
 		return_len = ef_get_env_blob(tBmsMemParamStr, &tAppMemParam.tBMS, read_len, NULL);
 		if(return_len != read_len)
 			return -7;
-		
-		//MPPT
-		read_len = sizeof(tAppMemParam.tMPPT);
-		return_len = ef_get_env_blob(tMpptMemParamStr, &tAppMemParam.tMPPT, read_len, NULL);
-		if(return_len != read_len)
-			return -8;
-		
-		//DCAC
-		read_len = sizeof(tAppMemParam.tDCAC);
-		return_len = ef_get_env_blob(tDcacMemParamStr, &tAppMemParam.tDCAC, read_len, NULL);
-		if(return_len != read_len)
-			return -9;
 		
 		//SYS
 		read_len = sizeof(tAppMemParam.tSYS);
@@ -613,43 +503,11 @@ s16 cApp_GetMemParam(const char* id_str)
 		if(return_len == 0)
 			return 0;
 	}
-	//读取DC参数
-	else if (strcmp(id_str, tDcMemParamStr) == 0)
-	{
-		read_len = sizeof(tAppMemParam.tDC);
-		return_len = ef_get_env_blob(id_str, &tAppMemParam.tDC, read_len, NULL);
-		if(return_len == 0)
-			return 0;
-	}
-	//读取USB参数
-	else if (strcmp(id_str, tUsbMemParamStr) == 0)
-	{
-		read_len = sizeof(tAppMemParam.tUSB);
-		return_len = ef_get_env_blob(id_str, &tAppMemParam.tUSB, read_len, NULL);
-		if(return_len == 0)
-			return 0;
-	}
 	//读取BMS参数
 	else if (strcmp(id_str, tBmsMemParamStr) == 0)
 	{
 		read_len = sizeof(tAppMemParam.tBMS);
 		return_len = ef_get_env_blob(id_str, &tAppMemParam.tBMS, read_len, NULL);
-		if(return_len == 0)
-			return 0;
-	}
-	//读取MPPT参数
-	else if (strcmp(id_str, tMpptMemParamStr) == 0)
-	{
-		read_len = sizeof(tAppMemParam.tMPPT);
-		return_len = ef_get_env_blob(id_str, &tAppMemParam.tMPPT, read_len, NULL);
-		if(return_len == 0)
-			return 0;
-	}
-	//读取DCAC参数
-	else if (strcmp(id_str, tDcacMemParamStr) == 0)
-	{
-		read_len = sizeof(tAppMemParam.tDCAC);
-		return_len = ef_get_env_blob(id_str, &tAppMemParam.tDCAC, read_len, NULL);
 		if(return_len == 0)
 			return 0;
 	}

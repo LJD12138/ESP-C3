@@ -12,18 +12,19 @@
 // #include "Adc/adc_task.h"
 #include "Key/key_task.h"
 // #include "Led/led_task.h"
-// #include "Dc/dc_task.h"
-#include "UsbDevice/usb_task.h"
 // #include "Buz/buz_task.h"
 #include "Flash/flash_iface.h"
-#include "MD_Light/md_light_task.h"
-#include "MD_HeatManage/md_hm_task.h"
 #include "flash_allot_table.h"
 
 
 #if(boardUSE_OS)
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#endif  //boardUSE_OS
+
+//全局临界区互斥量(供 mainENTER_CRITICAL/mainEXIT_CRITICAL 使用)
+#if(boardUSE_OS)
+portMUX_TYPE mainCriticalMux = portMUX_INITIALIZER_UNLOCKED;
 #endif  //boardUSE_OS
 
 #if(boardCM_BACKTRACE)
@@ -42,6 +43,10 @@
 #include "fwdgt.h"
 #endif  //boardWDGT_EN
 
+#if(boardUSE_OS && boardHEALTH_MONITOR_EN)
+#include "get_heapstack_task.h"
+#endif  //boardUSE_OS && boardHEALTH_MONITOR_EN
+
 #if(boardPRINT_IFACE)
 #include "Print/print_task.h"
 #include "Print/print_iface.h"
@@ -51,16 +56,6 @@
 #include "MD_Bms/md_bms_task.h"
 #include "MD_Bms/md_bms_rec_task.h"
 #endif  //boardBMS_IFACE
-
-#if(boardMPPT_IFACE)
-#include "MD_Mppt/md_mppt_task.h"
-#include "MD_Mppt/md_mppt_rec_task.h"
-#endif  //boardMPPT_IFACE
-
-#if(boardDCAC_IFACE)
-#include "MD_Dcac/md_dcac_task.h"
-#include "MD_Dcac/md_dcac_rec_task.h"
-#endif  //boardDCAC_IFACE
 
 #if(boardDISPLAY)
 #include "MD_Display/md_display_task.h"
@@ -73,10 +68,6 @@
 
 void SysParamInit(void)
 {
-	#if boardWDGT_EN
-	vFwdgt_Init();
-	#endif
-	
 	#if(boardPRINT_IFACE)
 	uPrint.tFlag.bImportant = 1;
 	uPrint.tFlag.bAppInfo   = 1;
@@ -87,13 +78,12 @@ void SysParamInit(void)
 
 	uPrint.tFlag.bBmsRecTask= 0;
 	uPrint.tFlag.bBmsTask   = 1;
-	uPrint.tFlag.bDcacTask  = 1;
-	uPrint.tFlag.bDcacRecTask= 1;
-	uPrint.tFlag.bMpptTask  = 1;
-	uPrint.tFlag.bMpptRecTask= 1;
-	uPrint.tFlag.bUsbTask   = 1;
-	uPrint.tFlag.bDcTask    = 0;
 	uPrint.tFlag.bDispTask   = 0;
+	
+	#if(boardHEALTH_MONITOR_EN)
+	uPrint.tFlag.bHealthTask = 1;	//健康巡检遥测(CPU/队列/栈/堆)
+	uPrint.tFlag.bFreeRTOS   = 1;	//FreeRTOS剩余堆/任务表打印
+	#endif  //boardHEALTH_MONITOR_EN
 	
 	#if(boardUSE_OS_DEBUG_OUT)
 	uPrint.tFlag.bFreeRTOS = 1;
@@ -114,6 +104,10 @@ void vBoard_SysInit(void)
 	vGPIO_Init();
 	
 	bFlash_IfaceInit();
+	
+	#if boardWDGT_EN
+	vFwdgt_Init();
+	#endif  //boardWDGT_EN
 	
 	#if(boardPRINT_IFACE)
 	vPrint_Init();
@@ -154,8 +148,10 @@ void vBoard_SysInit(void)
 ************************************************************************************************************************/
 void vBoard_StartTask(void *pvParameters)
 {
+	(void)pvParameters;
+
 	#if(boardUSE_OS)
-    // taskENTER_CRITICAL();
+    mainENTER_CRITICAL();
 	#endif  //boardUSE_OS
 
 	bSys_TaskInit();            //系统总任务
@@ -169,36 +165,64 @@ void vBoard_StartTask(void *pvParameters)
 
 	vTimer_TaskInit();			//系统计时
 
-	// vLight_TaskInit();           //照明灯任务
-
-	// bUsb_TaskInit();			//USB任务
-
-	// bHM_TaskInit();             //风扇散热任务
-
 	#if(boardDISPLAY)
 	bDisp_TaskInit();			//显示任务
 	#endif  //boardDISPLAY
 
-	#if(boardDCAC_IFACE)
-	bDcac_TaskInit();           //逆变器发送任务
-	bDcac_RecTaskInit();        //逆变器接收任务
-	#endif
-	
 	#if(boardBMS_IFACE)
 	bBms_TaskInit();            //BMS发送任务
 	bBms_RecTaskInit();         //BMS接收任务
 	#endif
-	
-	#if(boardMPPT_IFACE)
-	bMppt_TaskInit();           //MPPT发送任务
-	bMppt_RecTaskInit();        //MPPT接收任务
-	#endif
-	
+
+	#if(boardUSE_OS && boardHEALTH_MONITOR_EN)
+	cHealth_TaskInit();			//健康巡检任务(CPU/队列/栈/堆遥测)
+	#endif  //boardUSE_OS && boardHEALTH_MONITOR_EN
+
 	#if(boardUSE_OS)
-    vTaskDelete(NULL);   
-    // taskEXIT_CRITICAL();
+	mainEXIT_CRITICAL();
+    vTaskDelete(NULL);
 	#endif  //boardUSE_OS
 }
+
+#if (configUSE_IDLE_HOOK)
+/***********************************************************************************************************************
+-----函数功能    FreeRTOS 空闲任务钩子函数
+-----说明(备注)  所有任务阻塞且空闲任务被调度时触发; 仅累加空闲循环计数,
+                  供健康巡检任务换算 CPU 占用率(不可调用阻塞型 API)
+-----传入参数    none
+-----输出参数    none
+-----返回值      none
+************************************************************************************************************************/
+void vApplicationIdleHook(void)
+{
+	#if(boardHEALTH_MONITOR_EN)
+	ulHealthIdleLoopCnt++;
+	#endif  //boardHEALTH_MONITOR_EN
+}
+#endif  //configUSE_IDLE_HOOK
+
+#if (configCHECK_FOR_STACK_OVERFLOW > 0)
+/***********************************************************************************************************************
+-----函数功能    FreeRTOS 任务栈溢出安全捕获钩子
+-----说明(备注)  检测到任务栈被踩踏时打印故障任务并关中断, 交由看门狗复位
+-----传入参数    xTask: 溢出任务句柄; pcTaskName: 溢出任务名称
+-----输出参数    none
+-----返回值      none
+************************************************************************************************************************/
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
+{
+	(void)xTask;
+
+	#if(boardPRINT_IFACE)
+	printf("\r\n[FATAL ERROR] Stack Overflow detected in task: %s!\r\n", pcTaskName ? pcTaskName : "Unknown");
+	#endif  //boardPRINT_IFACE
+
+	taskDISABLE_INTERRUPTS();
+	for (;;)
+	{
+	}
+}
+#endif  //configCHECK_FOR_STACK_OVERFLOW > 0
 
 
 

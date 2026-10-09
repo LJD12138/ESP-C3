@@ -7,10 +7,6 @@
 #include "Sys/sys_task.h"
 #include "Print/print_task.h"
 
-#if(boardDCAC_IFACE)
-#include "MD_Dcac/md_dcac_task.h"
-#endif   //boardDCAC_IFACE
-
 #if(boardBMS_IFACE)
 #include "MD_Bms/md_bms_task.h"
 #endif  //boardBMS_IFACE
@@ -65,7 +61,7 @@ void v_sys_queue_task_closing(Task_T *tp_task)
 		//************************************步骤3:等待设备关闭**********************************************
 		case 2:
 		{
-			// if(bSys_CheckActState() == false )  //等待关闭 tSysInfo.uInit.tFinish.bIF_DcacTask == 1
+			// if(bSys_CheckActState() == false )  //等待关闭
 			{
 				cQueue_GotoStep( tp_task, STEP_NEXT );  //下一步
 				break;

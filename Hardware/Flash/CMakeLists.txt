@@ -1,5 +1,5 @@
-# Key组件CMakeLists.txt
-# 功能：按键任务和按键功能处理组件
+# Key缁勪欢CMakeLists.txt
+# 鍔熻兘锛氭寜閿换鍔″拰鎸夐敭鍔熻兘澶勭悊缁勪欢
 
 idf_component_register(
     SRCS

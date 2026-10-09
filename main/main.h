@@ -111,8 +111,6 @@ typedef enum : uint8_t
 	SO_KEY=0,  		//按键
 	SO_CONSOLE,    	//面板
 	SO_PARA,     	//并机
-	SO_DCAC,    	//逆变充电激活
-	SO_MPPT,    	//MPPT充电激活
 }SwitchObject_E;
 
 //许可
@@ -163,7 +161,6 @@ typedef enum : uint8_t
 {
 	MO_CONSOLE=0,
 	MO_BMS,
-	MO_MPPT,
 }ModuleObject_E;
 
 typedef union

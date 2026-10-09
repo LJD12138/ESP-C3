@@ -1,7 +1,7 @@
-# Main组件CMakeLists.txt
-# 功能：应用程序主入口和核心逻辑
+# Main缁勪欢CMakeLists.txt
+# 鍔熻兘锛氬簲鐢ㄧ▼搴忎富鍏ュ彛鍜屾牳蹇冮�昏緫
 
-# 收集所有源文件
+# 鏀堕泦鎵�鏈夋簮鏂囦欢
 file(GLOB_RECURSE MAIN_SRCS
     "*.c"
 )
@@ -16,9 +16,7 @@ idf_component_register(
         ComFunc
         Print
         Key
-        MD_HeatManage
-        MD_Dcac
-        MD_Mppt
         MD_Display
+        TaskQueue
         esp_lcd
 )

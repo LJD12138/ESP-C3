@@ -6,15 +6,13 @@
 #include "Key/key_func.h"
 #include "Key/key_task.h"
 #include "Sys/sys_task.h"
-// #include "UsbDevice/usb_task.h"
-// #include "Dc/dc_task.h"
 // #include "Buz/buz_task.h"
 #include "Print/print_task.h"
-#include "MD_Light/md_light_task.h"
 #include "MD_Display/md_display_task.h"
-// #include "MD_Dcac/md_dcac_task.h"
+
+#if(boardBMS_IFACE)
 #include "MD_Bms/md_bms_task.h"
-// #include "MD_Mppt/md_mppt_task.h"
+#endif  //boardBMS_IFACE
 
 #include "app_info.h"
 #include "timer_task.h"
@@ -55,18 +53,6 @@ u8 const     KeyTriType_ComfirmBuff[ 2 ]= { KTE_DC_LONG, KTE_FUN_NULL};      //�
 u8 const     KeyTriType_SysOnOffBuff[ 2 ] = { KTE_POWER_LONG, KTE_FUN_NULL};
 //单击        切换屏幕
 u8 const     KeyTriType_ScreenBuff[ 2 ] = { KTE_POWER_SHORT, KTE_FUN_NULL};
-// //单击        开关USB
-// u8 const     KeyTriType_USBOnOffBuff[ 2 ] = { KTE_USB_SHORT, KTE_FUN_NULL}; 
-// //长击        开关USB
-// u8 const     KeyTriType_USBOnOffBuff1[ 2 ] = { KTE_USB_LONG, KTE_FUN_NULL};
-//长按        开关灯
-u8 const     KeyTriType_LightOnOffBuff[ 2 ] = { KTE_LIGHT_LONG, KTE_FUN_NULL};  
-//单击        切换灯
-u8 const     KeyTriType_LightChargeBuff[ 2 ] = { KTE_LIGHT_SHORT, KTE_FUN_NULL};
-//单击        开关AC
-u8 const     KeyTriType_AcOnOffBuff[ 2 ] = { KTE_AC_SHORT, KTE_FUN_NULL}; 
-//长击        开关AC
-u8 const     KeyTriType_AcOnOffBuff1[ 2 ] = { KTE_AC_LONG, KTE_FUN_NULL};
 
 
 //****************************************************函数声明**************************************************//
@@ -163,39 +149,7 @@ void vKey_ProcKeyFunc(u8* pKeyTriTypeBuff)
     //*****************************************************工作状态下**************************************************//
     else if (tSysInfo.eDevState == DS_WORK)
     {
-		if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_LightChargeBuff, sizeof(KeyTriType_LightChargeBuff)))    //单击LIGHT按键
-		{
-			vLight_CircSelectMode();
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:切换照明模式\r\n");
-		}
-		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_LightOnOffBuff, sizeof(KeyTriType_LightOnOffBuff))) //长按LIGHT按键　
-		{
-			bLight_Switch(ST_NULL);
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:开关照明\r\n");
-		}
-		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_AcOnOffBuff, sizeof(KeyTriType_AcOnOffBuff)))  //单击AC按键 
-		{
-			#if(boardDCAC_IFACE)
-			if(cDCAC_Switch(DSO_AC_OUT, ST_NULL, true) == true)
-				bDcac_SetAutoOffTime(boardDCAC_OFF_TIME);
-			#endif  //boardDCAC_IFACE
-
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:开关逆变\r\n");
-		}
-		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_AcOnOffBuff1, sizeof(KeyTriType_AcOnOffBuff1)))  //长按AC按键 
-		{
-			#if(boardDCAC_IFACE)
-			if(cDCAC_Switch(DSO_AC_OUT, ST_NULL, true) == true)
-				bDcac_SetAutoOffTime(0);
-			#endif  //boardDCAC_IFACE
-
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:开关逆变1\r\n");
-		}
-		else if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ScreenBuff, sizeof(KeyTriType_ScreenBuff)))
+		if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ScreenBuff, sizeof(KeyTriType_ScreenBuff)))
 		{
 			#if(boardDISPLAY)
 			bDisp_ChangeScreen(ID_MAIN_0);
@@ -304,46 +258,6 @@ static bool eng_mode_key_deal(u8 func)
 		}break;
 		
 		case EMS_ADC:
-		{
-			if(func == EMKF_CHARGE)
-				;
-			else if(func == EMKF_ADD)
-				;
-			else if(func == EMKF_REDUCE)
-				;
-			else if(func == EMKF_NEXT_OPTION)
-			{
-				bEng_SetEngStep(EMS_USB);
-				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------工程模式_USB-------\r\n");
-			}
-			else if(func == EMKF_COMFIRM)
-			{
-				
-			}
-		}break;
-		
-		case EMS_USB:
-		{
-			if(func == EMKF_CHARGE)
-				;
-			else if(func == EMKF_ADD)
-				;
-			else if(func == EMKF_REDUCE)
-				;
-			else if(func == EMKF_NEXT_OPTION)
-			{
-				bEng_SetEngStep(EMS_DC);
-				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------工程模式_AD-------\r\n");
-			}
-			else if(func == EMKF_COMFIRM)
-			{
-				
-			}
-		}break;
-		
-		case EMS_DC:
 		{
 			if(func == EMKF_CHARGE)
 				;

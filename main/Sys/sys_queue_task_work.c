@@ -6,14 +6,10 @@
 #include "Sys/sys_queue_task.h"
 #include "Sys/sys_task.h"
 #include "Print/print_task.h"
+#if(boardBMS_IFACE)
 #include "MD_Bms/md_bms_task.h"
 #include "MD_Bms/md_bms_rec_task.h"
-#include "MD_Dcac/md_dcac_task.h"
-// #include "Adc/adc_task.h"
-#include "UsbDevice/usb_task.h"
-#include "MD_Light/md_light_task.h"
-#include "MD_Mppt/md_mppt_task.h"
-#include "MD_Dcac/md_dcac_rec_task.h"
+#endif  //boardBMS_IFACE
 
 // #include "app_info.h"
 #include "gpio_init.h"
@@ -47,7 +43,6 @@ void v_sys_queue_task_work(Task_T *tp_task)
 	//检查系统活跃状态
 	if(bSys_CheckActState() == true)   
 	{
-		// vDcac_RefreshOffTime();
 		// bSys_SetAutoOffTime(tAppMemParam.tSYS.usAutoOffTime);
 	}
 	
@@ -69,11 +64,6 @@ void v_sys_queue_task_work(Task_T *tp_task)
 		
 		case 1:
 		{
-			if(tUsb.eDevState == DS_SHUT_DOWN && tSysInfo.uPerm.tPerm.bDisChgPerm)
-			{
-				cUsb_Switch(ST_ON, false);
-			}
-			
 			v_updata_param();
 		}
 		break;
@@ -88,160 +78,5 @@ void v_sys_queue_task_work(Task_T *tp_task)
 
 __STATIC_INLINE void v_updata_param(void)
 {
-	// static u8 index = 0;
-	// char cStr[8];
-	// static u8 uc_light_pwr = 0;
 
-	// tSysInfo.usOutPwr = tUsb.usOutPwr + uc_light_pwr;
-	// #if(boardDCAC_IFACE)
-	// tSysInfo.usOutPwr = tDcacRx.usOutPwr;
-	// #endif  //boardDCAC_IFACE
-
-	// tSysInfo.usInPwr = tUsb.usInPwr;
-	// #if(boardMPPT_IFACE)
-	// tSysInfo.usInPwr += tMppt.usInPwr;
-	// #endif  //boardMPPT_IFACE
-
-	// #if(boardDISPLAY)
-	// switch(index)
-	// {
-	// 	case 0:
-	// 	{
-	// 		set_var_uc_bat_soc_value1(tBmsRx.tParam.usSOC);
-
-	// 		snprintf(cStr, sizeof(cStr), "%d", tBmsRx.tParam.usSOC);
-	// 		set_var_uc_bat_soc_value(cStr);
-	// 		index++;
-	// 	}
-	// 	break;
-
-	// 	case 1:
-	// 	{
-	// 		snprintf(cStr, sizeof(cStr), "%d", tSysInfo.usOutPwr);
-	// 		set_var_uc_out_pwr_value(cStr);
-	// 		index++;
-	// 	}
-	// 	break;
-
-	// 	case 2:
-	// 	{
-	// 	   	snprintf(cStr, sizeof(cStr), "%d", tSysInfo.usInPwr);
-	// 		set_var_uc_in_pwr_value(cStr);
-	// 		index++;
-	// 	}
-	// 	break;
-
-	// 	case 3:
-	// 	{
-	// 		snprintf(cStr, sizeof(cStr), "%d", tUsbDev.usC1Pwr);
-	// 		set_var_uc_type_c1_pwr_value(cStr);
-
-	// 		if(tUsbDev.eC1DevState == DS_WORK)
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_USB_C1,true);
-	// 		else
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_USB_C1,false);
-	// 		index++;
-	// 	}
-	// 	break;
-
-	// 	case 4:
-	// 	{
-	// 		snprintf(cStr, sizeof(cStr), "%d", tUsbDev.usC2Pwr);
-	// 		set_var_uc_type_c2_pwr_value(cStr);
-
-	// 		if(tUsbDev.eC2DevState == DS_WORK)
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_USB_C2,true);
-	// 		else
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_USB_C2,false);
-	// 		index++;
-	// 	}
-	// 	break;
-
-	// 	case 5:
-	// 	{
-	// 		snprintf(cStr, sizeof(cStr), "%d", tUsbDev.usUsbAPwr);
-	// 		set_var_uc_usb_a_pwr_value(cStr);
-
-	// 		if(tUsbDev.eUsbADevState == DS_WORK)
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_USB_A, true);
-	// 		else
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_USB_A, false);
-	// 		index++;
-	// 	}
-	// 	break;
-
-	// 	case 6:
-	// 	{
-	// 		snprintf(cStr, sizeof(cStr), "%d", tUsbDev.usDcPwr);
-	// 		set_var_uc_dc_pwr_value(cStr);
-
-	// 		if(tUsbDev.eDcDevState == DS_WORK)
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_USB_DC, true);
-	// 		else
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_USB_DC, false);
-	// 		index++;
-	// 	}
-	// 	break;
-
-	// 	case 7:
-	// 	{
-	// 		#if(boardMPPT_IFACE)
-	// 		snprintf(cStr, sizeof(cStr), "%d", tMppt.usInPwr);
-	// 		set_var_uc_pv_in_pwr_value(cStr);
-			
-	// 		if(tMppt.eDevState >= DS_BOOTING)
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_PV, true);
-	// 		else
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_PV, false);
-	// 		#endif  //boardMPPT_IFACE
-	// 		index++;
-	// 	}
-	// 	break;
-
-	// 	case 8:
-	// 	{
-	// 		#if(boardDCAC_IFACE)
-	// 		snprintf(cStr, sizeof(cStr), "%d", tDcacRx.usOutPwr);
-	// 		set_var_uc_ac_out_pwr_value(cStr);
-			
-	// 		if(tDcac.eDisChgState >= IOS_STARTING)
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_AC, true);
-	// 		else
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_AC, false);
-	// 		#endif  //boardDCAC_IFACE
-	// 		index++;
-	// 	}
-	// 	break;
-
-	// 	case 9:
-	// 	{
-	// 		if(tLight.eWordMode == LWM_FULL)
-	// 			uc_light_pwr = 4;
-	// 		else if(tLight.eWordMode == LWM_HALF)
-	// 			uc_light_pwr = 2;
-	// 		else if(tLight.eWordMode == LWM_SOS)
-	// 			uc_light_pwr = 2;
-	// 		else if(tLight.eWordMode == LWM_TWINKLE)
-	// 			uc_light_pwr = 2;
-	// 		else 
-	// 			uc_light_pwr = 0;
-			
-	// 		tSysInfo.usOutPwr += uc_light_pwr;
-	// 		snprintf(cStr, sizeof(cStr), "%d", uc_light_pwr);
-	// 		set_var_uc_light_out_pwr_value(cStr);
-
-	// 		if(tLight.eDevState == DS_WORK)
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_LIGHT, true);
-	// 		else
-	// 			vDisp_SetDevStateIcon(DEV_TYPE_LIGHT, false);
-	// 		index++;
-	// 	}
-	// 	break;
-	
-	// 	default:
-	// 	index = 0;
-	// 			break;
-	// }
-	// #endif  //boardPRINT_IFACE
 }
-

@@ -5,20 +5,10 @@
 #include "board_config.h"
 
 #include "Sys/sys_task.h"
-// #include "Dc/dc_task.h"
-#include "UsbDevice/usb_task.h"
 
 #if(boardBMS_IFACE)
 #include "MD_Bms/md_bms_task.h"
 #endif  //boardBMS_IFACE
-
-#if(boardMPPT_IFACE)
-#include "MD_Mppt/md_mppt_task.h"
-#endif  //boardMPPT_IFACE
-
-#if(boardDCAC_IFACE)
-#include "MD_Dcac/md_dcac_task.h"
-#endif  //boardDCAC_IFACE
 
 #if(boardDISPLAY)
 #include "MD_Display/md_display_task.h"
@@ -32,11 +22,7 @@ extern const char tAppMemParamStr[];
 extern const char tAppVerInfoStr[];
 extern const char tAppParamStr[];
 extern const char tDispMemParamStr[];
-extern const char tDcMemParamStr[];
-extern const char tUsbMemParamStr[];
 extern const char tBmsMemParamStr[];
-extern const char tMpptMemParamStr[];
-extern const char tDcacMemParamStr[];
 extern const char tSysMemParamStr[];
 
 ///********************************存在BOOT：IAP_FLASH_INFO**********************************************
@@ -90,20 +76,10 @@ typedef struct
 	VerInfo_T        	tVerInfo;
 	AppParam_T			tParam;
 	// DispMemParam_T    	tDISP;
-	// DcMemParam_T    	tDC;
-	UsbMemParam_T   	tUSB;
 
 	#if(boardBMS_IFACE)
 	BmsMemParam_T   	tBMS;
 	#endif  //boardBMS_IFACE
-
-	#if(boardMPPT_IFACE)
-	MpptMemParam_T  	tMPPT;
-	#endif  //boardMPPT_IFACE
-
-	#if(boardDCAC_IFACE)
-	DcacMemParam_T  	tDCAC;
-	#endif  //boardDCAC_IFACE
 	
 	SysMemParam_T    	tSYS;
 }AppMemParam_T;

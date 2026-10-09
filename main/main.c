@@ -28,6 +28,10 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#if (boardWDGT_EN)
+#include "fwdgt.h"
+#endif  //boardWDGT_EN
+
 //****************************************************任务初始化**************************************************//
 TaskHandle_t    StartTask_Handler; 
 #define      	START_TASK_PRIO             			1                   		//任务优先级 
@@ -37,6 +41,10 @@ void vBoard_StartTask(void *pvParameters);
 void app_main(void)
 {
     vBoard_SysInit();
+
+    #if (boardWDGT_EN)
+    vFwdgt_PrintResetReason();      //打印上次复位原因
+    #endif  //boardWDGT_EN
 
     // 创建开始任务
     xTaskCreate((TaskFunction_t )vBoard_StartTask,      //任务函数

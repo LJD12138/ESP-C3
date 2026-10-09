@@ -1,5 +1,5 @@
-# LightweightRingBuffer组件CMakeLists.txt
-# 功能：轻量级环形缓冲区中间件
+# LightweightRingBuffer缁勪欢CMakeLists.txt
+# 鍔熻兘锛氳交閲忕骇鐜舰缂撳啿鍖轰腑闂翠欢
 
 idf_component_register(
     SRCS

@@ -352,27 +352,6 @@ static void v_key_shot_press(KeyHandler_t* keyHandler)
 			sMyPrint("Key_Task:Light短按\r\n");
 	}
 	
-	// else if(keyHandler == &tKeyUSB) 
-	// {
-	// 	Key_TriTypeBuff[Key_TriTypeCnt] = KTE_USB_SHORT ; 
-	// 	if((keyGROUP_NUM - 1) > Key_TriTypeCnt) Key_TriTypeCnt ++;
-		
-	// 	keyHandler->sOnPressCnt = -1;
-		
-	// 	if(uPrint.tFlag.bKeyTask)
-	// 		sMyPrint("Key_Task:USB短按\r\n");
-	// }
-	
-	// else if(keyHandler == &tKeyDC) 
-	// {
-	// 	Key_TriTypeBuff[Key_TriTypeCnt] = KTE_DC_SHORT ; 
-	// 	if((keyGROUP_NUM - 1) > Key_TriTypeCnt) Key_TriTypeCnt ++;
-		
-	// 	keyHandler->sOnPressCnt = -1;
-		
-	// 	if(uPrint.tFlag.bKeyTask)
-	// 		sMyPrint("Key_Task:DC短按\r\n");
-	// }
 }
 
 
@@ -429,27 +408,6 @@ static void v_key_long_press(KeyHandler_t* keyHandler)
 			sMyPrint("Key_Task:Light长按\r\n");
 	}
 	
-	// else if(keyHandler == &tKeyUSB) 
-	// {
-	// 	Key_TriTypeBuff[Key_TriTypeCnt] = KTE_USB_LONG ; 
-	// 	if((keyGROUP_NUM - 1) > Key_TriTypeCnt) Key_TriTypeCnt ++;
-		
-	// 	keyHandler->sOnPressCnt = -1;
-		
-	// 	if(uPrint.tFlag.bKeyTask)
-	// 		sMyPrint("Key_Task:USB长按\r\n");
-	// }
-	
-	// else if(keyHandler == &tKeyDC) 
-	// {
-	// 	Key_TriTypeBuff[Key_TriTypeCnt] = KTE_DC_LONG ; 
-	// 	if((keyGROUP_NUM - 1) > Key_TriTypeCnt) Key_TriTypeCnt ++;
-		
-	// 	keyHandler->sOnPressCnt = -1;
-		
-	// 	if(uPrint.tFlag.bKeyTask)
-	// 		sMyPrint("Key_Task:DC长按\r\n");
-	// }
 }
 
 /***********************************************************************************************************************
@@ -562,7 +520,6 @@ void vKey_ExitLowPower(void)
 	gpio_init(keyGPIO_POWER_PORT,GPIO_MODE_IPU,GPIO_OSPEED_2MHZ,keyGPIO_POWER_PIN);
 	gpio_init(keyGPIO_AC_PORT,GPIO_MODE_IPU,GPIO_OSPEED_2MHZ,keyGPIO_AC_PIN);
 	gpio_init(keyGPIO_LIGHT_PORT,GPIO_MODE_IPU,GPIO_OSPEED_2MHZ,keyGPIO_LIGHT_PIN);
-	gpio_init(keyGPIO_USB_PORT,GPIO_MODE_IPU,GPIO_OSPEED_2MHZ,keyGPIO_USB_PIN);
 
 	vTaskResume(tKeyTaskHandler);  //恢复任务
 }

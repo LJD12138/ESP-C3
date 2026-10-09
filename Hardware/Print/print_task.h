@@ -58,13 +58,6 @@ typedef union
 		//8
 		u32 bBmsTask:1;
 		u32 bBmsRecTask:1;
-		u32 bDcacTask:1;
-		u32 bDcacRecTask:1;
-
-		u32 bMpptTask:1;
-		u32 bMpptRecTask:1;
-		u32 bDcTask:1;
-		u32 bUsbTask:1;
 		
 		//16
 		u32 bUpdata:1;
@@ -74,6 +67,7 @@ typedef union
 		
 		//24
 		u32 bExRtc:1;
+		u32 bHealthTask:1;		/* 健康巡检任务(CPU/队列/栈/堆遥测) */
 	}tFlag;
 	u32 ulFlag;
 }DebugPrint_U;

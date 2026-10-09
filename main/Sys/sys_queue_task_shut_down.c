@@ -26,12 +26,7 @@ void v_sys_queue_task_shut_down(Task_T *tp_task)
     if(tSysInfo.eDevState!= DS_SHUT_DOWN)
 		bSys_SetDevState(DS_SHUT_DOWN, false);
 
-	if(bSys_ExistInVolt() == true)
-	{
-		bSys_ChgWakeUp(SO_MPPT);
-		cQueue_GotoStep( tp_task, STEP_END );  //结束
-		return;
-	}
+	//充电唤醒原由MPPT模块触发(SO_MPPT),MPPT模块已移除,关机状态下不再自动唤醒
 	
     switch (tp_task->ucStep)
     {

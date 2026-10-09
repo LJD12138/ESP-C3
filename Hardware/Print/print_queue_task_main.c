@@ -95,30 +95,6 @@ __STATIC_INLINE s8 c_print_rec_proc_data(BaikuProtoRx_t* proto)
         }
         break;
 
-        case 0x0B:  //上报记忆参数信息
-		{
-			b_relay0C_dcac_param();
-		}
-		break;
-
-        case 0x0D:  //上报MPPT参数信息
-		{
-			b_relay0E_mppt_param();
-		}
-		break;
-
-        case 0x0F:
-        {
-            b_relay10_usb_param();
-        }
-        break;
-		
-		case 0x11:
-		{
-			b_relay12_dc_param();
-		}
-		break;
-
         case 0x13:
         {
             b_relay14_sysinfo_param();

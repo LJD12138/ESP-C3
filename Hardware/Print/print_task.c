@@ -13,6 +13,10 @@ DebugPrint_U   	uPrint;
 #include "Print/print_queue_task.h"
 #include "Sys/sys_task.h"
 
+#if(boardWDGT_EN)
+#include "fwdgt.h"
+#endif  //boardWDGT_EN
+
 //****************************************************任务初始化**************************************************//
 #if(boardUSE_OS)
 #define       	printTASK_PRIO                        	1        						//任务优先级 

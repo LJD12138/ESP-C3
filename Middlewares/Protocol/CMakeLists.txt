@@ -1,5 +1,5 @@
-# Protocol×é¼şCMakeLists.txt
-# ¹¦ÄÜ£ºÍ¨ĞÅĞ­Òé´¦Àí×é¼ş£¨°×¿âĞ­ÒéºÍModbusĞ­Òé£©
+# Protocolç»„ä»¶CMakeLists.txt
+# åŠŸèƒ½ï¼šé€šä¿¡åè®®å¤„ç†ç»„ä»¶ï¼ˆç™½åº“åè®®å’ŒModbusåè®®ï¼‰
 
 idf_component_register(
     SRCS

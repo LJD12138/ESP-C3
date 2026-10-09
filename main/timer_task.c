@@ -11,6 +11,10 @@
 
 #include "Print/print_task.h"
 
+#if(boardWDGT_EN)
+#include "fwdgt.h"
+#endif  //boardWDGT_EN
+
 #if(boardCONSOLE_485_IFACE_EN)	
 #include "MD_Console\md_console_usart.h"
 #include "MD_Console\md_console_process.h"
@@ -25,21 +29,9 @@
 #include "MD_Display/md_display_task.h"
 #endif
 
-#if(boardDCAC_IFACE)
-#include "MD_Dcac/md_dcac_rec_task.h"
-#endif  //boardDCAC_IFACE
-
-#if(boardMPPT_IFACE)
-#include "MD_Mppt/md_mppt_rec_task.h"
-#endif  //boardMPPT_IFACE
-
 //****************************************************任务初始化**************************************************//
 #if(boardCONSOLE_485_IFACE_EN)	
 TimerHandle_t 	tConsoleRxEnTimer = NULL;     //单次定时器,BMS的458发送延时切换
-#endif
-
-#if(boardMPPT_485_IFACE_EN)
-TimerHandle_t 	tMpptRxEnTimer = NULL;     //单次定时器,MPPT的458发送延时切换
 #endif
 
 #if(boardPRINT_485_IFACE_EN)	
@@ -81,14 +73,6 @@ void vTimer_TaskInit(void)
                             vTimer_SignalCallback); 	    //定时器回调函数
 	
 
-	#if(boardMPPT_485_IFACE_EN)
-    tMpptRxEnTimer = xTimerCreate("mppt_exit_485_tx_timer", //软件定时器的名字  
-                            3,       	                    //定时器周期(ms),单位时钟节拍
-                            pdFALSE,                        //定时器模式，pdTRUE为周期定时器，pdFALSE为单次定时器
-                            (void*)4,        	            //定时器的ID号=1
-                            vTimer_SignalCallback); 	    //定时器回调函数
-	#endif
-							
 	#if(boardPRINT_485_IFACE_EN)
     tPrintRxEnTimer = xTimerCreate("print_exit_485_tx_timer",  	//软件定时器的名字  
                             2,       	                    //定时器周期(ms),单位时钟节拍
@@ -109,10 +93,6 @@ void vTimer_TaskInit(void)
 	xTimerStart(tConsoleRxEnTimer, 0);
     #endif
 																		
-	#if(boardMPPT_485_IFACE_EN)
-	xTimerStart(tMpptRxEnTimer, 0);
-    #endif
-							
 	#if(boardPRINT_485_IFACE_EN)
 	xTimerStart(tPrintRxEnTimer, 0);
     #endif
@@ -143,18 +123,6 @@ static void vTimer_SignalCallback(TimerHandle_t xTimer)
 	{
 		vGPIO_AssistBmsOpen(false);
 	}
-	else if(pvTimerGetTimerID(xTimer) == ((void *)3))
-	{
-		#if(boardDCAC_485_IFACE_EN)
-		vDCAC_485TransEnable(false);
-		#endif
-	}
-	else if(pvTimerGetTimerID(xTimer) == ((void *)4))
-	{
-		#if(boardMPPT_485_IFACE_EN)
-		vMPPT_485TransEnable(false);
-		#endif
-	}
 	else if(pvTimerGetTimerID(xTimer) == ((void *)5))
 	{
 		#if(boardPRINT_485_IFACE_EN)
@@ -180,9 +148,6 @@ static void vTimer_RepetCallback(TimerHandle_t xTimer)
 		timer_cnt = 0;
 		
 		vSys_TickTimer();
-		// vDcac_TickTimer();
-		// vUsb_TickTimer();
-		// vDc_TickTimer();
 
 		#if(boardWDGT_EN && boardPRINT_IFACE == 0)
 		vFwdgt_Reload();
@@ -219,14 +184,6 @@ static void vTimer_RepetCallback(TimerHandle_t xTimer)
 	
 	#if(boardBMS_IFACE && (!boardDEBUG))
 	vBms_RecTickTimer();
-	#endif
-	
-	#if(boardMPPT_IFACE && (!boardDEBUG))
-	vMppt_RecTickTimer();
-	#endif
-	
-	#if(boardDCAC_IFACE && (!boardDEBUG))
-	vDcac_RecTickTimer();
 	#endif
 	
 	#if(boardWIFI_IFACE && (!boardDEBUG))

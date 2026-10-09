@@ -1,18 +1,18 @@
-# EasyFlash×é¼þCMakeLists.txt
-# ¹¦ÄÜ£ºÇáÁ¿¼¶Ç¶ÈëÊ½Flash´æ´¢¹ÜÀíÖÐ¼ä¼þ
+# EasyFlashç»„ä»¶CMakeLists.txt
+# åŠŸèƒ½ï¼šè½»é‡çº§åµŒå…¥å¼Flashå­˜å‚¨ç®¡ç†ä¸­é—´ä»¶
 
-# # ÊÕ¼¯ËùÓÐÔ´ÎÄ¼þ
+# # æ”¶é›†æ‰€æœ‰æºæ–‡ä»¶
 # file(GLOB_RECURSE EASYFLASH_SRCS
 #     "src/*.c"
 #     "port/*.c"
 # )
 
-# # ¿ÉÑ¡£º±àÒëÀàÐÍ²å¼þ
+# # å¯é€‰ï¼šç¼–è¯‘ç±»åž‹æ’ä»¶
 # file(GLOB EASYFLASH_TYPES_SRCS
 #     "plugins/types/*.c"
 # )
 
-# # ¿ÉÑ¡£º±àÒëstruct2json²å¼þ
+# # å¯é€‰ï¼šç¼–è¯‘struct2jsonæ’ä»¶
 # file(GLOB EASYFLASH_STRUCT2JSON_SRCS
 #     "plugins/types/struct2json/src/*.c"
 # )

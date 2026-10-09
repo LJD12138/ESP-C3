@@ -17,7 +17,7 @@ __ALIGNED(4) 	Task_T *tpPrintTask = NULL;  	//队列任务
 
 //****************************************************函数声明****************************************************//
 static bool b_task_manage_func_cb(Task_T *tp_task);
-static void v_add_task_return_func_cb(u8 num);
+static void v_add_task_return_func_cb(Task_T *p_task, u8 num);
 
 
 /***********************************************************************************************************************
@@ -32,7 +32,7 @@ bool bPrint_QueueInit(void)
 	s8 c_result = 1;
 	
 	//任务队列初始化
-	c_result = cQueue_TaskInit(&tpPrintTask, 8, b_task_manage_func_cb, v_add_task_return_func_cb);
+	c_result = cQueue_TaskInit(&tpPrintTask, 8, 0, b_task_manage_func_cb, v_add_task_return_func_cb);
 	if(c_result <= 0)
 		return false;
 	else if(tpPrintTask == NULL)
@@ -107,7 +107,7 @@ static bool b_task_manage_func_cb(Task_T *tp_task)
     return true;       
 }
 
-static void v_add_task_return_func_cb(u8 num)
+static void v_add_task_return_func_cb(Task_T *p_task, u8 num)
 {
 	switch(num)
 	{

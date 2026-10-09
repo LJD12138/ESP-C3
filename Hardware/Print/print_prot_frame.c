@@ -7,18 +7,13 @@
 #include "Print/print_task.h"
 // #include "Adc/adc_task.h"
 #include "Key/key_task.h"
-#include "UsbDevice/usb_task.h"
-// #include "Dc/dc_task.h"
 #include "Sys/sys_task.h"
 // #include "Updata/updata_task.h"
-#include "MD_Light/md_light_task.h"
-#include "MD_Dcac/md_dcac_task.h"
-#include "MD_Dcac/md_dcac_rec_task.h"
-#include "MD_Mppt/md_mppt_task.h"
-#include "MD_Mppt/md_mppt_rec_task.h"
+
+#if(boardBMS_IFACE)
 #include "MD_Bms/md_bms_rec_task.h"
 #include "MD_Bms/md_bms_task.h"
-// #include "flash_allot_table.h"
+#endif  //boardBMS_IFACE
 
 // #include "app_info.h"
 
@@ -62,7 +57,7 @@ static bool b_relay_console_info(BaikuProtoRx_t* proto);
 ************************************************************************************************************************/
 bool bPrint_SendProtInit(void)
 {
-	s8 c_result = cBaiku_ProtoTransInit(&tpPrintProtoTx,//协议指针
+	s8 c_result = cBaiku_ProtoSendInit(&tpPrintProtoTx,//协议指针
 								printTX_FRAME_SIZE, 	//协议缓存器大小
 								printDEV_ADRR);			//协议设备ID
 	if(c_result <= 0)
@@ -107,7 +102,6 @@ bool b_cycle_relay_data(void)
 	if(us_delay_cnt >= (100/printTASK_CYCLE_TIME))
 	{
 		us_delay_cnt = 0;
-//		b_relay0E_mppt_param();
 	}
 	return true;
 }
@@ -133,76 +127,6 @@ bool b_relay02_switch_result(uint8_t data[])
         }
         c_print_data_trans(0x02, data, 2);  
     }
-//     else if(data[0] == 0x01)
-//     {
-//         if(data[1] == 0x00)
-//         {
-//             cUsb_Switch(ST_OFF, false);
-//         }  
-//         else if (data[1] == 0x01)
-//         {
-//             //打开失败
-//             if(cUsb_Switch(ST_ON, false) <= 0)
-//                 data[1] = 0x00;
-//         }
-//         c_print_data_trans(0x02, data, 2);  
-//     }
-//     else if(data[0] == 0x02)
-//     {
-//         if(data[1] == 0x00)
-//         {
-//             bLight_Switch(ST_OFF);
-//         }  
-//         else if (data[1] == 0x01)
-//         {
-//             //打开失败
-//             if(bLight_Switch(ST_ON) == false)
-//                 data[1] = 0x00;
-//         }
-//         c_print_data_trans(0x02, data, 2);  
-//     }
-//     else if(data[0] == 0x03)
-//     {
-//         if(data[1] == 0x00)
-//         {
-//             cDCAC_Switch(DSO_AC_OUT,ST_OFF, true);
-//         }  
-//         else if (data[1] == 0x01)
-//         {
-//             //打开失败
-//             if(cDCAC_Switch(DSO_AC_OUT,ST_ON, true) < 0)
-//                 data[1] = 0x00;
-//         }
-//         c_print_data_trans(0x02, data, 2);  
-//     }
-// 	else if(data[0] == 0x04)
-//     {
-//         if(data[1] == 0x00)
-//         {
-//             cDc_Switch(ST_OFF, false);
-//         }  
-//         else if (data[1] == 0x01)
-//         {
-//             //打开失败
-//             if(cDc_Switch(ST_ON, false) <= 0)
-//                 data[1] = 0x00;
-//         }
-//         c_print_data_trans(0x02, data, 2);  
-//     }
-// 	else if(data[0] == 0x05)
-//     {
-// //        if(data[1] == 0x00)
-// //        {
-// //            cDCAC_Switch(DSO_AC_IN,ST_OFF, true);
-// //        }  
-// //        else if (data[1] == 0x01)
-// //        {
-// //            //打开失败
-// //            if(cDCAC_Switch(DSO_AC_IN,ST_ON, true) < 0)
-// //                data[1] = 0x00;
-// //        }
-//         c_print_data_trans(0x02, data, 2);  
-//     }
 
     return true;
 }
@@ -231,18 +155,6 @@ bool b_relay08_param(void)
 
 	data[5] = tSysInfo.uPerm.tPerm.bChgPerm;
 	data[6] = tSysInfo.uPerm.tPerm.bDisChgPerm;
-	data[7] = tUsb.eDevState;
-	data[8] = tLight.eDevState;
-	// data[10] = tDc.eDevState;
-
-	#if(boardDCAC_IFACE)
-	data[9] = tDcac.eDisChgState;
-	data[11] = tDcac.eChgState;
-	#endif  //boardDCAC_IFACE
-
-	#if(boardMPPT_IFACE)
-	data[12] = tMppt.eDevState;
-	#endif  //boardMPPT_IFACE
 
 	#if(boardBMS_IFACE)
 	data[13] = ucBms_GetSoc();
@@ -288,97 +200,6 @@ bool b_relay0A_bat_param(void)
     return c_print_data_trans(0x0A, data, len);
 }
 
-
-bool b_relay0C_dcac_param(void)
-{
-    uint8_t data[80] = {0};
-    uint8_t len = 0;
-	
-	#if(boardDCAC_IFACE)
-    len = sizeof(tDcac);
-    if(len > sizeof(data)) return false;//data长度不足
-    memcpy(&data, (u8*)&tDcac, sizeof(tDcac));
-    
-    len += sizeof(tDcacRx);
-    if(len > sizeof(data)) return false;//data长度不足
-    memcpy(&data[len  - sizeof(tDcacRx)], (u8*)&tDcacRx, sizeof(tDcacRx));
-	
-	len += 10;
-    if(len > sizeof(data)) return false;//data长度不足
-	memcpy(&data[len  - 10], (u8*)tpDcacTask, 10);
-	#endif  //boardDCAC_IFACE
-
-    //发送失败
-    return c_print_data_trans(0x0C, data, len);
-}
-
-/***********************************************************************************************************************
------函数功能    回复MPPT参数  0x0E
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      true:发送成功   false:发送失败
-************************************************************************************************************************/
-bool b_relay0E_mppt_param(void)
-{
-	uint8_t data[128] = {0};
-    uint8_t len = 0;
-
-	#if(boardMPPT_IFACE)
-    len = sizeof(tMppt); 
-    if(len > sizeof(data)) return false;//data长度不足
-    memcpy(data, (u8*)&tMppt, sizeof(tMppt));
-
-    len += sizeof(tMpptRx);
-    if(len > sizeof(data)) return false;//data长度不足
-    memcpy(&data[len - sizeof(tMpptRx)], (u8*)&tMpptRx, sizeof(tMpptRx));
-	
-	len += 10; 
-    if(len > sizeof(data)) return false;//data长度不足
-    memcpy(&data[len - 10], (u8*)tpMpptTask, 10);
-	#endif  //boardMPPT_IFACE
-
-    //发送失败
-    return c_print_data_trans(0x0E, data, len);
-}
-
-/***********************************************************************************************************************
------函数功能    回复USB参数  0x10
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      true:发送成功   false:发送失败
-************************************************************************************************************************/
-bool b_relay10_usb_param(void)
-{
-    uint8_t data[80] = {0};
-    uint8_t len = 0;
-
-    len = sizeof(tUsb); 
-    if(len > sizeof(data)) return false;//data长度不足
-    memcpy(data, (u8*)&tUsb, sizeof(tUsb));
-    //发送失败
-    return c_print_data_trans(0x10, data, len);
-}
-
-/***********************************************************************************************************************
------函数功能    回复系统任务参数  0x12
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      true:发送成功   false:发送失败   
-************************************************************************************************************************/
-bool b_relay12_dc_param(void)
-{
-    uint8_t data[20] = {0};
-    uint8_t len = 0;
-
-    // len = sizeof(tDc); 
-    // if(len > sizeof(data)) return false;//data长度不足
-    // memcpy(data, (u8*)&tDc, sizeof(tDc));
-    //发送失败
-    return c_print_data_trans(0x12, data, len);
-}
 
 /***********************************************************************************************************************
 -----函数功能    回复系统任务参数  0x14
@@ -429,21 +250,6 @@ bool b_relay40_set_chg_pwr(BaikuProtoRx_t* proto)
 	if(t_chg_pwr.module != 0 && t_chg_pwr.module!= 1)
 		return false;
 	
-// 	//MPPT
-// 	if(t_chg_pwr.module == 0)
-// 	{
-// 		if(t_chg_pwr.pwr > tAppMemParam.tMPPT.usInPwrRating)
-// 			return false;
-		
-// //		cMppt_SetChgPwr(us_temp);
-// 	}
-// 	//DCAC
-// 	else if(t_chg_pwr.module == 1)
-// 	{
-// 		if(t_chg_pwr.pwr > tAppMemParam.tDCAC.usInPwrRating)
-// 			return false;
-// 	}
-
 	return c_print_data_trans(baikuCMD_REPLY_SET_CHG_PWR, (u8*)&t_chg_pwr, sizeof(t_chg_pwr));
 }
 
