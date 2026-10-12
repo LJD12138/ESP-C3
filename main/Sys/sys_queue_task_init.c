@@ -263,6 +263,7 @@ void v_sys_queue_task_init(Task_T *p_task)
 		{
 			tSysInfo.uInit.tFinish.bIF_SysTask = 1;
 			tSysInfo.uInit.tFinish.bIF_SysInit = 1;
+			tSysInfo.uInit.tFinish.bIF_Gpio = 1;
 
 			//没有任务就调度关闭任务
 			if (tSysInfo.eDevState != DS_BOOTING)

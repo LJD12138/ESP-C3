@@ -198,7 +198,17 @@ void vBoard_StartTask(void *p_v_parameters)
 {
 	(void)p_v_parameters;
 
-	mainENTER_CRITICAL();
+	/* 注意: 此处**不能**用 mainENTER_CRITICAL()(portENTER_CRITICAL) 包裹整个初始化表。
+	 * 进入临界区后 FreeRTOS 会把中断阈值提升到 RVHAL_EXCM_LEVEL,
+	 * 此时 xPortCanYield() == false, newlib 的 locks.c 会认为当前处于 ISR 上下文:
+	 *   - 递归锁(malloc / stdio / __sinit)  -> abort() at newlib/src/locks.c:145
+	 *   - 非递归锁但需阻塞              -> abort() at newlib/src/locks.c:150
+	 * 而初始化表内部存在 vsnprintf(sMyPrint/log_e)、malloc(LVGL/UniDisplay)、
+	 * xTaskCreate 等操作, 必然踩中该 abort。
+	 * 这里真正需要的只是"初始化期间不被其它任务抢占", 用挂起调度器实现即可(中断仍使能)。 */
+	#if (boardUSE_OS)
+	vTaskSuspendAll();
+	#endif  /* boardUSE_OS */
 
 	for (size_t i = 0; i < sizeof(c_task_init_table) / sizeof(c_task_init_table[0]); i++)
 	{
@@ -247,9 +257,8 @@ void vBoard_StartTask(void *p_v_parameters)
 		}
 	}
 
-	mainEXIT_CRITICAL();
-
 	#if (boardUSE_OS)
+	xTaskResumeAll();
 	vTaskDelete(NULL);
 	#endif  /* boardUSE_OS */
 }

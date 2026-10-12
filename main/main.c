@@ -67,7 +67,7 @@ void app_main(void)
 	#endif  /* boardWDGT_EN */
 
 	#if (boardSEGGER)
-	printf(0, "------------------APP OK--------------------!\r\n");
+	printf("------------------APP OK--------------------!\r\n");
 	#endif  //boardSEGGER
 
 	/* 创建根任务 */
