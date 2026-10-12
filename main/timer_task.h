@@ -1,28 +1,61 @@
+/***********************************************************************************************************************
+ * Project : ESP-C3
+ * Module  : ESP-C3\main
+ * File    : timer_task.h
+ * Date    : 2026-10-11
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : 软件定时器任务及各外设超时回调声明头文件
+ * -------------------------------------------------------
+ * todo    :
+ * 1. none
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
+ ************************************************************************************************************************/
+
 #ifndef TIMER_TASK_H_
 #define TIMER_TASK_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif  /* __cplusplus */
+
+//****************************************************Includes******************************************************************//
 #include "main.h"
-#include "board_config.h"
-#include "freertos/freertos.h"
+
+#if (boardUSE_OS)
+#include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "freertos/semphr.h"
 #include "freertos/timers.h"
+#endif  /* boardUSE_OS */
 
-#if(boardCONSOLE_485_IFACE_EN)
-extern	TimerHandle_t 	tConsoleRxEnTimer; 	//单次定时器
-#endif
+#if (1)
+//****************************************************Macros********************************************************************//
 
-#if(boardPRINT_485_IFACE_EN)
-extern TimerHandle_t 	tPrintRxEnTimer; //单次定时器
-#endif
+//****************************************************Types*********************************************************************//
 
-extern TimerHandle_t 	tWakeUpBmsTimer;
+//****************************************************Globals*******************************************************************//
+#if (boardBMS_485_IFACE_EN)
+extern TimerHandle_t                    tBmsRxEnTimer;                          /* 单次定时器: BMS的485发送延时切换 */
+#endif  /* boardBMS_485_IFACE_EN */
 
-extern TimerHandle_t 	tRepetTimer;   //重复定时器  repetition
+#if (boardBMS_EN)
+extern TimerHandle_t                    tWakeUpBmsTimer;                        /* 单次定时器: 唤醒BMS开机脉冲延时关闭 */
+#endif  /* boardBMS_EN */
 
-void vTimer_TaskInit(void);
-#if(boardLOW_POWER)
+//****************************************************Extern********************************************************************//
+s8   cTimer_TaskInit(void);
+
+#if (boardLOW_POWER)
 void vCount_EnterLowPower(void);
 void vCount_ExitLowPower(void);
-#endif
-#endif
+#endif  /* boardLOW_POWER */
+
+#endif  /* 1 */
+
+#ifdef __cplusplus
+}
+#endif  /* __cplusplus */
+
+#endif  /* TIMER_TASK_H_ */

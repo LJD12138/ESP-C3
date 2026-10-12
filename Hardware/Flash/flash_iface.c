@@ -1,91 +1,106 @@
+/*******************************************************************************************************************************
+ * Project : APP
+ * Module  : APP\Hardware\Flash
+ * File    : flash_iface.c
+ * Date    : 2026-09-20
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : Flash通用硬件接口实现(支持GD32内部Flash与SFUD/QSPI外部Flash)
+ * -------------------------------------------------------
+ * todo    :
+ * 1. none
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
+ *******************************************************************************************************************************/
+
+//****************************************************Includes******************************************************************//
 #include "Flash/flash_iface.h"
 #include "Print/print_task.h"
 
-#if(boardUSE_SFUD)
+#if (boardUSE_SFUD)
 #include <sfud.h>
-#elif(boardIC_TYPE == boardIC_GD32F30X)
+#elif (boardIC_TYPE == boardIC_GD32F30X || boardIC_TYPE == boardIC_GD32F50X)
 #include "Flash/flash_gd32.h"
-#elif(boardIC_TYPE == boardIC_STM32H7XX)
+#elif (boardIC_TYPE == boardIC_STM32H7XX)
 #include "Flash/flash_stm32.h"
-#elif(boardIC_TYPE == boardIC_ESP32C61)
+#elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
 #include "Flash/flash_esp32.h"
 #include "esp_partition.h"
 #include "esp_log.h"
 #endif
 
-//------------------------------------变量常量定义------------------------------------
-Flash_T  tFlash;
+//****************************************************Parameter Initialization**************************************************//
+static Flash_T s_t_flash;
 
-#if(boardUSE_SFUD)
-const sfud_flash *flash = NULL; //获取设备结构体
+#if (boardUSE_SFUD)
+const sfud_flash *flash = NULL; /* 获取设备结构体 */
 #ifdef SFUD_USING_QSPI
-const sfud_flash *qspi_flash = NULL; //获取设备结构体
-#endif  //SFUD_USING_QSPI
-#endif  //boardUSE_SFUD
+const sfud_flash *qspi_flash = NULL; /* 获取设备结构体 */
+#endif  /* SFUD_USING_QSPI */
+#endif  /* boardUSE_SFUD */
 
-#if(boardIC_TYPE == boardIC_ESP32C61)
+#if(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
 const esp_partition_t *tpPartition = NULL;
 #endif
 
-/*****************************************************************************************************************
------函数功能    Flash接口初始化
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-*****************************************************************************************************************/
+/***********************************************************************************************************************
+ * 函数功能    : Flash接口初始化
+ * 说明(备注)  : none
+ * 传入参数    : none
+ * 输出参数    : none
+ * 返回值      : true: 初始化成功, false: 初始化失败
+ ************************************************************************************************************************/
 bool bFlash_IfaceInit(void)
 {
-    #if(boardIC_TYPE == boardIC_ESP32C61)
+    #if(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
     tpPartition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_ANY, "storage");
 
     if(tpPartition == NULL)
         return false;
     #endif
 
-	#if(boardUSE_SFUD)
-	if(sfud_init() == SFUD_SUCCESS)
+	#if (boardUSE_SFUD)
+	if (sfud_init() == SFUD_SUCCESS)
 	{
-		//IC1 Flash初始化
-		flash = sfud_get_device_table() + 0;  //获取设备信息
+		/* IC1 Flash初始化 */
+		flash = sfud_get_device_table() + 0;  /* 获取设备信息 */
 		
-		//IC2 QSPI初始化
+		/* IC2 QSPI初始化 */
 		#ifdef SFUD_USING_QSPI
 		sfud_qspi_fast_read_enable(sfud_get_device(SFUD_W25Q_DEVICE_INDEX1), 4);
 		qspi_flash = sfud_get_device(SFUD_W25Q_DEVICE_INDEX1);
-		#endif
+		#endif  /* SFUD_USING_QSPI */
 		return true;
 	}
 	else
 		return false;
 	#else
 	return true;
-	#endif  //boardUSE_SFUD
+	#endif  /* boardUSE_SFUD */
 }
 
-/*****************************************************************************************************************
------函数功能    flash 擦除函数
------说明(备注)  none
------传入参数    start_addr:开始地址    end_addr:结束地址
------输出参数    none
------返回值      none
-*****************************************************************************************************************/
-s8 cFlash_EraseSector(u32 start_addr,u32 end_addr)
+/***********************************************************************************************************************
+ * 函数功能    : Flash扇区擦除函数
+ * 说明(备注)  : 根据当前芯片类型分发至对应底层驱动
+ * 传入参数    : star_addr: 开始地址, end_addr: 结束地址
+ * 输出参数    : none
+ * 返回值      : >0: 成功, <=0: 失败
+ ************************************************************************************************************************/
+s8 cFlash_EraseSector(u32 start_addr, u32 end_addr)
 {
-	#if(boardIC_TYPE == boardIC_GD32F30X)
-	if(bFlash_Gd32EraseSector(star_addr, end_addr) == false)
+	#if(boardIC_TYPE == boardIC_GD32F30X || boardIC_TYPE == boardIC_GD32F50X)
+	if (bFlash_Gd32EraseSector(start_addr, end_addr) == false)
 		return -1;
-	#elif(boardIC_TYPE == boardIC_STM32H7XX)
-	#if(boardUSE_SFUD)
-	if(flash == NULL)
+	#elif (boardIC_TYPE == boardIC_STM32H7XX)
+	#if (boardUSE_SFUD)
+	if (flash == NULL)
 		return -1;
 	
-	if(sfud_erase(flash,star_addr, end_addr) != SFUD_SUCCESS)
+	if (sfud_erase(flash, start_addr, end_addr) != SFUD_SUCCESS)
 		return -2;
 	#else
 	
-	#endif  //boardUSE_SFUD
-    #elif(boardIC_TYPE == boardIC_ESP32C61)
+	#endif  /* boardUSE_SFUD */
+    #elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
     if(tpPartition->address > start_addr)
         return -1;
 
@@ -99,39 +114,38 @@ s8 cFlash_EraseSector(u32 start_addr,u32 end_addr)
         return -3;
     }
         
-	#endif  //boardIC_TYPE
-	
+	#endif  /* boardIC_TYPE */
 	
 	return 1;
 }
 
-/*****************************************************************************************************************
------函数功能    flash 写入函数,按8位写入
------说明(备注)  none
------传入参数    start_addr:开始地址    data:数据    len:字节长度
------输出参数    none
------返回值      0:写入成功    反之失败
-*****************************************************************************************************************/
-s8 cFlash_Write8BitData(u32 start_addr, u8* data, u32 len)
+/***********************************************************************************************************************
+ * 函数功能    : Flash按8位字节写入函数
+ * 说明(备注)  : 根据当前芯片类型分发至对应底层驱动
+ * 传入参数    : start_addr: 开始地址, data: 数据指针, len: 字节长度
+ * 输出参数    : none
+ * 返回值      : 1: 写入成功, 0: 入参为空, 负数: 失败
+ ************************************************************************************************************************/
+s8 cFlash_Write8BitData(u32 start_addr, u8 *data, u32 len)
 {
-	if(data == NULL || len == 0)
+	if (data == NULL || len == 0)
 		return 0;
 	
 	
-	#if(boardIC_TYPE == boardIC_GD32F30X)
-	if(bFlash_Gd32Write32Bit(start_addr,(u32*)data,len) == false)
+	#if(boardIC_TYPE == boardIC_GD32F30X ||boardIC_TYPE == boardIC_GD32F50X)
+	if (bFlash_Gd32Write32Bit(start_addr, (u32*)data, len) == false)
 		return -1;
-	#elif(boardIC_TYPE == boardIC_STM32H7XX)
-	#if(boardUSE_SFUD)
-	if(flash == NULL)
+	#elif (boardIC_TYPE == boardIC_STM32H7XX)
+	#if (boardUSE_SFUD)
+	if (flash == NULL)
 		return -1;
 	
-	if(sfud_write(flash, start_addr, len, data) != SFUD_SUCCESS)
+	if (sfud_write(flash, start_addr, len, data) != SFUD_SUCCESS)
 		return -2;
 	#else
 //	#error "错误,当前STMH7 不带内部Flash操作";
 	#endif  //boardUSE_SFUD
-    #elif(boardIC_TYPE == boardIC_ESP32C61)
+    #elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
     if(tpPartition->address > start_addr)
         return -1;
 
@@ -140,47 +154,44 @@ s8 cFlash_Write8BitData(u32 start_addr, u8* data, u32 len)
         return -2;
     }
         
-	#endif  //boardIC_TYPE
-	
+	#endif  /* boardIC_TYPE */
 
-	if(uPrint.tFlag.bOperFlash)
+	if (uPrint.tFlag.bOperFlash)
 	{
-		sMyPrint("\r\n 写入的数据 长度= %d ",len);
-		for(int i = 0; i < len; i++)
-		{
-			sMyPrint("%x ",data[i]);
-		}
+		sMyPrint("\r\n 写入的数据 长度= %d ", len);
+		for (int i = 0; i < len; i++)
+			sMyPrint("%x ", data[i]);
 		sMyPrint("\r\n");
 	}
 	
 	return 1;
 }
 
-/*****************************************************************************************************************
------函数功能    flash 读取函数,按8位读取
------说明(备注)  none
------传入参数    start_addr:开始地址    data:存放数据buff的指针   len:字节长度
------输出参数    none
------返回值      none
-*****************************************************************************************************************/
-s8 cFlash_Read8BitData(u32 start_addr, u8* data, u32 len)
+/***********************************************************************************************************************
+ * 函数功能    : Flash按8位字节读取函数
+ * 说明(备注)  : 根据当前芯片类型分发至对应底层驱动
+ * 传入参数    : start_addr: 开始地址, data: 存放数据buff指针, len: 字节长度
+ * 输出参数    : data
+ * 返回值      : 1: 读取成功, 0: 入参为空, 负数: 失败
+ ************************************************************************************************************************/
+s8 cFlash_Read8BitData(u32 start_addr, u8 *data, u32 len)
 {
-	if(data == NULL || len == 0)
+	if (data == NULL || len == 0)
 		return 0;
 	
-	#if(boardIC_TYPE == boardIC_GD32F30X)
+	#if(boardIC_TYPE == boardIC_GD32F30X || boardIC_TYPE == boardIC_GD32F50X)
 	vFlash_Gd32Read8Bit(start_addr, data, len);
-	#elif(boardIC_TYPE == boardIC_STM32H7XX)
-	#if(boardUSE_SFUD)
-	if(flash == NULL)
+	#elif (boardIC_TYPE == boardIC_STM32H7XX)
+	#if (boardUSE_SFUD)
+	if (flash == NULL)
 		return -1;
 	
-	if(sfud_read(flash, start_addr, len, data) != SFUD_SUCCESS)
+	if (sfud_read(flash, start_addr, len, data) != SFUD_SUCCESS)
 		return -1;
 	#else
 	
-	#endif  //boardUSE_SFUD
-    #elif(boardIC_TYPE == boardIC_ESP32C61)
+	#endif  /* boardUSE_SFUD */
+    #elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
 
     if(tpPartition->address > start_addr)
         return -1;
@@ -190,35 +201,33 @@ s8 cFlash_Read8BitData(u32 start_addr, u8* data, u32 len)
         return -2;
     }
         
-	#endif  //boardIC_TYPE
+	#endif  /* boardIC_TYPE */
 	
 
-	
-	if(uPrint.tFlag.bOperFlash)
+	if (uPrint.tFlag.bOperFlash)
 	{
-		sMyPrint("\r\n读取的数据 长度= %d ",len);
-		for(int i = 0; i < len; i++)
-		{
-			sMyPrint("%x ",data[i]);
-		}
+		sMyPrint("\r\n读取的数据 长度= %d ", len);
+		for (int i = 0; i < len; i++)
+			sMyPrint("%x ", data[i]);
 		sMyPrint("\r\n");
 	}
 	
 	return 1;
 }
 
-#if(FLASH_DEBUG)
-//#include "systick.h"
-/*****************************************************************************************************************
------函数功能    flash测试Demo
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-*****************************************************************************************************************/
+#if (FLASH_DEBUG)
+#include "systick.h"
+
 void sfud_qspi_test_demo(void);
 void sfud_spi_test_demo(void);
 
+/***********************************************************************************************************************
+ * 函数功能    : Flash读写测试函数
+ * 说明(备注)  : none
+ * 传入参数    : none
+ * 输出参数    : none
+ * 返回值      : none
+ ************************************************************************************************************************/
 void vFlash_ReadWriteTest(void)
 {
     /*
@@ -266,6 +275,13 @@ void vFlash_ReadWriteTest(void)
 //	sfud_qspi_test_demo();
 }
 
+/***********************************************************************************************************************
+ * 函数功能    : SFUD 标准 SPI Flash 读写测试示例
+ * 说明(备注)  : 仅 FLASH_DEBUG 调试用; 擦除 flashBOOT_INFO 扇区后写入并读回校验 512 字节
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : 无
+ ************************************************************************************************************************/
 void sfud_spi_test_demo(void)
 {
 	s8 ret = 0;
@@ -344,6 +360,13 @@ void sfud_spi_test_demo(void)
 }
 
 #ifdef SFUD_USING_QSPI
+/***********************************************************************************************************************
+ * 函数功能    : SFUD QSPI Flash 读写测试示例
+ * 说明(备注)  : 仅 FLASH_DEBUG 调试用; 擦除地址 0 处后写入并读回校验 512 字节
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : 无
+ ************************************************************************************************************************/
 void sfud_qspi_test_demo(void)
 {
 	u16 size = 512;
@@ -357,7 +380,7 @@ void sfud_qspi_test_demo(void)
     /* prepare write data */
     for (int i = 0; i < size; i++)
     {
-		if(i >= 256)
+		if (i >= 256)
 			uc_w_buf[i] = 512 - i - 1;
 		else
 			uc_w_buf[i] = i;
@@ -417,5 +440,5 @@ void sfud_qspi_test_demo(void)
     }
     sMyPrint("数据比较成功.\r\n");
 }
-#endif  //SFUD_USING_QSPI
-#endif  //FLASH_DEBUG
+#endif  /* SFUD_USING_QSPI */
+#endif  /* FLASH_DEBUG */

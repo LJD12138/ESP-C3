@@ -167,5 +167,5 @@ direct_dependencies:
 - lambage/esp_lcd_touch_ft6336u
 - lvgl/lvgl
 manifest_hash: 9a14263c5cf3e85eb7236b0c78556a613076b2c2ac03c9fead3b6f4168103580
-target: esp32c3
+target: esp32
 version: 2.0.0

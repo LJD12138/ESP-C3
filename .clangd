@@ -1,0 +1,26 @@
+CompileFlags:
+  Add:
+    # 补充目标架构宏定义 (解决通用 Clang 未知 Xtensa 目标导致的代码分支错误)
+    - -D__XTENSA__=1
+    - -D__xtensa__=1
+    # 补充 Xtensa GCC (ESP32) 工具链标准库与编译器头文件 (解决 sys/reent.h not found)
+    - -isystem
+    - C:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include
+    - -isystem
+    - C:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include
+    - -isystem
+    - C:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include-fixed
+    # 补充 RISC-V GCC (ESP32-C3) 工具链标准库与编译器头文件
+    - -isystem
+    - C:/Espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/riscv32-esp-elf/include
+    - -isystem
+    - C:/Espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/lib/gcc/riscv32-esp-elf/14.2.0/include
+    - -isystem
+    - C:/Espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/lib/gcc/riscv32-esp-elf/14.2.0/include-fixed
+  Remove:
+    # 移除 GCC 专有、Clang 无法识别的编译参数，消除 Unknown argument 错误
+    - -mlongcalls
+    - -fno-shrink-wrap
+    - -fstrict-volatile-bitfields
+    - -fno-tree-switch-conversion
+    - -fno-jump-tables

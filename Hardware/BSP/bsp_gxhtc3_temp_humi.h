@@ -19,7 +19,7 @@
 extern "C" {
 #endif
 
-/* ==========================================includes====================================*/
+#include "main.h"
 #include "board_config.h"
 
 #if(1)

@@ -1,86 +1,93 @@
+/***********************************************************************************************************************
+ * Project : ESP-C3
+ * Module  : ESP-C3\Hardware\MD_Display
+ * File    : md_display_task.h
+ * Date    : 2026-10-10
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : 显示任务外壳头文件 (任务入口/页面导出/记忆参数/兼容接口)
+ * -------------------------------------------------------
+ * todo    :
+ * 1. none
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
+ ************************************************************************************************************************/
+
 #ifndef MD_DISPLAY_TASK_H_
 #define MD_DISPLAY_TASK_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif  /* __cplusplus */
+
+//****************************************************Includes******************************************************************//
 #include "main.h"
-#include "board_config.h"
 
-#if(boardDISPLAY)
+#if (boardDISPLAY_EN)
+#include "uni_disp_core.h"
 
-#if(boardENG_MODE_EN)
-#include "md_lcd_eng_mode.h"
-#endif
+#if (boardUSE_OS)
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#endif  /* boardUSE_OS */
 
-typedef enum : uint8_t
-{
-	ID_MAIN_0 = 0,	//循环切换屏幕
-    ID_MAIN_1 = 1,
-    ID_MAIN_2 = 2,
-    ID_MAIN_3 = 3,
-}ScreenId_E;
+//****************************************************Macros********************************************************************//
 
-// 设备类型枚举
-typedef enum : uint8_t
-{
-	DEV_TYPE_AC = 0,    // DCAC设备
-	DEV_TYPE_PV,        // PV设备
-	DEV_TYPE_LIGHT,     // Light设备
-	DEV_TYPE_USB_A,     // USB A设备
-	DEV_TYPE_USB_C1,    // USB C1设备
-	DEV_TYPE_USB_C2,    // USB C2设备
-	DEV_TYPE_USB_DC,    // DC设备
-	DEV_TYPE_MAX
-}DevType_E;
+//****************************************************Types*********************************************************************//
 
+/* 显示模块记忆参数, 存入 APP 参数区 */
+#pragma pack(1)
 typedef struct
 {
-    bool             bLight;            //1:打开   0:关闭
-	bool             bSleepShow;       //1:打开   0:关闭
-	ScreenId_E 		 eTargetScreen;     //目标屏幕ID
-	vu16             usAutoOffTime;     //息屏时间
-	vu16             usAutoOffCnt;      //息屏倒计时
-	
-	// 设备状态
-	bool             bDevAcState;      // DCAC设备状态(true=开, false=关)
-	bool             bDevPvState;      // PV设备状态
-	bool             bDevLightState;   // Light设备状态
-	bool             bDevUsbAState;   // USB A设备状态
-	bool             bDevUsbC1State;  // USB C1设备状态
-	bool             bDevUsbC2State;  // USB C2设备状态
-	bool             bDevDcState;     // DC设备状态
-}Disp_T;  
-extern Disp_T   tDisp; 
+	u8					ucHighLightValue;
+	u8					ucLowLightValue;
+	vu16				usAutoOffTime;		/* 存储息屏的时间,大于0存在有息屏,0为常亮 */
+}DispMemParam_T;
+#pragma pack()
 
-#pragma pack(1) //强制一个字节对齐
-typedef struct
-{
-	u8           ucHighLightValue;
-	u8           ucLowLightValue;
-	vu16         usAutoOffTime;      //存储息屏的时间,大于0存在有息屏,0为常亮
-}DispMenParam_T;
-#pragma pack()  //取消一个字节对齐
+//****************************************************Globals*******************************************************************//
+#if (boardUSE_OS)
+extern TaskHandle_t tDispTaskHandler;
+#endif  /* boardUSE_OS */
 
-bool bDisp_TaskInit(void);
-bool bDisp_Switch(SwitchType_E type, bool fore_en);
-void vDisp_RefreshDisplayParam(void);
-void vDisp_AutoOffCnt(void);
-void vDisp_TickTimer(void);
-bool bDisp_MemParamInit(DispMenParam_T* p_lcd_mem);
-u16 usDisp_ErrCodeDisplay(void);
-bool bDisp_ChangeScreen(ScreenId_E screenId);
+/* 页面控制块全局导出 */
+extern const DispPage_T G_tPageInit;        /* 初始化页 */
+extern const DispPage_T G_tPageBoot;        /* 开机步进动画页 */
+extern const DispPage_T G_tPageWork;        /* 主工作页 */
+extern const DispPage_T G_tPageClosing;     /* 关机中页 */
+extern const DispPage_T G_tPageShutDown;    /* 关机状态页 */
+extern const DispPage_T G_tPageFault;       /* 故障专用页 */
 
-// 统一设备状态设置函数
-void vDisp_SetDevStateIcon(DevType_E devType, bool bState);
+#if (boardUPDATE)
+extern const DispPage_T G_tPageUpdate;      /* 升级页 */
+#endif  /* boardUPDATE */
 
-#if(!boardUSE_OS)
+#if (boardENG_MODE_EN)
+extern const DispPage_T G_tPageEng;         /* 工程模式页 */
+#endif  /* boardENG_MODE_EN */
+
+//****************************************************Extern********************************************************************//
+s8   cDisp_TaskInit(void);
+bool bDisp_MemParamInit(DispMemParam_T* p_disp_mem);
+uint16_t usDisp_ErrCodeDisplay(void);
+
+#if (boardENG_MODE_EN)
+void vDisp_MemParamSet(u8 item, bool add);
+#endif  /* boardENG_MODE_EN */
+
+#if (!boardUSE_OS)
 void vDisp_Task(void *pvParameters);
-#endif
+#endif  /* !boardUSE_OS */
 
-#if(boardLOW_POWER)
+#if (boardLOW_POWER)
 void vLcd_EnterLowPower(void);
 void vLcd_ExitLowPower(void);
-#endif  //boardLOW_POWER
+#endif  /* boardLOW_POWER */
 
-#endif  //boardDISPLAY
+#endif  /* boardDISPLAY_EN */
 
-#endif  //MD_DISPLAY_TASK_H_
+#ifdef __cplusplus
+}
+#endif  /* __cplusplus */
 
+#endif  /* MD_DISPLAY_TASK_H_ */
 

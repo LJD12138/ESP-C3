@@ -1,5 +1,10 @@
 {
   "C_Cpp.intelliSenseEngine": "disabled",
+  "clangd.path": "C:/Espressif/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin/clangd.exe",
+  "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}/build",
+    "--query-driver=C:/Espressif/tools/**/bin/*gcc*.exe,C:/Espressif/tools/**/bin/*gcc*"
+  ],
   "idf.espIdfPathWin": "c:\\Espressif\\frameworks\\esp-idf-v5.5.2",
   "idf.pythonInstallPath": "C:\\Espressif\\tools\\idf-python\\3.11.2\\python.exe",
   "idf.openOcdConfigs": [

@@ -24,18 +24,15 @@
 
 #if (boardUSE_OS && boardHEALTH_MONITOR_EN)
 #include <string.h>
-#include "esp_heap_caps.h"
 #include "Sys/sys_task.h"
 #include "Print/print_task.h"
+#include "esp_heap_caps.h"
 
-//****************************************************Macros********************************************************************//
-/* ESP-IDF 无 configTOTAL_HEAP_SIZE,以堆区总容量作为等价基准 */
-#define			HEALTH_TOTAL_HEAP_BYTES()				(heap_caps_get_total_size(MALLOC_CAP_DEFAULT))
 
 //****************************************************Task Declaration**********************************************************//
 #if (boardUSE_OS)
 #define			HEALTH_TASK_PRIO						1		/* 任务优先级(后台级) */
-#define			HEALTH_TASK_STK_SIZE					320		/* 任务堆栈(字) 1280B: 容纳 uxTaskGetSystemState 与格式化 */
+#define			HEALTH_TASK_STK_SIZE					(1024U * 3U)		/* 任务堆栈(字) 3072B: 容纳 uxTaskGetSystemState 与格式化 */
 TaskHandle_t	tHealthTaskHandler = NULL;							/* 任务句柄 */
 static void v_health_task(void *pvParameters);					/* 任务函数 */
 #endif  /* boardUSE_OS */
@@ -58,6 +55,9 @@ static void v_health_task(void *pvParameters);					/* 任务函数 */
 #define			HEALTH_CPU_WARN_PCT						85		/* CPU 高负载警告阈值(%) */
 
 #define			HEALTH_TASK_STATUS_MAX					32		/* 任务状态静态数组容量(ESP-IDF 系统任务较多) */
+
+/* ESP-IDF 无 configTOTAL_HEAP_SIZE,以堆区总容量作为等价基准 */
+#define			HEALTH_TOTAL_HEAP_BYTES()				(heap_caps_get_total_size(MALLOC_CAP_DEFAULT))
 
 //****************************************************Parameter Initialization**************************************************//
 volatile uint32_t ulHealthIdleLoopCnt = 0;

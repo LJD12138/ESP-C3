@@ -1,140 +1,84 @@
+/***********************************************************************************************************************
+ * Project : ESP-C3
+ * Module  : ESP-C3\Hardware\Key
+ * File    : key_task.h
+ * Date    : 2026-10-10
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : 按键任务头文件及对外业务接口定义
+ * -------------------------------------------------------
+ * todo    :
+ * 1. none
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
+ ************************************************************************************************************************/
+
 #ifndef KEY_TASK_H_
 #define KEY_TASK_H_
 
-#include "main.h"
-#include "board_config.h"
-#include "driver/gpio.h"
+#ifdef __cplusplus
+extern "C" {
+#endif  /* __cplusplus */
 
-//#define		//4Tab									//13Tab
-#define			keyTASK_CYCLE_TIME						10		//按键任务更新时间
+//****************************************************Includes******************************************************************//
+#include "Key/key_iface.h"
 
-#define			keyNUM									3		//按键的数量
-#define			keyGROUP_NUM							5		//组合按键种类   
-#define			keySHORT_PRESS_TIME						2		//短按按键的最小时间*10ms
-#define			keyLONG_PRESS_TIME						120		//长按按键的最小时间*10ms
-#define     	keySUPER_LONG_PRESS_TIME           		200	    //超长按按键的最小时间*10ms
-#define			keyNUPRESS_MAX_TIME						35		//组合按键最大的等待时间*10ms
-#define			keyADD_SPACE_TIME						20		//长按累加间隔
+#if (boardKEY_EN)
 
-// #define     	keyGPIO_POWER_RCU       				RCU_GPIOC
-// #define     	keyGPIO_POWER_PORT      				GPIOC
-#define     	keyGPIO_POWER_PIN       				GPIO_NUM_9
+//****************************************************Macros********************************************************************//
+#define			keyTASK_CYCLE_TIME						10		/* 按键任务更新时间 (ms) */
+#define			keyGROUP_NUM							10		/* 组合按键种类/最大事件缓冲深度 */
+#define			keySHORT_PRESS_TIME						2		/* 短按按键的最小时间 * 10ms = 20ms */
+#define			keyLONG_PRESS_TIME						90		/* 长按按键的最小时间 * 10ms = 900ms */
+#define			keySUPER_LONG_PRESS_TIME				250		/* 超长按按键的最小时间 * 10ms = 2500ms */
+#define			keyNUPRESS_MAX_TIME						35		/* 组合按键最大的等待时间 * 10ms = 350ms */
+#define			keyADD_SPACE_TIME						20		/* 长按累加间隔 * 10ms = 200ms */
 
-// #define     	keyGPIO_AC_RCU          				RCU_GPIOB
-// #define     	keyGPIO_AC_PORT         				GPIOB
-// #define     	keyGPIO_AC_PIN          				GPIO_NUM_0
-
-// #define     	keyGPIO_USB_RCU        					RCU_GPIOB
-// #define     	keyGPIO_USB_PORT        				GPIOB
-// #define     	keyGPIO_USB_PIN        					GPIO_NUM_23
-
-
-// #define     	keyGPIO_LIGHT_PIN        				GPIO_NUM_0
-
-
-__STATIC_INLINE bool bKey_PowerIsPress(void)          
-{    
-    if(gpio_get_level(keyGPIO_POWER_PIN) == 0)//读取按键
-        return true;
-    else
-        return false;
-}
-
-__STATIC_INLINE bool bKey_AcIsPress(void)
+//****************************************************Types*********************************************************************//
+/* 触发事件枚举 */
+typedef enum
 {
-    // if(gpio_get_level(keyGPIO_AC_PIN) == 0)//读取按键
-    //     return true;
-    // else
-        return false;
-}
+	KTE_FUN_NULL = 0,		/* 空事件 */
+	KTE_POWER_LONG,			/* 电源键长按 */
+	KTE_POWER_SHORT,		/* 电源键短按 */
+	KTE_POWER_SUPER_LONG,	/* 电源键超长按 */
+	KTE_AC_LONG,			/* AC键长按 */
+	KTE_AC_SHORT,			/* AC键短按 */
+	KTE_AC_SUPER_LONG,		/* AC键超长按 */
+	KTE_LIGHT_LONG,			/* 照明灯长按 */
+	KTE_LIGHT_SHORT,		/* 照明灯短按 */
+	KTE_LIGHT_SUPER_LONG,	/* 照明灯超长按 */
+	KTE_USB_LONG,			/* USB键长按 */
+	KTE_USB_SHORT,			/* USB键短按 */
+	KTE_USB_SUPER_LONG,		/* USB键超长按 */
+	KTE_DC_LONG,			/* DC键长按 */
+	KTE_DC_SHORT,			/* DC键短按 */
+	KTE_DC_SUPER_LONG,		/* DC键超长按 */
+}KeyTriEvent_E;
 
-__STATIC_INLINE bool bKey_LightIsPress(void)
-{
-    // if(gpio_get_level(keyGPIO_LIGHT_PIN) == 0)//读取按键
-    //     return true;
-    // else
-        return false;
-}
+//****************************************************Globals*******************************************************************//
+typedef KeyTriEvent_E KeyTriEvent_e;
 
-__STATIC_INLINE bool bKey_UsbIsPress(void)
-{
-    // if(gpio_get_level(keyGPIO_USB_PIN) == 0)//读取按键
-    //     return true;
-    // else
-        return false;
-}
-
-__STATIC_INLINE bool bKey_DcIsPress(void)
-{
-    // if((GPIO_ISTAT(keyGPIO_DC_PORT)&(keyGPIO_DC_PIN)) == 0)//读取按键
-    //     return true;
-    // else
-        return false;
-}
-
-
-typedef enum : uint8_t
-{
-    KTE_FUN_NULL = 0,
-    KTE_POWER_LONG,
-    KTE_POWER_SHORT,
-	KTE_POWER_SUPER_LONG,
-    KTE_AC_LONG,
-	KTE_AC_SHORT,
-	KTE_AC_SUPER_LONG,
-	KTE_LIGHT_LONG,
-	KTE_LIGHT_SHORT,
-	KTE_LIGHT_SUPER_LONG,
-	KTE_USB_LONG,
-	KTE_USB_SHORT,
-	KTE_USB_SUPER_LONG,
-	KTE_DC_LONG,
-	KTE_DC_SHORT,
-	KTE_DC_SUPER_LONG,
-} KeyTriEvent_e; //触发事件
-
-typedef struct
-{
-    bool    			(*IsPress)(void);        
-    vs16    			sOnPressCnt;	  	//按键按下计时  0:表示按键没触发   -1:表示按键功能已经被记录
-	bool        		bEnMulitFunKey;     //使能多功能按键
-	bool        		bEnLongPressAdd;    //使能长按累加      
-}KeyHandler_t;
-
-
-void vKey_TaskInit(void);
+//****************************************************Extern********************************************************************//
+s8   cKey_TaskInit(void);
 void vKey_PowerIsTri(void);
 void vKey_ParamInit(void);
+bool bKey_IsAnyPress(void);
+bool bKey_IsFactoryModePress(void);
+bool bKey_IsEngModePress(void);
 
-#if(!boardUSE_OS)
-void vKey_Task(void *pvParameters);
-#endif
+#if (!boardUSE_OS)
+void vKey_Task(void *p_v_parameters);
+#endif  /* !boardUSE_OS */
 
-#if(boardLOW_POWER)
+#if (boardLOW_POWER)
 void vKey_EnterLowPower(void);
 void vKey_ExitLowPower(void);
-#endif
+#endif  /* boardLOW_POWER */
 
-#endif
+#endif  /* boardKEY_EN */
 
+#ifdef __cplusplus
+}
+#endif  /* __cplusplus */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif  /* KEY_TASK_H_ */

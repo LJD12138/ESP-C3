@@ -1,7 +1,16 @@
+/*******************************************************************************************************************************
+ * Project : ESP-C3
+ * Module  : ESP-C3\main
+ * File    : main.c
+ * Date    : 2026-09-20
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : 应用程序主入口，负责时钟中断初始化、向量表偏移配置及RTOS启动任务创建
+ * -------------------------------------------------------
+ * todo    :
+ * 1. none
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
 
-/****************************************************/
-
-    /*                                             
                    _ooOoo_
                   o8888888o
                   88" . "88
@@ -20,39 +29,57 @@
      \  \ `-.   \_ __\ /__ _/   .-` /  /
 ======`-.____`-.___\_____/___.-`____.-'======
                    `=---='
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+===============================================================
     佛祖保佑       永不宕机     永无BUG
-***************************************************/
+===============================================================
+*/
+
+//****************************************************Includes******************************************************************//
 #include "main.h"
-#include "board_config.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
 #if (boardWDGT_EN)
 #include "fwdgt.h"
-#endif  //boardWDGT_EN
-
-//****************************************************任务初始化**************************************************//
-TaskHandle_t    StartTask_Handler; 
-#define      	START_TASK_PRIO             			1                   		//任务优先级 
-void vBoard_StartTask(void *pvParameters);
+#endif  /* boardWDGT_EN */
 
 
+//****************************************************Task Declaration**********************************************************//
+#define      	startTASK_PRIO                         1U       /* 任务优先级 */
+#define			startTASK_STK_SIZE                     (1024U * 4U)	/* 任务堆栈 */
+static TaskHandle_t s_start_task_handler; 
+
+//****************************************************Function Declaration******************************************************//
+
+/***********************************************************************************************************************
+ * 函数功能    : 应用程序主入口
+ * 说明(备注)  : 完成板级外设初始化，并创建 FreeRTOS 根任务
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : 无
+ ************************************************************************************************************************/
 void app_main(void)
 {
-    vBoard_SysInit();
+	vBoard_SysInit();
 
-    #if (boardWDGT_EN)
-    vFwdgt_PrintResetReason();      //打印上次复位原因
-    #endif  //boardWDGT_EN
+	#if (boardWDGT_EN)
+	vFwdgt_PrintResetReason();
+	#endif  /* boardWDGT_EN */
 
-    // 创建开始任务
-    xTaskCreate((TaskFunction_t )vBoard_StartTask,      //任务函数
-                (const char* )"StartTask",              //任务名称
-                (uint16_t ) 4096,                       //任务堆栈大小 (增大至4096以支持日志输出)
-                (void* )NULL,                           //传递给任务函数的参数
-                (UBaseType_t ) START_TASK_PRIO,         //任务优先级
-                (TaskHandle_t*)&StartTask_Handler);     //任务句柄
-    
-    // vTaskStartScheduler(); 
+	#if (boardSEGGER)
+	printf(0, "------------------APP OK--------------------!\r\n");
+	#endif  //boardSEGGER
+
+	/* 创建根任务 */
+	if (xTaskCreate((TaskFunction_t)vBoard_StartTask,
+	                "StartTask",
+	                (uint16_t)startTASK_STK_SIZE,
+	                NULL,
+	                (UBaseType_t)startTASK_PRIO,
+	                &s_start_task_handler) != pdPASS)
+	{
+		/* 根任务创建失败(堆耗尽), 复位重试, 避免静默挂死 */
+		NVIC_SystemReset();
+	}
 }
+

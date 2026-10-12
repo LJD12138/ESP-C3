@@ -30,9 +30,9 @@ extern "C" {
 #if (boardDISPLAY_EN)
 
 #if (boardUSE_OS)
-#include "freertos/freertos.h"
+#include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#endif  //boardUSE_OS
+#endif  /* boardUSE_OS */
 
 //****************************************************Macros********************************************************************//
 

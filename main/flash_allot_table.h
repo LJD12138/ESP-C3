@@ -63,6 +63,7 @@
 
 #define     	flashAPP_INFO_SIZE      				((64 * KByte) + 1)
 #define     	flashAPP_INFO_SATRT     				(0x00310000)
+#define     	flashAPP_INFO_START     				flashAPP_INFO_SATRT
 #define     	flashAPP_INFO_END		 				(flashAPP_INFO_SATRT + flashAPP_INFO_SIZE - 1)
 
 /*------------ IAP_AP分区表结束 -------------------------------------*/

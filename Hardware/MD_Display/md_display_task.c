@@ -1,587 +1,281 @@
-/*****************************************************************************************************************
-*                                                                                                                *
- *                                         Disp显示任务                                                          *
-*                                                                                                                *
-******************************************************************************************************************/
+/*******************************************************************************************************************************
+ * Project : ESP-C3
+ * Module  : ESP-C3\Hardware\MD_Display
+ * File    : md_display_task.c
+ * Date    : 2026-10-10
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : UniDisplay 显示任务外壳实现 - 调度引擎驱动/页面注册/兼容控制
+ * -------------------------------------------------------
+ * todo    :
+ * 1. none
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
+ *******************************************************************************************************************************/
+
+//****************************************************Includes******************************************************************//
 #include "MD_Display/md_display_task.h"
 
-#if(boardDISPLAY)
-#include "MD_Display/md_display_api.h"
+#if (boardDISPLAY_EN)
 #include "MD_Display/md_display_iface.h"
-#include "MD_Display/lvgl_ui.h"
-#include "Print/print_task.h"
-#include "Sys/sys_task.h"
 
-#include "lvgl.h"
-#include "lv_port_disp.h"
-#include "lv_port_indev.h"
-// #include "lv_port_tft_touch.h"
-// #FF7F27
-// #325f9e
-#include "ui.h"
-#include "ui/images.h"
-#include "ui/screens.h"
+#include "uni_disp_port.h"
+#include "app_info.h"
 
-#if(boardUSE_OS)
-#include "freertos/freertos.h"
-#include "freertos/task.h"
-#include "esp_task_wdt.h"
-#endif  //boardUSE_OS
-
-//****************************************************任务参数初始化**********************************************//
-#if(boardUSE_OS)
-#define			dispTASK_PRIO                   4       //任务优先级 
-#define			dispTASK_STK_SIZE               1024*8    //任务堆栈  实际字节数 *4 (增大堆栈以支持复杂渲染)
-TaskHandle_t	tDispTaskHandler = NULL; 
-void vDisp_Task(void *pvParameters);
-#endif  //boardUSE_OS
+#if (boardBUZ_EN)
+#include "Buz/buz_task.h"
+#endif  /* boardBUZ_EN */
 
 
-//****************************************************参数初始化**************************************************//
-Disp_T   tDisp; 
+//****************************************************Task Declaration**********************************************************//
+#if (boardUSE_OS)
+#define			dispTASK_PRIO							4U		/* 任务优先级 */
+#define			dispTASK_STK_SIZE						(1024U * 6U)	/* 任务堆栈大小 (字节) */
+TaskHandle_t    tDispTaskHandler = NULL;
+void            vDisp_Task(void *pvParameters);
+#endif  /* boardUSE_OS */
+
+//****************************************************Parameter Initialization**************************************************//
+#if (boardENG_MODE_EN)
+/* 显示记忆参数步进配置表 */
+typedef struct
+{
+	void				*pParam;
+	int32_t				lMin;
+	int32_t				lMax;
+	uint8_t				ucType;				/* 0: uint16_t, 1: int8_t, 2: uint8_t */
+}DispParamStep_T;
+
+static const DispParamStep_T s_tDispParamTable[] =
+{
+	{(void *)&tAppMemParam.tDISP.ucHighLightValue, 0x88, 0x8F, 2}, /* item 0: 高亮值 */
+	{(void *)&tAppMemParam.tDISP.ucLowLightValue,  0x88, 0x8F, 2}, /* item 1: 低亮值 */
+	{(void *)&tAppMemParam.tDISP.usAutoOffTime,       0, 3600, 0}, /* item 2: 息屏时间 */
+};
+#endif  /* boardENG_MODE_EN */
 
 
-//****************************************************局部函数定义************************************************//
-static void v_disp_param_init(void);
-static void v_disp_init(void);
-static void v_disp_close(void);
-static void v_disp_shutdown(void);
-static void v_disp_err(void);
-static void v_disp_boot(void);
-static void v_disp_work(void);
-
+//****************************************************Function Declaration******************************************************//
+static bool b_task_param_init(void);
 
 /***********************************************************************************************************************
------函数功能    Disp显示任务初始化
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-bool bDisp_TaskInit(void)
+ * 函数功能    : Disp 显示任务初始化
+ * 说明(备注)  : 
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : 1: 成功, -1: 页面注册失败, -2: 任务创建失败
+ ************************************************************************************************************************/
+s8 cDisp_TaskInit(void)
 {
-	v_disp_param_init();
+    /* 1. 初始化 UniDisplay 调度核心 */
+    vDisp_CoreInit();
 
-	vDisp_IfaceInit();
-	
-	#if(boardUSE_OS)
-	xTaskCreate((TaskFunction_t )vDisp_Task,			//任务函数
-                (const char* )"DispTask",				//任务名称
-                (uint16_t ) dispTASK_STK_SIZE,			//任务堆栈大小
-                (void* )NULL,							//传递给任务函数的参数
-                (UBaseType_t ) dispTASK_PRIO,           //任务优先级
-                (TaskHandle_t*)&tDispTaskHandler);      //任务句柄
-	#endif  //boardUSE_OS
-	
-	return true;
+    /* 2. 初始化显示接口引脚与时钟 */
+    vDisp_IfaceInit();
+
+    /* 3. 注册业务页面 */
+    if (!b_task_param_init())
+        return -1;
+
+    #if (boardUSE_OS)
+    if (xTaskCreate((TaskFunction_t )vDisp_Task,
+                    (const char*    )"DispTask",
+                    (uint16_t       )dispTASK_STK_SIZE,
+                    (void*          )NULL,
+                    (UBaseType_t    )dispTASK_PRIO,
+                    (TaskHandle_t*  )&tDispTaskHandler) != pdPASS)
+    {
+        tDispTaskHandler = NULL;
+        return -2;
+    }
+
+    /* 绑定唤醒钩子 (供 bDisp_PostEvent / bDisp_Switch 即时唤醒任务) */
+    vDisp_PortSetTaskHandle(tDispTaskHandler);
+    #endif  /* boardUSE_OS */
+
+    return 1;
 }
 
-
 /***********************************************************************************************************************
------函数功能    参数初始化
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-static void v_disp_param_init(void)
+ * 函数功能    : 任务参数与页面注册
+ * 说明(备注)  : 静态注册显示页面
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : true: 成功
+ ************************************************************************************************************************/
+static bool b_task_param_init(void)
 {
-	tDisp.usAutoOffTime = boardDISP_OFF_TIME;
+    /* 页面静态注册 (项目件) */
+    vDisp_PageRegister(&G_tPageInit);
+    vDisp_PageRegister(&G_tPageBoot);
+    vDisp_PageRegister(&G_tPageWork);
+    vDisp_PageRegister(&G_tPageClosing);
+    vDisp_PageRegister(&G_tPageShutDown);
+    vDisp_PageRegister(&G_tPageFault);
+
+    #if (boardUPDATE)
+    vDisp_PageRegister(&G_tPageUpdate);
+    #endif  /* boardUPDATE */
+
+    #if (boardENG_MODE_EN)
+    vDisp_PageRegister(&G_tPageEng);
+    #endif  /* boardENG_MODE_EN */
+
+    return true;
 }
 
-
-
 /***********************************************************************************************************************
------函数功能    tDisp显示任务
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
+ * 函数功能    : Disp 显示任务主体
+ * 说明(备注)  : 统一等待原语 (通知+超时): 亮屏按当前页帧周期做耗时补偿等待(扣除本次渲染已耗时, 保证
+ *               实际帧周期贴近页面声明值), 息屏 2 秒低频挂起; 事件入队/背光点亮均触发任务通知提前唤醒
+ * 传入参数    : pvParameters: 任务入参
+ * 输出参数    : 无
+ * 返回值      : 无
+ ************************************************************************************************************************/
 void vDisp_Task(void *pvParameters)
 {
-	// 将显示任务从看门狗监控中移除，因为LVGL渲染可能耗时较长
-	esp_task_wdt_delete(NULL);
-	
-	for(;;)
-	{
-		// LVGL事务处理 - 必须在任务中调用，不能在定时器回调中调用
-		lv_task_handler();
-		
-		tDisp.bSleepShow =true;//待机强制打开亮屏
-		
-		switch(tSysInfo.eDevState)
-		{
-			//--------------------------初始化----------------------------------
-			case DS_INIT:
-			{	
-				v_disp_init();
-			}
-			break;
-			
-			//---------------------------关闭中---------------------------------
-			case DS_CLOSING:
-			{
-				v_disp_close();
-			}
-			break;
-			
-			//---------------------------关闭----------------------------------
-			case DS_SHUT_DOWN:
-			{
-				v_disp_shutdown();
-			}
-			break;
-			
-			//---------------------------错误------------------------------------
-			case DS_ERR: 
-			{
-				v_disp_err();
-			}
-			break;
-			
-			//----------------------------装载中---------------------------------
-			case DS_BOOTING:
-			{
-				v_disp_boot();
-			}
-			break;
-			
-			//----------------------------工作中---------------------------------
-			case DS_WORK:
-			{
-				v_disp_work();
-			}
-			break;
+    (void)pvParameters;
 
-			#if(boardENG_MODE_EN)
-			//----------------------------工程模式---------------------------------
-			case DS_ENG_MODE:
-			{
-				vDisp_EnginModeDis();
-				vTaskDelay(400);
-				break;
-			}
-			#endif	
-				
-			default:
-				break;
-		}
-		vTaskDelay(boardDISP_REFRESH_TMIE);
-	}
+    #if (boardUSE_OS)
+    TickType_t x_start;
+    TickType_t x_period;
+    TickType_t x_elapsed;
+
+    for (;;)
+    #endif  /* boardUSE_OS */
+    {
+        #if (boardUSE_OS)
+        x_start = xTaskGetTickCount();
+        #endif  /* boardUSE_OS */
+
+        /* 执行 UniDisplay 轮询引擎 (快照抓取 -> 状态路由 -> 事件分发 -> 切页 -> 适配器渲染) */
+        vDisp_EnginePoll();
+
+        #if (boardUSE_OS)
+        if (bDisp_IsBacklightOn() == false)
+        {
+            /* 息屏: 2 秒低频心跳挂起, CPU 占用 0% */
+            ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(2000));
+        }
+        else
+        {
+            /* 亮屏: 帧周期 - 已耗渲染时间 = 剩余等待时间 (已超时则立刻进入下一帧) */
+            x_period  = pdMS_TO_TICKS(usDisp_GetFramePeriod());
+            x_elapsed = xTaskGetTickCount() - x_start;
+            ulTaskNotifyTake(pdTRUE, (x_elapsed < x_period) ? (x_period - x_elapsed) : 1U);
+        }
+        #endif  /* boardUSE_OS */
+    }
 }
 
 /***********************************************************************************************************************
------函数功能    显示开关
------说明(备注)  none
------传入参数    type:类型   fore_en:强制打开
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-bool bDisp_Switch(SwitchType_E type, bool fore_en)
+ * 函数功能    : 初始化显示记忆参数
+ * 说明(备注)  : 写入显示模块默认亮度和自动息屏时间
+ * 传入参数    : p_disp_mem: 显示记忆参数结构体指针
+ * 输出参数    : p_disp_mem: 回填高亮亮度、低亮亮度与自动息屏时间
+ * 返回值      : true: 成功
+ ************************************************************************************************************************/
+bool bDisp_MemParamInit(DispMemParam_T* p_disp_mem)
 {
-	switch(type)
-	{
-		case ST_ON:
-			goto LoopOn;
-		
-		case ST_OFF:
-			goto LoopOff;
-		
-		default:
-		{
-			if(tDisp.bLight == false)
-			{
-				LoopOn:
-				// dispPOWER_OPEN_ON();
-				tDisp.bLight = true;
-				
-				//关闭息屏
-				if(fore_en == true)
-					tDisp.usAutoOffTime = 0;
-				
-				//更新显示时间
-				if(tDisp.usAutoOffTime)
-					tDisp.usAutoOffCnt =  tDisp.usAutoOffTime;
-			}
-			else 
-			{
-				LoopOff:
-				// dispPOWER_OPEN_OFF();
-				v_disp_param_init();
-				tDisp.bLight = false;
-			}
-		}
-		break;
-	}
-	
-	return true;
+    if (p_disp_mem == NULL)
+        return false;
+
+    p_disp_mem->ucHighLightValue = boardDISP_HIGH_LIGHT_VALUE;
+    p_disp_mem->ucLowLightValue  = boardDISP_LOW_LIGHT_VALUE;
+    p_disp_mem->usAutoOffTime    = boardDISP_OFF_TIME;
+    return true;
 }
 
 /***********************************************************************************************************************
------函数功能    更新显示参数
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-void vDisp_RefreshDisplayParam(void) 
+ * 函数功能    : 设置显示记忆参数 (表驱动版)
+ * 说明(备注)  : 支持 uint8 与 uint16 类型，自动进行安全上下限防越界检查 (参考 sys_task.c:1070)
+ * 传入参数    : item: 参数索引, add: true-增加, false-减少
+ * 输出参数    : 无
+ * 返回值      : void
+ ***********************************************************************************************************************/
+#if (boardENG_MODE_EN)
+void vDisp_MemParamSet(u8 item, bool add)
 {
-	if(tDisp.usAutoOffTime)
-	{
-		tDisp.usAutoOffCnt =  tDisp.usAutoOffTime;
-	}
-	bDisp_Switch(ST_ON, false);
-}
-
-
-/***********************************************************************************************************************
------函数功能    背光自动关闭计时
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-void vDisp_AutoOffCnt(void) 
-{
-	//非工作状态下退出
-	if(tSysInfo.eDevState != DS_WORK) 
+	if ((item >= mainARRAY_SIZE(s_tDispParamTable)) || (s_tDispParamTable[item].pParam == NULL))
 		return;
-	
-	//非亮屏幕状态
-	if(tDisp.bLight == false)   
-		return;
-	
-	//-----自动关闭背光--------------------------------------   
-	if(tDisp.usAutoOffTime)
+
+	const DispParamStep_T *p = &s_tDispParamTable[item];
+	if (p->ucType == 2)
 	{
-		if(tDisp.usAutoOffCnt)
-		{
-			tDisp.usAutoOffCnt--;
-			if(tDisp.usAutoOffCnt == 0)
-			{
-//				vDisp_ColseDisplay();
-				if(uPrint.tFlag.bDispTask|| uPrint.tFlag.bImportant)
-					sMyPrint("================Lcd_Task:倒计时结束,进入息屏 时间 = %dS==========\r\n",tDisp.usAutoOffTime);
-			}
-		}
+		uint8_t *p_val = (uint8_t *)p->pParam;
+		if (add && (*p_val < (uint8_t)p->lMax))
+			(*p_val)++;
+		else if (!add && (*p_val > (uint8_t)p->lMin))
+			(*p_val)--;
 	}
+	else if (p->ucType == 1)
+	{
+		int8_t *p_val = (int8_t *)p->pParam;
+		if (add && (*p_val < (int8_t)p->lMax))
+			(*p_val)++;
+		else if (!add && (*p_val > (int8_t)p->lMin))
+			(*p_val)--;
+	}
+	else
+	{
+		uint16_t *p_val = (uint16_t *)p->pParam;
+		if (add && (*p_val < (uint16_t)p->lMax))
+			(*p_val)++;
+		else if (!add && (*p_val > (uint16_t)p->lMin))
+			(*p_val)--;
+	}
+}
+#endif  /* boardENG_MODE_EN */
+
+#if (boardLOW_POWER)
+/***********************************************************************************************************************
+ * 函数功能    : 选择显示供电通路
+ * 说明(备注)  : 根据外部输入电源状态控制显示屏电池供电开关
+ * 传入参数    : none
+ * 输出参数    : 无
+ * 返回值      : 无
+ ************************************************************************************************************************/
+static void v_dis_power_select(void)
+{
+    if (bDisp_IsBacklightOn())
+    {
+        if (tAdcSamp.usSysInVolt >= boardBMS_MIN_VOLT)
+            Disp_EN_OFF();
+        else
+            Disp_EN_ON();
+    }
+    else
+        Disp_EN_OFF();
 }
 
 /***********************************************************************************************************************
------函数功能    初始化显示
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-__STATIC_INLINE void v_disp_init(void)
-{
-	static vu8 index = 0;
-	
-	switch(index)
-	{
-		case 0:
-		{
-			lv_init();
-			lv_port_disp_init();  // lvgl显示接口初始化,放在lv_init()的后面
-			lv_port_indev_init(); // lvgl输入接口初始化,放在lv_init()的后面
-
-			ui_init();            // 创建并加载UI屏幕
-			lvgl_ui_init();
-			index++;
-		}
-		break;
-		
-		case 1:
-		{
-			tSysInfo.uInit.tFinish.bIF_DispTask = true;
-		}
-		break;
-		
-		default:
-			index = 0;
-			break;
-	}
-}
-
-/***********************************************************************************************************************
------函数功能    关闭中显示
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-__STATIC_INLINE void v_disp_close(void)
-{
-	
-}
-
-/***********************************************************************************************************************
------函数功能    关闭显示
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-__STATIC_INLINE void v_disp_shutdown(void)
-{
-	
-}
-
-/***********************************************************************************************************************
------函数功能    错误显示
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-__STATIC_INLINE void v_disp_err(void)
-{
-	
-}
-
-/***********************************************************************************************************************
------函数功能    开启显示
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-__STATIC_INLINE void v_disp_boot(void)
-{
-	vDisp_SetBacklight(false);
-}
-
-
-lv_obj_t* lv_obj;  //屏幕对象
-static lv_obj_t* s_gif_obj = NULL;  // 保存GIF对象指针
-/***********************************************************************************************************************
------函数功能    工作显示
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-__STATIC_INLINE void v_disp_work(void)
-{
-	static vu8 index = 0;
-	static vu16  us_delay_cnt = 0;
-	static ScreenId_E eCurrScreen;
-
-	switch(index)
-	{
-		case 0:
-		{
-			// 直接设置屏幕背景色
-			// lv_obj_t* screen = lv_screen_active();
-			// lv_obj_set_style_bg_color(screen, lv_palette_main(LV_PALETTE_RED), 0);
-			// lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, 0);
-			// lv_obj_set_style_border_width(screen, 0, 0);
-			// lv_obj_set_scrollbar_mode(screen, LV_SCROLLBAR_MODE_OFF);
-
-			// 创建GIF对象
-			// LV_IMAGE_DECLARE(img_gif);
-			// s_gif_obj = lv_gif_create(lv_screen_active());
-			// lv_obj_set_size(s_gif_obj, 100, 100);
-			// lv_gif_set_color_format(s_gif_obj, LV_COLOR_FORMAT_RGB565A8);
-			// lv_gif_set_src(s_gif_obj, &img_gif);
-			// lv_obj_align(s_gif_obj, LV_ALIGN_CENTER, 0, 30);
-
-			// lv_obj_t *obj = lv_button_create(screen);
-            // lv_obj_set_pos(obj, 114, 21);
-            // lv_obj_set_size(obj, 100, 50);
-
-			if(us_delay_cnt < 10)
-				vDisp_SetBacklight(false);
-			else 
-				vDisp_SetBacklight(true);
-
-			us_delay_cnt++;
-			if(us_delay_cnt < (3000 / boardDISP_REFRESH_TMIE))
-				break;
-			us_delay_cnt = 0;
-
-			index++;
-		}
-		break;
-		
-		case 1:
-		{
-			// loadScreen(SCREEN_ID_MAIN_2);
-			index++;
-		}
-		break;
-
-		case 2:
-		{
-			// 初始化并更新LVGL显示界面
-			lvgl_ui_update();
-
-			ui_tick();
-		}
-		break;
-		
-		default:
-			index = 0;
-			break;
-	}
-}
-
-
-/***********************************************************************************************************************
------函数功能    显示TICK
------说明(备注)  在定时器中断中调用，只更新LVGL时基
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-void vDisp_TickTimer(void) 
-{
-	// 注意：lv_task_handler() 不能在定时器回调中调用（栈空间不足）
-	// 它应该在 vDisp_Task 任务中调用
-	lv_tick_inc(boardREPET_TIMER_CYCLE_TMIE);
-}
-
-
-
-/*****************************************************************************************************************
------函数功能    初始化参数
------说明(备注)  none
------传入参数    p_disp_mem : disp记忆参数结构体
------输出参数    none
------返回值      true:设置成功  反之失败
-*****************************************************************************************************************/
-bool bDisp_MemParamInit(DispMenParam_T* p_disp_mem)
-{
-	p_disp_mem->ucHighLightValue = boardDISP_HIGH_LIGHT_VALUE;
-	p_disp_mem->ucLowLightValue = boardDISP_LOW_LIGHT_VALUE;
-	p_disp_mem->usAutoOffTime = boardDISP_OFF_TIME;
-	return true;
-}
-
-/*****************************************************************************************************************
------函数功能    设置需要切换的屏幕
------说明(备注)  该函数设置标志位，实际的屏幕切换由显示任务在下一个循环中处理
------传入参数    screenId: 目标屏幕ID
------输出参数    none
------返回值      none
-*****************************************************************************************************************/
-bool bDisp_ChangeScreen(ScreenId_E screenId)
-{
-	if(screenId == ID_MAIN_0)
-	{
-		if(tDisp.eTargetScreen >= ID_MAIN_3)
-			tDisp.eTargetScreen = ID_MAIN_2;
-		else
-			tDisp.eTargetScreen = ID_MAIN_3;
-		return true;
-	}
-	
-	tDisp.eTargetScreen = screenId;
-	return true;
-}
-
-/*****************************************************************************************************************
------函数功能    统一设置设备状态
------说明(备注)  设置设备状态标志，实际的UI更新在displaytask中处理
------传入参数    devType: 设备类型, bState: true=开启状态, false=关闭状态
------输出参数    none
------返回值      none
-*****************************************************************************************************************/
-void vDisp_SetDevStateIcon(DevType_E devType, bool bState)
-{
-	switch(devType)
-	{
-		case DEV_TYPE_AC:
-			tDisp.bDevAcState = bState;
-			break;
-		
-		case DEV_TYPE_PV:
-			tDisp.bDevPvState = bState;
-			break;
-		
-		case DEV_TYPE_LIGHT:
-			tDisp.bDevLightState = bState;
-			break;
-		
-		case DEV_TYPE_USB_A:
-			tDisp.bDevUsbAState = bState;
-			break;
-		
-		case DEV_TYPE_USB_C1:
-			tDisp.bDevUsbC1State = bState;
-			break;
-		
-		case DEV_TYPE_USB_C2:
-			tDisp.bDevUsbC2State = bState;
-			break;
-		
-		default:
-			break;
-	}
-}
-
-#if(boardLOW_POWER)
-/*****************************************************************************************************************
------函数功能    检查系统的输入电源:外接电池
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-*****************************************************************************************************************/
-void v_dis_power_select( void )
-{
-	if(tDisp.bLight)
-	{
-		/*************************************电源有输入*********************************************************/
-		if( tAdc_SysSamp.usBMS_Vin >= boardBMS_MIN_VOLT )   
-		{
-			Disp_EN_OFF();          //关闭显示屏的电池供电
-		}
-		/*************************************没有电源输入*******************************************************/
-		else
-		{
-			Disp_EN_ON();          //打开显示屏的电池供电
-		}	
-	}
-	else 
-	{
-		Disp_EN_OFF();          //关闭显示屏的电池供电
-	}
-}
-
-
-/*****************************************************************************************************************
------函数功能    进入低功耗
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-*****************************************************************************************************************/
+ * 函数功能    : 进入显示低功耗
+ * 说明(备注)  : 挂起显示任务以降低低功耗模式下的运行消耗
+ * 传入参数    : none
+ * 输出参数    : 无
+ * 返回值      : 无
+ ************************************************************************************************************************/
 void vLcd_EnterLowPower(void)
 {
-//	vLcd_IoEnterLowPower();
-//	bAtti_EnterLowPower();
-//	vExRTC_EnterLowPower();
-	vTaskSuspend(tDisp_Task_Handler);
+    #if (boardUSE_OS)
+    if (tDispTaskHandler != NULL)
+        vTaskSuspend(tDispTaskHandler);
+    #endif  /* boardUSE_OS */
 }
 
-/*****************************************************************************************************************
------函数功能    退出低功耗
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-*****************************************************************************************************************/
+/***********************************************************************************************************************
+ * 函数功能    : 退出显示低功耗
+ * 说明(备注)  : 恢复显示任务运行
+ * 传入参数    : none
+ * 输出参数    : 无
+ * 返回值      : 无
+ ************************************************************************************************************************/
 void vLcd_ExitLowPower(void)
 {
-//	vExRTC_ExitLowPower();
-	vTaskResume(tDisp_Task_Handler);
+    #if (boardUSE_OS)
+    if (tDispTaskHandler != NULL)
+        vTaskResume(tDispTaskHandler);
+    #endif  /* boardUSE_OS */
 }
-#endif //boardLOW_POWER
+#endif  /* boardLOW_POWER */
 
-#endif //boardDISPLAY
-
-
-
+#endif  /* boardDISPLAY_EN */

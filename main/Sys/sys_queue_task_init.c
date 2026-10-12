@@ -1,210 +1,298 @@
-/*****************************************************************************************************************
-*                                                                                                                *
- *                                         系统的队列函数                                                  		*
-*                                                                                                                *
-******************************************************************************************************************/
+/*******************************************************************************************************************************
+ * Project : APP
+ * Module  : APP\Application\Sys
+ * File    : sys_queue_task_init.c
+ * Date    : 2026-09-20
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : 系统上电初始化队列任务实现
+ * -------------------------------------------------------
+ * todo    :
+ * 1. none
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
+ *******************************************************************************************************************************/
+
+//****************************************************Includes******************************************************************//
 #include "Sys/sys_queue_task.h"
 #include "Sys/sys_task.h"
+
+#if (boardPRINT_EN)
 #include "Print/print_task.h"
+#endif  //boardPRINT_EN
+
+#if (boardKEY_EN)
 #include "Key/Key_task.h"
-// #include "Buz/buz_task.h"
-#include "Flash/flash_iface.h"
+#endif  //boardKEY_EN
+
+#if (boardBUZ_EN)
+#include "Buz/buz_task.h"
+#endif  //boardBUZ_EN
+
+#if (boardADC_EN)
+#include "Adc/adc_task.h"
+#endif  //boardADC_EN
 
 #include "gpio_init.h"
 #include "app_info.h"
+#include "filter_test.h"
 
-
-#define     	sysTASK_INIT_CYCLE_TIME					10 //任务时间
+//****************************************************Macros********************************************************************//
+#define			sysTASK_INIT_CYCLE_TIME					100		//任务时间
 
 /***********************************************************************************************************************
------函数功能    系统初始化
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/  
-void v_sys_queue_task_init(Task_T *tp_task)
+ * 函数功能    : 系统上电初始化队列任务执行函数
+ * 说明(备注)  : 依次初始化 Boot/APP 记忆参数，等待 ADC 就绪，检测外部充电唤醒、按键唤醒、工程/工厂模式
+ * 传入参数    : p_task: 队列任务指针
+ * 输出参数    : p_task: 更新任务状态
+ * 返回值      : void
+ ************************************************************************************************************************/
+void v_sys_queue_task_init(Task_T *p_task)
 {
-	s8 c_ret = 0;
-	static bool b_ret = true;
-	static vu8 uc_tri_init_cnt = 0;
-	static vu8 uc_tri_type = 0;
-	
+	s8          c_ret = 0;
+	static bool s_b_ret = true;
+	static vu8  s_uc_tri_init_cnt = 0;
+	static vu8  s_uc_tri_type = 0;
+
 	//记录长按时间
-	if(bKey_PowerIsPress() == true)
+	#if (boardKEY_EN)
+	if (bKey_IsPressById(keyPOWER) == true)
 	{
-		if(uc_tri_init_cnt < 0xff)
-			uc_tri_init_cnt++;
+		if (s_uc_tri_init_cnt < 0xff)
+			s_uc_tri_init_cnt++;
 	}
-	else 
-		uc_tri_init_cnt = 0;
-	
-    switch (tp_task->ucStep)
-    {
+	else
+		s_uc_tri_init_cnt = 0;
+	#endif  //boardKEY_EN
+
+	switch (p_task->ucStep)
+	{
 		case 0:
 		{
-			// vFlash_ReadWriteTest();
+			tSysInfo.uInit.tFinish.bIF_AppInfo = false;
 
-			// tSysInfo.uInit.tFinish.bIF_AppInfo = false;
-			
-			// c_ret = cApp_BootInfoInit();
-			// if(c_ret > 0)
-			// {
-			// 	if((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && b_ret == false)
-			// 		log_w("bSysTask:Boot记忆消息获取错误清除");
-				
-			// 	b_ret = true;
-				cQueue_GotoStep(tp_task, STEP_NEXT);
-			// }
-			// else
-			// {
-			// 	if((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && b_ret == true)
-			// 	{
-			// 		log_w("bSysTask:Boot记忆消息初始化失败 代码%d",c_ret);
-			// 		b_ret = false;
-			// 	}
-			// 	// vFlash_ReadWriteTest();
-			// 	vTaskDelay(100);
-			// 	break;
-			// }
-		}
-		
-		case 1:
-		{
-			c_ret = cApp_AppInfoInit();
-			if(c_ret > 0)
+			c_ret = cApp_BootInfoInit();
+			if (c_ret > 0)
 			{
-				if((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && b_ret == false)
-					log_w("bSysTask:App记忆消息获取错误清除");
-				
-				b_ret = true;
-				tSysInfo.uInit.tFinish.bIF_AppInfo = true;
-				
-				cQueue_GotoStep(tp_task, STEP_NEXT);
+				if ((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && (s_b_ret == false))
+					log_w("bSysTask:Boot记忆消息获取错误清除");
+
+				s_b_ret = true;
+				cQueue_GotoStep(p_task, STEP_NEXT);
 			}
 			else
 			{
-				if((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && b_ret == true)
+				if ((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && (s_b_ret == true))
 				{
-					log_w("bSysTask:App记忆消息初始化失败 代码%d",c_ret);
-					b_ret = false;
+					log_w("bSysTask:Boot记忆消息初始化失败 代码%d", c_ret);
+					s_b_ret = false;
 				}
-		
+
+				#if (boardUSE_OS)
 				vTaskDelay(100);
+				#endif  //boardUSE_OS
 				break;
 			}
-			break;
-		}
-		
+		}break;
+
+		case 1:
+		{
+			c_ret = cApp_AppInfoInit();
+			if (c_ret > 0)
+			{
+				if ((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && (s_b_ret == false))
+					log_w("bSysTask:App记忆消息获取错误清除");
+
+				s_b_ret = true;
+				tSysInfo.uInit.tFinish.bIF_AppInfo = true;
+				cQueue_GotoStep(p_task, STEP_NEXT);
+			}
+			else
+			{
+				if ((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && (s_b_ret == true))
+				{
+					log_w("bSysTask:App记忆消息初始化失败 代码%d", c_ret);
+					s_b_ret = false;
+				}
+
+				#if (boardUSE_OS)
+				vTaskDelay(100);
+				#endif  //boardUSE_OS
+				break;
+			}
+		}break;
+
+		/* 自检 */
 		case 2:
 		{
-			// if(tSysInfo.uInit.tFinish.bIF_AdcTask)
-				cQueue_GotoStep(tp_task, STEP_NEXT);
-			// else
-			// {
-			// 	vTaskDelay(500);
-			// 	break;
-			// } 
+			#if (filterSELF_TEST_ENABLE)
+			bFilter_RunSelfTest(NULL);	/* 滤波算法精度与抗扰性自动化自检 */
+			#endif  /* filterSELF_TEST_ENABLE */
+			cQueue_GotoStep(p_task, STEP_NEXT);
 		}
-		
+		break;
+
+		/* 等待重要任务初始化完成 */
 		case 3:
 		{
-			// if(bKey_PowerIsPress() == true)
-				cQueue_GotoStep(tp_task, STEP_NEXT);
-			// else if(bSys_ExistInVolt() == true)
-			// {
-			// 	cQueue_GotoStep(tp_task, STEP_NEXT);
-			// }
-			// else if(tAdcSamp.usSysInVolt > 200 && tBms.eDevState == DS_LOST)  //10V 0.1V
-			// {
-			// 	//充电激活
-			// 	tp_task->usStepWaitCnt++;
-			// 	if(tp_task->usStepWaitCnt > (5000 / sysTASK_INIT_CYCLE_TIME))
-			// 	{
-			// 		cQueue_GotoStep(tp_task, STEP_NEXT);
-			// 	}
-			// 	else 
-			// 		break;
-			// }
-			// else
-			// {
-			// 	tp_task->usStepWaitCnt = 0;
-			// 	break;
-			// }
-		}
-		
+			if (
+				#if (boardADC_EN)
+				tSysInfo.uInit.tFinish.bIF_AdcTask
+				#else
+				true
+				#endif  //boardADC_EN
+			)
+				cQueue_GotoStep(p_task, STEP_NEXT);
+			else
+			{
+				#if (boardUSE_OS)
+				vTaskDelay(500);
+				#endif  //boardUSE_OS
+				break;
+			}
+		}break;
+
+		/* 检查激活类型 */
 		case 4:
 		{
-			if(bKey_AcIsPress() == false &&  //工厂模式
-				bKey_PowerIsPress() == true &&
-				bKey_LightIsPress() == false)
+			if (bSys_ExistInVolt() == true)
 			{
-				if(uc_tri_type != 2)
-				{
-					uc_tri_type = 2;
-					tp_task->usStepWaitCnt = 0;
-				}
-				
-				tp_task->usStepWaitCnt++;
-			}
-			else if(tSysInfo.uInit.tFinish.bIF_BmsTask ||
-					tSysInfo.uInit.tFinish.bIF_DispTask)
-			{
-				uc_tri_type = 0;
-				tp_task->usStepWaitCnt = 0;
-				cQueue_GotoStep(tp_task, STEP_NEXT);
-			}
-			else 
-			{
-				uc_tri_type = 0;
-				tp_task->usStepWaitCnt = 0;
+				bSys_ChgWakeUp(SO_MPPT);
+				cQueue_GotoStep(p_task, STEP_NEXT);
 			}
 
-			if(tp_task->usStepWaitCnt > (3000 / sysTASK_INIT_CYCLE_TIME))
+			#if (boardKEY_EN)
+			else if (bKey_IsPressById(keyPOWER) == true)
+				cQueue_GotoStep(p_task, STEP_NEXT);
+			#endif  //boardKEY_EN
+
+			#if (boardADC_EN)
+			else if ((tAdcSamp.usSysInVolt > (tAppMemParam.tSYS.usMinOpenVolt / 2))
+				#if (boardBMS_EN)
+			    && (tBms.eDevState == DS_LOST)
+				#endif  //boardBMS_EN
+			)
 			{
-				
-				if(uc_tri_type == 2)  //工厂模式
+				//充电激活
+				if (bQueue_IsStepTimeoutMs(p_task, 5000))
+				{
+					bSys_ChgWakeUp(SO_MPPT);
+					cQueue_GotoStep(p_task, STEP_NEXT);
+				}
+			}
+			#endif  //boardADC_EN
+			else
+				vQueue_RefreshStepTick(p_task);
+		}break;
+
+		/* 进入对应模式 */
+		case 5:
+		{
+			if (
+				#if (boardKEY_EN)
+				bKey_IsFactoryModePress() == true  //工厂模式
+				#else
+				false
+				#endif  //boardKEY_EN
+			)
+			{
+				if (s_uc_tri_type != 2)
+				{
+					s_uc_tri_type = 2;
+					vQueue_RefreshStepTick(p_task);
+				}
+			}
+			#if (boardKEY_EN)  //工程模式
+			else if (bKey_IsEngModePress() == true)
+			{
+				if (s_uc_tri_type != 1)
+				{
+					s_uc_tri_type = 1;
+					vQueue_RefreshStepTick(p_task);
+				}
+			}
+			#endif  //boardKEY_EN
+			else if (
+				#if (boardBMS_EN)
+				tSysInfo.uInit.tFinish.bIF_BmsTask
+				#else
+				true
+				#endif  //boardBMS_EN
+			)
+			{
+				if ((s_uc_tri_init_cnt > 1) && (bKey_IsPressById(keyPOWER) == true))
+					cSys_Switch(SO_KEY, ST_ON, false);
+
+				s_uc_tri_type = 0;
+				cQueue_GotoStep(p_task, STEP_NEXT);
+			}
+			else
+			{
+				s_uc_tri_type = 0;
+				vQueue_RefreshStepTick(p_task);
+			}
+
+			if (bQueue_IsStepTimeoutMs(p_task, 3000))
+			{
+				if (s_uc_tri_type == 2)  //工厂模式
 				{
 					G_TestMode = true;
 					cSys_Switch(SO_KEY, ST_ON, false);
+					cQueue_GotoStep(p_task, STEP_NEXT);
 				}
-				#if(boardENG_MODE_EN)  //工程模式
-				else if(uc_tri_type == 1)
+				#if (boardENG_MODE_EN)  //工程模式
+				else if (s_uc_tri_type == 1)
 				{
+					#if (boardBUZ_EN)
 					bBuz_Tweet(SHORT_2);
+					#endif  //boardBUZ_EN
+
+					bQueue_Reset(tpSysTask);  //丢弃充电唤醒预入队的启动任务,防止工程模式被启动流程阻塞
 					cQueue_AddQueueTask(tpSysTask, STI_ENG, NULL, false);
+
+					#if (boardBMS_EN)
 					cBms_Switch(SO_KEY, ST_ON, false);
-					cQueue_GotoStep(tp_task, STEP_NEXT);
+					#endif  //boardBMS_EN
+
+					cQueue_GotoStep(p_task, STEP_NEXT);
 				}
-				#endif
+				#endif  //boardENG_MODE_EN
 			}
 		}break;
-		
-		case 5:
+
+		case 6:
 		{
 			tSysInfo.uInit.tFinish.bIF_SysTask = 1;
 			tSysInfo.uInit.tFinish.bIF_SysInit = 1;
-			tSysInfo.uInit.tFinish.bIF_Gpio = 1;
 
 			//没有任务就调度关闭任务
-			if(tSysInfo.eDevState != DS_BOOTING)
-				bSys_SetDevState(DS_SHUT_DOWN,false);
+			if (tSysInfo.eDevState != DS_BOOTING)
+				bSys_SetDevState(DS_SHUT_DOWN, false);
 
-			cSys_Switch(SO_KEY, ST_ON, false);
-			cQueue_GotoStep(tp_task, STEP_END);
+			cQueue_GotoStep(p_task, STEP_END);
 		}break;
-		
-        default:
-			cQueue_GotoStep(tp_task, STEP_END);
-			break;
-    }
-	
-	//初始化等待5S,超时退出
-	tp_task->usTaskWaitCnt++;
-	if(tp_task->usTaskWaitCnt > (5000 / sysTASK_INIT_CYCLE_TIME))
-	{
-		// gpioASSIST_OPEN_OFF();
+
+		default:
+		{
+			cQueue_GotoStep(p_task, STEP_END);
+		}
+		break;
 	}
-	
-	vTaskDelay(sysTASK_INIT_CYCLE_TIME);
+
+	//步骤已全部完成,无需继续超时检查与节拍等待
+	if (p_task->ucStep >= STEP_END)
+		return;
+
+	//初始化等待10S,超时强制关机退出
+	if (bQueue_IsTaskTimeoutMs(p_task, 10 * 1000))
+	{
+		gpioASSIST_OPEN_OFF();
+
+		#if (boardBMS_EN)
+		cBms_Switch(SO_KEY, ST_OFF, false);
+		#endif  //boardBMS_EN
+	}
+
+	#if (boardUSE_OS)
+	ulTaskNotifyTake(pdTRUE, sysTASK_INIT_CYCLE_TIME);  /* 周期节拍；新任务投递立即唤醒抢占 */
+	#endif  //boardUSE_OS
 }

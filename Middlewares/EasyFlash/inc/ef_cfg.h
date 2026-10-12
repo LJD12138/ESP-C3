@@ -30,7 +30,7 @@
 #define EF_CFG_H_
 
 #include "board_config.h"
-#include "..\..\BOOT\Application\flash_allot_table.h"
+#include "flash_allot_table.h"
 
 /* 环境变量 */
 //支持对产品参数的快速保存、修改、删除和查询。

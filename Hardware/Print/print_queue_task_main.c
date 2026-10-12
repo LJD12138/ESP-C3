@@ -22,56 +22,58 @@ static s8 c_print_rec_proc_data(BaikuProtoRx_t* proto);
 -----输出参数    none
 -----返回值      none
 ******************************************************************************************************************/
-void v_print_queue_task_main(Task_T *tp_task)
+void v_print_queue_task_main(Task_T *p_task)
 {
 	s8 c_ret = 0;
 
 	//队列里面有任务
-	if(lwrb_get_full(&tp_task->tQueueBuff))  
+	if (lwrb_get_full(&p_task->tQueueBuff))  
 	{
-		cQueue_GotoStep( tp_task, STEP_END );  //结束
+		cQueue_GotoStep(p_task, STEP_END);  //结束
 		return;
 	}
 	
-	b_cycle_relay_data();
+	c_cycle_relay_data();
 		
-	 //******************************************处理发送的数据****************************************************
-	if(lwrb_get_full(&tPrintTxBuff))
+	//******************************************处理发送的数据****************************************************
+	if (lwrb_get_full(&tPrintTxBuff))
 		bPrint_SendDataToUsart();
 	
 	//******************************************处理接收的数据****************************************************
 	c_ret = cBaiku_ProtoCheck(tpPrintProtoRx);
-	if(c_ret > 0)
+	if (c_ret > 0)
 		c_print_rec_proc_data(tpPrintProtoRx);
 	
-	switch (tp_task->ucStep)
+	switch (p_task->ucStep)
     {
         case 0:
         {
 			
-        }break;
+        }
+		break;
 
 		default:
-			cQueue_GotoStep(tp_task, STEP_END);  //结束
-			break;
+		{
+			cQueue_GotoStep(p_task, STEP_END);  //结束
+		}
+		break;
     }
 	
-	#if(boardUSE_OS)
-	vTaskDelay(printTASK_PARAM_CYCLE_TIME);
-	#endif  //boardUSE_OS
+	#if (boardUSE_OS)
+	ulTaskNotifyTake(pdTRUE, printTASK_PARAM_CYCLE_TIME);
+	#endif  /* boardUSE_OS */
 }
 
-
 /***********************************************************************************************************************
------函数功能    处理接收到的数据
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      0:没有错误  其他有错误
-************************************************************************************************************************/
+ * 函数功能    : 处理接收到的协议数据
+ * 说明(备注)  : 解析协议命令码并调用对应的回复打包函数
+ * 传入参数    : proto: 协议接收结构体指针
+ * 输出参数    : 无
+ * 返回值      : 0: 正常, 其它: 错误码
+ ************************************************************************************************************************/
 __STATIC_INLINE s8 c_print_rec_proc_data(BaikuProtoRx_t* proto)
 {
-	if(proto == NULL)
+	if (proto == NULL)
 		return 99;
 		
 	uc_next_cmd = proto->ucCmd;
@@ -79,70 +81,15 @@ __STATIC_INLINE s8 c_print_rec_proc_data(BaikuProtoRx_t* proto)
     {
         case baikuCMD_SWITCH:                  //开关回复
         {
-            b_relay02_switch_result(proto->ucpValidData);
+            if (proto->ucpValidData != NULL && proto->ucValidLen >= 2)
+                c_relay02_switch_result(proto->ucpValidData);
         }
-        break;
+		break;
 
         case baikuCMD_GET_PARAM:
-        {
-            b_relay08_param();
-        }
-		break;
+            c_relay08_param();
+			break;
 
-        case 0x09:
-        {
-            b_relay0A_bat_param();
-        }
-        break;
-
-        case 0x13:
-        {
-            b_relay14_sysinfo_param();
-        }
-        break;
-		
-		case baikuCMD_SET_CHG_PWR://40
-		{
-			b_relay40_set_chg_pwr(proto);
-		}
-		break;
-		
-		case baikuCMD_CALI://44
-		{
-			b_relay44_cali(proto);
-		}
-		break;
-
-		case baikuCMD_GET_MEM_PARAM://80
-		{
-			b_relay80_get_mem_param(proto);
-		}
-		break;
-		
-		case baikuCMD_WRITE_MEM_PARAM://82
-		{
-			b_relay82_write_mem_info(proto);
-		}
-		break;
-
-        case baikuCMD_SET_PRINT_STATE://84
-        {
-            b_relay84_set_print_state(proto);
-        }
-        break;
-
-        case baikuCMD_GET_PRINT_STATE://86
-        {
-            b_relay86_get_print_state(proto);
-        }
-        break;
-
-		case baikuCMD_SYS_SET://88
-        {
-			b_relay88_sys_set(proto);
-        }
-        break;
-		
         default:
             break;
     }

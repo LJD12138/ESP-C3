@@ -1,353 +1,203 @@
-/*****************************************************************************************************************
-*                                                                                                                *
- *                                         按键功能                                                             *
-*                                                                                                                *
-******************************************************************************************************************/
+/*******************************************************************************************************************************
+ * Project : ESP-C3
+ * Module  : ESP-C3\Hardware\Key
+ * File    : key_func.c
+ * Date    : 2026-10-10
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : 按键功能业务动作分发处理实现文件 (表驱动优化方案)
+ * -------------------------------------------------------
+ * todo    :
+ * 1. none
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
+ *******************************************************************************************************************************/
+
+//****************************************************Includes******************************************************************//
 #include "Key/key_func.h"
+
+#if (boardKEY_EN)
 #include "Key/key_task.h"
 #include "Sys/sys_task.h"
-// #include "Buz/buz_task.h"
 #include "Print/print_task.h"
-#include "MD_Display/md_display_task.h"
 
-#if(boardBMS_IFACE)
-#include "MD_Bms/md_bms_task.h"
-#endif  //boardBMS_IFACE
-
-#include "app_info.h"
-#include "timer_task.h"
-#include "gpio_init.h"
 #include "function.h"
 
+#if (boardDISPLAY_EN)
+#include "MD_Display/md_display_task.h"
+#endif  /* boardDISPLAY_EN */
 
-#if(boardENG_MODE_EN)
-#include "eng_mode.h"
-#endif
+#if (boardENG_MODE_EN)
+#include "Key/key_func_eng.h"
+#endif  /* boardENG_MODE_EN */
 
-//****************************************************参数初始化**************************************************//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////按键功能数组要求:不满十个触发类型的要加KTE_FUN_NULL作为结束符///////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if(boardENG_MODE_EN)
-//工程模式按键功能
-enum
-{			
-	EMKF_NULL = 0, 		//空按键
-	EMKF_CHARGE,   		//改变
-	EMKF_ADD,      		//增加
-	EMKF_REDUCE,   		//减少
-	EMKF_NEXT_OPTION,  	//下一项
-	EMKF_COMFIRM,  		//确认
-}eEngModeKeyFunc;
-//工程模式按键类型
-u8 const     KeyTriType_SetBuff[ 3 ]    = { KTE_AC_LONG, KTE_POWER_LONG, KTE_FUN_NULL};  //进入
-u8 const     KeyTriType_Set1Buff[ 3 ]   = { KTE_POWER_LONG, KTE_AC_LONG, KTE_FUN_NULL};
-u8 const     KeyTriType_ChargeBuff[ 2 ] = { KTE_POWER_SHORT, KTE_FUN_NULL};  //当前项循环
-u8 const     KeyTriType_AddBuff[ 2 ]    = { KTE_AC_SHORT, KTE_FUN_NULL};     //增加
-u8 const     KeyTriType_ReduceBuff[ 2 ] = { KTE_USB_SHORT, KTE_FUN_NULL};    //减少
-u8 const     KeyTriType_NextOptionBuff[ 2 ]= { KTE_DC_SHORT, KTE_FUN_NULL};  //下一选项
-u8 const     KeyTriType_ComfirmBuff[ 2 ]= { KTE_DC_LONG, KTE_FUN_NULL};      //确认
-#endif
+//****************************************************Macros********************************************************************//
+typedef void (*fnKeyAction_T)(void);
 
-//长按        开关机
-u8 const     KeyTriType_SysOnOffBuff[ 2 ] = { KTE_POWER_LONG, KTE_FUN_NULL};
-//单击        切换屏幕
-u8 const     KeyTriType_ScreenBuff[ 2 ] = { KTE_POWER_SHORT, KTE_FUN_NULL};
+/* 适用系统状态掩码 */
+#define			KEY_MASK_ANY							0xFFFFFFFF
+#define			KEY_MASK_WORK							(1U << DS_WORK)
+#define			KEY_MASK_ERR							(1U << DS_ERR)
+#define			KEY_MASK_NORMAL							(KEY_MASK_WORK | KEY_MASK_ERR)
+
+//****************************************************Parameter Initialization**************************************************//
+/* 动作映射表项 */
+typedef struct
+{
+	const uint8_t		*pSeq;				/* 触发序列特征数组指针 */
+	uint8_t				ucSeqLen;			/* 序列长度 (字节数) */
+	uint32_t			ulStateMask;		/* 适用的工作状态掩码 */
+	fnKeyAction_T		pfAction;			/* 业务处理函数指针 */
+	const char			*pLog;				/* 调试打印日志 */
+}KeyActionItem_T;
+
+/* 编译期保证 (1U << eDevState) 移位安全 */
+typedef char __ds_shift_safe[(DS_WORK < 32 && DS_ERR < 32) ? 1 : -1];
+
+/* 长按 开关机 */
+static const u8 s_uc_key_tri_sys_on_off_buff[2] = { KTE_POWER_LONG, KTE_FUN_NULL };
+/* 连击 开关机/系统充放保护 */
+static const u8 s_uc_key_tri_sys_prote_on_off_buff[4] = { KTE_POWER_LONG, KTE_POWER_LONG, KTE_POWER_LONG, KTE_FUN_NULL };
+
+#if (boardDISPLAY_EN)
+/* 单击 切换屏幕 */
+static const u8 s_uc_key_tri_screen_buff[2] = { KTE_POWER_SHORT, KTE_FUN_NULL };
+#endif  /* boardDISPLAY_EN */
+
+//****************************************************Function Declaration******************************************************//
+static void v_act_sys_on_off(void);
+static void v_act_sys_prote(void);
+
+#if (boardDISPLAY_EN)
+static void v_act_screen_switch(void);
+#endif  /* boardDISPLAY_EN */
+
+static bool b_key_dispatch(const KeyActionItem_T *p_table, uint8_t uc_num, u8 *p_buff);
 
 
-//****************************************************函数声明**************************************************//
-#if(boardENG_MODE_EN)
-    static bool eng_mode_key_deal(u8 func);
-#endif
+/* 跨状态动作表: 判序最高, 先于工程模式判断 */
+static const KeyActionItem_T s_t_key_action_global[] =
+{
+	/* 序列特征                                   长度                                       有效系统状态       回调处理函数               日志 */
+	{s_uc_key_tri_sys_on_off_buff,              sizeof(s_uc_key_tri_sys_on_off_buff),      KEY_MASK_ANY,    v_act_sys_on_off,         "开关机"},
+};
+#define			KEY_ACTION_GLOBAL_NUM					(sizeof(s_t_key_action_global) / sizeof(s_t_key_action_global[0]))
 
+/* 工作态动作表: 仅在 DS_WORK / DS_ERR 生效 */
+static const KeyActionItem_T s_t_key_action_work[] =
+{
+	{s_uc_key_tri_sys_prote_on_off_buff,         sizeof(s_uc_key_tri_sys_prote_on_off_buff),  KEY_MASK_NORMAL, v_act_sys_prote,          "系统充放保护"},
+
+	#if (boardDISPLAY_EN)
+	{s_uc_key_tri_screen_buff,                   sizeof(s_uc_key_tri_screen_buff),            KEY_MASK_NORMAL, v_act_screen_switch,      "切换屏幕"},
+	#endif  /* boardDISPLAY_EN */
+};
+
+#define KEY_ACTION_WORK_NUM (sizeof(s_t_key_action_work) / sizeof(s_t_key_action_work[0]))
 
 
 /***********************************************************************************************************************
------函数功能    按键功能处理函数
------说明(备注)  none
------传入参数    none
------输出参数    none
------返回值      none
-************************************************************************************************************************/
-void vKey_ProcKeyFunc(u8* pKeyTriTypeBuff)
+ * 函数功能    : 按键功能处理函数
+ * 说明(备注)  : 查表分发按键事件序列
+ * 传入参数    : p_uc_key_tri_type_buff: 事件序列缓冲区指针
+ * 输出参数    : 无
+ * 返回值      : 无
+ ***********************************************************************************************************************/
+void vKey_ProcKeyFunc(u8 *p_uc_key_tri_type_buff)
 {
-	//******************************************开关机************************************************
-	if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_SysOnOffBuff, sizeof(KeyTriType_SysOnOffBuff)))  
+	/* 第一优先级: 跨状态动作 (原逻辑中"开关机"优先于工程模式判断, 保持一致) */
+	if (b_key_dispatch(s_t_key_action_global, KEY_ACTION_GLOBAL_NUM, p_uc_key_tri_type_buff) == true)
 	{
-        cSys_Switch(SO_KEY, ST_NULL, false);
-
-        if (uPrint.tFlag.bKeyTask)
-            sMyPrint("Key_Task:开关机");
+		vKey_ParamInit();
+		return;
 	}
-	#if(boardENG_MODE_EN)
-	//******************************************工程模式************************************************************
-	else if(tSysInfo.eDevState == DS_ENG_MODE)
+
+	#if (boardENG_MODE_EN)
+	/* 第二优先级: 工程模式处理 */
+	if (tSysInfo.eDevState == DS_ENG_MODE)
 	{
-		if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ChargeBuff, sizeof(KeyTriType_ChargeBuff)) )   //单击电源键
-		{
-			eEngModeKeyFunc = EMKF_CHARGE;
-			bBuz_Tweet(SHORT_1);
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("循环选择\r\n");
-			
-		}
-		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_AddBuff, sizeof(KeyTriType_AddBuff)) )  //AC键短按  +
-		{
-			eEngModeKeyFunc = EMKF_ADD;
-			bBuz_Tweet(SHORT_1);
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("增加\r\n");
-			
-		}
-		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ReduceBuff, sizeof(KeyTriType_ReduceBuff))) //USB键短按  -
-		{
-			eEngModeKeyFunc = EMKF_REDUCE;
-			bBuz_Tweet(SHORT_1);
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("减少\r\n");
-		}
-		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_NextOptionBuff, sizeof(KeyTriType_NextOptionBuff))) //LIGHT键短按
-		{
-			eEngModeKeyFunc = EMKF_NEXT_OPTION;
-			bBuz_Tweet(SHORT_1);
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("下一项\r\n");
-		}
-		else if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ComfirmBuff, sizeof(KeyTriType_ComfirmBuff))) //LIGHT键长按
-		{
-			eEngModeKeyFunc = EMKF_COMFIRM;
-			bBuz_Tweet(SHORT_1);
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("确认\r\n");
-		}
-		else 
-		{
-			eEngModeKeyFunc = EMKF_NULL;
-			if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_NullBuff, sizeof(KeyTriType_NullBuff)))
-			{
-				bBuz_Tweet(SHORT_1);
-			}
-		}
-		
-		if(eEngModeKeyFunc != EMKF_NULL)
-			eng_mode_key_deal(eEngModeKeyFunc);
+		v_key_func_eng(p_uc_key_tri_type_buff);
+		vKey_ParamInit();
+		return;
 	}
-	//*****************************************待机或关机状态下**********************************************************
-	else if (bSys_IsShutDownState() ==  true) //待机
-	{
-		//Power&AC键长按  设置时间---------------------------------------------------------------------------------------
-		if( bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_SetBuff, sizeof(KeyTriType_SetBuff)) ||   
-			bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_Set1Buff, sizeof(KeyTriType_Set1Buff)))
-		{
-			bSys_SetDevState(DS_ENG_MODE, false);  //进入工程模式
-			
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("进入工程模式\r\n");	
-		}
-	}
-	#endif
-    //*****************************************************工作状态下**************************************************//
-    else if (tSysInfo.eDevState == DS_WORK)
-    {
-		if(bFun_DataCompare( pKeyTriTypeBuff, (u8*)&KeyTriType_ScreenBuff, sizeof(KeyTriType_ScreenBuff)))
-		{
-			#if(boardDISPLAY)
-			bDisp_ChangeScreen(ID_MAIN_0);
-			#endif  //boardDISPLAY
+	#endif  /* boardENG_MODE_EN */
 
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:切换屏幕\r\n");
-		}
-    }
+	/* 第三优先级: 工作态/错误态动作 */
+	b_key_dispatch(s_t_key_action_work, KEY_ACTION_WORK_NUM, p_uc_key_tri_type_buff);
 
-    vKey_ParamInit();
+	vKey_ParamInit();
 }
 
-
-#if(boardENG_MODE_EN)
 /***********************************************************************************************************************
------函数功能    工程模式按键功能
------说明(备注)  none
------传入参数    按键功能
-				 EMKF_NULL = 0, //空按键
-				 EMKF_CHARGE,   //改变
-				 EMKF_ADD,      //增加
-				 EMKF_REDUCE,   //减少
-				 EMKF_COMFIRM,  //确认
------输出参数    none
------返回值      true:允许  false:不允许
-************************************************************************************************************************/
-static bool eng_mode_key_deal(u8 func)
+ * 函数功能    : 系统开关机动作
+ * 说明(备注)  : 触发系统开关机状态切换
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : 无
+ ***********************************************************************************************************************/
+static void v_act_sys_on_off(void)
 {
-	EngModeStep_E step = (EngModeStep_E)tSysInfo.ucRunStep;
-	//累加设置
-//	if(step ==EMS_TIME)
-//	{
-//		tKeyAC.bEnLongPressAdd = true;
-//		tKeyLight.bEnLongPressAdd = true ;
-//	}
-//	else 
-//	{
-//		tKeyAC.bEnLongPressAdd = false;
-//		tKeyLight.bEnLongPressAdd = false ;
-//	}
-	
-	vEng_RefreshEngModeTime();
-	
-	switch(step)
-	{
-		case EMS_LCD:
-		{
-			if(func == EMKF_CHARGE)
-				vLCD_TypeSelect();
-			else if(func == EMKF_ADD)
-				vLCD_LightSelect(true);
-			else if(func == EMKF_REDUCE)
-				vLCD_LightSelect(false);
-			else if(func == EMKF_NEXT_OPTION)
-			{
-				bEng_SetEngStep(EMS_SYS);
-				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------工程模式_系统设置-------\r\n");
-			}
-			else if(func == EMKF_COMFIRM)
-			{
-				bLCD_ExitSetLightness();
-			}
-		}break;
-		
-		case EMS_SYS:
-		{
-			if(func == EMKF_CHARGE)
-				;
-			else if(func == EMKF_ADD)
-				;
-			else if(func == EMKF_REDUCE)
-				;
-			else if(func == EMKF_NEXT_OPTION)
-			{
-				bEng_SetEngStep(EMS_BAT);
-				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------工程模式_电池设置-------\r\n");
-			}
-			else if(func == EMKF_COMFIRM)
-			{
-				
-			}
-		}break;
-		
-		case EMS_BAT:
-		{
-			if(func == EMKF_CHARGE)
-				;
-			else if(func == EMKF_ADD)
-				;
-			else if(func == EMKF_REDUCE)
-				;
-			else if(func == EMKF_NEXT_OPTION)
-			{
-				bEng_SetEngStep(EMS_ADC);
-				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------工程模式_ADC采样-------\r\n");
-			}
-			else if(func == EMKF_COMFIRM)
-			{
-				
-			}
-			
-		}break;
-		
-		case EMS_ADC:
-		{
-			if(func == EMKF_CHARGE)
-				;
-			else if(func == EMKF_ADD)
-				;
-			else if(func == EMKF_REDUCE)
-				;
-			else if(func == EMKF_NEXT_OPTION)
-			{
-				bEng_SetEngStep(EMS_LIGHT);
-				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------工程模式_照明-------\r\n");
-			}
-			else if(func == EMKF_COMFIRM)
-			{
-				
-			}
-		}break;
-		
-		case EMS_LIGHT:
-		{
-			if(func == EMKF_CHARGE)
-				;
-			else if(func == EMKF_ADD)
-				;
-			else if(func == EMKF_REDUCE)
-				;
-			else if(func == EMKF_NEXT_OPTION)
-			{
-				bEng_SetEngStep(EMS_UPDATA);
-				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------工程模式_升级-------\r\n");
-			}
-			else if(func == EMKF_COMFIRM)
-			{
-				
-			}
-		}break;
-		
-		case EMS_UPDATA:
-		{
-			if(func == EMKF_CHARGE)
-				;
-			else if(func == EMKF_ADD)
-				;
-			else if(func == EMKF_REDUCE)
-				;
-			else if(func == EMKF_NEXT_OPTION)
-			{
-				bEng_SetEngStep(EMS_RESET);
-				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------工程模式_重置-------\r\n");
-			}
-			else if(func == EMKF_COMFIRM)
-			{
-				
-			}
-		}break;
-		
-		case EMS_RESET:
-		{
-			if(func == EMKF_COMFIRM)   //确认
-			{
-				bApp_SysInfoInit(true);
-			}
-			else if(func == EMKF_NEXT_OPTION)  //下一项
-			{
-				bEng_SetEngStep(EMS_FINISH);
-				if(uPrint.tFlag.bKeyTask)
-					sMyPrint("Key_Task:-------工程模式_完成-------\r\n");
-			}
-			
-		}break;
-		
-		default:
-		case EMS_FINISH:
-		{
-			if(func == EMKF_NEXT_OPTION)  //下一项
-			{
-				bEng_SetEngStep(EMS_LCD);
-			}
-			else if(func == EMKF_COMFIRM)   //确认
-			{
-				cSys_Switch(SST_ON);      //开机
-			}
-			if(uPrint.tFlag.bKeyTask)
-				sMyPrint("Key_Task:-------工程模式_显示屏设置-------\r\n");
-		}break;
-	}
-	
-	return true;
+	cSys_Switch(SO_KEY, ST_NULL, false);
 }
-#endif
+
+/***********************************************************************************************************************
+ * 函数功能    : 系统充放保护动作
+ * 说明(备注)  : 触发强制关闭保护标志，长鸣并关机
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : 无
+ ***********************************************************************************************************************/
+static void v_act_sys_prote(void)
+{
+	bSys_SetPerm(SPO_FORCE_CLOSE, true);
+	cSys_Switch(SO_KEY, ST_OFF, false);
+}
+
+#if (boardDISPLAY_EN)
+/***********************************************************************************************************************
+ * 函数功能    : 切换屏幕动作
+ * 说明(备注)  : 切换主显示屏页面
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : 无
+ ************************************************************************************************************************/
+static void v_act_screen_switch(void)
+{
+	// bDisp_ChangeScreen(ID_MAIN_0);
+}
+#endif  /* boardDISPLAY_EN */
+
+/***********************************************************************************************************************
+ * 函数功能    : 按键动作查表分发内核
+ * 说明(备注)  : 遍历动作表比对当前系统状态掩码与事件序列特征
+ * 传入参数    : p_table: 动作表指针, uc_num: 表项数量, p_buff: 事件序列缓冲区指针
+ * 输出参数    : 无
+ * 返回值      : bool: true 命中并执行动作, false 未命中
+ ***********************************************************************************************************************/
+static bool b_key_dispatch(const KeyActionItem_T *p_table, uint8_t uc_num, u8 *p_buff)
+{
+	uint8_t i;
+	uint32_t ul_curr_state_mask = (1U << tSysInfo.eDevState);
+
+	for (i = 0; i < uc_num; i++)
+	{
+		/* 1. 校验当前系统工作状态是否匹配该按键动作 */
+		if ((p_table[i].ulStateMask & ul_curr_state_mask) != 0)
+		{
+			/* 2. 比对按键序列特征 */
+			if (bFun_DataCompare(p_buff, (u8 *)p_table[i].pSeq, p_table[i].ucSeqLen))
+			{
+				if (p_table[i].pfAction != NULL)
+					p_table[i].pfAction();
+
+				if (uPrint.tFlag.bKeyTask && p_table[i].pLog != NULL)
+					sMyPrint("Key_Task:%s\r\n", p_table[i].pLog);
+
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+#endif  /* boardKEY_EN */
+

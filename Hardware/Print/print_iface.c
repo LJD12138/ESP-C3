@@ -146,7 +146,7 @@ static void v_print_usart_init( void )
 -----输出参数    none
 -----返回值      none
 ************************************************************************************************************************/
-void vPrint_Init( void )//串口初始化
+void vPrint_IfaceInit( void )//串口初始化
 {
 	v_print_gpio_init();
 	v_print_usart_init();
@@ -159,7 +159,7 @@ void vPrint_Init( void )//串口初始化
 -----输出参数    none
 -----返回值      none
 ************************************************************************************************************************/
-void vPrint_DeInit( void )
+void vPrint_IfaceDeInit( void )
 {
 
 }

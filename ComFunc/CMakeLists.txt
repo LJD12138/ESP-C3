@@ -6,7 +6,6 @@ idf_component_register(
         "ntc.c"
         "i2c2.c"
         "check.c"
-        "filtration.c"
         "function.c"
     INCLUDE_DIRS
         "."

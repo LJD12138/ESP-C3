@@ -1,47 +1,52 @@
+/***********************************************************************************************************************
+ * Project : ESP-C3
+ * Module  : ESP-C3\Hardware\MD_Display
+ * File    : lv_port_disp.h
+ * Date    : 2026-10-10
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : LVGL显示端口头文件
+ * -------------------------------------------------------
+ * todo    :
+ * 1. none
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
+ ************************************************************************************************************************/
+
 #ifndef LV_PORT_DISP_H
 #define LV_PORT_DISP_H
 
-#include "board_config.h"
-
-#if(boardDISPLAY)
-
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif  /* __cplusplus */
 
-/*********************
- *      INCLUDES
- *********************/
-#include "main.h"
+//****************************************************Includes******************************************************************//
+#include "board_config.h"
 
-/* 跳过lv_conf.h，使用Kconfig配置 */
-#ifndef LV_CONF_SKIP
-#define LV_CONF_SKIP 1
-#endif
+#if (boardDISPLAY_EN)
 #include "lvgl.h"
 
-/*********************
- *      DEFINES
- *********************/
+#if (boardUSE_OS)
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#endif  /* boardUSE_OS */
 
-/**********************
- *      TYPEDEFS
- **********************/
-
-/**********************
- * GLOBAL PROTOTYPES
- **********************/
-/* Initialize low level display driver */
-void lv_port_disp_init(void);
-
-/**********************
- *      MACROS
- **********************/
-
-#ifdef __cplusplus
-} /*extern "C"*/
+//****************************************************Macros********************************************************************//
+/* 跳过lv_conf.h，使用Kconfig配置 */
+#ifndef LV_CONF_SKIP
+#define			LV_CONF_SKIP							1
 #endif
 
-#endif  //boardDISPLAY
+//****************************************************Types*********************************************************************//
 
-#endif  //LV_PORT_DISP_H
+//****************************************************Globals*******************************************************************//
+
+//****************************************************Extern********************************************************************//
+void lv_port_disp_init(void);
+
+#endif  /* boardDISPLAY_EN */
+
+#ifdef __cplusplus
+}
+#endif  /* __cplusplus */
+
+#endif  /* LV_PORT_DISP_H */

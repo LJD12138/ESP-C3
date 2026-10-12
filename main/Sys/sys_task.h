@@ -1,27 +1,40 @@
+/***********************************************************************************************************************
+ * Project : APP
+ * Module  : APP\Application\Sys
+ * File    : sys_task.h
+ * Date    : 2026-09-20
+ * Author  : LJD(291483914@qq.com)
+ * Desc    : 系统总任务声明与数据结构定义头文件
+ * -------------------------------------------------------
+ * todo    :
+ * 1. none
+ * -------------------------------------------------------
+ * Copyright (c) 2026 -inc
+ ************************************************************************************************************************/
 #ifndef SYS_TASK_H_
 #define SYS_TASK_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif  /* __cplusplus */
+
+//****************************************************Includes******************************************************************//
 #include "main.h"
-#include "board_config.h"
 #include "queue_task.h"
 
-#if(boardUSE_OS)
-#include "freertos/freertos.h"
+#if (boardUSE_OS)
+#include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#endif  //boardUSE_OS
+#endif  /* boardUSE_OS */
 
+//****************************************************Macros********************************************************************//
+#define			sysDEV_ADRR								0x20
 
-//#define		//4Tab									//10Tab
-#define 		bmsDEV_NUM								6
-extern 			bool 									G_TestMode;
-extern 			Task_T									*tpSysTask;
-extern 			TaskHandle_t  							tSysTaskHandler;
-
-//*********************************任务ID***********************************
+//****************************************************Types*********************************************************************//
 typedef enum : uint8_t
 {
 	STI_NULL = 0,		//空任务函数
-    STI_INIT,			//初始化电池包
+	STI_INIT,			//初始化电池包
 	STI_CLOSING,		//关闭中
 	STI_SHUT_DOWN,		//关闭完成
 	STI_ERR,			//错误
@@ -29,33 +42,10 @@ typedef enum : uint8_t
 	STI_BOOTING,		//载入中
 	STI_WORK,			//工作中
 	STI_ENG,			//工程模式
+	STI_UPDATE,			//升级
+	STI_UPDATE_ERR,		//升级错误 10
 }SysTaskId_E;
 
-//*********************************许可*************************************
-#pragma pack(1)
-typedef union
-{
-	struct 
-	{
-		u8 				bChgPerm:1;//充电许可
-		u8 				bDisChgPerm:1;//放电许可
-		u8 				bForceClose:1;//强制关闭
-		u8 				temp:5;
-	}tPerm;
-	u8 ucPerm;
-}SysPerm_U;
-#pragma pack()
-
-typedef enum : uint8_t
-{
-	SPO_CHG = 0,		//充电
-	SPO_DISCHG,    		//放电
-	SPO_FORCE_CLOSE,	//强制关闭
-	SPO_ALL,			//充放电
-}SysPermObject_E;
-
-//*****************************设备初始化标志位********************************
-#pragma pack(1)
 typedef union
 {
 	struct
@@ -71,11 +61,9 @@ typedef union
 		u16 			bIF_BmsProt:1;
 		u16 			bIF_DispTask:1;
 	}tFinish;
-	u16 State;
+	u16					State;
 }InitFinish_U;
-#pragma pack()
 
-//*****************************系统供电类型**********************************
 typedef enum : uint8_t
 {
 	SPT_5V = 0,
@@ -83,10 +71,9 @@ typedef enum : uint8_t
 	SPT_10V,
 }SysPowerType_E;
 
-//*****************************错误状态*************************************
 typedef enum : uint8_t 
 {
-    SEC_CLEAR_ALL = 0,	//清所有错误
+	SEC_CLEAR_ALL = 0,	//清所有错误
 
 	SEC_OT,				//过温
 	SEC_UT,				//低温
@@ -94,89 +81,121 @@ typedef enum : uint8_t
 	SEC_UV,				//欠压
 	SEC_OL,				//过载
 	SEC_0_SOC,			//0%SOC
-	SEC_COLSE_FAULT,	//关闭失败
+	SEC_CLOSE_FAULT,	//关闭失败
 	SEC_BOOT_FAULT,		//开启失败
+	SEC_DISCHG_OL,		//放电过功率(BMS许可功率限制)
 	SEC_TASK_FAULT,		//任务初始化/创建失败
 }SysErrCode_E;
 
-#pragma pack(1)
 typedef union
 {
-	struct 
+	struct
 	{
-		u16 			bOT :1;
-		u16 			bUT :1;
-		u16 			bOV :1;
-		u16 			bUV :1;
-		u16 			bOL :1;
-		u16 			b0SOC :1;
-		u16 			bCloseFault :1;
-		u16 			bBootFault :1;
-		u16 			bTaskFault :1;		//任务初始化/创建失败
+		u16				bOT:1;
+		u16				bUT:1;
+		u16				bOV:1;
+		u16				bUV:1;
+		u16				bOL:1;
+		u16				b0SOC:1;
+		u16				bCloseFault:1;
+		u16				bBootFault:1;
+		u16				bDisChgOL:1;		//放电过功率
+		u16				bTaskFault:1;		//任务初始化/创建失败
 	}tCode;
-	u16 usCode;
+	u16					usCode;
 }SysErrCode_U;
-#pragma pack()
 
-//*********************************任务对象**********************************
-#pragma pack(1)//强制一个字节对齐
+typedef union
+{
+	struct
+	{
+		u8				bChgPerm:1;			//充电许可
+		u8				bDisChgPerm:1;		//放电许可
+		u8				bForceClose:1;		//强制关闭
+		u8				temp:5;
+	}tPerm;
+	u8					ucPerm;
+}SysPerm_U;
+
+typedef enum : uint8_t 
+{
+	SPO_CHG = 0,		//充电
+	SPO_DISCHG,			//放电
+	SPO_FORCE_CLOSE,	//强制关闭
+	SPO_ALL,			//充放电
+}SysPermObject_E;
+
 typedef struct
 {
-	//1Tab				//5Tab				//5Tab
-	DevState_E    		eDevState;          //设备状态
-	SysErrCode_U  		uErrCode;        	//错误代码
-	Perm_U              uPerm;				//许可
-	InitFinish_U     	uInit;              //初始化完成
-	SysPowerType_E   	ePowerType;         //系统供电类型
-    vu16             	usAutoOffCnt;       //自动关闭计时
-	vu16             	usAutoOffTime;      //自动关闭时间  0为关闭此功能
-	vu16             	usNeedSleepCnt;     //需要休眠计时
-    vs16             	sMaxTemp;           //整机最高温 1摄氏度
-	vs16             	sMinTemp;           //整机最低温 1摄氏度
-	vs16             	sBoardTempMax;      //板载最高温 (主控)
+	vu16				usMPPT;
+	vu16				usDCAC;
+}SysChgPwr_T;
+
+typedef struct
+{
+	DevState_E			eDevState;			//设备状态
+	SysErrCode_U		uErrCode;			//错误代码
+	SysPerm_U			uPerm;				//许可
+	InitFinish_U		uInit;				//初始化完成
+	SysPowerType_E		ePowerType;			//系统供电类型
+	SysChgPwr_T			tSetChgPwr;			//充电功率
+	vu16				usAutoOffCnt;		//自动关闭计时
+	vu16				usAutoOffTime;		//自动关闭时间 0为关闭此功能
+	vu16				usNeedSleepCnt;		//需要休眠计时
+	vs16				sMaxTemp;			//整机最高温 1摄氏度
+	vs16				sMinTemp;			//整机最低温 1摄氏度
+	vs16				sBoardTempMax;		//板载最高温 (主控)
 	vu16				usVoltMax;			//0.01V
 	vu16				usVoltMin;			//0.01V
-	vu16             	usOutPwr;        	//输出功率
-	vu16             	usInPwr;         	//输入功率
-}SysInfo_T;         
-#pragma pack() //取消一个字节对齐
-extern  SysInfo_T    	tSysInfo; 
-//		//2Tab			//4Tab
+	vu16				usOutPwr;			//输出功率
+	vu16				usInPwr;			//输入功率
+}SysInfo_T;
 
-//*********************************记忆参数**********************************
-#pragma pack(1)//强制一个字节对齐
+#pragma pack(1) //强制一个字节对齐
 typedef struct
 {
-	bool 				bBuzSwitchOff;		//关闭蜂鸣器
-	s8               	sMaxTemp;      		//允许的最大温度
-	s8               	sMinTemp;      		//允许的最小温度
-	vu16             	usAutoOffTime;      //自动关闭时间  0为关闭此功能
-	vu16             	usMinOpenVolt;      //最小开启电压
+	bool				bBuzSwitchOff;		//关闭蜂鸣器
+	s8					sMaxTemp;			//允许的最大温度
+	s8					sMinTemp;			//允许的最小温度
+	vu16				usAutoOffTime;		//自动关闭时间 0为关闭此功能
+	vu16				usMinOpenVolt;		//最小开启电压
 }SysMemParam_T;
-#pragma pack() //取消一个字节对齐
+#pragma pack()  //取消一个字节对齐
 
+//****************************************************Globals*******************************************************************//
+extern SysInfo_T tSysInfo;
+extern bool G_TestMode;
+extern Task_T *tpSysTask;
+extern TaskHandle_t tSysTaskHandler;
 
-bool bSys_TaskInit(void);
+//****************************************************Extern********************************************************************//
+s8 cSys_TaskInit(void);
 void vSys_RefreshAllOffTime(bool BLON);
 void vSys_RefreshOffTime(void);
 void vSys_TickTimer(void);
 bool bSys_SetAutoOffTime(u16 time);
 bool bSys_SetDevState(DevState_E state, bool bz);
-bool bSys_CheckActState(void);
-bool bSys_ExistInVolt(void);
-bool bSys_IsChgState(void);
 bool bSys_IsWorkState(void);
 bool bSys_IsShutDownState(void);
+bool bSys_CheckActState(void);
+bool bSys_ExistInVolt(void);
+s8   cSys_IsChgState(void);
 bool bSys_ChgWakeUp(SwitchObject_E obj);
-s8 cSys_Switch(SwitchObject_E obj, SwitchType_E type, bool fore_en);
-bool bSys_MemParamInit(SysMemParam_T* p_sys_mem);
+s8   cSys_Switch(SwitchObject_E obj, SwitchType_E type, bool fore_en);
+bool bSys_MemParamInit(SysMemParam_T *p_sys_mem);
 void vSys_MemParamSet(u8 item, bool add);
 bool bSys_SetPerm(SysPermObject_E obj, bool en);
 bool bSys_SetErrCode(SysErrCode_E code, bool set);
 bool bSys_LowVoltReqChg(void);
+s16  sSys_CheckInVolt(void);
 
-#if(!boardUSE_OS)
+#if (!boardUSE_OS)
 void vSys_Task(void *pvParameters);
-#endif  //boardUSE_OS
+#endif  //!boardUSE_OS
 
-#endif  //SYS_TASK_H_
+#ifdef __cplusplus
+}
+#endif  /* __cplusplus */
+
+#endif  /* SYS_TASK_H_ */
+
