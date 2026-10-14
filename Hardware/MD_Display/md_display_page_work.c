@@ -24,11 +24,15 @@
 #include "lvgl.h"
 #include "esp_log.h"
 #include "eez_ui/screens.h"
+#if (defined(LV_USE_GIF) && LV_USE_GIF)
 #include "user_ui/img_dog_gif.h"
+#endif
 
 
 //****************************************************Static Variables**********************************************************//
+#if (defined(LV_USE_GIF) && LV_USE_GIF)
 static lv_obj_t *s_p_dog_gif = NULL;
+#endif
 
 
 //****************************************************Function Declaration******************************************************//
@@ -63,6 +67,7 @@ static void v_page_work_enter(void)
     if (lv_screen_active() != objects.main_work)
         vDisp_LoadScreen(SCREEN_ID_MAIN_WORK);
 
+#if (defined(LV_USE_GIF) && LV_USE_GIF)
     /* 挂载原生 GIF 动图至主工作界面 (居中放置于上半区域, 屏幕 320x240, 动图 140x52) */
     if (s_p_dog_gif == NULL && objects.main_work != NULL)
     {
@@ -75,6 +80,7 @@ static void v_page_work_enter(void)
     {
         lv_gif_resume(s_p_dog_gif);
     }
+#endif
 
     /* 抓取一次快照用于首帧静态渲染 */
     vDisp_DataCaptureSnapshot(&t_snapshot);
@@ -98,11 +104,13 @@ static void v_page_work_enter(void)
  ************************************************************************************************************************/
 static void v_page_work_exit(void)
 {
+#if (defined(LV_USE_GIF) && LV_USE_GIF)
     /* 离开工作页面暂停动图解码定时器，降低后台 CPU 负荷 */
     if (s_p_dog_gif != NULL)
     {
         lv_gif_pause(s_p_dog_gif);
     }
+#endif
 }
 
 /***********************************************************************************************************************

@@ -18,6 +18,23 @@ enum FlowGlobalVariables {
 
 // Native global variables
 
+extern const char *get_var_home_nav_time();
+extern void set_var_home_nav_time(const char *value);
+extern const char *get_var_home_temp_val();
+extern void set_var_home_temp_val(const char *value);
+extern const char *get_var_home_temp_desc();
+extern void set_var_home_temp_desc(const char *value);
+extern const char *get_var_home_humi_val();
+extern void set_var_home_humi_val(const char *value);
+extern const char *get_var_home_humi_desc();
+extern void set_var_home_humi_desc(const char *value);
+extern const char *get_var_home_weather_text();
+extern void set_var_home_weather_text(const char *value);
+extern const char *get_var_home_net_time();
+extern void set_var_home_net_time(const char *value);
+extern const char *get_var_home_net_sync();
+extern void set_var_home_net_sync(const char *value);
+
 #ifdef __cplusplus
 }
 #endif

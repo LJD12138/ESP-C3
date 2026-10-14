@@ -21,7 +21,7 @@
           },
           {
             "type": "border",
-            "selected": 4,
+            "selected": 1,
             "size": 293.5,
             "location": "right",
             "children": [
@@ -70,7 +70,7 @@
           {
             "type": "border",
             "selected": 1,
-            "size": 383.09375,
+            "size": 153.5,
             "location": "bottom",
             "children": [
               {
@@ -194,22 +194,11 @@
               "children": [
                 {
                   "type": "tab",
-                  "id": "#25a5096b-d032-4a3a-94b9-eb93d5f6f6dc",
+                  "id": "#a7b634c4-430d-40dd-89ef-acf5d8536aa2",
                   "name": "Main_Work",
                   "component": "editor",
                   "config": {
                     "objectPath": "[esp_c3.eez-project]:/userPages/0",
-                    "permanent": false
-                  },
-                  "icon": "svg:page"
-                },
-                {
-                  "type": "tab",
-                  "id": "#444c0c06-1bfe-47ef-a2d4-7c5274de8420",
-                  "name": "Main_Booting",
-                  "component": "editor",
-                  "config": {
-                    "objectPath": "[esp_c3.eez-project]:/userPages/1",
                     "permanent": true
                   },
                   "icon": "svg:page"
@@ -1088,7 +1077,21 @@
       "selectionFront": {},
       "selectionBack": {
         "0": {
-          "0": {}
+          "0": {
+            "1": {}
+          },
+          "1": {
+            "0": {
+              "0": {},
+              "1": {},
+              "2": {}
+            },
+            "1": {
+              "0": {
+                "0": {}
+              }
+            }
+          }
         }
       },
       "transform": {
@@ -1198,7 +1201,9 @@
   "selectedStylePropertyName": "",
   "lvglPart": "MAIN",
   "lvglState": "DEFAULT",
-  "lvglExpandedPropertiesGroup": [],
+  "lvglExpandedPropertiesGroup": [
+    "TEXT"
+  ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
   "flowZoom": 1,

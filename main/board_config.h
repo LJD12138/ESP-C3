@@ -26,7 +26,7 @@ extern "C" {
 
 //-------------------------------------------------------------------
 //<s>       	软件版本(此处缩进不可以用Tab)
-#define			boardSOFTWARE_VERSION					"ESP_C3_Ver_2_0_5"
+#define			boardSOFTWARE_VERSION					"ESP_C3_Ver_2_0_6"
 //-------------------------------------------------------------------
 //<s>       	硬件版本(此处缩进不可以用Tab)
 #define        boardHARDWARE_VERSION                   	"ESP_C3_Ver_1_0_0"

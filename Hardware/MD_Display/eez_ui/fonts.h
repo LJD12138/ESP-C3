@@ -8,6 +8,9 @@ extern "C" {
 #endif
 
 extern const lv_font_t ui_font_barlow_condensed_regular_66;
+extern const lv_font_t ui_font_home_num_32;
+extern const lv_font_t ui_font_home_cn_16;
+extern const lv_font_t ui_font_home_cn_12;
 
 #ifndef EXT_FONT_DESC_T
 #define EXT_FONT_DESC_T

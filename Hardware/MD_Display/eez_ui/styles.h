@@ -7,6 +7,14 @@
 extern "C" {
 #endif
 
+// Style: st_home_card
+void add_style_st_home_card(lv_obj_t *obj);
+void remove_style_st_home_card(lv_obj_t *obj);
+
+// Style: st_home_cell
+void add_style_st_home_cell(lv_obj_t *obj);
+void remove_style_st_home_cell(lv_obj_t *obj);
+
 #ifdef __cplusplus
 }
 #endif
