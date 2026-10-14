@@ -17,6 +17,7 @@
 
 #if (boardDISPLAY_EN)
 #include "MD_Display/md_display_iface.h"
+#include "MD_Display/md_display_api.h"
 
 #include "uni_disp_port.h"
 #include "app_info.h"
@@ -158,10 +159,29 @@ void vDisp_Task(void *pvParameters)
         }
         else
         {
-            /* 亮屏: 帧周期 - 已耗渲染时间 = 剩余等待时间 (已超时则立刻进入下一帧) */
-            x_period  = pdMS_TO_TICKS(usDisp_GetFramePeriod());
-            x_elapsed = xTaskGetTickCount() - x_start;
-            ulTaskNotifyTake(pdTRUE, (x_elapsed < x_period) ? (x_period - x_elapsed) : 1U);
+            /* 亮屏: 帧周期 - 已耗渲染时间 = 剩余等待时间 (已超时则立刻进入下一帧);
+             * 帧内按 dispINDEV_POLL_PERIOD_MS 节拍插入触摸快泵, 缩短输入采样延迟 */
+            x_period = pdMS_TO_TICKS(usDisp_GetFramePeriod());
+
+            for (;;)
+            {
+                /* 帧时间到: 进入下一轮 EnginePoll */
+                x_elapsed = xTaskGetTickCount() - x_start;
+                if (x_elapsed >= x_period)
+                    break;                              
+
+                TickType_t x_wait = x_period - x_elapsed;
+                if (x_wait > pdMS_TO_TICKS(dispINDEV_POLL_PERIOD_MS))
+                    x_wait = pdMS_TO_TICKS(dispINDEV_POLL_PERIOD_MS);
+
+                /* 事件/亮屏通知: 立即进引擎处理 */
+                if (ulTaskNotifyTake(pdTRUE, x_wait) > 0U)
+                    break;                              
+
+                /* 快泵: 触摸采样 + LVGL 定时器 */
+                if ((xTaskGetTickCount() - x_start) < x_period)
+                    vDisp_UiPump();
+            }
         }
         #endif  /* boardUSE_OS */
     }

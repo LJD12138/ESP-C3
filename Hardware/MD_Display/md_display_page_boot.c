@@ -39,7 +39,7 @@ const DispPage_T G_tPageBoot =
 	.vOnExit     = v_page_boot_exit,
     .vOnUpdate   = v_page_boot_update,
     .bOnEvent    = b_page_boot_event,
-    .usRefreshMs = 20,
+    .usRefreshMs = 33,      /* 30FPS, 与框架下限 dispFRAME_PERIOD_MIN_MS 对齐 */
 };
 
 /***********************************************************************************************************************

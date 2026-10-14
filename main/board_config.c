@@ -155,7 +155,9 @@ void vBoard_SysInit(void)
 {
 	vGPIO_Init();
 	
-	bFlash_IfaceInit();
+	/* Flash分区句柄必须就绪, 否则后续参数读写将逐级报错(不再直接空指针崩溃) */
+	if (bFlash_IfaceInit() == false)
+		printf("\r\n[FATAL ERROR] Flash partition 'storage' not found! Check partition table config (CONFIG_PARTITION_TABLE_CUSTOM).\r\n");
 	
 	#if (boardWDGT_EN)
 	vFwdgt_Init();
@@ -197,8 +199,6 @@ void vBoard_SysInit(void)
 void vBoard_StartTask(void *p_v_parameters)
 {
 	(void)p_v_parameters;
-
-	mainENTER_CRITICAL();
 
 	for (size_t i = 0; i < sizeof(c_task_init_table) / sizeof(c_task_init_table[0]); i++)
 	{
@@ -246,8 +246,6 @@ void vBoard_StartTask(void *p_v_parameters)
 			}
 		}
 	}
-
-	mainEXIT_CRITICAL();
 
 	#if (boardUSE_OS)
 	vTaskDelete(NULL);

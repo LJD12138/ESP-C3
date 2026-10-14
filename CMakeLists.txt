@@ -23,3 +23,12 @@ set(EXTRA_COMPONENT_DIRS
 # 引入ESP-IDF项目构建系统并声明项目
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(G02)
+
+# ==============================================================================
+# 仅对 LVGL 组件启用 -O2:
+# 全局保持 Debug(-Og) 调试体验, LVGL 软件渲染对优化等级敏感,
+# -O2 下绘图吞吐约提升 1.5~2x, 直接影响显示帧率与动画流畅度
+# ==============================================================================
+if(TARGET __idf_lvgl__lvgl)
+    target_compile_options(__idf_lvgl__lvgl PRIVATE -O2)
+endif()

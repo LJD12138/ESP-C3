@@ -1,32 +1,21 @@
 {
-  "C_Cpp.intelliSenseEngine": "disabled",
-  "clangd.path": "C:/Espressif/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin/clangd.exe",
-  "clangd.arguments": [
-    "--compile-commands-dir=${workspaceFolder}/build",
-    "--query-driver=C:/Espressif/tools/**/bin/*gcc*.exe,C:/Espressif/tools/**/bin/*gcc*"
-  ],
-  "idf.espIdfPathWin": "c:\\Espressif\\frameworks\\esp-idf-v5.5.2",
-  "idf.pythonInstallPath": "C:\\Espressif\\tools\\idf-python\\3.11.2\\python.exe",
-  "idf.openOcdConfigs": [
-    "board/esp32c3-ftdi.cfg"
-  ],
-  "idf.toolsPathWin": "C:\\Espressif",
+  "idf.buildPath": "${workspaceFolder}/build/idf",
+  "cmake.buildDirectory": "${workspaceFolder}/build/idf",
+  "cmake.sourceDirectory": "${workspaceFolder}",
+  "cmake.configureOnOpen": false,
   "idf.customExtraVars": {
     "IDF_TARGET": "esp32c3"
   },
+  "idf.openOcdConfigs": [
+    "board/esp32c3-ftdi.cfg"
+  ],
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=**",
+    "--compile-commands-dir=${workspaceFolder}/build/idf"
+  ],
+  "clangd.path": "C:\\Espressif\\tools\\esp-clang\\esp-19.1.2_20250312\\esp-clang\\bin\\clangd.exe",
   "idf.flashType": "UART",
-
-  //以下是配置Cline默认调用ESP-IDF的终端配置
-  "terminal.integrated.defaultProfile.windows": "ESP-IDF Terminal",
-  "terminal.integrated.profiles.windows": {
-    "ESP-IDF Terminal": {
-      "path": "cmd.exe",
-      "args": [
-        "/k",
-        "C:\\Espressif\\idf_cmd_init.bat"
-      ]
-    }
-  },
-  "idf.currentSetup": "C:/Espressif/frameworks/esp-idf-v5.5.2/",
-  "idf.port": "COM5"
+  "idf.port": "COM25",
+  "idf.currentSetup": "C:\\Espressif\\frameworks\\esp-idf-v5.5.2"
 }

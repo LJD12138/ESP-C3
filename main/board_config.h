@@ -26,7 +26,7 @@ extern "C" {
 
 //-------------------------------------------------------------------
 //<s>       	软件版本(此处缩进不可以用Tab)
-#define			boardSOFTWARE_VERSION					"ESP_C3_Ver_2_0_2"
+#define			boardSOFTWARE_VERSION					"ESP_C3_Ver_2_0_3"
 //-------------------------------------------------------------------
 //<s>       	硬件版本(此处缩进不可以用Tab)
 #define        boardHARDWARE_VERSION                   	"ESP_C3_Ver_1_0_0"
@@ -173,7 +173,7 @@ extern "C" {
 //-------------------------------------------------------------------
 //          	<q0> EasyLogger
 //                                          			<i> 勾选为开启
-#define     	boardEASY_LOGGER           		 		 0
+#define     	boardEASY_LOGGER           		 		 1
 //-------------------------------------------------------------------
 //          	<q0> EasyFlash
 //                                          			<i> 勾选为开启

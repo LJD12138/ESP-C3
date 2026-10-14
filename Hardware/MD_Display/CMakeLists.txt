@@ -19,10 +19,11 @@ set(SRCS
     "md_display_page_eng.c"
 )
 
-# 包含 eez_ui 目录下的所有源文件
+# 包含 eez_ui 与 user_ui 目录下的所有源文件
 file(GLOB EEZ_UI_SRCS "eez_ui/*.c")
+file(GLOB USER_UI_SRCS "user_ui/*.c")
 
-set(SRCS ${SRCS} ${EEZ_UI_SRCS})
+set(SRCS ${SRCS} ${EEZ_UI_SRCS} ${USER_UI_SRCS})
 
 idf_component_register(
     SRCS
@@ -31,6 +32,7 @@ idf_component_register(
         "."
         ".."
         "eez_ui"
+        "user_ui"
     REQUIRES
         driver
         esp_lcd

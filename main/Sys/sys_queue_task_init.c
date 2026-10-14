@@ -15,6 +15,7 @@
 //****************************************************Includes******************************************************************//
 #include "Sys/sys_queue_task.h"
 #include "Sys/sys_task.h"
+#include <stdbool.h>
 
 #if (boardPRINT_EN)
 #include "Print/print_task.h"
@@ -125,7 +126,9 @@ void v_sys_queue_task_init(Task_T *p_task)
 		case 2:
 		{
 			#if (filterSELF_TEST_ENABLE)
-			bFilter_RunSelfTest(NULL);	/* 滤波算法精度与抗扰性自动化自检 */
+			/* 滤波算法精度与抗扰性自动化自检 */
+			if(bFilter_RunSelfTest(NULL) == false)
+				break;
 			#endif  /* filterSELF_TEST_ENABLE */
 			cQueue_GotoStep(p_task, STEP_NEXT);
 		}
@@ -263,6 +266,7 @@ void v_sys_queue_task_init(Task_T *p_task)
 		{
 			tSysInfo.uInit.tFinish.bIF_SysTask = 1;
 			tSysInfo.uInit.tFinish.bIF_SysInit = 1;
+			tSysInfo.uInit.tFinish.bIF_Gpio = 1;
 
 			//没有任务就调度关闭任务
 			if (tSysInfo.eDevState != DS_BOOTING)

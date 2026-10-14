@@ -16,6 +16,7 @@ idf_component_register(
         esp_driver_uart
         freertos
         main
+        EasyLogger
         ComFunc
         TaskQueue
         Protocol

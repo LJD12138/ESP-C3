@@ -60,8 +60,8 @@ static esp_err_t e_disp_touch_init(void)
 	}
 
 	esp_lcd_touch_config_t tp_cfg = {
-		.x_max               = dispTFT_WIDTH,
-		.y_max               = dispTFT_HEIGHT,
+		.x_max               = dispTFT_HEIGHT,  /* FT6336 原生 X 轴量程为 240 (swap_xy 交换后对应屏幕 Y) */
+		.y_max               = dispTFT_WIDTH,   /* FT6336 原生 Y 轴量程为 320 (swap_xy 交换后对应屏幕 X) */
 		.rst_gpio_num        = dispTOUCH_RST_PIN,
 		.int_gpio_num        = dispTOUCH_INT_PIN,
 		.levels = {
@@ -70,8 +70,8 @@ static esp_err_t e_disp_touch_init(void)
 		},
 		.flags = {
 			.swap_xy         = 1,
-			.mirror_x        = 0,
-			.mirror_y        = 1,
+			.mirror_x        = 1,
+			.mirror_y        = 0,
 		},
 		.process_coordinates = NULL,
 		.interrupt_callback  = NULL,
@@ -115,6 +115,9 @@ void lv_port_indev_init(void)
 
 	lv_indev_set_type(touch_indev, LV_INDEV_TYPE_POINTER);
 	lv_indev_set_read_cb(touch_indev, touchpad_read_cb);
+
+	/* 触摸采样周期 33ms(LV_DEF_REFR_PERIOD 默认) -> 16ms, 与显示任务快泵节拍对齐*/
+	lv_timer_set_period(lv_indev_get_read_timer(touch_indev), dispINDEV_POLL_PERIOD_MS);
 }
 
 /***********************************************************************************************************************

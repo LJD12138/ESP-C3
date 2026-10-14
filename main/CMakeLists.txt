@@ -16,6 +16,7 @@ idf_component_register(
         ComFunc
         Filter
         Print
+        EasyLogger
         Key
         MD_Display
         TaskQueue

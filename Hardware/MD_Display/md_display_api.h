@@ -40,6 +40,7 @@ void     vDisp_Init(void);
 void     vDisp_LoadScreen(int screen_id);
 void     vDisp_ReqUiRefresh(void);
 void     vDisp_UiRefresh(void);
+void     vDisp_UiPump(void);
 bool     bDisp_IsReady(void);
 void     vDisp_UpdateDevParam(const struct DispDataSnapshot_T *p_snapshot);
 void     vDisp_ClearScreen(uint16_t us_color);

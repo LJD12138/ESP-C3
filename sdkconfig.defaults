@@ -10,3 +10,24 @@ CONFIG_FREERTOS_USE_IDLE_HOOK=y
 CONFIG_FREERTOS_USE_TRACE_FACILITY=y
 CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS=y
 
+# Display task frame timing:
+#   100Hz -> 10ms tick quantization; 1000Hz -> 1ms precision for 30FPS / 33ms
+CONFIG_FREERTOS_HZ=1000
+
+# LVGL builtin malloc pool:
+#   128KB pool for native GIF widget (sizeof(lv_gif_t)=24KB + 150x151 frame buffer ~45KB + UI objects)
+CONFIG_LV_MEM_SIZE_KILOBYTES=128
+
+# LVGL native GIF decoder support
+CONFIG_LV_USE_GIF=y
+
+# Flash real size 8MB (partitions: factory=3M + storage@0x310000;
+# with 2MB flash size the storage partition would fall out of range and be unusable)
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="8MB"
+
+# Use project custom partition table (contains storage partition;
+# required by Flash/app_info parameter storage)
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+CONFIG_PARTITION_TABLE_FILENAME="partitions.csv"

@@ -1,6 +1,7 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[esp_c3.eez-project]:/userPages/1",
+    "selectedUserPageObject": "[esp_c3.eez-project]:/userPages/0",
+    "selectedBitmapObject": "[esp_c3.eez-project]:/bitmaps/-1",
     "subnavigationSelectedItems": {}
   },
   "layoutModel": {
@@ -21,8 +22,8 @@
           },
           {
             "type": "border",
-            "selected": 0,
-            "size": 653.5,
+            "selected": 2,
+            "size": 293.5,
             "location": "right",
             "children": [
               {
@@ -69,6 +70,8 @@
           },
           {
             "type": "border",
+            "selected": 1,
+            "size": 473.09375,
             "location": "bottom",
             "children": [
               {
@@ -186,28 +189,28 @@
             {
               "type": "tabset",
               "id": "EDITORS",
-              "weight": 52.9189294026377,
+              "weight": 54.582795698924734,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
                 {
                   "type": "tab",
-                  "id": "#414b9c59-4077-4838-b4dc-bcd80b91fd2b",
-                  "name": "Main_Booting",
+                  "id": "#25a5096b-d032-4a3a-94b9-eb93d5f6f6dc",
+                  "name": "Main_Work",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[esp_c3.eez-project]:/userPages/1",
+                    "objectPath": "[esp_c3.eez-project]:/userPages/0",
                     "permanent": false
                   },
                   "icon": "svg:page"
                 },
                 {
                   "type": "tab",
-                  "id": "#322123c8-6126-4e16-826c-b683d9065f2f",
-                  "name": "Main_Work",
+                  "id": "#444c0c06-1bfe-47ef-a2d4-7c5274de8420",
+                  "name": "Main_Booting",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[esp_c3.eez-project]:/userPages/0",
+                    "objectPath": "[esp_c3.eez-project]:/userPages/1",
                     "permanent": true
                   },
                   "icon": "svg:page"
@@ -218,7 +221,7 @@
             {
               "type": "row",
               "id": "#5eca6d16-b8b8-4218-82ba-385a3a049826",
-              "weight": 32.0810705973623,
+              "weight": 30.41720430107527,
               "children": [
                 {
                   "type": "tabset",
@@ -624,7 +627,8 @@
                       "component": "bitmaps",
                       "enableClose": false
                     }
-                  ]
+                  ],
+                  "active": true
                 },
                 {
                   "type": "tabset",
@@ -1083,7 +1087,13 @@
     },
     "[esp_c3.eez-project]:/userPages/0[flow-state]": {
       "selectionFront": {},
-      "selectionBack": {},
+      "selectionBack": {
+        "0": {
+          "0": {
+            "$selected": true
+          }
+        }
+      },
       "transform": {
         "translate": {
           "x": -160,
@@ -1101,14 +1111,12 @@
     "[esp_c3.eez-project]:/userPages/1[flow-state]": {
       "selectionFront": {},
       "selectionBack": {
-        "0": {
-          "0": {}
-        }
+        "0": {}
       },
       "transform": {
         "translate": {
           "x": -160,
-          "y": -120
+          "y": -220
         },
         "scale": 1
       },
@@ -1122,9 +1130,7 @@
     "[esp_c3.eez-project]:/userPages/2[flow-state]": {
       "selectionFront": {},
       "selectionBack": {
-        "0": {
-          "0": {}
-        }
+        "0": {}
       },
       "transform": {
         "translate": {
@@ -1200,5 +1206,5 @@
   "globalFlowZoom": true,
   "flowZoom": 1,
   "implementationLanguage": "C",
-  "openDialogDefaultPath": "G:\\2-User_Projects\\11-ESP\\ESP-C3\\Hardware\\MD_Display\\eez_ui"
+  "openDialogDefaultPath": "G:\\2-User_Projects\\11-ESP\\ESP-C3\\Hardware\\MD_Display\\eez_esp_c3_project\\Image\\dog.gif"
 }

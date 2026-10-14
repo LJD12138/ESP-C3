@@ -30,14 +30,8 @@ void create_screen_main_work() {
     {
         lv_obj_t *parent_obj = obj;
         {
-            lv_obj_t *obj = lv_label_create(parent_obj);
-            lv_obj_set_pos(obj, 116, 112);
-            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_label_set_text_static(obj, "Hello, world!");
-        }
-        {
             lv_obj_t *obj = lv_button_create(parent_obj);
-            lv_obj_set_pos(obj, 110, 156);
+            lv_obj_set_pos(obj, 110, 184);
             lv_obj_set_size(obj, 100, 50);
             {
                 lv_obj_t *parent_obj = obj;
@@ -67,9 +61,19 @@ void create_screen_main_booting() {
         lv_obj_t *parent_obj = obj;
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
-            lv_obj_set_pos(obj, 108, 112);
+            lv_obj_set_pos(obj, 130, 87);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_label_set_text_static(obj, "Main_Booting");
+            lv_obj_set_style_text_font(obj, &ui_font_barlow_condensed_regular_66, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text_static(obj, "ON");
+        }
+        {
+            // uc_booting_bar
+            lv_obj_t *obj = lv_bar_create(parent_obj);
+            objects.uc_booting_bar = obj;
+            lv_obj_set_pos(obj, 45, 182);
+            lv_obj_set_size(obj, 230, 10);
+            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
+            lv_obj_remove_flag(obj, LV_OBJ_FLAG_CLICKABLE);
         }
     }
     
@@ -88,9 +92,10 @@ void create_screen_main_closing() {
         lv_obj_t *parent_obj = obj;
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
-            lv_obj_set_pos(obj, 120, 104);
+            lv_obj_set_pos(obj, 120, 87);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_label_set_text_static(obj, "Main_Closing");
+            lv_obj_set_style_text_font(obj, &ui_font_barlow_condensed_regular_66, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text_static(obj, "OFF");
         }
     }
     
@@ -164,6 +169,7 @@ void tick_screen_by_id(enum ScreensEnum screenId) {
 //
 
 ext_font_desc_t fonts[] = {
+    { "BarlowCondensed-Regular-66", &ui_font_barlow_condensed_regular_66 },
 #if LV_FONT_MONTSERRAT_8
     { "MONTSERRAT_8", &lv_font_montserrat_8 },
 #endif

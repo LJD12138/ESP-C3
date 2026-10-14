@@ -11,6 +11,8 @@ idf_component_register(
         "inc"
         "../../main"
         "../../Hardware"
+    REQUIRES
+        EasyLogger
 )
 # 说明：main.h 通过 INCLUDE_DIRS("../../main") 提供,不放入 REQUIRES,
 #       避免 main <-> Filter 循环依赖导致链接顺序错乱

@@ -101,17 +101,20 @@ s8 cFlash_EraseSector(u32 start_addr, u32 end_addr)
 	
 	#endif  /* boardUSE_SFUD */
     #elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
-    if(tpPartition->address > start_addr)
+    if(tpPartition == NULL)	/* 分区未找到(分区表配置错误)时返回错误, 禁止空指针解引用 */
         return -1;
+
+    if(tpPartition->address > start_addr)
+        return -2;
 
     u32 erase_size = end_addr - start_addr;
 
     if(erase_size > tpPartition->size)
-        return -2;
+        return -3;
 
     if(esp_partition_erase_range(tpPartition, (start_addr - tpPartition->address), erase_size) != ESP_OK)
     {
-        return -3;
+        return -4;
     }
         
 	#endif  /* boardIC_TYPE */
@@ -146,12 +149,15 @@ s8 cFlash_Write8BitData(u32 start_addr, u8 *data, u32 len)
 //	#error "错误,当前STMH7 不带内部Flash操作";
 	#endif  //boardUSE_SFUD
     #elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
-    if(tpPartition->address > start_addr)
+    if(tpPartition == NULL)	/* 分区未找到(分区表配置错误)时返回错误, 禁止空指针解引用 */
         return -1;
+
+    if(tpPartition->address > start_addr)
+        return -2;
 
     if(esp_partition_write(tpPartition, (start_addr - tpPartition->address), data, len) != ESP_OK)
     {
-        return -2;
+        return -3;
     }
         
 	#endif  /* boardIC_TYPE */
@@ -192,13 +198,15 @@ s8 cFlash_Read8BitData(u32 start_addr, u8 *data, u32 len)
 	
 	#endif  /* boardUSE_SFUD */
     #elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
+    if(tpPartition == NULL)	/* 分区未找到(分区表配置错误)时返回错误, 禁止空指针解引用 */
+        return -1;
 
     if(tpPartition->address > start_addr)
-        return -1;
+        return -2;
 
     if(esp_partition_read(tpPartition, (start_addr - tpPartition->address), data, len) != ESP_OK)
     {
-        return -2;
+        return -3;
     }
         
 	#endif  /* boardIC_TYPE */

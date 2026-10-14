@@ -28,6 +28,7 @@ extern "C" {
 #include "main.h"
 
 #if (boardDISPLAY_EN)
+#include "MD_Display/md_display_data.h"	/* 项目快照定义 (引擎栈分配快照需完整类型, 工程适配点) */
 
 #if (boardUSE_OS)
 #include "freertos/FreeRTOS.h"
@@ -52,6 +53,22 @@ void vDisp_PortWakeTask(void);
 #define			vDisp_PortSetTaskHandle(h_handle)		((void)0)
 #define			vDisp_PortWakeTask()					((void)0)
 #endif  //boardUSE_OS
+
+/*----------------项目耦合适配原语 (对项目的全部访问经此汇聚, 通用件零项目依赖)----------------*/
+/* 渲染输出一轮 (转调项目件: ui_tick -> 自绘动画 -> lv_timer_handler) */
+void vDisp_PortUiRefresh(void);
+
+/* 背光硬件开关 (true=点亮, false=熄灭) */
+void vDisp_PortSetBacklight(bool b_on);
+
+/* 持久化息屏时间秒数 (0=常亮) */
+uint16_t usDisp_PortGetAutoOffTime(void);
+
+/* 系统就绪判定 (false 时引擎锁定 INIT 页) */
+bool bDisp_PortIsSystemReady(void);
+
+/* 常亮亮屏提示钩子 (内部按 boardBUZ_EN 裁剪) */
+void vDisp_PortBeepOnLightOn(void);
 
 #endif  /* boardDISPLAY_EN */
 

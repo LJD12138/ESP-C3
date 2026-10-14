@@ -1,16 +1,8 @@
 CompileFlags:
+  # 使用 ESP-IDF 生成的编译数据库 (clangd 默认只在源码目录及上级查找, 不会进入 build/)
+  CompilationDatabase: build
   Add:
-    # 补充目标架构宏定义 (解决通用 Clang 未知 Xtensa 目标导致的代码分支错误)
-    - -D__XTENSA__=1
-    - -D__xtensa__=1
-    # 补充 Xtensa GCC (ESP32) 工具链标准库与编译器头文件 (解决 sys/reent.h not found)
-    - -isystem
-    - C:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include
-    - -isystem
-    - C:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include
-    - -isystem
-    - C:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include-fixed
-    # 补充 RISC-V GCC (ESP32-C3) 工具链标准库与编译器头文件
+    # 补充 RISC-V GCC (ESP32-C3) 工具链标准库与编译器头文件 (解决 sys/reent.h not found)
     - -isystem
     - C:/Espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/riscv32-esp-elf/include
     - -isystem

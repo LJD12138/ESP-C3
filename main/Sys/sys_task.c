@@ -887,11 +887,7 @@ s8 cSys_Switch(SwitchObject_E obj, SwitchType_E type, bool fore_en)
 				sMyPrint("bSysTask:屏幕休眠,开始唤醒屏幕\r\n");
 		}
 	}
-
-	#if (boardDISPLAY_EN)
-	bDisp_Switch(ST_ON, false);
-	#endif  //(boardDISPLAY_EN)
-
+	
 	return 1;
 }
 

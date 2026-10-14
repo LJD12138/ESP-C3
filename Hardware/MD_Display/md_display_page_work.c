@@ -22,7 +22,13 @@
 
 
 #include "lvgl.h"
+#include "esp_log.h"
 #include "eez_ui/screens.h"
+#include "user_ui/img_dog_gif.h"
+
+
+//****************************************************Static Variables**********************************************************//
+static lv_obj_t *s_p_dog_gif = NULL;
 
 
 //****************************************************Function Declaration******************************************************//
@@ -39,7 +45,7 @@ const DispPage_T G_tPageWork =
     .vOnExit     = v_page_work_exit,
     .vOnUpdate   = v_page_work_update,
     .bOnEvent    = b_page_work_event,
-    .usRefreshMs = 20,
+    .usRefreshMs = 33,      /* 30FPS, 与框架下限 dispFRAME_PERIOD_MIN_MS 对齐 */
 };
 
 /***********************************************************************************************************************
@@ -56,6 +62,19 @@ static void v_page_work_enter(void)
     /* 确保当前活动屏幕为主工作屏幕 */
     if (lv_screen_active() != objects.main_work)
         vDisp_LoadScreen(SCREEN_ID_MAIN_WORK);
+
+    /* 挂载原生 GIF 动图至主工作界面 (居中放置于上半区域, 屏幕 320x240, 动图 140x52) */
+    if (s_p_dog_gif == NULL && objects.main_work != NULL)
+    {
+        s_p_dog_gif = lv_gif_create(objects.main_work);
+        lv_gif_set_color_format(s_p_dog_gif, LV_COLOR_FORMAT_ARGB8888);
+        lv_gif_set_src(s_p_dog_gif, &img_dog_gif);
+        lv_obj_set_pos(s_p_dog_gif, 90, 15);
+    }
+    else if (s_p_dog_gif != NULL)
+    {
+        lv_gif_resume(s_p_dog_gif);
+    }
 
     /* 抓取一次快照用于首帧静态渲染 */
     vDisp_DataCaptureSnapshot(&t_snapshot);
@@ -79,6 +98,11 @@ static void v_page_work_enter(void)
  ************************************************************************************************************************/
 static void v_page_work_exit(void)
 {
+    /* 离开工作页面暂停动图解码定时器，降低后台 CPU 负荷 */
+    if (s_p_dog_gif != NULL)
+    {
+        lv_gif_pause(s_p_dog_gif);
+    }
 }
 
 /***********************************************************************************************************************

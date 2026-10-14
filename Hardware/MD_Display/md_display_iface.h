@@ -76,8 +76,12 @@ extern "C" {
 
 /* LCD 传输缓冲区与总线参数 */
 #define			dispLCD_BUF_SIZE						4096
-#define			dispSPI_CLK_SPEED_HZ					(40 * 1000 * 1000)	/* 40MHz */
+#define			dispSPI_CLK_SPEED_HZ					(80 * 1000 * 1000)	/* 80MHz (全帧DMA 30.7->15.4ms; 若排线过长出现花屏回退40M) */
 #define			dispDMA_QUEUE_SIZE						10
+
+/* 触摸快泵周期 ms: 显示任务在页面帧周期内按此节拍额外驱动 lv_timer_handler,
+ * 缩短触摸采样与输入反馈延迟 (33ms -> 16ms); 须 <= 页面帧周期下限 dispFRAME_PERIOD_MIN_MS */
+#define			dispINDEV_POLL_PERIOD_MS				16U
 
 /* I2C 触摸屏配置 */
 #define			dispTOUCH_NUM						    I2C_NUM_0

@@ -1,30 +1,20 @@
 # EasyLogger组件CMakeLists.txt
 # 功能：超轻量级、高性能的C/C++日志库
+# 说明：仅编译核心库(src)与移植层(port)，Flash/File插件未启用不参与编译
 
-# # 收集核心源文件
-# file(GLOB_RECURSE EASYLOGGER_SRCS
-#     "src/*.c"
-#     "port/*.c"
-# )
-
-# # 可选：编译Flash插件
-# file(GLOB EASYLOGGER_FLASH_SRCS
-#     "plugins/flash/*.c"
-# )
-
-# # 可选：编译File插件
-# file(GLOB EASYLOGGER_FILE_SRCS
-#     "plugins/file/*.c"
-# )
-
-# idf_component_register(
-#     SRCS
-#         ${EASYLOGGER_SRCS}
-#         ${EASYLOGGER_FLASH_SRCS}
-#         ${EASYLOGGER_FILE_SRCS}
-#     INCLUDE_DIRS
-#         "inc"
-#         "plugins/flash"
-#         "plugins/file"
-#         "port"
-# )
+idf_component_register(
+    SRCS
+        "src/elog.c"
+        "src/elog_Init.c"
+        "src/elog_utils.c"
+        "src/elog_async.c"
+        "src/elog_buf.c"
+        "port/elog_port.c"
+    INCLUDE_DIRS
+        "inc"
+        "port"
+    PRIV_REQUIRES
+        Print
+        main
+        freertos
+)

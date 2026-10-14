@@ -23,7 +23,7 @@
 #include "eez_ui/screens.h"
 
 //****************************************************Macros********************************************************************//
-#define			dispPAGE_ENG_CYCLE_TIME_MS				20U
+#define			dispPAGE_ENG_CYCLE_TIME_MS				33U		/* 30FPS, 与框架下限 dispFRAME_PERIOD_MIN_MS 对齐 */
 
 //****************************************************Function Declaration******************************************************//
 static void v_page_eng_enter(void);

@@ -27,6 +27,7 @@
  */
  
 #include <elog.h>
+#include <stdio.h>
 //#include <time.h>
 
 #include "Print/print_task.h"
@@ -125,17 +126,12 @@ void elog_port_output_unlock(void) {
 const char *elog_port_get_time(void) {
     
     static char buffer[80];
-//	struct tm time_info;
-//	time_info.tm_year = tExRtc.uReadTime.tTime.ucYear -1910; 	// 年份从1900年开始
-//	time_info.tm_mon = tExRtc.uReadTime.tTime.ucMonth - 1;		// 月份从0开始
-//	time_info.tm_mday = tExRtc.uReadTime.tTime.ucDay;          	// 日
-//	time_info.tm_hour = tExRtc.uReadTime.tTime.ucHour;			// 小时
-//	time_info.tm_min = tExRtc.uReadTime.tTime.ucMinute;         // 分钟
-//	time_info.tm_sec = tExRtc.uReadTime.tTime.ucSecond;         // 秒
-//	time_info.tm_isdst = -1;         // 让mktime()自动检测夏令时
-//	strftime(buffer, sizeof(buffer), "现在是 %y-%m-%d %H:%M:%S", &time_info);
-////	sMyPrint("%s \r\n", buffer);
-	
+
+	#if(boardUSE_OS)
+    /* 系统运行时间(毫秒), 开机起算 */
+    snprintf(buffer, sizeof(buffer), "%lu", (unsigned long)(xTaskGetTickCount() * portTICK_PERIOD_MS));
+	#endif
+
     return buffer;
 }
 

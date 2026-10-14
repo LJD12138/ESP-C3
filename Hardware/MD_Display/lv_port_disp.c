@@ -35,8 +35,9 @@
 #endif
 
 //****************************************************Macros********************************************************************//
-/* 显示缓冲区配置: 40行局部双缓冲 (节省连续片内DMA内存同时保证流水线饱满) */
-#define			DISP_BUF_LINES							40U
+/* 显示缓冲区配置: 80行局部双缓冲 (全帧DMA分块由6次减为3次, 渲染/传输重叠更深;
+ * 单缓冲 51.2KB x2 片内DMA内存, 堆不足时 buf2 分配失败自动降级单缓冲) */
+#define			DISP_BUF_LINES							80U
 #define			BUF_SIZE								(DISP_HOR_RES * DISP_BUF_LINES * sizeof(lv_color_t))
 
 //****************************************************Parameter Initialization**************************************************//
@@ -170,7 +171,7 @@ static void lcd_flush_cb(lv_display_t *tpDisp, const lv_area_t *area, uint8_t *p
 	esp_lcd_panel_reset(t_lcd_panel_handle);
 	esp_lcd_panel_init(t_lcd_panel_handle);
 	esp_lcd_panel_swap_xy(t_lcd_panel_handle, true);
-	esp_lcd_panel_mirror(t_lcd_panel_handle, false, true);
+	esp_lcd_panel_mirror(t_lcd_panel_handle, true, false);
 	esp_lcd_panel_invert_color(t_lcd_panel_handle, true);
 	esp_lcd_panel_disp_on_off(t_lcd_panel_handle, true);
 

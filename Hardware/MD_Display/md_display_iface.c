@@ -246,8 +246,7 @@ void vDisp_IfaceInit(void)
 		ESP_LOGE(TAG, "Touch I2C bus initialization failed");
 	#endif  /* ESP_LCD_TOUCH_ENABLED */
 
-	/* 5. 默认开启背光 */
-	vDisp_SetBacklight(1);
+	/* 5. 背光保持熄灭 (GPIO 初始化态), 由页面状态机点亮, 避免上电瞬间闪白屏 */
 }
 
 /***********************************************************************************************************************

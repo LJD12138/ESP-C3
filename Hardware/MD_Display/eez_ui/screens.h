@@ -25,6 +25,7 @@ typedef struct _objects_t {
     lv_obj_t *main_closing;
     lv_obj_t *main_eng;
     lv_obj_t *main_update;
+    lv_obj_t *uc_booting_bar;
 } objects_t;
 
 extern objects_t objects;
