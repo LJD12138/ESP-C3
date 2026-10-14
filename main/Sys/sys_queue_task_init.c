@@ -71,28 +71,28 @@ void v_sys_queue_task_init(Task_T *p_task)
 		{
 			tSysInfo.uInit.tFinish.bIF_AppInfo = false;
 
-			c_ret = cApp_BootInfoInit();
-			if (c_ret > 0)
-			{
-				if ((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && (s_b_ret == false))
-					log_w("bSysTask:Boot记忆消息获取错误清除");
+			// c_ret = cApp_BootInfoInit();
+			// if (c_ret > 0)
+			// {
+			// 	if ((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && (s_b_ret == false))
+			// 		log_w("bSysTask:Boot记忆消息获取错误清除");
 
-				s_b_ret = true;
+			// 	s_b_ret = true;
 				cQueue_GotoStep(p_task, STEP_NEXT);
-			}
-			else
-			{
-				if ((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && (s_b_ret == true))
-				{
-					log_w("bSysTask:Boot记忆消息初始化失败 代码%d", c_ret);
-					s_b_ret = false;
-				}
+			// }
+			// else
+			// {
+			// 	if ((uPrint.tFlag.bSysTask || uPrint.tFlag.bImportant) && (s_b_ret == true))
+			// 	{
+			// 		log_w("bSysTask:Boot记忆消息初始化失败 代码%d", c_ret);
+			// 		s_b_ret = false;
+			// 	}
 
-				#if (boardUSE_OS)
-				vTaskDelay(100);
-				#endif  //boardUSE_OS
-				break;
-			}
+			// 	#if (boardUSE_OS)
+			// 	vTaskDelay(100);
+			// 	#endif  //boardUSE_OS
+			// 	break;
+			// }
 		}break;
 
 		case 1:

@@ -26,7 +26,7 @@ extern "C" {
 
 //-------------------------------------------------------------------
 //<s>       	软件版本(此处缩进不可以用Tab)
-#define			boardSOFTWARE_VERSION					"ESP_C3_Ver_2_0_3"
+#define			boardSOFTWARE_VERSION					"ESP_C3_Ver_2_0_4"
 //-------------------------------------------------------------------
 //<s>       	硬件版本(此处缩进不可以用Tab)
 #define        boardHARDWARE_VERSION                   	"ESP_C3_Ver_1_0_0"
@@ -177,7 +177,7 @@ extern "C" {
 //-------------------------------------------------------------------
 //          	<q0> EasyFlash
 //                                          			<i> 勾选为开启
-#define     	boardEASY_FLASH           		 		 0
+#define     	boardEASY_FLASH           		 		 1
 //<i> Flash存储器库,可用于内外部Flash,实现对Flash进行管理,不实现接口
 //-------------------------------------------------------------------
 //          	<q0> SFUD

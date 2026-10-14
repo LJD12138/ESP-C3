@@ -4,7 +4,7 @@
 // #include "gd32f30x.h"
 #include "board_config.h"
 
-#define     	FLASH_PAGE_SIZE              			2048       //2K
+#define     	FLASH_PAGE_SIZE              			4096       //4K页大小
 #define     	KByte                        			(1024UL)
 
 // /*------------ IAP_AP分区表 -------------------------------------*/

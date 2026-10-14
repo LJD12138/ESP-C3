@@ -17,6 +17,8 @@ idf_component_register(
         Filter
         Print
         EasyLogger
+        EasyFlash
+        Flash
         Key
         MD_Display
         TaskQueue

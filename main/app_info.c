@@ -43,13 +43,6 @@
 #define			appITEM_PARAM							1
 #define			appITEM_COUNT_VER_AND_PARAM				2
 
-#ifndef flashAPP_INFO_START
-#if defined(flashAPP_INFO_SATRT)
-#define			flashAPP_INFO_START						flashAPP_INFO_SATRT
-#else
-#define			flashAPP_INFO_START						0x00310000UL
-#endif  /* defined(flashAPP_INFO_SATRT) */
-#endif  /* !flashAPP_INFO_START */
 
 //****************************************************Parameter Initialization**************************************************//
 __ALIGNED(4) AppMemParam_T  tAppMemParam;

@@ -45,6 +45,8 @@
 #include "Flash/flash_stm32.h"
 #endif  //boardUSE_SFUD
 #elif(boardIC_TYPE == boardIC_STM32G4XX)
+#elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
+#include "Flash/flash_iface.h"
 #endif  //boardIC_TYPE
 
 #if(boardUSE_OS)
@@ -54,6 +56,8 @@
 
 SemaphoreHandle_t 	EasyFlashSemaphoreMutex = NULL;
 #endif  //boardUSE_OS
+
+extern const ef_env default_env_set[];  /* EasyFlash出厂默认ENV表, 定义于main/app_info.c */
 
 char log_buf[256];
 
@@ -113,9 +117,12 @@ EfErrCode ef_port_read(uint32_t addr, uint32_t *buf, size_t size) {
 	
 	#endif  //boardUSE_SFUD
 	#elif(boardIC_TYPE == boardIC_STM32G4XX)
+	#elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
+	if(cFlash_Read8BitData(addr, (u8*)buf, size) <= 0)
+		result = EF_READ_ERR;
 	#endif  //boardIC_TYPE
 	#endif  //boardEASY_FLASH
-	
+
     return result;
 }
 
@@ -151,9 +158,12 @@ EfErrCode ef_port_erase(uint32_t addr, size_t size) {
 	
 	#endif  //boardUSE_SFUD
 	#elif(boardIC_TYPE == boardIC_STM32G4XX)
+	#elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
+	if(cFlash_EraseSector(addr, addr + size) <= 0)
+		result = EF_ERASE_ERR;
 	#endif
 	#endif  //boardEASY_FLASH
-	
+
     return result;
 }
 
@@ -170,10 +180,7 @@ EfErrCode ef_port_erase(uint32_t addr, size_t size) {
  */
 EfErrCode ef_port_write(uint32_t addr, const uint32_t *buf, size_t size) {
     EfErrCode result = EF_NO_ERR;
-	
-	__ALIGNED(4) u32 buff[size];
-	memcpy(buff, buf, size);
-	
+
 	#if(boardEASY_FLASH)
 	#if(boardIC_TYPE == boardIC_GD32F30X)
 	if(bFlash_Gd32Write32Bit(addr, buf, size) == false){
@@ -189,9 +196,12 @@ EfErrCode ef_port_write(uint32_t addr, const uint32_t *buf, size_t size) {
 	
 	#endif  //boardUSE_SFUD
 	#elif(boardIC_TYPE == boardIC_STM32G4XX)
+	#elif(boardIC_TYPE == boardIC_ESP32C3 || boardIC_TYPE == boardIC_ESP32C6 || boardIC_TYPE == boardIC_ESP32C61)
+	if(cFlash_Write8BitData(addr, (u8*)buf, size) <= 0)
+		result = EF_WRITE_ERR;
 	#endif
 	#endif  //boardEASY_FLASH
-	
+
     return result;
 }
 

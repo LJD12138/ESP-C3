@@ -39,7 +39,7 @@ const DispPage_T G_tPageBoot =
 	.vOnExit     = v_page_boot_exit,
     .vOnUpdate   = v_page_boot_update,
     .bOnEvent    = b_page_boot_event,
-    .usRefreshMs = 33,      /* 30FPS, 与框架下限 dispFRAME_PERIOD_MIN_MS 对齐 */
+    .usRefreshMs = 33,
 };
 
 /***********************************************************************************************************************
@@ -54,8 +54,10 @@ static void v_page_boot_enter(void)
     /* 加载开机画面 */
     vDisp_LoadScreen(SCREEN_ID_MAIN_BOOTING);
 
-	/* 重置开机进度 */
+    /* 重置进度条 */
     s_uc_loading_step = 0;
+	if (objects.uc_booting_bar != NULL)
+        lv_bar_set_value(objects.uc_booting_bar, 0, LV_ANIM_OFF);
 
     /* 刷新设备参数 */
     vDisp_UpdateDevParam(NULL);
@@ -86,14 +88,17 @@ static void v_page_boot_update(const DispDataSnapshot_T *p_data, bool b_force)
 {
     (void)p_data;
     (void)b_force;
-
+	
 	/* 步进进度计数 */
     if (s_uc_loading_step < 100)
     {
         s_uc_loading_step += 3;
         if (s_uc_loading_step > 100)
             s_uc_loading_step = 100;
-	}
+
+        if (objects.uc_booting_bar != NULL)
+            lv_bar_set_value(objects.uc_booting_bar, s_uc_loading_step, LV_ANIM_ON);
+    }
 
     /* 当进度条走满且系统已经处于工作态时，请求切入工作页面 */
     if ((p_data->ucDevState == DS_WORK) && (s_uc_loading_step >= 100))

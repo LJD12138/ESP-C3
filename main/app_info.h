@@ -67,14 +67,12 @@ typedef struct
 	char				saBuildTime[32];	/* 程序编译时间 */
 }VerInfo_T;
 
-#pragma pack(4)  /* 4字节自然对齐：与BOOT信息区及EasyFlash环境持久化严格对应 */
 typedef struct
 {
 	vu32				ulCmd;				/* 0xAAAA_AAAA需要升级, 其他不需要升级 */
 	AppState_E			eAppState;			/* APP状态 */
 	vu8					ucAppFaultCnt;		/* APP启动失败计数 */
 }BootParam_T;
-#pragma pack()
 
 /* APP参数：初始化标志与芯片唯一ID (共14字节，天然2字节对齐) */
 typedef struct
@@ -101,12 +99,15 @@ typedef struct
 {
 	VerInfo_T			tVerInfo;			/* 固件版本信息 */
 	AppParam_T			tParam;				/* 初始化标志与UID */
+	
 	#if (boardDISPLAY_EN)
 	DispMemParam_T		tDISP;				/* 显示模块参数 */
 	#endif  /* boardDISPLAY_EN */
+	
 	#if (boardBMS_EN && boardBMS_IFACE)
 	BmsMemParam_T		tBMS;				/* BMS模块参数 */
 	#endif  /* boardBMS_EN && boardBMS_IFACE */
+	
 	SysMemParam_T		tSYS;				/* 系统运行参数 */
 }AppMemParam_T;
 
@@ -125,14 +126,13 @@ extern const char                       tAppVerAndParamStr[];
 #if (boardDISPLAY_EN)
 extern const char                       tDispMemParamStr[];
 #endif  /* boardDISPLAY_EN */
+
 #if (boardBMS_EN && boardBMS_IFACE)
 extern const char                       tBmsMemParamStr[];
 #endif  /* boardBMS_EN && boardBMS_IFACE */
+
 extern const char                       tSysMemParamStr[];
 
-#if (boardEASY_FLASH)
-extern const ef_env                     default_env_set[];
-#endif  /* boardEASY_FLASH */
 
 //****************************************************Extern********************************************************************//
 /* 统一返回码见 AppInfoErr_E:APPINFO_OK(>0)成功 / APPINFO_UNINIT(0)未初始化 / APPINFO_ERR_*(<0)失败 */
