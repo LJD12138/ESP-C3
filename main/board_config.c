@@ -59,6 +59,10 @@
 #include "get_heapstack_task.h"
 #endif  /* boardHEALTH_MONITOR_EN */
 
+#if (boardWIFI_EN)
+#include "WiFi/wifi_task.h"
+#endif  /* boardWIFI_EN */
+
 //****************************************************Parameter Initialization**************************************************//
 #if (boardUSE_OS)
 /* 全局临界区互斥量 (供 mainENTER_CRITICAL / mainEXIT_CRITICAL 宏使用) */
@@ -102,6 +106,10 @@ static const TaskInitEntry_T c_task_init_table[] = {
 	{"KeyTask",      cKey_TaskInit,          -50,       true,        NULL},
 	#endif  /* boardKEY_EN */
 	
+	#if (boardWIFI_EN)
+	{"WiFiTask",     cWiFi_TaskInit,         -70,       false,       NULL},
+	#endif  /* boardWIFI_EN */
+	
 	{"TimerTask",    cTimer_TaskInit,        -190,      false,       NULL},
 	
 	#if (boardUSE_OS && boardHEALTH_MONITOR_EN)
@@ -134,6 +142,10 @@ void SysParamInit(void)
 	uPrint.tFlag.bHealthTask = 1;	/* 健康巡检遥测(CPU/队列/栈/堆) */
 	uPrint.tFlag.bFreeRTOS   = 1;	/* FreeRTOS剩余堆/任务表打印 */
 	#endif  /* boardHEALTH_MONITOR_EN */
+
+	#if (boardWIFI_EN)
+	uPrint.tFlag.bWiFiTask   = 1;
+	#endif  /* boardWIFI_EN */
 	
 	/* 非调试模式下，关闭一般调试输出 */
 	#if (!boardDEBUG)

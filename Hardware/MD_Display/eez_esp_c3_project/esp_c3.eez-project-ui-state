@@ -1,7 +1,6 @@
 {
   "navigation": {
     "selectedUserPageObject": "[esp_c3.eez-project]:/userPages/0",
-    "selectedBitmapObject": "[esp_c3.eez-project]:/bitmaps/-1",
     "subnavigationSelectedItems": {}
   },
   "layoutModel": {
@@ -22,7 +21,7 @@
           },
           {
             "type": "border",
-            "selected": 2,
+            "selected": 4,
             "size": 293.5,
             "location": "right",
             "children": [
@@ -71,7 +70,7 @@
           {
             "type": "border",
             "selected": 1,
-            "size": 473.09375,
+            "size": 383.09375,
             "location": "bottom",
             "children": [
               {
@@ -1089,9 +1088,7 @@
       "selectionFront": {},
       "selectionBack": {
         "0": {
-          "0": {
-            "$selected": true
-          }
+          "0": {}
         }
       },
       "transform": {

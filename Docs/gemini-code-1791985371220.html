@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>320x240 UI 图标 (PNG) 与天气动效 (GIF) 提取工具</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #121519;
+    --panel: #1B1E23;
+    --card: #262B33;
+    --border: #3A414C;
+    --text: #E5E7EB;
+    --muted: #9CA3AF;
+    --brand: #38BDF8;
+    --success: #4ADE80;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px 16px 48px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 { margin: 0 0 6px; font-size: 18px; }
+  .header p { margin: 0; font-size: 13px; color: var(--muted); }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  select, button {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+  button:hover, select:hover { border-color: var(--brand); }
+  .btn-primary {
+    background: #0284C7;
+    border-color: #38BDF8;
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+  .btn-primary:hover { background: #0369A1; }
+  .section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding-bottom: 10px;
+  }
+  .section-title { font-size: 15px; font-weight: 600; }
+  .section-sub { font-size: 12px; color: var(--muted); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+    gap: 14px;
+  }
+  .item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .preview-box {
+    width: 72px;
+    height: 72px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image:
+      linear-gradient(45deg, #1e2229 25%, transparent 25%),
+      linear-gradient(-45deg, #1e2229 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #1e2229 75%),
+      linear-gradient(-45deg, transparent 75%, #1e2229 75%);
+    background-size: 12px 12px;
+    background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+    background-color: #16191E;
+    border: 1px dashed #3A414C;
+  }
+  .preview-box img {
+    image-rendering: auto;
+    display: block;
+  }
+  .item-name { font-size: 13px; font-weight: 600; text-align: center; }
+  .item-meta { font-size: 11px; color: var(--muted); font-family: monospace; }
+  .item-btn {
+    margin-top: 4px;
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: none;
+    background: #313844;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: inline-block;
+  }
+  .item-btn:hover { border-color: var(--brand); color: #fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div>
+      <h1>320×240 UI 图标 (PNG) & 天气四态动效 (GIF) 提取器</h1>
+      <p>支持切换 v3 原版单色 / v4 彩色主题，所有图片均可直接右键“另存为”或点击按钮下载</p>
+    </div>
+    <div class="controls">
+      <label style="font-size:12px;color:var(--muted);">配色方案:
+        <select id="themeSelect">
+          <option value="v3">v3 原版配色 (单色高对比)</option>
+          <option value="v4" selected>v4 优化配色 (冷暖语义彩色)</option>
+        </select>
+      </label>
+      <label style="font-size:12px;color:var(--muted);">GIF 背景:
+        <select id="gifBgSelect">
+          <option value="card" selected>卡片底色 #262B33 (抗锯齿最佳)</option>
+          <option value="transparent">透明背景 (边缘去杂边)</option>
+        </select>
+      </label>
+      <button class="btn-primary" id="downloadAllBtn">一键顺序下载全部 (PNG + GIF)</button>
+    </div>
+  </div>
+
+  <!-- 1. 四态天气 GIF 动效 -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">1. 主页1 · 天气四态循环动效 (GIF · 48×48)</div>
+      <div class="section-sub">晴(旋转) / 多云(错位浮动) / 阴(双云漂移) / 雨(三滴错峰下落)</div>
+    </div>
+    <div class="grid" id="gifGrid"></div>
+  </div>
+
+  <!-- 2. ManualTick 拆解图层 PNG -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">2. 主页1 · 实机 ManualTick 天气动效分解图层 (透明 PNG · 48×48)</div>
+      <div class="section-sub">供 LVGL / EEZ 实机代码通过旋转或坐标偏移直接驱动子控件</div>
+    </div>
+    <div class="grid" id="layerGrid"></div>
+  </div>
+
+  <!-- 3. 传感器与主页2 应用图标 PNG -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">3. 主页1 传感器图标 (20×20) & 主页2 应用网格图标 (24×24 / 48×48)</div>
+      <div class="section-sub">包含透明裸图标与带 #333B47 圆角底座的完整图标</div>
+    </div>
+    <div class="grid" id="pngGrid"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // ==================== 轻量级纯 JS GIF89a 动画编码器 ====================
+  function createGIF(width, height, frames, delayCs, transparentIndex) {
+    var bytes = [];
+    function writeStr(s) { for (var i = 0; i < s.length; i++) bytes.push(s.charCodeAt(i)); }
+    function writeU16(v) { bytes.push(v & 0xFF, (v >> 8) & 0xFF); }
+
+    // 收集全局调色板 (最多 256 色，索引 0 留给透明色或背景色)
+    var palette = [[38, 43, 51]]; // index 0
+    var colorMap = new Map();
+    colorMap.set((38 << 16) | (43 << 8) | 51, 0);
+
+    var indexedFrames = frames.map(function(rgba) {
+      var idxArr = new Uint8Array(width * height);
+      for (var i = 0; i < width * height; i++) {
+        var r = rgba[i * 4], g = rgba[i * 4 + 1], b = rgba[i * 4 + 2], a = rgba[i * 4 + 3];
+        if (transparentIndex === 0 && a < 80) {
+          idxArr[i] = 0;
+          continue;
+        }
+        // 量化到 5-6-5 避免抗锯齿颜色超出 256 色
+        var qr = r & 0xF8, qg = g & 0xFC, qb = b & 0xF8;
+        var key = (qr << 16) | (qg << 8) | qb;
+        var cIdx = colorMap.get(key);
+        if (cIdx === undefined) {
+          if (palette.length < 256) {
+            cIdx = palette.length;
+            palette.push([qr, qg, qb]);
+            colorMap.set(key, cIdx);
+          } else {
+            // 找最近颜色
+            var best = 1, bestDist = 1e9;
+            for (var p = 1; p < palette.length; p++) {
+              var dr = qr - palette[p][0], dg = qg - palette[p][1], db = qb - palette[p][2];
+              var d = dr * dr + dg * dg + db * db;
+              if (d < bestDist) { bestDist = d; best = p; }
+            }
+            cIdx = best;
+          }
+        }
+        idxArr[i] = cIdx;
+      }
+      return idxArr;
+    });
+
+    while (palette.length < 256) palette.push([0, 0, 0]);
+
+    // GIF89a Header & Logical Screen Descriptor
+    writeStr('GIF89a');
+    writeU16(width);
+    writeU16(height);
+    bytes.push(0xF7, 0x00, 0x00); // 256色全局调色板
+
+    // Global Color Table (256 * 3 bytes)
+    for (var p = 0; p < 256; p++) {
+      bytes.push(palette[p][0], palette[p][1], palette[p][2]);
+    }
+
+    // Netscape 2.0 无限循环扩展
+    bytes.push(0x21, 0xFF, 0x0B);
+    writeStr('NETSCAPE2.0');
+    bytes.push(0x03, 0x01, 0x00, 0x00, 0x00);
+
+    // LZW 压缩函数 (minCodeSize = 8)
+    function lzwEncode(indexStream) {
+      var minCodeSize = 8;
+      var clearCode = 1 << minCodeSize;
+      var eoiCode = clearCode + 1;
+      var codeSize = minCodeSize + 1;
+      var nextCode = eoiCode + 1;
+      var dict = new Map();
+      var out = [];
+      var bitBuf = 0, bitCnt = 0;
+
+      function emit(code) {
+        bitBuf |= (code << bitCnt);
+        bitCnt += codeSize;
+        while (bitCnt >= 8) {
+          out.push(bitBuf & 0xFF);
+          bitBuf >>= 8;
+          bitCnt -= 8;
+        }
+      }
+
+      emit(clearCode);
+      var prefix = indexStream[0];
+      for (var i = 1; i < indexStream.length; i++) {
+        var k = indexStream[i];
+        var key = (prefix << 8) | k;
+        var found = dict.get(key);
+        if (found !== undefined) {
+          prefix = found;
+        } else {
+          emit(prefix);
+          if (nextCode < 4096) {
+            dict.set(key, nextCode++);
+            if (nextCode > (1 << codeSize) && codeSize < 12) {
+              codeSize++;
+            }
+          } else {
+            emit(clearCode);
+            dict.clear();
+            codeSize = minCodeSize + 1;
+            nextCode = eoiCode + 1;
+          }
+          prefix = k;
+        }
+      }
+      emit(prefix);
+      emit(eoiCode);
+      if (bitCnt > 0) out.push(bitBuf & 0xFF);
+      return out;
+    }
+
+    // 写入每一帧
+    for (var f = 0; f < indexedFrames.length; f++) {
+      // Graphic Control Extension
+      bytes.push(0x21, 0xF9, 0x04);
+      if (transparentIndex === 0) {
+        bytes.push(0x09); // Disposal = 2 (Restore to bg), Transparent Flag = 1
+      } else {
+        bytes.push(0x04); // Disposal = 1 (Do not dispose), Transparent Flag = 0
+      }
+      writeU16(delayCs);
+      bytes.push(0x00, 0x00);
+
+      // Image Descriptor
+      bytes.push(0x2C);
+      writeU16(0); writeU16(0);
+      writeU16(width); writeU16(height);
+      bytes.push(0x00);
+
+      // LZW Data Sub-blocks
+      bytes.push(0x08);
+      var compressed = lzwEncode(indexedFrames[f]);
+      var pos = 0;
+      while (pos < compressed.length) {
+        var chunk = Math.min(255, compressed.length - pos);
+        bytes.push(chunk);
+        for (var j = 0; j < chunk; j++) bytes.push(compressed[pos++]);
+      }
+      bytes.push(0x00);
+    }
+
+    bytes.push(0x3B); // Trailer
+    return new Blob([new Uint8Array(bytes)], { type: 'image/gif' });
+  }
+
+  // ==================== Canvas 绘图辅助函数 ====================
+  function drawCloudPath(ctx) {
+    var p = new Path2D("M36 32H14a7 7 0 1 1 1.5-13.8A9 9 0 0 1 32.5 17a9 9 0 0 1 3.5 15z");
+    return p;
+  }
+  function drawOvercastFrontPath() {
+    return new Path2D("M36 30H14a7 7 0 1 1 1.5-13.8A9 9 0 0 1 32.5 15a9 9 0 0 1 3.5 15z");
+  }
+  function drawOvercastBackPath() {
+    return new Path2D("M40 20H25.3a4.7 4.7 0 1 1 1-9.2A6 6 0 0 1 37.6 10a6 6 0 0 1 2.4 10z");
+  }
+  function drawRainCloudPath() {
+    return new Path2D("M36 24H14a7 7 0 1 1 1.5-13.8A9 9 0 0 1 32.5 9a9 9 0 0 1 3.5 15z");
+  }
+  function drawSmallSunPath() {
+    return new Path2D("M33 5V3M38.7 7.3l1.4-1.4M41 13h2M38.7 18.7l1.4 1.4M33 21v2M27.3 18.7l-1.4 1.4M25 13h-2M27.3 7.3 25.9 5.9");
+  }
+  function drawSunRaysPath() {
+    return new Path2D("M24 4v6M24 38v6M4 24h6M38 24h6M10 10l4.2 4.2M33.8 33.8 38 38M38 10l-4.2 4.2M14.2 33.8 10 38");
+  }
+
+  function getColors(theme) {
+    if (theme === 'v3') {
+      return {
+        temp: '#9CA3AF', humi: '#9CA3AF',
+        sun: '#E3E6EA', cloud: '#E3E6EA', backCloud: '#E3E6EA', rain: '#E3E6EA',
+        appSettings: 'rgba(201,207,216,0.6)',
+        appClock: 'rgba(201,207,216,0.6)',
+        appWeather: 'rgba(201,207,216,0.6)',
+        appNetwork: 'rgba(201,207,216,0.6)',
+        appAbout: 'rgba(201,207,216,0.6)',
+        appTheme: 'rgba(201,207,216,0.6)'
+      };
+    }
+    return {
+      temp: '#FFB74D', humi: '#4FC3F7',
+      sun: '#FBBF24', cloud: '#E3E6EA', backCloud: '#9CA3AF', rain: '#4FC3F7',
+      appSettings: '#94A3B8',
+      appClock: '#FBBF24',
+      appWeather: '#38BDF8',
+      appNetwork: '#34D399',
+      appAbout: '#A78BFA',
+      appTheme: '#F472B6'
+    };
+  }
+
+  // ==================== 渲染四态天气帧 ====================
+  function renderWeatherFrame(ctx, type, progress, colors, fillBg) {
+    ctx.clearRect(0, 0, 48, 48);
+    // 为保证边缘抗锯齿不产生黑边，先在 #262B33 上绘制
+    ctx.fillStyle = '#262B33';
+    if (fillBg) ctx.fillRect(0, 0, 48, 48);
+
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (type === 'sunny') {
+      // 太阳圆心
+      ctx.strokeStyle = colors.sun;
+      ctx.beginPath();
+      ctx.arc(24, 24, 8, 0, Math.PI * 2);
+      ctx.stroke();
+      // 光芒旋转 (具有 45 度对称性，旋转 45 度即可无缝循环，或完整旋转)
+      ctx.save();
+      ctx.translate(24, 24);
+      ctx.rotate(progress * Math.PI * 2);
+      ctx.translate(-24, -24);
+      ctx.stroke(drawSunRaysPath());
+      ctx.restore();
+    } else if (type === 'cloudy') {
+      // ease-in-out 正弦往复: 0 -> 1 -> 0
+      var wave = 0.5 - 0.5 * Math.cos(progress * Math.PI * 2);
+      // 太阳浮动 (0,0) -> (2, -2)
+      ctx.save();
+      ctx.translate(wave * 2, wave * -2);
+      ctx.strokeStyle = colors.sun;
+      ctx.beginPath();
+      ctx.arc(33, 13, 5.5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.stroke(drawSmallSunPath());
+      ctx.restore();
+      // 云层浮动 (0,0) -> (-1.5, 1)
+      ctx.save();
+      ctx.translate(wave * -1.5, wave * 1);
+      var cp = drawCloudPath();
+      ctx.fillStyle = '#262B33';
+      ctx.fill(cp);
+      ctx.strokeStyle = colors.cloud;
+      ctx.stroke(cp);
+      ctx.restore();
+    } else if (type === 'overcast') {
+      var wave2 = 0.5 - 0.5 * Math.cos(progress * Math.PI * 2);
+      // 后景云 (0,0) -> (1.5, 0)
+      ctx.save();
+      ctx.translate(wave2 * 1.5, 0);
+      ctx.strokeStyle = colors.backCloud;
+      ctx.stroke(drawOvercastBackPath());
+      ctx.restore();
+      // 前景云 (0,0) -> (-2, 0)
+      ctx.save();
+      ctx.translate(wave2 * -2, 0);
+      var fp = drawOvercastFrontPath();
+      ctx.fillStyle = '#262B33';
+      ctx.fill(fp);
+      ctx.strokeStyle = colors.cloud;
+      ctx.stroke(fp);
+      ctx.restore();
+    } else if (type === 'rain') {
+      // 雨云
+      ctx.strokeStyle = colors.cloud;
+      ctx.stroke(drawRainCloudPath());
+      // 三滴雨水: 相位偏移 0, 1/3, 2/3
+      var drops = [
+        { x: 16, len: 5, offset: 0 },
+        { x: 24, len: 7, offset: 1 / 3 },
+        { x: 32, len: 5, offset: 2 / 3 }
+      ];
+      drops.forEach(function(d) {
+        var t = (progress + d.offset) % 1;
+        var dy = -2 + t * 6; // -2px -> +4px
+        var alpha = 1;
+        if (t < 0.25) alpha = t / 0.25;
+        else if (t > 0.75) alpha = (1 - t) / 0.25;
+        ctx.save();
+        ctx.strokeStyle = colors.rain;
+        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+        ctx.beginPath();
+        ctx.moveTo(d.x, 30 + dy);
+        ctx.lineTo(d.x, 30 + d.len + dy);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+  }
+
+  // ==================== SVG 转 PNG 工具 ====================
+  function svgToPngUrl(svgString, width, height, callback) {
+    var img = new Image();
+    var blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      URL.revokeObjectURL(url);
+      callback(canvas.toDataURL('image/png'));
+    };
+    img.src = url;
+  }
+
+  var allDownloads = [];
+
+  function createCardItem(container, title, meta, dataUrl, filename, w, h) {
+    var div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML =
+      '<div class="preview-box"><img src="' + dataUrl + '" width="' + w + '" height="' + h + '" alt="' + title + '"></div>' +
+      '<div class="item-name">' + title + '</div>' +
+      '<div class="item-meta">' + meta + '</div>' +
+      '<a class="item-btn" href="' + dataUrl + '" download="' + filename + '">下载 ' + filename + '</a>';
+    container.appendChild(div);
+    allDownloads.push({ url: dataUrl, filename: filename });
+  }
+
+  function buildAllAssets() {
+    var theme = document.getElementById('themeSelect').value;
+    var gifBg = document.getElementById('gifBgSelect').value;
+    var colors = getColors(theme);
+    allDownloads = [];
+
+    var gifGrid = document.getElementById('gifGrid');
+    var layerGrid = document.getElementById('layerGrid');
+    var pngGrid = document.getElementById('pngGrid');
+    gifGrid.innerHTML = '';
+    layerGrid.innerHTML = '';
+    pngGrid.innerHTML = '';
+
+    // 1. 生成 4 张天气动效 GIF
+    var weatherConfigs = [
+      // 太阳光芒具有 8 对称性 (45° 周期)，20 帧转 45° 等效于 160 帧转 360°，体积小且极致丝滑
+      { id: 'sunny', name: '晴天旋转动效', file: 'weather_sunny_48x48.gif', frames: 24, delayCs: 4, scaleProg: 0.125 },
+      { id: 'cloudy', name: '多云浮动动效', file: 'weather_cloudy_48x48.gif', frames: 32, delayCs: 6, scaleProg: 1 },
+      { id: 'overcast', name: '阴天双云动效', file: 'weather_overcast_48x48.gif', frames: 32, delayCs: 7, scaleProg: 1 },
+      { id: 'rain', name: '雨天落雨动效', file: 'weather_rain_48x48.gif', frames: 24, delayCs: 5, scaleProg: 1 }
+    ];
+
+    var canvas = document.createElement('canvas');
+    canvas.width = 48;
+    canvas.height = 48;
+    var ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+    weatherConfigs.forEach(function(cfg) {
+      var frameDataList = [];
+      var useCardBg = (gifBg === 'card');
+      for (var f = 0; f < cfg.frames; f++) {
+        var prog = (f / cfg.frames) * cfg.scaleProg;
+        renderWeatherFrame(ctx, cfg.id, prog, colors, useCardBg);
+        frameDataList.push(ctx.getImageData(0, 0, 48, 48).data);
+      }
+      var gifBlob = createGIF(48, 48, frameDataList, cfg.delayCs, useCardBg ? -1 : 0);
+      var gifUrl = URL.createObjectURL(gifBlob);
+      createCardItem(gifGrid, cfg.name, '48×48 · GIF (' + cfg.frames + '帧)', gifUrl, cfg.file, 48, 48);
+    });
+
+    // 2. 生成 ManualTick 拆解图层 PNG (48x48)
+    var layers = [
+      {
+        name: '晴 · 太阳圆心', file: 'layer_sunny_core_48x48.png', w: 48, h: 48,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="' + colors.sun + '" stroke-width="2" stroke-linecap="round"><circle cx="24" cy="24" r="8"/></svg>'
+      },
+      {
+        name: '晴 · 旋转光芒', file: 'layer_sunny_rays_48x48.png', w: 48, h: 48,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="' + colors.sun + '" stroke-width="2" stroke-linecap="round"><path d="M24 4v6M24 38v6M4 24h6M38 24h6M10 10l4.2 4.2M33.8 33.8 38 38M38 10l-4.2 4.2M14.2 33.8 10 38"/></svg>'
+      },
+      {
+        name: '多云 · 右上小太阳', file: 'layer_cloudy_sun_48x48.png', w: 48, h: 48,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="' + colors.sun + '" stroke-width="2" stroke-linecap="round"><circle cx="33" cy="13" r="5.5"/><path d="M33 5V3M38.7 7.3l1.4-1.4M41 13h2M38.7 18.7l1.4 1.4M33 21v2M27.3 18.7l-1.4 1.4M25 13h-2M27.3 7.3 25.9 5.9"/></svg>'
+      },
+      {
+        name: '多云 · 前景云层', file: 'layer_cloudy_cloud_48x48.png', w: 48, h: 48,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="' + colors.cloud + '" stroke-width="2" stroke-linejoin="round"><path d="M36 32H14a7 7 0 1 1 1.5-13.8A9 9 0 0 1 32.5 17a9 9 0 0 1 3.5 15z" fill="#262B33"/></svg>'
+      },
+      {
+        name: '阴天 · 后景云层', file: 'layer_overcast_back_48x48.png', w: 48, h: 48,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="' + colors.backCloud + '" stroke-width="2" stroke-linejoin="round"><path d="M40 20H25.3a4.7 4.7 0 1 1 1-9.2A6 6 0 0 1 37.6 10a6 6 0 0 1 2.4 10z"/></svg>'
+      },
+      {
+        name: '阴天 · 前景云层', file: 'layer_overcast_front_48x48.png', w: 48, h: 48,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="' + colors.cloud + '" stroke-width="2" stroke-linejoin="round"><path d="M36 30H14a7 7 0 1 1 1.5-13.8A9 9 0 0 1 32.5 15a9 9 0 0 1 3.5 15z" fill="#262B33"/></svg>'
+      },
+      {
+        name: '雨天 · 顶部雨云', file: 'layer_rain_cloud_48x48.png', w: 48, h: 48,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="' + colors.cloud + '" stroke-width="2" stroke-linejoin="round"><path d="M36 24H14a7 7 0 1 1 1.5-13.8A9 9 0 0 1 32.5 9a9 9 0 0 1 3.5 15z"/></svg>'
+      },
+      {
+        name: '雨天 · 静态三雨滴', file: 'layer_rain_drops_48x48.png', w: 48, h: 48,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="' + colors.rain + '" stroke-width="2" stroke-linecap="round"><path d="M16 30v5M24 30v7M32 30v5"/></svg>'
+      }
+    ];
+
+    layers.forEach(function(item) {
+      svgToPngUrl(item.svg, item.w, item.h, function(url) {
+        createCardItem(layerGrid, item.name, item.w + '×' + item.h + ' · 透明 PNG', url, item.file, item.w, item.h);
+      });
+    });
+
+    // 3. 传感器 (20x20) 与 主页2 应用图标 (24x24 裸图标 + 48x48 带底座图标)
+    var staticIcons = [
+      {
+        name: '室内温度图标', file: 'icon_temp_20x20.png', w: 20, h: 20,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="' + colors.temp + '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.7 14.3V4.9a2.1 2.1 0 0 0-4.2 0v9.4a3.8 3.8 0 1 0 4.2 0z"/></svg>'
+      },
+      {
+        name: '室内湿度图标', file: 'icon_humi_20x20.png', w: 20, h: 20,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="' + colors.humi + '" stroke-width="1.5" stroke-linejoin="round"><path d="M10 3C7 7 4.5 9.5 4.5 12.5a5.5 5.5 0 0 0 11 0C15.5 9.5 13 7 10 3z"/></svg>'
+      }
+    ];
+
+    var appDefs = [
+      { id: 'settings', name: '设置', color: colors.appSettings, inner: '<path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2.2" fill="#333B47"/><circle cx="15" cy="12" r="2.2" fill="#333B47"/><circle cx="8" cy="17" r="2.2" fill="#333B47"/>' },
+      { id: 'clock', name: '时钟', color: colors.appClock, inner: '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>' },
+      { id: 'weather', name: '天气', color: colors.appWeather, inner: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>' },
+      { id: 'network', name: '网络', color: colors.appNetwork, inner: '<path d="M4.5 11.5a11 11 0 0 1 15 0M7.5 14.8a6.5 6.5 0 0 1 9 0"/><circle cx="12" cy="18.2" r="1.1" fill="' + colors.appNetwork + '" stroke="none"/>' },
+      { id: 'about', name: '关于', color: colors.appAbout, inner: '<circle cx="12" cy="12" r="8"/><path d="M12 11.2V16"/><circle cx="12" cy="8.2" r="1" fill="' + colors.appAbout + '" stroke="none"/>' },
+      { id: 'theme', name: '主题', color: colors.appTheme, inner: '<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="' + colors.appTheme + '" stroke="none"/>' }
+    ];
+
+    appDefs.forEach(function(app) {
+      // 24x24 透明裸图标
+      staticIcons.push({
+        name: '应用 · ' + app.name + ' (裸图标)',
+        file: 'app_' + app.id + '_24x24.png',
+        w: 24, h: 24,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="' + app.color + '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + app.inner + '</svg>'
+      });
+      // 48x48 带 #333B47 底座图标
+      staticIcons.push({
+        name: '应用 · ' + app.name + ' (含底座)',
+        file: 'app_' + app.id + '_box_48x48.png',
+        w: 48, h: 48,
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">' +
+             '<rect x="0.5" y="0.5" width="47" height="47" rx="5.5" fill="#333B47" stroke="#3A414C"/>' +
+             '<g transform="translate(12,12)" stroke="' + app.color + '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + app.inner + '</g></svg>'
+      });
+    });
+
+    staticIcons.forEach(function(item) {
+      svgToPngUrl(item.svg, item.w, item.h, function(url) {
+        createCardItem(pngGrid, item.name, item.w + '×' + item.h + ' · PNG', url, item.file, item.w, item.h);
+      });
+    });
+  }
+
+  document.getElementById('themeSelect').addEventListener('change', buildAllAssets);
+  document.getElementById('gifBgSelect').addEventListener('change', buildAllAssets);
+
+  document.getElementById('downloadAllBtn').addEventListener('click', function() {
+    allDownloads.forEach(function(item, index) {
+      setTimeout(function() {
+        var a = document.createElement('a');
+        a.href = item.url;
+        a.download = item.filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }, index * 180);
+    });
+  });
+
+  buildAllAssets();
+})();
+</script>
+</body>
+</html>

@@ -21,6 +21,10 @@
 #include "MD_Bms/md_bms_task.h"
 #endif  //boardBMS_EN
 
+#if (boardWIFI_EN)
+#include "WiFi/wifi_task.h"
+#endif  /* boardWIFI_EN */
+
 
 //****************************************************Macros********************************************************************//
 #define			sysTASK_CLOSE_CYCLE_TIME				10		//任务时间
@@ -46,6 +50,9 @@ void v_sys_queue_task_closing(Task_T *p_task)
 		//************************************步骤1:预留清理********************************************
 		case 1:
 		{
+			#if (boardWIFI_EN)
+			vWiFi_Stop();
+			#endif  /* boardWIFI_EN */
 			cQueue_GotoStep(p_task, STEP_NEXT);  //下一步
 		}break;
 

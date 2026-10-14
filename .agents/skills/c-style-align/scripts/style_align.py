@@ -37,14 +37,27 @@ def col_of(ws):
 
 
 def strip_comment(s):
-    """return (code, comment) splitting off first // or /*"""
-    i1 = s.find('//')
-    i2 = s.find('/*')
-    cands = [i for i in (i1, i2) if i >= 0]
-    if not cands:
-        return s.rstrip(), ''
-    idx = min(cands)
-    return s[:idx].rstrip(), s[idx:].rstrip()
+    """return (code, comment) splitting off first // or /* outside string/char literals"""
+    in_str = False
+    in_char = False
+    escape = False
+    for i, ch in enumerate(s):
+        if escape:
+            escape = False
+            continue
+        if ch == '\\':
+            escape = True
+            continue
+        if ch == '"' and not in_char:
+            in_str = not in_str
+            continue
+        if ch == "'" and not in_str:
+            in_char = not in_char
+            continue
+        if not in_str and not in_char:
+            if s[i:i+2] in ('//', '/*'):
+                return s[:i].rstrip(), s[i:].rstrip()
+    return s.rstrip(), ''
 
 
 def split_lines(text):

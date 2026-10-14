@@ -31,7 +31,7 @@ DebugPrint_U uPrint;
 //****************************************************Task Declaration**********************************************************//
 #if (boardUSE_OS)
 #define			printTASK_PRIO							1		/* 任务优先级(通信接收层) */
-#define			printTASK_SIZE							(1024 * 4)/* 任务堆栈(字) */
+#define			printTASK_SIZE							(1024)	/* 任务堆栈大小 (字节) 1KB足够(历史峰值仅292B) */
 TaskHandle_t tPrintTaskHandler = NULL;							/* 任务句柄 */
 void         vPrint_Task(void *pvParameters);					/* 任务函数 */
 #endif  /* boardUSE_OS */

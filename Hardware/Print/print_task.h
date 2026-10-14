@@ -63,7 +63,7 @@ typedef union
 		u32				bOperFlash:1;
 		u32				bImportant:1;
 
-		u32				:1;
+		u32				bWiFiTask:1;
 		u32				bDispTask:1;
 		u32				bKeyTask:1;
 		u32				bAdcTask:1;

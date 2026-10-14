@@ -168,6 +168,11 @@ void v_sys_queue_task_init(Task_T *p_task)
 				cQueue_GotoStep(p_task, STEP_NEXT);
 			#endif  //boardKEY_EN
 
+			#if (boardDISPLAY_EN)
+			else if (tSysInfo.uInit.tFinish.bIF_DispTask)
+				cQueue_GotoStep(p_task, STEP_NEXT);
+			#endif  //boardDISPLAY_EN
+
 			#if (boardADC_EN)
 			else if ((tAdcSamp.usSysInVolt > (tAppMemParam.tSYS.usMinOpenVolt / 2))
 				#if (boardBMS_EN)
@@ -272,6 +277,7 @@ void v_sys_queue_task_init(Task_T *p_task)
 			if (tSysInfo.eDevState != DS_BOOTING)
 				bSys_SetDevState(DS_SHUT_DOWN, false);
 
+			cSys_Switch(SO_KEY, ST_ON, false);
 			cQueue_GotoStep(p_task, STEP_END);
 		}break;
 

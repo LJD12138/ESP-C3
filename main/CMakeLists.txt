@@ -23,4 +23,5 @@ idf_component_register(
         MD_Display
         TaskQueue
         esp_lcd
+        WiFi
 )
