@@ -41,8 +41,9 @@ void v_wifi_queue_task_stop(Task_T *p_task)
 		{
 			esp_wifi_disconnect();
 			esp_wifi_stop();
-			tWiFiInfo.eState = WIFI_STATE_STOPPED;
-			tWiFiInfo.cRssi  = -100;
+			tWiFiInfo.eState       = WIFI_STATE_STOPPED;
+			tWiFiInfo.cRssi        = -100;
+			tWiFiInfo.bPowerSaveEn = false;
 
 			if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
 				log_i("bWiFiTask:WiFi射频已关断进入休眠");

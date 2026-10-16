@@ -24,4 +24,5 @@ idf_component_register(
         TaskQueue
         esp_lcd
         WiFi
+        BSP
 )

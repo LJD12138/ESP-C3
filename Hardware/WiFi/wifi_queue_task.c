@@ -97,8 +97,16 @@ static bool b_task_manage_func_cb(Task_T *p_task)
 		}
 		else
 		{
-			p_task->ucID      = WTI_RECONNECT;
-			p_task->usInParam = 0;
+			if (tWiFiInfo.bAutoConnect)
+			{
+				p_task->ucID      = WTI_RECONNECT;
+				p_task->usInParam = 0;
+			}
+			else
+			{
+				p_task->ucID      = WTI_NULL;
+				p_task->usInParam = 0;
+			}
 		}
 	}
 
@@ -137,6 +145,12 @@ static bool b_task_manage_func_cb(Task_T *p_task)
 		case WTI_STOP:
 		{
 			p_task->vp_func = v_wifi_queue_task_stop;
+		}
+		break;
+
+		case WTI_SCAN:
+		{
+			p_task->vp_func = v_wifi_queue_task_scan;
 		}
 		break;
 

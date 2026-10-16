@@ -25,16 +25,8 @@ typedef struct _objects_t {
     lv_obj_t *main_closing;
     lv_obj_t *main_eng;
     lv_obj_t *main_update;
-    lv_obj_t *nav_bar;
-    lv_obj_t *nav_time;
-    lv_obj_t *nav_date;
-    lv_obj_t *sig_bar_0;
-    lv_obj_t *sig_bar_1;
-    lv_obj_t *sig_bar_2;
-    lv_obj_t *sig_bar_3;
-    lv_obj_t *sig_bar_4;
     lv_obj_t *home_tileview;
-    lv_obj_t *tile_env;
+    lv_obj_t *tile_env_1;
     lv_obj_t *card_temp;
     lv_obj_t *temp_accent;
     lv_obj_t *temp_icon;
@@ -57,7 +49,7 @@ typedef struct _objects_t {
     lv_obj_t *env_net_time;
     lv_obj_t *net_sync_dot;
     lv_obj_t *net_sync_text;
-    lv_obj_t *tile_grid;
+    lv_obj_t *tile_grid_1;
     lv_obj_t *app_cell_0;
     lv_obj_t *app_box_0;
     lv_obj_t *app_ic_0;
@@ -82,8 +74,19 @@ typedef struct _objects_t {
     lv_obj_t *app_box_5;
     lv_obj_t *app_ic_5;
     lv_obj_t *app_name_5;
-    lv_obj_t *page_dot_0;
-    lv_obj_t *page_dot_1;
+    lv_obj_t *obj0;
+    lv_obj_t *obj0__nav_bar_1;
+    lv_obj_t *obj0__nav_time;
+    lv_obj_t *obj0__nav_date;
+    lv_obj_t *obj0__wifi_icom;
+    lv_obj_t *obj0__wifi_icom__sig_bar_0;
+    lv_obj_t *obj0__wifi_icom__sig_bar_1;
+    lv_obj_t *obj0__wifi_icom__sig_bar_2;
+    lv_obj_t *obj0__wifi_icom__sig_bar_3;
+    lv_obj_t *obj0__wifi_icom__sig_bar_4;
+    lv_obj_t *obj1;
+    lv_obj_t *obj1__page_dot_0;
+    lv_obj_t *obj1__page_dot_1;
     lv_obj_t *uc_booting_bar;
 } objects_t;
 
@@ -103,6 +106,18 @@ void tick_screen_main_eng();
 
 void create_screen_main_update();
 void tick_screen_main_update();
+
+void create_user_widget_main_top_info_bar(lv_obj_t *parent_obj, int startWidgetIndex);
+void tick_user_widget_main_top_info_bar(int startWidgetIndex);
+
+void create_user_widget_wifi_icom(lv_obj_t *parent_obj, int startWidgetIndex);
+void tick_user_widget_wifi_icom(int startWidgetIndex);
+
+void create_user_widget_page_state(lv_obj_t *parent_obj, int startWidgetIndex);
+void tick_user_widget_page_state(int startWidgetIndex);
+
+void create_user_widget_main_dome(lv_obj_t *parent_obj, int startWidgetIndex);
+void tick_user_widget_main_dome(int startWidgetIndex);
 
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);

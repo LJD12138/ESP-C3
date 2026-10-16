@@ -47,6 +47,20 @@ extern "C" {
 #define			DISP_SYSERR_BIT_TASK_FAULT				(1U << 9)	/* 任务初始化/创建失败 */
 
 //****************************************************Types*********************************************************************//
+/* 天气类型枚举 */
+typedef enum
+{
+	WEATHER_SUNNY = 0,		/* 晴 */
+	WEATHER_CLOUDY,			/* 多云 */
+	WEATHER_OVERCAST,		/* 阴 */
+	WEATHER_RAIN,			/* 雨 */
+	WEATHER_NIGHT_SUNNY,	/* 晴夜 */
+	WEATHER_NIGHT_CLOUDY,	/* 多云夜 */
+	WEATHER_NIGHT_OVERCAST,	/* 阴夜 */
+	WEATHER_NIGHT_RAIN,		/* 雨夜 */
+	WEATHER_MAX
+}Weather_E;
+
 /* 统一显示数据原子快照结构体 */
 struct DispDataSnapshot_T
 {
@@ -63,11 +77,30 @@ struct DispDataSnapshot_T
 	uint32_t			ulPortBlinkFlags;		/* 各端口错误态位图 */
 	bool				bBatErr;				/* 电池硬件故障标志 */
 	bool				bBatLock;				/* 电池保护锁定标志 */
+
+	/* ---- 主页 UI 扩展字段 (追加于既有字段之后) ---- */
+	int16_t				sTempX10;				/* 室内温度×0.1℃ (源:  换算, 0x7FFF表示未就绪) */
+	uint8_t				ucHumidity;				/* 室内湿度 0~100 %RH (0xFF表示未就绪) */
+	uint8_t				ucSignalLevel;			/* 网络信号格数 0~5 */
+	uint8_t				ucLocalHour;			/* 导航栏本地时 (0~23, 0xFF=未对时) */
+	uint8_t				ucLocalMin;				/* 导航栏本地分 (0~59, 0xFF=未对时) */
+	uint8_t				ucLocalSec;				/* 本地秒 (0~59, 0xFF=未对时) */
+	uint8_t				ucLocalMon;				/* 本地月 (1~12) */
+	uint8_t				ucLocalDay;				/* 本地日 (1~31) */
+	uint8_t				ucLocalWday;			/* 本地星期 (0~6, 0=周日) */
+	bool				bNetSynced;				/* 网络时间是否已同步 */
+	bool				bWeatherValid;			/* 天气数据是否已成功获取并有效 */
+	uint8_t				eWeather;				/* Weather_E */
+	int16_t				sWeatherTempX10;		/* 室外天气气温×0.1℃ */
+	char				saWeatherDesc[16];		/* 中文天气描述 (如 "晴", "多云", "阴", "小雨") */
 };
 
 //****************************************************Globals*******************************************************************//
 
 //****************************************************Extern********************************************************************//
+void vDisp_DataSetEnv(int16_t s_temp_x10, uint8_t uc_humi);
+void vDisp_DataSetNetTime(uint8_t h, uint8_t m, uint8_t s);
+void vDisp_DataSetWeather(Weather_E e_weather);
 
 #endif  /* boardDISPLAY_EN */
 

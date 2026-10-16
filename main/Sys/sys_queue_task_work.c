@@ -27,6 +27,7 @@
 
 #include "app_info.h"
 #include "gpio_init.h"
+#include "bsp_gxhtc3_temp_humi.h"
 
 //****************************************************Macros********************************************************************//
 #define			sysTASK_WORK_CYCLE_TIME					10		//任务时间
@@ -64,13 +65,19 @@ void v_sys_queue_task_work(Task_T *p_task)
 	{
 		case 0:
 		{
+			if(bGxhtc3_IfaceInit() == false)
+			{
+				if(uPrint.tFlag.bSysTask)
+					log_w("bSysTask:Gxhtc3 interface init failed!");
+			}
 			cQueue_GotoStep(p_task, STEP_NEXT);  //下一步
 		}
 		break;
 
 		case 1:
 		{
-			
+			if(bGxhtc3_IsIfaceInited() == true)
+				cGxhtc3_GetTempHumi();
 		}
 		break;
 

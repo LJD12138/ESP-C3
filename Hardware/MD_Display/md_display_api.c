@@ -26,6 +26,7 @@
 
 #include "eez_ui/ui.h"
 #include "eez_ui/screens.h"
+#include "user_ui/home_ui_ext.h"
 
 #if (boardUSE_OS)
 #include "freertos/FreeRTOS.h"
@@ -153,7 +154,10 @@ void vDisp_UiRefresh(void)
 	/* 1. EEZ Studio 变量绑定与视图更新 */
 	ui_tick();
 
-	/* 2. LVGL 核心定时器与重绘处理 */
+	/* 2. 主页逐帧动态效果状态机推进 */
+	vHomeUi_ManualTick();
+
+	/* 3. LVGL 核心定时器与重绘处理 */
 	lv_timer_handler();
 }
 

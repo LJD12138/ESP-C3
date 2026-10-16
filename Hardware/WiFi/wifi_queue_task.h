@@ -44,6 +44,7 @@ typedef enum
 	WTI_RECONNECT,		/* 掉线指数退避重连任务 */
 	WTI_DISCONNECT,		/* 主动断开连接任务 */
 	WTI_STOP,			/* 停用射频休眠任务 */
+	WTI_SCAN,			/* 周边热点主动扫描任务 */
 	WTI_SNTP,			/* SNTP 网络时钟同步任务 */
 	WTI_WEATHER,		/* HTTP 天气数据拉取与解析任务 */
 }WiFiQueueTaskID_E;
@@ -61,8 +62,10 @@ void v_wifi_queue_task_connect(Task_T *p_task);
 void v_wifi_queue_task_reconnect(Task_T *p_task);
 void v_wifi_queue_task_disconnect(Task_T *p_task);
 void v_wifi_queue_task_stop(Task_T *p_task);
+void v_wifi_queue_task_scan(Task_T *p_task);
 void v_wifi_queue_task_sntp(Task_T *p_task);
 void v_wifi_queue_task_weather(Task_T *p_task);
+void vWiFi_ScanDoneNotify(void);
 
 #endif  /* boardWIFI_EN */
 

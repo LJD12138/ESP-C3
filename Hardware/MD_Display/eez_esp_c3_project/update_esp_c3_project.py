@@ -623,12 +623,13 @@ def main():
             "objID": new_id(),
             "name": name,
             "type": vtype,
-            "defaultValue": def_val,
+            "defaultValue": json.dumps(def_val, ensure_ascii=False) if vtype == "string" else def_val,
             "description": "",
             "native": True
         }
         for name, vtype, def_val in var_specs
     ]
+
 
     # 2. 更新共享样式 st_home_card 与 st_home_cell (第 2.1 & 3.4 节)
     proj["lvglStyles"]["styles"] = [

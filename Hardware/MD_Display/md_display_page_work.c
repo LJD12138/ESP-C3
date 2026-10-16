@@ -19,28 +19,19 @@
 #include "uni_disp_core.h"
 #include "MD_Display/md_display_task.h"
 #include "MD_Display/md_display_api.h"
-
+#include "user_ui/home_ui_ext.h"
 
 #include "lvgl.h"
 #include "esp_log.h"
 #include "eez_ui/screens.h"
-#if (defined(LV_USE_GIF) && LV_USE_GIF)
-#include "user_ui/img_dog_gif.h"
-#endif
-
 
 //****************************************************Static Variables**********************************************************//
-#if (defined(LV_USE_GIF) && LV_USE_GIF)
-static lv_obj_t *s_p_dog_gif = NULL;
-#endif
-
 
 //****************************************************Function Declaration******************************************************//
 static void v_page_work_enter(void);
 static void v_page_work_exit(void);
 static void v_page_work_update(const DispDataSnapshot_T *p_data, bool b_force);
 static bool b_page_work_event(DispEvent_E e_event, uint32_t ul_param);
-
 
 const DispPage_T G_tPageWork =
 {
@@ -54,7 +45,7 @@ const DispPage_T G_tPageWork =
 
 /***********************************************************************************************************************
  * 函数功能    : 进入工作页面
- * 说明(备注)  : 加载主工作界面，刷新设备参数并确保背光开启
+ * 说明(备注)  : 加载主工作界面，初始化主页扩展UI与动画，首刷数据并确保背光开启
  * 传入参数    : 无
  * 输出参数    : 无
  * 返回值      : 无
@@ -67,26 +58,14 @@ static void v_page_work_enter(void)
     if (lv_screen_active() != objects.main_work)
         vDisp_LoadScreen(SCREEN_ID_MAIN_WORK);
 
-#if (defined(LV_USE_GIF) && LV_USE_GIF)
-    /* 挂载原生 GIF 动图至主工作界面 (居中放置于上半区域, 屏幕 320x240, 动图 140x52) */
-    if (s_p_dog_gif == NULL && objects.main_work != NULL)
-    {
-        s_p_dog_gif = lv_gif_create(objects.main_work);
-        lv_gif_set_color_format(s_p_dog_gif, LV_COLOR_FORMAT_ARGB8888);
-        lv_gif_set_src(s_p_dog_gif, &img_dog_gif);
-        lv_obj_set_pos(s_p_dog_gif, 90, 15);
-    }
-    else if (s_p_dog_gif != NULL)
-    {
-        lv_gif_resume(s_p_dog_gif);
-    }
-#endif
-
     /* 抓取一次快照用于首帧静态渲染 */
     vDisp_DataCaptureSnapshot(&t_snapshot);
 
-    /* 初始刷新一次 EEZ 静态数据 (仅设置控件属性, 标记脏区域; 不触碰能量环避免其提前创建) */
-    vDisp_UpdateDevParam(&t_snapshot);
+    /* 刷新主页温湿度、时间和天气数据 */
+    vHomeUi_Update(&t_snapshot);
+
+    /* 启动主页动态动效 (天气动画等) */
+    vHomeUi_AnimaEnter();
 
     lv_refr_now(NULL);
 
@@ -97,25 +76,20 @@ static void v_page_work_enter(void)
 
 /***********************************************************************************************************************
  * 函数功能    : 退出工作页面
- * 说明(备注)  : 清理主工作界面资源
+ * 说明(备注)  : 清理主工作界面动画与动效
  * 传入参数    : 无
  * 输出参数    : 无
  * 返回值      : 无
  ************************************************************************************************************************/
 static void v_page_work_exit(void)
 {
-#if (defined(LV_USE_GIF) && LV_USE_GIF)
-    /* 离开工作页面暂停动图解码定时器，降低后台 CPU 负荷 */
-    if (s_p_dog_gif != NULL)
-    {
-        lv_gif_pause(s_p_dog_gif);
-    }
-#endif
+    /* 停止主页动画，防止退页后产生无效脏矩形重绘 */
+    vHomeUi_AnimaStop();
 }
 
 /***********************************************************************************************************************
  * 函数功能    : 工作页面帧更新
- * 说明(备注)  : 驱动 EEZ 数据绑定与参数周期更新
+ * 说明(备注)  : 轮询跨任务切页请求，从快照渲染温湿度、网络时间、天气及信号
  * 传入参数    : p_data: 快照数据指针, b_force: 强制刷新标志
  * 输出参数    : 无
  * 返回值      : 无
@@ -124,21 +98,32 @@ static void v_page_work_update(const DispDataSnapshot_T *p_data, bool b_force)
 {
     (void)b_force;
 
-    /* 周期更新设备数据与图标动画 (数据源: 帧快照) */
-    vDisp_UpdateDevParam(p_data);
+    /* 处理跨任务切页请求 */
+    vHomeUi_PollRequest();
+
+    /* 周期更新主页环境温湿度、天气与时间 */
+    vHomeUi_Update(p_data);
 }
 
 /***********************************************************************************************************************
  * 函数功能    : 工作页事件回调
- * 说明(备注)  : 工作页不消费按键, 透传框架默认处理(重置息屏倒计时)
+ * 说明(备注)  : 短按按键切换 Tileview 双 Tile，其余事件透传框架默认处理
  * 传入参数    : e_event: 事件类型
  * 输出参数    : ul_param: 事件参数
- * 返回值      : false (事件透传给框架, 不触发自动跳转)
+ * 返回值      : true: 已消费事件, false: 透传给框架
  ************************************************************************************************************************/
 static bool b_page_work_event(DispEvent_E e_event, uint32_t ul_param)
 {
-    (void)e_event;
     (void)ul_param;
+
+    if (e_event == DISP_EVT_KEY_SHORT)
+    {
+        /* 短按切换主页1 (环境卡片) 与 主页2 (应用网格) */
+        uint8_t cur_tile = ucHomeUi_GetTile();
+        bHomeUi_SetTile(cur_tile ^ 1U, true);
+        return true;
+    }
+
     return false;   /* 透传框架默认处理: 按键重置息屏倒计时, 故障自动弹窗等 */
 }
 

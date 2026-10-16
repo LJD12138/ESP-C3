@@ -39,7 +39,7 @@
 //****************************************************Task Declaration**********************************************************//
 #if (boardUSE_OS)
 #define			KEY_TASK_PRIO							2		/* 任务优先级 */
-#define			KEY_TASK_STK_SIZE						(1024U) /* 任务堆栈大小 (字节) 1KB足够(历史峰值仅236B) */
+#define			KEY_TASK_STK_SIZE						(1024U * 2U) /* 任务堆栈大小 (字节) 1KB足够(历史峰值仅236B) */
 static TaskHandle_t s_t_key_task_handler = NULL;				/* 任务句柄 */
 void        vKey_Task(void *p_v_parameters);					/* 任务函数 */
 #endif  /* boardUSE_OS */

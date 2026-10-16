@@ -371,7 +371,7 @@ vDisp_UiRefresh() 渲染出口（md_display_api.c）:
 
 ```c
 	/* ---- 主页 UI 扩展字段 (追加于既有字段之后, 不改动既有布局) ---- */
-	int16_t				sTempX10;			/* 室内温度×0.1℃ (源: tGxhtc3 换算) */
+	int16_t				sTempX10;			/* 室内温度×0.1℃ */
 	uint8_t				ucHumidity;			/* 室内湿度 0~100 %RH */
 	uint8_t				ucSignalLevel;		/* 网络信号格数 0~5 */
 	uint8_t				ucLocalHour;		/* 导航栏本地时 (系统时钟, 未接入=0xFF) */
@@ -521,7 +521,7 @@ Hardware/MD_Display/
 3. 字符串一律 `snprintf`/`strncpy`，禁 `sprintf`/`strcpy`；
 4. `set_var_xxx` 每帧调用安全（`ui_tick()` 内 EEZ 自动比对，值不变不刷控件）；信号/天气显隐在 user_ui 侧再做一层静态缓存比对；
 5. 页面四回调禁止阻塞（无 `vTaskDelay`/等信号量/耗时循环）；
-6. GXHTC3 原始值（`tGxhtc3.usTemp/usHumi`）换算到 0.1℃ / 1%RH 时核对传感器实际缩放；
+6. GXHTC3 原始值（``）换算到 0.1℃ / 1%RH 时核对传感器实际缩放；
 7. 命名遵循工程规范：导出 `vHomeUi_/bHomeUi_/G_tPage` 前缀、static 小写下划线、宏 `homeui` 前缀；
 8. 文件头注释/段落横幅/`#endif` 条件注释对齐 `.agents/rules/c-code-templates.md`；
 9. 改造 `md_display_page_work.c` 时同步删除 GIF 相关的 static 变量与 include（`img_dog_gif.h`），避免残留死代码；

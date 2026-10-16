@@ -13,6 +13,7 @@ idf_component_register(
         "wifi_queue_task_reconnect.c"
         "wifi_queue_task_disconnect.c"
         "wifi_queue_task_stop.c"
+        "wifi_queue_task_scan.c"
         "wifi_queue_task_sntp.c"
         "wifi_queue_task_weather.c"
     INCLUDE_DIRS
@@ -31,4 +32,5 @@ idf_component_register(
         lwip
         esp_http_client
         json
+        EasyFlash
 )

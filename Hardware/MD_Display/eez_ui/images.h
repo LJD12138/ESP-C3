@@ -47,6 +47,38 @@ extern const lv_img_dsc_t img_anim_rain_04;
 extern const lv_img_dsc_t img_anim_rain_05;
 extern const lv_img_dsc_t img_anim_rain_06;
 extern const lv_img_dsc_t img_anim_rain_07;
+extern const lv_img_dsc_t img_anim_night_sunny_00;
+extern const lv_img_dsc_t img_anim_night_sunny_01;
+extern const lv_img_dsc_t img_anim_night_sunny_02;
+extern const lv_img_dsc_t img_anim_night_sunny_03;
+extern const lv_img_dsc_t img_anim_night_sunny_04;
+extern const lv_img_dsc_t img_anim_night_sunny_05;
+extern const lv_img_dsc_t img_anim_night_sunny_06;
+extern const lv_img_dsc_t img_anim_night_sunny_07;
+extern const lv_img_dsc_t img_anim_night_cloudy_00;
+extern const lv_img_dsc_t img_anim_night_cloudy_01;
+extern const lv_img_dsc_t img_anim_night_cloudy_02;
+extern const lv_img_dsc_t img_anim_night_cloudy_03;
+extern const lv_img_dsc_t img_anim_night_cloudy_04;
+extern const lv_img_dsc_t img_anim_night_cloudy_05;
+extern const lv_img_dsc_t img_anim_night_cloudy_06;
+extern const lv_img_dsc_t img_anim_night_cloudy_07;
+extern const lv_img_dsc_t img_anim_night_overcast_00;
+extern const lv_img_dsc_t img_anim_night_overcast_01;
+extern const lv_img_dsc_t img_anim_night_overcast_02;
+extern const lv_img_dsc_t img_anim_night_overcast_03;
+extern const lv_img_dsc_t img_anim_night_overcast_04;
+extern const lv_img_dsc_t img_anim_night_overcast_05;
+extern const lv_img_dsc_t img_anim_night_overcast_06;
+extern const lv_img_dsc_t img_anim_night_overcast_07;
+extern const lv_img_dsc_t img_anim_night_rain_00;
+extern const lv_img_dsc_t img_anim_night_rain_01;
+extern const lv_img_dsc_t img_anim_night_rain_02;
+extern const lv_img_dsc_t img_anim_night_rain_03;
+extern const lv_img_dsc_t img_anim_night_rain_04;
+extern const lv_img_dsc_t img_anim_night_rain_05;
+extern const lv_img_dsc_t img_anim_night_rain_06;
+extern const lv_img_dsc_t img_anim_night_rain_07;
 
 #ifndef EXT_IMG_DESC_T
 #define EXT_IMG_DESC_T
@@ -56,7 +88,7 @@ typedef struct _ext_img_desc_t {
 } ext_img_desc_t;
 #endif
 
-extern const ext_img_desc_t images[40];
+extern const ext_img_desc_t images[72];
 
 #ifdef __cplusplus
 }

@@ -107,12 +107,13 @@ s8 cFlash_EraseSector(u32 start_addr, u32 end_addr)
     if(tpPartition->address > start_addr)
         return -2;
 
+    u32 erase_offset = start_addr - tpPartition->address;
     u32 erase_size = end_addr - start_addr;
 
-    if(erase_size > tpPartition->size)
+    if((erase_offset + erase_size) > tpPartition->size)
         return -3;
 
-    if(esp_partition_erase_range(tpPartition, (start_addr - tpPartition->address), erase_size) != ESP_OK)
+    if(esp_partition_erase_range(tpPartition, erase_offset, erase_size) != ESP_OK)
     {
         return -4;
     }
@@ -155,9 +156,13 @@ s8 cFlash_Write8BitData(u32 start_addr, u8 *data, u32 len)
     if(tpPartition->address > start_addr)
         return -2;
 
-    if(esp_partition_write(tpPartition, (start_addr - tpPartition->address), data, len) != ESP_OK)
-    {
+    u32 write_offset = start_addr - tpPartition->address;
+    if((write_offset + len) > tpPartition->size)
         return -3;
+
+    if(esp_partition_write(tpPartition, write_offset, data, len) != ESP_OK)
+    {
+        return -4;
     }
         
 	#endif  /* boardIC_TYPE */
@@ -204,9 +209,13 @@ s8 cFlash_Read8BitData(u32 start_addr, u8 *data, u32 len)
     if(tpPartition->address > start_addr)
         return -2;
 
-    if(esp_partition_read(tpPartition, (start_addr - tpPartition->address), data, len) != ESP_OK)
-    {
+    u32 read_offset = start_addr - tpPartition->address;
+    if((read_offset + len) > tpPartition->size)
         return -3;
+
+    if(esp_partition_read(tpPartition, read_offset, data, len) != ESP_OK)
+    {
+        return -4;
     }
         
 	#endif  /* boardIC_TYPE */

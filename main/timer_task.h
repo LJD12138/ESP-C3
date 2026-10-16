@@ -40,9 +40,7 @@ extern "C" {
 extern TimerHandle_t                    tBmsRxEnTimer;                          /* 单次定时器: BMS的485发送延时切换 */
 #endif  /* boardBMS_485_IFACE_EN */
 
-#if (boardBMS_EN)
-extern TimerHandle_t                    tWakeUpBmsTimer;                        /* 单次定时器: 唤醒BMS开机脉冲延时关闭 */
-#endif  /* boardBMS_EN */
+extern TimerHandle_t                    tWakeUpBmsTimer;                        /* 单次定时器: 辅助开机脉冲延时关闭(兼恢复bIF_Gpio解锁按键, 不随BMS裁剪) */
 
 //****************************************************Extern********************************************************************//
 s8   cTimer_TaskInit(void);

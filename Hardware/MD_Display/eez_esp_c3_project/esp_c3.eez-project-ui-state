@@ -1,7 +1,13 @@
 {
   "navigation": {
     "selectedUserPageObject": "[esp_c3.eez-project]:/userPages/0",
-    "subnavigationSelectedItems": {}
+    "selectedUserWidgetObject": "[esp_c3.eez-project]:/userWidgets/0",
+    "selectedGlobalVariableObject": "[esp_c3.eez-project]:/variables/globalVariables/7",
+    "selectedFontObject": "[esp_c3.eez-project]:/fonts/0",
+    "selectedBitmapObject": "[esp_c3.eez-project]:/bitmaps/1",
+    "subnavigationSelectedItems": {
+      "variables-tab/sub-navigation/selected-item": "Global"
+    }
   },
   "layoutModel": {
     "rootEditor": {
@@ -22,7 +28,7 @@
           {
             "type": "border",
             "selected": 1,
-            "size": 293.5,
+            "size": 415.890625,
             "location": "right",
             "children": [
               {
@@ -70,7 +76,7 @@
           {
             "type": "border",
             "selected": 1,
-            "size": 153.5,
+            "size": 311.09375,
             "location": "bottom",
             "children": [
               {
@@ -188,13 +194,47 @@
             {
               "type": "tabset",
               "id": "EDITORS",
-              "weight": 54.582795698924734,
+              "weight": 55.95227375056281,
+              "selected": 3,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
                 {
                   "type": "tab",
-                  "id": "#a7b634c4-430d-40dd-89ef-acf5d8536aa2",
+                  "id": "#74699b52-326e-4d8f-9939-4db18d520eaf",
+                  "name": "Main_Booting",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[esp_c3.eez-project]:/userPages/1",
+                    "permanent": false
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#7979b5f6-9071-4b7e-bac4-ea6d30cf70af",
+                  "name": "main_dome",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[esp_c3.eez-project]:/userWidgets/3",
+                    "permanent": false
+                  },
+                  "icon": "svg:user_widget"
+                },
+                {
+                  "type": "tab",
+                  "id": "#ea70c594-ca6a-4740-9fcf-0b218b06a864",
+                  "name": "main_top_info_bar",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[esp_c3.eez-project]:/userWidgets/0",
+                    "permanent": true
+                  },
+                  "icon": "svg:user_widget"
+                },
+                {
+                  "type": "tab",
+                  "id": "#5afb05d7-0bb1-471e-9148-1f2bb78a83b2",
                   "name": "Main_Work",
                   "component": "editor",
                   "config": {
@@ -209,7 +249,7 @@
             {
               "type": "row",
               "id": "#5eca6d16-b8b8-4218-82ba-385a3a049826",
-              "weight": 30.41720430107527,
+              "weight": 29.04772624943719,
               "children": [
                 {
                   "type": "tabset",
@@ -444,10 +484,21 @@
               "type": "tabset",
               "id": "RUNTIME-EDITORS",
               "weight": 1,
-              "selected": -1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
-              "children": []
+              "children": [
+                {
+                  "type": "tab",
+                  "id": "#dc26a30f-18ea-45c0-9e1c-e453e8bb620e",
+                  "name": "Main_Work",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[esp_c3.eez-project]:/userPages/0",
+                    "permanent": false
+                  },
+                  "icon": "svg:page"
+                }
+              ]
             },
             {
               "type": "row",
@@ -476,7 +527,8 @@
                       "enableClose": false,
                       "icon": "svg:breakpoints_panel"
                     }
-                  ]
+                  ],
+                  "active": true
                 },
                 {
                   "type": "tabset",
@@ -1078,28 +1130,18 @@
       "selectionBack": {
         "0": {
           "0": {
-            "1": {}
-          },
-          "1": {
-            "0": {
-              "0": {},
-              "1": {},
-              "2": {}
-            },
             "1": {
-              "0": {
-                "0": {}
-              }
+              "5": {}
             }
           }
         }
       },
       "transform": {
         "translate": {
-          "x": -160,
-          "y": -120
+          "x": -134.5097117898785,
+          "y": 13.168531192501575
         },
-        "scale": 1
+        "scale": 1.25
       },
       "timeline": {
         "isEditorActive": false,
@@ -1118,7 +1160,7 @@
           "x": -160,
           "y": -220
         },
-        "scale": 1
+        "scale": 1.25
       },
       "timeline": {
         "isEditorActive": false,
@@ -1137,7 +1179,7 @@
           "x": -160,
           "y": -120
         },
-        "scale": 1
+        "scale": 1.25
       },
       "timeline": {
         "isEditorActive": false,
@@ -1158,7 +1200,7 @@
           "x": -160,
           "y": -120
         },
-        "scale": 1
+        "scale": 1.25
       },
       "timeline": {
         "isEditorActive": false,
@@ -1177,7 +1219,92 @@
           "x": -160,
           "y": -120
         },
-        "scale": 1
+        "scale": 1.25
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[esp_c3.eez-project]:/userWidgets/0[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "0": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -160,
+          "y": -120
+        },
+        "scale": 1.25
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[esp_c3.eez-project]:/userWidgets/1[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "0": {},
+        "1": {
+          "$selected": true
+        },
+        "3": {}
+      },
+      "transform": {
+        "translate": {
+          "x": -160,
+          "y": -120
+        },
+        "scale": 1.25
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[esp_c3.eez-project]:/userWidgets/2[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "0": {},
+        "1": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -280.00000000000006,
+          "y": -6.361113654242672
+        },
+        "scale": 1.25
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[esp_c3.eez-project]:/userWidgets/3[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "0": {}
+      },
+      "transform": {
+        "translate": {
+          "x": -160,
+          "y": -120
+        },
+        "scale": 1.25
       },
       "timeline": {
         "isEditorActive": false,
@@ -1202,11 +1329,15 @@
   "lvglPart": "MAIN",
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "TEXT"
+    "TEXT",
+    "BORDER",
+    "BACKGROUND",
+    "PADDING",
+    "MISCELLANEOUS"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
-  "flowZoom": 1,
+  "flowZoom": 1.25,
   "implementationLanguage": "C",
-  "openDialogDefaultPath": "G:\\2-User_Projects\\11-ESP\\ESP-C3\\Hardware\\MD_Display\\eez_esp_c3_project\\Image\\dog.gif"
+  "openDialogDefaultPath": "G:\\2-User_Projects\\11-ESP\\ESP-C3\\Hardware\\MD_Display\\eez_esp_c3_project\\fonts\\BarlowCondensed-Regular.ttf"
 }

@@ -36,6 +36,10 @@ struct tm;
 #define			wifiDEFAULT_PWD							"asdfghjkl"	/* 默认出厂测试密码 */
 #endif
 
+#define			wifiENV_KEY_SSID						"wifi_ssid"	/* EasyFlash 中 WiFi SSID 键名 */
+#define			wifiENV_KEY_PWD							"wifi_pwd"	/* EasyFlash 中 WiFi 密码键名 */
+#define			wifiENV_KEY_AUTO						"wifi_auto"	/* EasyFlash 中自动连接使能键名 */
+
 #define			wifiRECONNECT_MAX_INTERVAL_MS			30000	/* 最大重连退避间隔 30s */
 #define			wifiRECONNECT_BASE_INTERVAL_MS			1000	/* 初始重连间隔 1s */
 #define			wifiRSSI_POLL_INTERVAL_MS				5000	/* 已连接状态下 RSSI 采样周期 5s */
@@ -47,6 +51,8 @@ struct tm;
 #define			wifiWEATHER_RETRY_INTERVAL_MS			10000	/* 天气失败重试等待门限 10s */
 #define			wifiWEATHER_TIMEOUT_MS					8000	/* 单次 HTTP 请求超时等待 8s */
 #define			wifiWEATHER_RX_BUF_SIZE					1024	/* HTTP 响应接收缓冲区大小 (字节) */
+#define			wifiSCAN_MAX_AP_NUM						16		/* 扫描结果最大缓存热点数量 */
+#define			wifiSCAN_TIMEOUT_MS						10000	/* 扫描单次最长等待超时 10s */
 
 //****************************************************Types*********************************************************************//
 /* WiFi 连接状态枚举 (双列对齐，以 Tab 为准) */
@@ -72,6 +78,25 @@ typedef struct
 	char				saUpdateTime[32];	/* 最近一次更新时间 (北京时间 "YYYY-MM-DD HH:MM:SS") */
 }WiFiWeatherInfo_T;
 
+/* 扫描热点条目结构体 (1Tab -> 5Tab -> 5Tab 对齐) */
+typedef struct
+{
+	char				saSsid[33];			/* 热点 SSID 字符串 */
+	int8_t				cRssi;				/* 信号强度 (-100 ~ 0 dBm) */
+	uint8_t				ucChannel;			/* 信道编号 (1 ~ 13) */
+	uint8_t				ucAuthMode;			/* 认证加密模式 (wifi_auth_mode_t) */
+}WiFiScanApItem_T;
+
+/* 扫描结果集合结构体 (1Tab -> 5Tab -> 5Tab 对齐) */
+typedef struct
+{
+	bool				bScanning;			/* 是否正在扫描中 */
+	bool				bScanDone;			/* 最近一次扫描是否已成功完成 */
+	uint16_t			usTotalApNum;		/* 扫描发现的总 AP 数量 */
+	uint16_t			usCachedApNum;		/* 实际缓存的 AP 数量 (<= wifiSCAN_MAX_AP_NUM) */
+	WiFiScanApItem_T	taApList[wifiSCAN_MAX_AP_NUM];	/* 缓存的热点列表 (按信号由强到弱排序) */
+}WiFiScanResult_T;
+
 /* WiFi 运行状态信息结构体 (1Tab -> 5Tab -> 5Tab 对齐) */
 typedef struct
 {
@@ -79,10 +104,13 @@ typedef struct
 	int8_t				cRssi;				/* 当前信号强度 (dBm, -100 ~ 0) */
 	uint8_t				ucRetryCnt;			/* 连续重连失败计数 */
 	bool				bSntpSynced;		/* SNTP 是否已成功完成对时 */
+	bool				bPowerSaveEn;		/* 是否已启用 Modem Sleep 节能模式 */
+	bool				bAutoConnect;		/* 是否启用开机自动连接 */
 	char				saIpAddr[16];		/* 本机 IP 地址字符串 (IPv4) */
 	char				saSsid[33];			/* 当前目标 SSID */
 	char				saPassword[65];		/* 当前连接密码 */
 	WiFiWeatherInfo_T	tWeather;			/* 当前天气信息 */
+	WiFiScanResult_T	tScan;				/* 周边热点扫描结果集合 */
 }WiFiInfo_T;
 
 //****************************************************Globals*******************************************************************//
@@ -90,16 +118,24 @@ extern WiFiInfo_T tWiFiInfo;
 
 //****************************************************Extern********************************************************************//
 s8 cWiFi_TaskInit(void);
-void vWiFi_Task(void *p_v_parameters);
-bool bWiFi_RegisterEvents(void);
 void vWiFi_ApplyStaConfig(const char *p_ssid, const char *p_pwd);
-bool bWiFi_StartDriver(void);
 bool bWiFi_Connect(const char *p_ssid, const char *p_pwd);
 bool bWiFi_Disconnect(void);
 bool bWiFi_IsConnected(void);
 int8_t cWiFi_GetRssi(void);
 void vWiFi_GetIpStr(char *p_out_buf, size_t buf_len);
 void vWiFi_Stop(void);
+bool bWiFi_LoadConfig(void);
+bool bWiFi_SaveConfig(const char *p_ssid, const char *p_pwd);
+bool bWiFi_RestoreDefaultConfig(void);
+bool bWiFi_SetAutoConnect(bool b_enable);
+bool bWiFi_SetPowerSave(bool b_enable);
+bool bWiFi_IsPowerSaveEnabled(void);
+bool bWiFi_StartScan(void);
+bool bWiFi_IsScanning(void);
+bool bWiFi_IsScanDone(void);
+uint16_t usWiFi_GetScanResult(WiFiScanApItem_T *p_out_list, uint16_t max_count);
+const char *pcWiFi_AuthModeToDesc(uint8_t uc_auth_mode);
 bool bWiFi_SntpIsSynced(void);
 bool bWiFi_SntpGetLocalTime(struct tm *p_tm);
 void vWiFi_SntpGetTimeStr(char *p_out_buf, size_t buf_len);

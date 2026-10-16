@@ -85,7 +85,17 @@ void v_wifi_queue_task_reconnect(Task_T *p_task)
 		case 2:
 		{
 			tWiFiInfo.eState = WIFI_STATE_CONNECTING;
-			esp_wifi_connect();
+			esp_err_t err = esp_wifi_connect();
+			if (err != ESP_OK)
+			{
+				if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+					log_w("bWiFiTask:发起第%u次重连触发失败: %s, 准备下一轮重试", (unsigned int)tWiFiInfo.ucRetryCnt, esp_err_to_name(err));
+
+				tWiFiInfo.ucRetryCnt++;
+				tWiFiInfo.eState = WIFI_STATE_DISCONNECTED;
+				cQueue_GotoStep(p_task, 0);
+				break;
+			}
 
 			if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
 				log_i("bWiFiTask:发起第%u次重连AP: [%s]...", (unsigned int)tWiFiInfo.ucRetryCnt, tWiFiInfo.saSsid);

@@ -42,9 +42,7 @@
 TimerHandle_t        tBmsRxEnTimer   = NULL;    /* 单次定时器, BMS的485发送延时切换 */
 #endif  /* boardBMS_485_IFACE_EN */
 
-#if (boardBMS_EN)
-TimerHandle_t        tWakeUpBmsTimer = NULL;    /* 单次定时器, BMS的唤醒使能延时关闭 */
-#endif  /* boardBMS_EN */
+TimerHandle_t        tWakeUpBmsTimer = NULL;    /* 单次定时器, 辅助开机脉冲延时关闭(兼恢复bIF_Gpio解锁按键) */
 
 static TimerHandle_t s_t_repet_timer = NULL;    /* 重复定时器 */
 static vu8           s_uc_timer_cnt  = 0;
@@ -73,7 +71,7 @@ s8 cTimer_TaskInit(void)
 		return -1;
 	#endif  /* boardBMS_485_IFACE_EN */
 
-	#if (boardBMS_EN)
+	/* 辅助开机脉冲定时器: 脉冲结束后恢复bIF_Gpio解锁按键任务, 不随BMS裁剪 */
 	tWakeUpBmsTimer = xTimerCreate("wake_up_bms_timer",
 	                               3000,
 	                               pdFALSE,
@@ -81,7 +79,6 @@ s8 cTimer_TaskInit(void)
 	                               v_timer_signal_callback);
 	if (tWakeUpBmsTimer == NULL)
 		return -2;
-	#endif  /* boardBMS_EN */
 
 	/* 创建重复定时器 */
 	s_t_repet_timer = xTimerCreate("repet_timer",
@@ -97,9 +94,7 @@ s8 cTimer_TaskInit(void)
 	xTimerStart(tBmsRxEnTimer, 0);
 	#endif  /* boardBMS_485_IFACE_EN */
 
-	#if (boardBMS_EN)
 	xTimerStart(tWakeUpBmsTimer, 0);
-	#endif  /* boardBMS_EN */
 
 	xTimerStart(s_t_repet_timer, 0);
 
@@ -193,9 +188,7 @@ void vCount_EnterLowPower(void)
 	xTimerDelete(tBmsRxEnTimer, 100);
 	#endif  /* boardBMS_485_IFACE_EN */
 
-	#if (boardBMS_EN)
 	xTimerDelete(tWakeUpBmsTimer, 100);
-	#endif  /* boardBMS_EN */
 
 	xTimerDelete(s_t_repet_timer, 100);
 }

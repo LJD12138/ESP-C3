@@ -33,7 +33,7 @@ const char *get_var_home_weather_text(void) { return s_cWeatherText; }
 const char *get_var_home_net_time(void)     { return s_cNetTime; }
 const char *get_var_home_net_sync(void)     { return s_cNetSync; }
 
-void set_var_home_nav_time(const char *value)     { prv_vUpdateLabelIfChanged(s_cNavTime, sizeof(s_cNavTime), value, objects.nav_time); }
+void set_var_home_nav_time(const char *value)     { prv_vUpdateLabelIfChanged(s_cNavTime, sizeof(s_cNavTime), value, objects.obj0__nav_time); }
 void set_var_home_temp_val(const char *value)     { prv_vUpdateLabelIfChanged(s_cTempVal, sizeof(s_cTempVal), value, objects.temp_val); }
 void set_var_home_temp_desc(const char *value)    { prv_vUpdateLabelIfChanged(s_cTempDesc, sizeof(s_cTempDesc), value, objects.temp_badge); }
 void set_var_home_humi_val(const char *value)     { prv_vUpdateLabelIfChanged(s_cHumiVal, sizeof(s_cHumiVal), value, objects.humi_val); }

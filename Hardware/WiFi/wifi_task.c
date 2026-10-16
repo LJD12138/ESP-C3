@@ -27,145 +27,77 @@
 #include "esp_netif.h"
 #include "nvs_flash.h"
 
+#if (boardEASY_FLASH)
+#include "easyflash.h"
+#endif  /* boardEASY_FLASH */
+
 #include "Sys/sys_task.h"
 #include "Print/print_task.h"
 #include "WiFi/wifi_queue_task.h"
 
-//****************************************************Macros********************************************************************//
+//****************************************************Task Declaration**********************************************************//
 #if (boardUSE_OS)
 #define			wifiTASK_PRIO							3		/* 任务优先级(网络管理) */
-#define			wifiTASK_STK_SIZE						(1024U * 4U)	/* 任务堆栈大小 (字节) */
+#define			wifiTASK_STK_SIZE						(1024U * 4U)	/* 任务堆栈大小 (字节) 4KB足够容纳队列驱动与底层回调 */
+static TaskHandle_t s_t_wifi_task_handler = NULL;						/* 任务句柄 */
+static void vWiFi_Task(void *p_v_parameters);
 #endif  /* boardUSE_OS */
 
 //****************************************************Parameter Initialization**************************************************//
-#if (boardUSE_OS)
-static TaskHandle_t s_t_wifi_task_handler = NULL;						/* 任务句柄 */
-#endif  /* boardUSE_OS */
-
 WiFiInfo_T tWiFiInfo;
 
-static esp_netif_t *s_p_sta_netif = NULL;
-static esp_event_handler_instance_t s_wifi_event_instance = NULL;
-static esp_event_handler_instance_t s_ip_event_instance = NULL;
-static bool s_b_wifi_driver_inited = false;
-
 //****************************************************Function Declaration******************************************************//
-static void v_wifi_event_handler(void *p_arg, esp_event_base_t event_base, int32_t l_event_id, void *p_event_data);
+static bool b_task_param_init(void);
+void vWiFi_EventHandler(void *p_arg, esp_event_base_t event_base, int32_t l_event_id, void *p_event_data);
 
 
 /***********************************************************************************************************************
- * 函数功能    : WiFi 任务与底层网络协议栈初始化
- * 说明(备注)  : 仅负责 NVS、Netif、默认事件循环、WiFi 硬件驱动配置及 OS 任务队列创建绑定
+ * 函数功能    : 任务参数初始化
+ * 说明(备注)  : 初始化 WiFiInfo 结构体，设置默认值
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : bool: true 成功, false 失败
+ ************************************************************************************************************************/
+static bool b_task_param_init(void)
+{
+	memset(&tWiFiInfo, 0, sizeof(WiFiInfo_T));
+	tWiFiInfo.eState       = WIFI_STATE_DISCONNECTED;
+	tWiFiInfo.cRssi        = -100;
+	tWiFiInfo.bAutoConnect = true;
+	tWiFiInfo.bPowerSaveEn = false;
+	return true;
+}
+
+/***********************************************************************************************************************
+ * 函数功能    : WiFi 任务与任务队列调度初始化
+ * 说明(备注)  : 仅负责全局参数清零、TaskQueue 任务队列对象创建与 FreeRTOS 任务绑定 (微秒级无感返回)
  * 传入参数    : 无
  * 输出参数    : 无
  * 返回值      : 1: 成功; 负数: 对应初始化步骤故障码
  ************************************************************************************************************************/
 s8 cWiFi_TaskInit(void)
 {
-	esp_err_t err = ESP_OK;
-
-	memset(&tWiFiInfo, 0, sizeof(WiFiInfo_T));
-	tWiFiInfo.eState = WIFI_STATE_DISCONNECTED;
-	tWiFiInfo.cRssi  = -100;
-	strncpy(tWiFiInfo.saSsid, wifiDEFAULT_SSID, sizeof(tWiFiInfo.saSsid) - 1);
-	strncpy(tWiFiInfo.saPassword, wifiDEFAULT_PWD, sizeof(tWiFiInfo.saPassword) - 1);
-
-	/* 1. NVS 初始化 (WiFi 依赖 NVS 保存 RF 校准参数) */
-	err = nvs_flash_init();
-	if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND)
-	{
-		nvs_flash_erase();
-		err = nvs_flash_init();
-	}
-	if (err != ESP_OK)
+	if(!b_task_param_init())
 		return -1;
 
-	/* 2. TCP/IP 协议栈基础层与事件循环初始化 */
-	err = esp_netif_init();
-	if (err != ESP_OK)
+	#if (boardUSE_OS)
+	/* 1. 初始化 WiFi TaskQueue 任务队列对象 */
+	if (!bWiFi_QueueInit())
 		return -2;
 
-	err = esp_event_loop_create_default();
-	if (err != ESP_OK && err != ESP_ERR_INVALID_STATE)
-		return -3;
-
-	/* 3. 创建默认 STA 网络接口句柄 */
-	if (s_p_sta_netif == NULL)
-	{
-		s_p_sta_netif = esp_netif_create_default_wifi_sta();
-		if (s_p_sta_netif == NULL)
-			return -4;
-	}
-
-	/* 4. WiFi 硬件驱动初始化 (轻量化缓冲配置，适配片内SRAM) */
-	if (!s_b_wifi_driver_inited)
-	{
-		wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-		cfg.static_rx_buf_num  = 4;
-		cfg.dynamic_rx_buf_num = 16;
-		cfg.dynamic_tx_buf_num = 16;
-		cfg.mgmt_sbuf_num      = 16;
-		err = esp_wifi_init(&cfg);
-		if (err != ESP_OK)
-			return -5;
-
-		s_b_wifi_driver_inited = true;
-	}
-
-	#if (boardUSE_OS)
-	/* 5. 初始化 WiFi TaskQueue 任务队列对象 */
-	if (!bWiFi_QueueInit())
-		return -6;
-
-	/* 6. 创建任务队列主调度任务并绑定任务句柄 */
+	/* 2. 创建任务队列主调度任务并绑定任务句柄 */
 	if (xTaskCreate((TaskFunction_t )vWiFi_Task,
 	                (const char*    )"bWiFiTask",
 	                (uint16_t       )wifiTASK_STK_SIZE,
 	                (void*          )NULL,
 	                (UBaseType_t    )wifiTASK_PRIO,
 	                (TaskHandle_t*  )&s_t_wifi_task_handler) != pdPASS)
-		return -7;
+		return -3;
 
 	vQueue_BindTaskHandler(tpWiFiTask, s_t_wifi_task_handler);
 	#endif  /* boardUSE_OS */
 
 	return 1;
-}
-
-/***********************************************************************************************************************
- * 函数功能    : 注册 WiFi 与 IP 事件监听
- * 说明(备注)  : 供 v_wifi_queue_task_init 在任务启动步骤中安全调用
- * 传入参数    : 无
- * 输出参数    : 无
- * 返回值      : true: 成功; false: 失败
- ************************************************************************************************************************/
-bool bWiFi_RegisterEvents(void)
-{
-	esp_err_t err = ESP_OK;
-
-	if (s_wifi_event_instance == NULL)
-	{
-		err = esp_event_handler_instance_register(WIFI_EVENT,
-		                                          ESP_EVENT_ANY_ID,
-		                                          &v_wifi_event_handler,
-		                                          NULL,
-		                                          &s_wifi_event_instance);
-		if (err != ESP_OK)
-			return false;
-	}
-
-	if (s_ip_event_instance == NULL)
-	{
-		err = esp_event_handler_instance_register(IP_EVENT,
-		                                          IP_EVENT_STA_GOT_IP,
-		                                          &v_wifi_event_handler,
-		                                          NULL,
-		                                          &s_ip_event_instance);
-		if (err != ESP_OK)
-			return false;
-	}
-
-	return true;
 }
 
 /***********************************************************************************************************************
@@ -193,25 +125,13 @@ void vWiFi_ApplyStaConfig(const char *p_ssid, const char *p_pwd)
 
 	strncpy((char *)wifi_cfg.sta.ssid, tWiFiInfo.saSsid, sizeof(wifi_cfg.sta.ssid));
 	strncpy((char *)wifi_cfg.sta.password, tWiFiInfo.saPassword, sizeof(wifi_cfg.sta.password));
-	wifi_cfg.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
+	wifi_cfg.sta.threshold.authmode = (strlen(tWiFiInfo.saPassword) > 0) ? WIFI_AUTH_WPA2_PSK : WIFI_AUTH_OPEN;
 	wifi_cfg.sta.pmf_cfg.capable    = true;
 	wifi_cfg.sta.pmf_cfg.required   = false;
 
 	esp_wifi_set_storage(WIFI_STORAGE_RAM);
 	esp_wifi_set_mode(WIFI_MODE_STA);
 	esp_wifi_set_config(WIFI_IF_STA, &wifi_cfg);
-}
-
-/***********************************************************************************************************************
- * 函数功能    : 启动 WiFi 底层射频驱动
- * 说明(备注)  : 供 v_wifi_queue_task_init 在配置完成后启动射频
- * 传入参数    : 无
- * 输出参数    : 无
- * 返回值      : true: 成功; false: 失败
- ************************************************************************************************************************/
-bool bWiFi_StartDriver(void)
-{
-	return (esp_wifi_start() == ESP_OK);
 }
 
 /***********************************************************************************************************************
@@ -235,7 +155,7 @@ void vWiFi_Task(void *p_v_parameters)
 
 /***********************************************************************************************************************
  * 函数功能    : 动态修改并重新连接指定 WiFi 热点
- * 说明(备注)  : 更新配置并向队列投递 WTI_CONNECT 抢占任务
+ * 说明(备注)  : 自动持久化凭据至 EasyFlash，更新配置并向队列投递 WTI_CONNECT 抢占任务
  * 传入参数    : p_ssid: 目标 SSID, p_pwd: 目标密码
  * 输出参数    : 无
  * 返回值      : true: 成功触发连接流程, false: 参数无效
@@ -244,6 +164,9 @@ bool bWiFi_Connect(const char *p_ssid, const char *p_pwd)
 {
 	if (p_ssid == NULL || strlen(p_ssid) == 0)
 		return false;
+
+	/* 持久化保存新凭据至 EasyFlash */
+	bWiFi_SaveConfig(p_ssid, p_pwd);
 
 	vWiFi_ApplyStaConfig(p_ssid, p_pwd);
 	tWiFiInfo.ucRetryCnt = 0;
@@ -265,7 +188,7 @@ bool bWiFi_Connect(const char *p_ssid, const char *p_pwd)
  ************************************************************************************************************************/
 bool bWiFi_Disconnect(void)
 {
-	if (!s_b_wifi_driver_inited)
+	if (tSysInfo.uInit.tFinish.bIF_WiFiTask == 0)
 		return false;
 
 	#if (boardUSE_OS)
@@ -332,13 +255,237 @@ void vWiFi_Stop(void)
 }
 
 /***********************************************************************************************************************
+ * 函数功能    : 从 EasyFlash 环境变量载入 WiFi 配置凭据
+ * 说明(备注)  : 若 EasyFlash 中无配置，则使用出厂宏默认值并写入 Flash 做初始持久化
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : true: 成功载入已有配置; false: 未找到已有配置，已初次写入默认配置
+ ************************************************************************************************************************/
+bool bWiFi_LoadConfig(void)
+{
+	#if (boardEASY_FLASH)
+	char *p_ssid = ef_get_env(wifiENV_KEY_SSID);
+	char *p_pwd  = ef_get_env(wifiENV_KEY_PWD);
+	char *p_auto = ef_get_env(wifiENV_KEY_AUTO);
+
+	/* 校验是否具有有效热点配置 (过滤历史残留的测试值 "1") */
+	if (p_ssid != NULL && strlen(p_ssid) > 0 && strcmp(p_ssid, "1") != 0)
+	{
+		strncpy(tWiFiInfo.saSsid, p_ssid, sizeof(tWiFiInfo.saSsid) - 1);
+		tWiFiInfo.saSsid[sizeof(tWiFiInfo.saSsid) - 1] = '\0';
+
+		if (p_pwd != NULL)
+		{
+			strncpy(tWiFiInfo.saPassword, p_pwd, sizeof(tWiFiInfo.saPassword) - 1);
+			tWiFiInfo.saPassword[sizeof(tWiFiInfo.saPassword) - 1] = '\0';
+		}
+		else
+		{
+			tWiFiInfo.saPassword[0] = '\0';
+		}
+
+		if (p_auto != NULL)
+			tWiFiInfo.bAutoConnect = (p_auto[0] != '0');
+		else
+			tWiFiInfo.bAutoConnect = true;
+
+		if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+			log_i("bWiFiTask:从EasyFlash载入WiFi配置: SSID=[%s], AutoConnect=%d", tWiFiInfo.saSsid, (int)tWiFiInfo.bAutoConnect);
+
+		return true;
+	}
+	else
+	{
+		/* 若无有效配置或为历史异常残留值("1")，重置并持久化为出厂宏默认配置 */
+		strncpy(tWiFiInfo.saSsid, wifiDEFAULT_SSID, sizeof(tWiFiInfo.saSsid) - 1);
+		tWiFiInfo.saSsid[sizeof(tWiFiInfo.saSsid) - 1] = '\0';
+		strncpy(tWiFiInfo.saPassword, wifiDEFAULT_PWD, sizeof(tWiFiInfo.saPassword) - 1);
+		tWiFiInfo.saPassword[sizeof(tWiFiInfo.saPassword) - 1] = '\0';
+		tWiFiInfo.bAutoConnect = true;
+
+		ef_set_env(wifiENV_KEY_SSID, wifiDEFAULT_SSID);
+		ef_set_env(wifiENV_KEY_PWD, wifiDEFAULT_PWD);
+		ef_set_env(wifiENV_KEY_AUTO, "1");
+
+		if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+			log_i("bWiFiTask:未检测到有效WiFi配置(原为[%s]), 重新写入默认配置: SSID=[%s]", (p_ssid != NULL) ? p_ssid : "NULL", wifiDEFAULT_SSID);
+
+		return false;
+	}
+	#else
+	strncpy(tWiFiInfo.saSsid, wifiDEFAULT_SSID, sizeof(tWiFiInfo.saSsid) - 1);
+	tWiFiInfo.saSsid[sizeof(tWiFiInfo.saSsid) - 1] = '\0';
+	strncpy(tWiFiInfo.saPassword, wifiDEFAULT_PWD, sizeof(tWiFiInfo.saPassword) - 1);
+	tWiFiInfo.saPassword[sizeof(tWiFiInfo.saPassword) - 1] = '\0';
+	tWiFiInfo.bAutoConnect = true;
+
+	if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+		log_i("bWiFiTask:载入宏默认WiFi配置: SSID=[%s]", wifiDEFAULT_SSID);
+
+	return true;
+	#endif  /* boardEASY_FLASH */
+}
+
+/***********************************************************************************************************************
+ * 函数功能    : 保存 WiFi 目标连接凭据至 EasyFlash 环境变量
+ * 说明(备注)  : 同时更新全局状态结构体 tWiFiInfo 与 Flash 存储
+ * 传入参数    : p_ssid: 目标 SSID, p_pwd: 目标密码 (可为 NULL/空字符串 表示开放热点)
+ * 输出参数    : 无
+ * 返回值      : true: 保存成功, false: 参数无效
+ ************************************************************************************************************************/
+bool bWiFi_SaveConfig(const char *p_ssid, const char *p_pwd)
+{
+	if (p_ssid == NULL || strlen(p_ssid) == 0)
+		return false;
+
+	strncpy(tWiFiInfo.saSsid, p_ssid, sizeof(tWiFiInfo.saSsid) - 1);
+	tWiFiInfo.saSsid[sizeof(tWiFiInfo.saSsid) - 1] = '\0';
+
+	if (p_pwd != NULL)
+	{
+		strncpy(tWiFiInfo.saPassword, p_pwd, sizeof(tWiFiInfo.saPassword) - 1);
+		tWiFiInfo.saPassword[sizeof(tWiFiInfo.saPassword) - 1] = '\0';
+	}
+	else
+	{
+		tWiFiInfo.saPassword[0] = '\0';
+	}
+
+	#if (boardEASY_FLASH)
+	ef_set_env(wifiENV_KEY_SSID, tWiFiInfo.saSsid);
+	ef_set_env(wifiENV_KEY_PWD, tWiFiInfo.saPassword);
+	ef_set_env(wifiENV_KEY_AUTO, tWiFiInfo.bAutoConnect ? "1" : "0");
+
+	if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+		log_i("bWiFiTask:WiFi凭据已持久化至EasyFlash: SSID=[%s]", tWiFiInfo.saSsid);
+	#endif  /* boardEASY_FLASH */
+
+	return true;
+}
+
+/***********************************************************************************************************************
+ * 函数功能    : 恢复 WiFi 目标热点与配置为出厂默认值
+ * 说明(备注)  : 重置 EasyFlash 键值并重新应用底层驱动 STA 参数
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : true: 成功恢复
+ ************************************************************************************************************************/
+bool bWiFi_RestoreDefaultConfig(void)
+{
+	strncpy(tWiFiInfo.saSsid, wifiDEFAULT_SSID, sizeof(tWiFiInfo.saSsid) - 1);
+	tWiFiInfo.saSsid[sizeof(tWiFiInfo.saSsid) - 1] = '\0';
+	strncpy(tWiFiInfo.saPassword, wifiDEFAULT_PWD, sizeof(tWiFiInfo.saPassword) - 1);
+	tWiFiInfo.saPassword[sizeof(tWiFiInfo.saPassword) - 1] = '\0';
+	tWiFiInfo.bAutoConnect = true;
+
+	#if (boardEASY_FLASH)
+	ef_set_env(wifiENV_KEY_SSID, wifiDEFAULT_SSID);
+	ef_set_env(wifiENV_KEY_PWD, wifiDEFAULT_PWD);
+	ef_set_env(wifiENV_KEY_AUTO, "1");
+
+	if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+		log_i("bWiFiTask:WiFi配置已恢复为出厂默认值: SSID=[%s]", wifiDEFAULT_SSID);
+	#endif  /* boardEASY_FLASH */
+
+	vWiFi_ApplyStaConfig(tWiFiInfo.saSsid, tWiFiInfo.saPassword);
+	return true;
+}
+
+/***********************************************************************************************************************
+ * 函数功能    : 设置是否启用开机自动连接
+ * 说明(备注)  : 同步更新 EasyFlash 存储
+ * 传入参数    : b_enable: true: 自动连接, false: 禁用自动连接
+ * 输出参数    : 无
+ * 返回值      : true: 设置成功
+ ************************************************************************************************************************/
+bool bWiFi_SetAutoConnect(bool b_enable)
+{
+	tWiFiInfo.bAutoConnect = b_enable;
+
+	#if (boardEASY_FLASH)
+	ef_set_env(wifiENV_KEY_AUTO, b_enable ? "1" : "0");
+	#endif  /* boardEASY_FLASH */
+
+	return true;
+}
+
+/***********************************************************************************************************************
+ * 函数功能    : 配置 WiFi 调制解调器休眠节能模式 (Modem Sleep)
+ * 说明(备注)  : 启用后空闲时射频关闭，到 DTIM 时隙自动唤醒，大幅降低功耗与发热
+ * 传入参数    : b_enable: true: 开启 WIFI_PS_MIN_MODEM; false: 关闭 (WIFI_PS_NONE)
+ * 输出参数    : 无
+ * 返回值      : true: 设置成功; false: 底层接口返回错误
+ ************************************************************************************************************************/
+bool bWiFi_SetPowerSave(bool b_enable)
+{
+	wifi_ps_type_t ps_type = b_enable ? WIFI_PS_MIN_MODEM : WIFI_PS_NONE;
+	esp_err_t err = esp_wifi_set_ps(ps_type);
+	if (err == ESP_OK)
+	{
+		tWiFiInfo.bPowerSaveEn = b_enable;
+		if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+			log_i("bWiFiTask:WiFi节能模式设置成功: %s", b_enable ? "Modem Sleep (MIN_MODEM)" : "关闭 (NONE)");
+		return true;
+	}
+	else
+	{
+		if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+			log_w("bWiFiTask:WiFi节能模式设置失败: %s", esp_err_to_name(err));
+		return false;
+	}
+}
+
+/***********************************************************************************************************************
+ * 函数功能    : 查询当前是否已启用 Modem Sleep 节能模式
+ * 说明(备注)  : none
+ * 传入参数    : 无
+ * 输出参数    : 无
+ * 返回值      : true: 已启用; false: 未启用
+ ************************************************************************************************************************/
+bool bWiFi_IsPowerSaveEnabled(void)
+{
+	return tWiFiInfo.bPowerSaveEn;
+}
+
+/***********************************************************************************************************************
+ * 函数功能    : 获取底层 WiFi 断开原因描述文本
+ * 说明(备注)  : 将 ESP-IDF wifi_err_reason_t 原因码转换为易读字符串
+ * 传入参数    : reason: 断开原因码 (uint8_t)
+ * 输出参数    : 无
+ * 返回值      : 错误描述字符串指针
+ ************************************************************************************************************************/
+static const char *prv_pcGetDisconnectReasonDesc(uint8_t reason)
+{
+	switch (reason)
+	{
+		case 1:   return "UNSPECIFIED";
+		case 2:   return "AUTH_EXPIRE";
+		case 3:   return "AUTH_LEAVE";
+		case 4:   return "ASSOC_EXPIRE";
+		case 5:   return "ASSOC_TOOMANY";
+		case 6:   return "NOT_AUTHED";
+		case 7:   return "NOT_ASSOCED";
+		case 8:   return "ASSOC_LEAVE";
+		case 13:  return "IE_IN_4WAY_DIFFERS";
+		case 15:  return "4WAY_HANDSHAKE_TIMEOUT";
+		case 200: return "BEACON_TIMEOUT";
+		case 201: return "NO_AP_FOUND (未找到该WiFi热点或信号弱/非2.4G频段)";
+		case 202: return "AUTH_FAIL (密码错误或加密模式不匹配)";
+		case 203: return "ASSOC_FAIL";
+		case 204: return "HANDSHAKE_TIMEOUT (握手超时)";
+		case 205: return "CONNECTION_FAIL";
+		default:  return "UNKNOWN";
+	}
+}
+
+/***********************************************************************************************************************
  * 函数功能    : ESP-IDF WiFi 与 IP 事件回调响应函数
  * 说明(备注)  : 运行于 esp_sys_loop 任务上下文中，将底层网络事件转换为 TaskQueue 队列任务
  * 传入参数    : p_arg: 用户上下文指针, event_base: 事件基类别, l_event_id: 事件ID, p_event_data: 事件携带数据指针
  * 输出参数    : 无
  * 返回值      : 无
  ************************************************************************************************************************/
-static void v_wifi_event_handler(void *p_arg, esp_event_base_t event_base, int32_t l_event_id, void *p_event_data)
+void vWiFi_EventHandler(void *p_arg, esp_event_base_t event_base, int32_t l_event_id, void *p_event_data)
 {
 	(void)p_arg;
 
@@ -354,7 +501,15 @@ static void v_wifi_event_handler(void *p_arg, esp_event_base_t event_base, int32
 			case WIFI_EVENT_STA_START:
 			{
 				#if (boardUSE_OS)
-				cQueue_AddQueueTask(tpWiFiTask, WTI_CONNECT, 0, true);
+				if (tWiFiInfo.bAutoConnect)
+				{
+					cQueue_AddQueueTask(tpWiFiTask, WTI_CONNECT, 0, true);
+				}
+				else
+				{
+					if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+						log_i("bWiFiTask:开机自动连接已禁用, 保持待机模式");
+				}
 				#endif  /* boardUSE_OS */
 			}
 			break;
@@ -370,14 +525,31 @@ static void v_wifi_event_handler(void *p_arg, esp_event_base_t event_base, int32
 			{
 				if (tWiFiInfo.eState != WIFI_STATE_STOPPED)
 				{
+					wifi_event_sta_disconnected_t *p_dis = (wifi_event_sta_disconnected_t *)p_event_data;
+					uint8_t uc_reason = (p_dis != NULL) ? p_dis->reason : 0;
+
 					tWiFiInfo.eState = WIFI_STATE_DISCONNECTED;
 					tWiFiInfo.cRssi  = -100;
 					tWiFiInfo.ucRetryCnt++;
 
+					if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+						log_w("bWiFiTask:WiFi断开连接, 原因码: %u (%s)", (unsigned int)uc_reason, prv_pcGetDisconnectReasonDesc(uc_reason));
+
 					#if (boardUSE_OS)
-					cQueue_AddQueueTask(tpWiFiTask, WTI_RECONNECT, 0, true);
+					if (tWiFiInfo.bAutoConnect)
+						cQueue_AddQueueTask(tpWiFiTask, WTI_RECONNECT, 0, true);
 					#endif  /* boardUSE_OS */
 				}
+			}
+			break;
+
+			case WIFI_EVENT_SCAN_DONE:
+			{
+				vWiFi_ScanDoneNotify();
+				#if (boardUSE_OS)
+				if (s_t_wifi_task_handler != NULL)
+					xTaskNotifyGive(s_t_wifi_task_handler);
+				#endif  /* boardUSE_OS */
 			}
 			break;
 
@@ -401,8 +573,11 @@ static void v_wifi_event_handler(void *p_arg, esp_event_base_t event_base, int32
 			if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK)
 				tWiFiInfo.cRssi = ap_info.rssi;
 
+			/* 网络连接成功后自动激活 Modem Sleep 节能模式 */
+			bWiFi_SetPowerSave(true);
+
 			if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
-				log_i("bWiFiTask:网络就绪! IP: %s, RSSI: %d dBm", tWiFiInfo.saIpAddr, (int)tWiFiInfo.cRssi);
+				log_i("bWiFiTask:网络就绪! IP: %s, RSSI: %d dBm, Modem Sleep 节能模式已激活", tWiFiInfo.saIpAddr, (int)tWiFiInfo.cRssi);
 
 			#if (boardUSE_OS)
 			cQueue_AddQueueTask(tpWiFiTask, WTI_WORK, 0, true);

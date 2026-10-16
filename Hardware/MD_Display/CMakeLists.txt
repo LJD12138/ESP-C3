@@ -43,4 +43,6 @@ idf_component_register(
         UniDisplay
         espressif__esp_lcd_touch
         lambage__esp_lcd_touch_ft6336u
+        BSP
+        WiFi
 )

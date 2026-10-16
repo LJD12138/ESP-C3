@@ -41,7 +41,16 @@ void v_wifi_queue_task_connect(Task_T *p_task)
 		case 0:
 		{
 			tWiFiInfo.eState = WIFI_STATE_CONNECTING;
-			esp_wifi_connect();
+			esp_err_t err = esp_wifi_connect();
+			if (err != ESP_OK)
+			{
+				if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
+					log_w("bWiFiTask:发起连接失败: %s", esp_err_to_name(err));
+
+				tWiFiInfo.eState = WIFI_STATE_DISCONNECTED;
+				cQueue_GotoStep(p_task, STEP_END);
+				break;
+			}
 
 			if (uPrint.tFlag.bWiFiTask || uPrint.tFlag.bImportant)
 				log_i("bWiFiTask:正在连接AP: [%s]...", tWiFiInfo.saSsid);

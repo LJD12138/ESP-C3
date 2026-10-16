@@ -140,7 +140,7 @@ void SysParamInit(void)
 
 	#if (boardHEALTH_MONITOR_EN)
 	uPrint.tFlag.bHealthTask = 1;	/* 健康巡检遥测(CPU/队列/栈/堆) */
-	uPrint.tFlag.bFreeRTOS   = 1;	/* FreeRTOS剩余堆/任务表打印 */
+	uPrint.tFlag.bFreeRTOS   = 0;	/* FreeRTOS剩余堆/任务表打印 */
 	#endif  /* boardHEALTH_MONITOR_EN */
 
 	#if (boardWIFI_EN)

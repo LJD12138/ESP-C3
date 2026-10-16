@@ -115,7 +115,7 @@
         "objID": "87ccff69-4ad9-4ab0-87fc-44b380087dda",
         "name": "home_nav_time",
         "type": "string",
-        "defaultValue": "--:--",
+        "defaultValue": "\"--:--\"",
         "description": "",
         "native": true
       },
@@ -123,7 +123,7 @@
         "objID": "7c670e4b-0366-413d-84b7-a4cd8bcf9001",
         "name": "home_temp_val",
         "type": "string",
-        "defaultValue": "--.-",
+        "defaultValue": "\"--.-\"",
         "description": "",
         "native": true
       },
@@ -131,7 +131,7 @@
         "objID": "372169cd-300c-4f0f-9b0f-a22efc361581",
         "name": "home_temp_desc",
         "type": "string",
-        "defaultValue": "--",
+        "defaultValue": "\"--\"",
         "description": "",
         "native": true
       },
@@ -139,7 +139,7 @@
         "objID": "5b6f3d16-0697-4cc6-a7ef-090b5ecebd24",
         "name": "home_humi_val",
         "type": "string",
-        "defaultValue": "--",
+        "defaultValue": "\"--\"",
         "description": "",
         "native": true
       },
@@ -147,7 +147,7 @@
         "objID": "26ee5012-b83a-4a0b-b953-ea463cd06a42",
         "name": "home_humi_desc",
         "type": "string",
-        "defaultValue": "--",
+        "defaultValue": "\"--\"",
         "description": "",
         "native": true
       },
@@ -155,7 +155,7 @@
         "objID": "6b845ed7-0748-4de9-9a3b-d93be9bc03af",
         "name": "home_weather_text",
         "type": "string",
-        "defaultValue": "--",
+        "defaultValue": "\"--\"",
         "description": "",
         "native": true
       },
@@ -163,7 +163,7 @@
         "objID": "312bb9e7-c5a8-4913-949e-851a57f72d8b",
         "name": "home_net_time",
         "type": "string",
-        "defaultValue": "--:--:--",
+        "defaultValue": "\"--:--:--\"",
         "description": "",
         "native": true
       },
@@ -171,7 +171,7 @@
         "objID": "1f050f56-a823-4a9e-bb3a-b4e5883fc233",
         "name": "home_net_sync",
         "type": "string",
-        "defaultValue": "未同步",
+        "defaultValue": "\"未同步\"",
         "description": "",
         "native": true
       }
